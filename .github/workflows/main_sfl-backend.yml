@@ -43,7 +43,7 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          zip -r release.zip public dist/* package.json -r
+          zip -r release.zip dist public package.json -r
           pwd
           ls -lt
 
