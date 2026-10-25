@@ -51,7 +51,7 @@
 
 ```mermaid
 flowchart LR
-  E0["Фаза 0<br/>Эпик 0: hotfix безопасности<br/>+ S11.5 AGENT.md"] --> P1
+  E0["Фаза 0<br/>Эпик 0: hotfix безопасности<br/>+ S11.5 AGENT.md, S11.6 dev-container"] --> P1
   subgraph P1["Фаза 1"]
     E1["Эпик 1: обновления"]
     E2["Эпик 2: тесты и CI"]
@@ -88,9 +88,9 @@ flowchart LR
 | Эпик 8 — Безопасность и персональные данные | [E08-security-privacy/](E08-security-privacy/) | 7 |
 | Эпик 9 — Наблюдаемость | [E09-observability/](E09-observability/) | 2 |
 | Эпик 10 — Продуктовые фичи | [E10-product-features/](E10-product-features/) | 10 |
-| Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 5 |
+| Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 7 |
 
-Всего историй: 89, из них отменено: 16.
+Всего историй: 91, из них отменено: 16.
 
 ---
 
@@ -248,3 +248,5 @@ flowchart LR
 | ❌ | [S11.3](E11-dx-docs/S11.3.md) | Обновлять архитектурную документацию | P2 | S | [S6.7](E06-data-migration/S6.7.md) |
 | ❌ | [S11.4](E11-dx-docs/S11.4.md) | Вычистить мусор из репозитория | P1 | M | [S2.1](E02-tests-ci/S2.1.md) |
 | ❌ | [S11.5](E11-dx-docs/S11.5.md) | AGENT.md: инструкции для ИИ-агентов | P0 | S | — |
+| ❌ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
+| ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
