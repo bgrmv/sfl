@@ -28,6 +28,7 @@ import {
 import { Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { ClientPlayer } from '.';
+import { Public } from '../../shared/decorators/public.decorator';
 import { FileLoggerService } from '../../shared/services/logger.service';
 import { UsersService } from '../users/users.service';
 import { Player } from './players.schema';
@@ -61,6 +62,7 @@ export class PlayersController {
     status: 500,
     description: 'Internal Server Error',
   })
+  @Public()
   @Get(':id')
   async findById(@Param('id') id: string) {
     if (!id.trim()) {
@@ -80,6 +82,7 @@ export class PlayersController {
     }
   }
 
+  @Public()
   @Get()
   @ApiQuery({
     name: 'includeMetadata',
@@ -111,6 +114,7 @@ export class PlayersController {
     );
   }
 
+  @Public()
   @Get('captains')
   async findCaptains(@Res() res: Response) {
     const captains = await this.playersService.findCaptains();
@@ -188,6 +192,7 @@ export class PlayersController {
     return res.json(await this.playersService.delete(id));
   }
 
+  // Not public: it changes data. Moves to POST in S0.4
   @Get('recalculate/season')
   @ApiQuery({ name: 'seasonId', required: true, type: Number })
   @ApiQuery({ name: 'playerIds', required: true, type: Array, isArray: true })

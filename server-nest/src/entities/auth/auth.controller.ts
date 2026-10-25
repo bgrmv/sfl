@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { addDays } from 'date-fns';
 import { Request, Response } from 'express';
+import { Public } from 'src/shared/decorators/public.decorator';
 import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
 import { AuthRequiredValiSchema } from './auth.dto';
 import { Auth } from './auth.schema';
@@ -30,6 +31,7 @@ export class AuthController {
     return (req as any)?.user;
   }
 
+  @Public()
   @Post('sign-in')
   @ApiBody({
     type: Auth,
@@ -53,6 +55,7 @@ export class AuthController {
     return res.json({ accessToken });
   }
 
+  @Public()
   @Post('sign-out')
   @ApiResponse({
     status: 200,

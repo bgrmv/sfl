@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { Public } from 'src/shared/decorators/public.decorator';
 import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
 import { UpdateGame } from '../games/game.schema';
 import { TeamSaveDTO } from './team.dto';
@@ -22,6 +23,7 @@ import { TeamsService } from './teams.service';
 export class TeamsController {
   constructor(private teamsService: TeamsService) {}
 
+  @Public()
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,

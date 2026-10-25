@@ -21,6 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { Public } from 'src/shared/decorators/public.decorator';
 import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
 import { Game, IGame, UpdateGame } from './game.schema';
@@ -31,6 +32,7 @@ import { GamesService } from './games.service';
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 
+  @Public()
   @Get()
   @ApiQuery({
     name: 'number',
@@ -62,6 +64,7 @@ export class GamesController {
   }
 
   // Get /games/:id
+  @Public()
   @Get(':id')
   @ApiParam({
     name: 'id',
