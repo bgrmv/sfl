@@ -13,6 +13,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../../shared/decorators/public.decorator';
 import { ChartsService } from './charts.service';
 
 export class DTO {
@@ -28,6 +29,8 @@ export class DTO {
   };
 }
 
+// Read-only statistics, open to everyone
+@Public()
 @ApiTags('charts')
 @Controller('charts')
 export class ChartsController {
