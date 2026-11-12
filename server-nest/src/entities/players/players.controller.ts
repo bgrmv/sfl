@@ -27,7 +27,12 @@ import {
 } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { Types } from 'mongoose';
+import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
 import { ClientPlayer } from '.';
+import {
+  RecalculateSeasonDTO,
+  RecalculateSeasonDTOOutput,
+} from './players.dto';
 import { Public } from '../../shared/decorators/public.decorator';
 import { FileLoggerService } from '../../shared/services/logger.service';
 import { UsersService } from '../users/users.service';
@@ -192,27 +197,40 @@ export class PlayersController {
     return res.json(await this.playersService.delete(id));
   }
 
-  // Not public: it changes data. Moves to POST in S0.4
-  @Get('recalculate/season')
-  @ApiQuery({ name: 'seasonId', required: true, type: Number })
-  @ApiQuery({ name: 'playerIds', required: true, type: Array, isArray: true })
-  @ApiOkResponse({ type: Player, status: 200 })
+  // Not public: the global AuthGuard requires a token (S0.1)
+  @Post('recalculate/season')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['seasonId', 'playerIds'],
+      properties: {
+        seasonId: { type: 'integer' },
+        playerIds: { type: 'array', items: { type: 'string' } },
+      },
+    },
+  })
+  @ApiOkResponse({ status: 200, description: 'Recalculation is finished' })
   @ApiBadRequestResponse({
     status: 400,
-    description: 'Bad request response with no content',
+    description: 'Invalid body',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Recalculation failed for some players (see `failed`)',
   })
   async recalculateSeason(
-    @Query('seasonId', ParseIntPipe) seasonId: number,
-    @Query('playerIds') playerIds: string[],
+    @Body(new ValibotValidationPipe(RecalculateSeasonDTO))
+    { seasonId, playerIds }: RecalculateSeasonDTOOutput,
   ) {
     this.logger.info('Recalculate player season and career', {
       seasonId,
       playerIds,
     });
 
-    return await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
+    await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
       seasonId,
       playerIds,
     );
+
+    return { success: 'OK', seasonId, playerIds };
   }
 }

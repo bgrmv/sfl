@@ -115,18 +115,31 @@ export class PlayersService {
     season: number,
     playerIds: string[],
   ): Promise<void> {
-    try {
-      playerIds.forEach(async (playerId) => {
+    const failed: { playerId: string; error: string }[] = [];
+
+    // Sequentially and awaited: the caller gets the response only when done.
+    for (const playerId of playerIds) {
+      try {
         await this.recalculateSeasonMetadata(playerId, season);
-      });
-    } catch (error) {
+      } catch (error) {
+        failed.push({
+          playerId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+
+    if (failed.length) {
       this.logger.error('Failed to recalculate season metadata for players', {
         season,
-        playerIds,
-        error,
+        failed,
       });
 
-      throw InternalServerErrorException;
+      throw new InternalServerErrorException({
+        statusCode: 500,
+        message: 'Failed to recalculate metadata for some players',
+        failed,
+      });
     }
   }
 
@@ -176,12 +189,13 @@ export class PlayersService {
 
       await this.recalculateCareerMetadata(playerId);
     } catch (error) {
-      console.error(error);
       this.logger.error('Failed to recalculate season metadata for player', {
         _id: playerId,
         season,
         error,
       });
+
+      throw error;
     }
   }
 

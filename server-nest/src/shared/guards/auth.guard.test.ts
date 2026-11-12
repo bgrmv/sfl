@@ -110,6 +110,7 @@ describe('AuthGuard: access matrix', () => {
         'POST /rest/games',
         'DELETE /rest/players/:id',
         'POST /rest/roles',
+        'POST /rest/players/recalculate/season',
         'GET /rest/users',
         'GET /rest/migrations/convert-players-user-to-uuid',
       ]),
