@@ -1,3 +1,2 @@
-# Shell scripts run inside the Linux dev-container: CRLF breaks them
-*.sh text eol=lf
-.devcontainer/** text eol=lf
+# Line endings: LF in the index and in the working tree, regardless of core.autocrlf
+* text=auto eol=lf
