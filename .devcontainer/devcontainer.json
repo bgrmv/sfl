@@ -20,6 +20,11 @@
 
   "customizations": {
     "vscode": {
+      "settings": {
+        "git.autorefresh": true,
+        "files.watcherExclude": {},
+        "remote.autoForwardPorts": false
+      },
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
