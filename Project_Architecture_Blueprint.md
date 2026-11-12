@@ -16,7 +16,7 @@ SFL (Saturday Football League) — веб-приложение для учёта
 |---|---|---|
 | Клиент (SPA) | Angular 18.2, Angular Material, NgRx Signals/Store, Highcharts, date-fns, lodash-es | [client/](client/) |
 | API (основной) | NestJS 10, Mongoose 8, valibot 0.29, envalid, winston, @nestjs/jwt, @nestjs/swagger | [server-nest/](server-nest/) |
-| API (legacy) | Express 4, Mongoose 8, valibot, jsonwebtoken | [server/](server/) |
+| API (legacy) | Express 4, Mongoose 8, valibot, jsonwebtoken | удалён, см. S1.10 |
 | База данных | MongoDB (строка подключения из `DATABASE_URL`, имя БД из `DATABASE_DB`) | — |
 | Тесты | Vitest (сервер), Karma/Jasmine (клиент), Jest (legacy-сервер) | — |
 | Линт/формат | ESLint, Prettier (во всех трёх пакетах) | — |
@@ -27,7 +27,7 @@ SFL (Saturday Football League) — веб-приложение для учёта
 
 **Статус частей:**
 - `server-nest/` — **действующий** бэкенд. Единственный, который деплоится в CI.
-- `server/` — **legacy**. Предыдущая реализация на Express. В CI не участвует. Большая часть маршрутов заглушки (см. [server/src/app/routes/games.router.ts](server/src/app/routes/games.router.ts)). Статус перед удалением нужно уточнить у команды.
+- `server/` — **удалён 2026-11-12 ([S1.10](docs/backlog/E01-dependency-upgrades/S1.10.md)); последний коммит с ним `9214b56`**. Было: legacy. Предыдущая реализация на Express. В CI не участвует. Большая часть маршрутов заглушки (см. [server/src/app/routes/games.router.ts](server/src/app/routes/games.router.ts)). Статус перед удалением нужно уточнить у команды.
 - `client/` — **действующий** фронтенд.
 - `_backups/` — JSON-выгрузки тестовых коллекций (`users`, `roles`, `teams`, `players`).
 

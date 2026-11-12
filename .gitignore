@@ -49,7 +49,6 @@ Thumbs.db
 
 # dependencies
 /client/node_modules
-/server/node_modules
 /client/.pnp
 /client/.pnp.js
 
@@ -69,7 +68,6 @@ Thumbs.db
 /client/yarn-error.log*
 
 # server
-/server/data/
 
 # env
 .env

@@ -10,7 +10,6 @@ SFL — приложение для любительской футбольно�
 |---|---|
 | `client/` | Angular SPA (слои FSD: `app`, `pages`, `widgets`, `features`, `entities`, `shared`) |
 | `server-nest/` | основной API: NestJS, Mongoose |
-| `server/` | legacy Express API, не развивается (нужен ли он — открытый вопрос в бэклоге) |
 | `docs/backlog/` | истории по эпикам `E00`–`E12`, статусы в `README.md` |
 | `.devcontainer/` | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md)) |
 | `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты» |
@@ -33,8 +32,6 @@ SFL — приложение для любительской футбольно�
 | Типы и сборка | `pnpm build` | `pnpm build` |
 | Тесты | `pnpm test` (Karma, нужен браузер) | `pnpm test` (vitest, watch); один прогон: `pnpm vitest run` |
 | Prod-сборка | `pnpm build:prod` | `pnpm build` |
-
-`server/` не трогаем без прямой просьбы.
 
 ## Соглашения
 
