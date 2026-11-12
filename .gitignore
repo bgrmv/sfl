@@ -88,3 +88,4 @@ sfl-ssr-keep/
 
 # Database dumps from .devcontainer/db-dump.cjs
 /_dumps/
+/_backups/
