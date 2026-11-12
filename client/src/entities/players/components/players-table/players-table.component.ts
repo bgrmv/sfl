@@ -7,7 +7,6 @@ import {
   effect,
   inject,
   OnDestroy,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -59,7 +58,7 @@ import { AuthService } from '@shared/services/auth.service';
     // provideComponentStore(PlayersStore),
   ],
 })
-export class PlayersTableComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PlayersTableComponent implements OnDestroy, AfterViewInit {
   private dialog = inject(MatDialog);
   private readonly router = inject(Router);
   private readonly playersStore = inject(PlayersStore);
@@ -80,10 +79,6 @@ export class PlayersTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.playersEffectRef.destroy();
-  }
-
-  ngOnInit() {
-    // Comment
   }
 
   ngAfterViewInit() {

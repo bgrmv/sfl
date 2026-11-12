@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class NilToDashPipe implements PipeTransform {
-  transform(value: any, ...args: unknown[]): unknown {
+  transform(value: any): unknown {
     if (value === null || value === undefined) {
       return '—';
     }

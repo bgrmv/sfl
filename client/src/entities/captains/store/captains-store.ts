@@ -1,8 +1,6 @@
 import { ComponentStore, OnStoreInit } from '@ngrx/component-store';
 import { TCaptain, TCaptainSelected } from '../types';
-import { Injectable, OnInit, inject } from '@angular/core';
-import { getCaptainsListMock } from '../api/get-captains';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
 import { CaptainsService } from '../services/captains.service';
 import { TeamEnum } from '@shared/constants/team';
 

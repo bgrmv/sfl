@@ -1,10 +1,5 @@
 import { TCaptain } from '../types/index.js';
 
-type ResponseCaptains = {
-  captains: TCaptain[];
-  page: number;
-};
-
 // export async function getPlayersList(page?: number): Promise<ResponseCaptains> {
 //   const data = await client
 //     .post('captains', {

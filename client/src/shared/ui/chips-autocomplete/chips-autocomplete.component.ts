@@ -15,7 +15,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   standalone: true,
-  selector: 'app-chips-autocomplete',
+  selector: 'sfl-chips-autocomplete',
   imports: [
     FormsModule,
     MatFormFieldModule,

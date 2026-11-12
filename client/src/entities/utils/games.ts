@@ -2,13 +2,11 @@ import { TGameFinalWithoutStatistics } from '@entities/games/types';
 import {
   addYears,
   differenceInWeeks,
-  eachWeekOfInterval,
   nextSaturday,
   startOfMonth,
 } from 'date-fns';
 
 // const third = 3;
-const SATURDAY = 6;
 
 // TODO ! Rework! Cards have wrong numbers and playedAt
 export const getGameCards = (year: number): TGameFinalWithoutStatistics[] => {
@@ -17,17 +15,12 @@ export const getGameCards = (year: number): TGameFinalWithoutStatistics[] => {
 
   const endOfSeason = addYears(startOfSeason, 1);
 
-  const weeks = eachWeekOfInterval({
-    start: startOfSeason,
-    end: endOfSeason,
-  }).length;
-
   // To make inclusive +1 week
   const weeksInclusive =
     Math.abs(differenceInWeeks(startOfSeason, endOfSeason)) + 1;
 
   let lastSaturday = startOfSeason;
-  for (const gameIdx of Array(weeksInclusive).keys()) {
+  for (let weekIdx = 0; weekIdx < weeksInclusive; weekIdx++) {
     lastSaturday = nextSaturday(lastSaturday);
 
     // gameCards.push({

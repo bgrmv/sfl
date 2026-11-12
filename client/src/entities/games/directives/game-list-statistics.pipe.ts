@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars -- unfinished stub, see TODO below */
 import { Pipe, PipeTransform } from '@angular/core';
 import { groupBy } from 'lodash-es';
 import { TGameFinal, TPlayerStatisticFinal } from '../types';

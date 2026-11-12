@@ -25,7 +25,7 @@ const FEATURE_INITIALIZED = `[${FEATURE_NAME} STORE FEATURE] has been initialize
 
 const FEATURE_DESTROYED = `[${FEATURE_NAME} STORE FEATURE] destroyed 💥`;
 
-export function withTeamsFeature<_>() {
+export function withTeamsFeature() {
   return signalStoreFeature(
     {
       state: type<NewGameState>(),

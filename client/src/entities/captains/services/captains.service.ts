@@ -25,5 +25,5 @@ export class CaptainsService {
     };
   }
 
-  async promoteToCaptain(id: string) {}
+  async promoteToCaptain() {}
 }

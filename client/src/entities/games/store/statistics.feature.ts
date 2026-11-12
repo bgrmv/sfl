@@ -112,7 +112,7 @@ function mapStatisticsFinaltoDTO(
   );
 }
 
-export function withPlayerStatisticsFeature<_>() {
+export function withPlayerStatisticsFeature() {
   return signalStoreFeature(
     {
       state: type<NewGameState>(),
@@ -158,7 +158,7 @@ export function withPlayerStatisticsFeature<_>() {
           updateEntity({ id, changes: { position } }, STATISTIC_ENTITY_CONFIG),
         );
       },
-      toggleIsMVP({ id, teamId }: TPlayerStatisticFinal): void {
+      toggleIsMVP({ id }: TPlayerStatisticFinal): void {
         patchState(
           store,
           updateEntity(

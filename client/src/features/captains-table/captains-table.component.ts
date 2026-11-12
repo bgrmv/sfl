@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ViewChild, OnDestroy, OnInit, AfterViewInit,
+  ViewChild, OnInit, AfterViewInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,15 +29,13 @@ import { CaptainsStore, TCaptain } from '@entities/captains';
     MatIconModule,
   ],
 })
-export class CaptainsTableComponent implements OnDestroy, OnInit, AfterViewInit {
+export class CaptainsTableComponent implements OnInit, AfterViewInit {
   constructor(
     private _destroyRef: DestroyRef,
     private captainsStore: CaptainsStore,
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
-
-  ngOnDestroy() {}
 
   ngOnInit() {
     this.captainsStore.captains$

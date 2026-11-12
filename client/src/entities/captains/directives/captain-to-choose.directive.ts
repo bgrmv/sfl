@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostListener } from '@angular/core';
 import { CaptainsService } from '../services/captains.service';
 
 @Directive({
-  selector: 'sfl-captains-cards[captainToChoose]',
+  selector: 'sfl-captains-cards[sflCaptainToChoose]',
   standalone: true,
   providers: [CaptainsService],
 })
@@ -19,10 +19,7 @@ export class CaptainToChooseDirective {
 
   @HostListener('click')
   onChoose() {
-    const card = this.el.nativeElement.querySelector('mat-card');
-    if (card) {
-      const dataCaptain = card.getAttribute('data-captain');
-    }
+    // TODO: pick the captain from the card's data-captain attribute
   }
 
   constructor(

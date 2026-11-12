@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ViewChild, OnDestroy, OnInit, AfterViewInit,
+  ViewChild, OnInit, AfterViewInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,15 +34,13 @@ import { CaptainsStore, TCaptain } from '@entities/captains';
     MatSlideToggleModule,
   ],
 })
-export class CaptainsToggleComponent implements OnDestroy, OnInit, AfterViewInit {
+export class CaptainsToggleComponent implements OnInit, AfterViewInit {
   constructor(
     private _destroyRef: DestroyRef,
     private captainsStore: CaptainsStore,
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
-
-  ngOnDestroy() {}
 
   ngOnInit() {
     this.captainsStore.captains$

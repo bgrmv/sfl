@@ -109,7 +109,7 @@ export class CaptainToAddComponent
         debounceTime(1500),
         takeUntil(this.unsubscribe$),
       )
-      .subscribe(([players, captains, suggestedCaptain]) => {
+      .subscribe(([, , suggestedCaptain]) => {
         this.loading$.next(false);
 
         if (!suggestedCaptain) {
@@ -119,7 +119,6 @@ export class CaptainToAddComponent
         // Todo [API]: in the future it should use API
         if (typeof suggestedCaptain === 'string') {
           // TODO
-          const captainsIds = captains.map(({ id }) => id);
           // return this.#filteredPlayers.next(
           //   players.filter(
           //     player =>

@@ -6,7 +6,7 @@ import { getISOWeek, isDate } from 'date-fns';
   standalone: true,
 })
 export class ISOWeekPipe implements PipeTransform {
-  transform(value?: Date | null, ...args: unknown[]): unknown {
+  transform(value?: Date | null): unknown {
     return isDate(value) ? getISOWeek(value) : null;
   }
 }

@@ -11,7 +11,6 @@ import { map } from 'rxjs/operators';
 
 import { CaptainStatsCardComponent, CaptainsStore } from '@entities/captains';
 import { BaseUnsubscribeComponent } from '@shared/classes/base-unsubscribe-component';
-import { provideComponentStore } from '@ngrx/component-store';
 import { TeamEnum } from '@shared/constants/team';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl } from '@angular/forms';
