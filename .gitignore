@@ -84,3 +84,9 @@ mongodb/
 sfl-ssr/
 sfl-ssr-keep/
 /client/build
+
+# pnpm store (dev-container keeps it in a volume)
+.pnpm-store/
+
+# Database dumps from .devcontainer/db-dump.cjs
+/_dumps/
