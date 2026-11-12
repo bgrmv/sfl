@@ -145,7 +145,7 @@ flowchart LR
 | ❌ | [S1.9](E01-dependency-upgrades/S1.9.md) | Обновить остальные серверные зависимости | P1 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
 | ❌ | [S1.10](E01-dependency-upgrades/S1.10.md) | Удалить legacy-сервер `server/` | P1 | S | ответ на открытый вопрос 3 |
 | ❌ | [S1.11](E01-dependency-upgrades/S1.11.md) | Автоматические обновления зависимостей | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
-| ❌ | [S1.12](E01-dependency-upgrades/S1.12.md) | Заменить valibot на zod | P1 | M | [S0.3](E00-security-hotfix/S0.3.md), [S2.8](E02-tests-ci/S2.8.md) |
+| ❌ | [S1.12](E01-dependency-upgrades/S1.12.md) | Заменить valibot на zod, общие схемы клиент/сервер | P1 | M | [S0.3](E00-security-hotfix/S0.3.md), [S2.8](E02-tests-ci/S2.8.md), [S3.2](E03-architecture/S3.2.md) |
 
 ## Эпик 2 — Тесты и CI
 
@@ -165,7 +165,7 @@ flowchart LR
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
 | ❌ | [S3.1](E03-architecture/S3.1.md) | Вынести доменную логику в независимый модуль | P1 | L | [S2.2](E02-tests-ci/S2.2.md), [S2.3](E02-tests-ci/S2.3.md) |
-| ❌ | [S3.2](E03-architecture/S3.2.md) | pnpm workspace и общие типы | P1 | M | [S1.2](E01-dependency-upgrades/S1.2.md) |
+| ❌ | [S3.2](E03-architecture/S3.2.md) | pnpm workspace и общие схемы и типы | P1 | M | [S1.2](E01-dependency-upgrades/S1.2.md) |
 | ❌ | [S3.3](E03-architecture/S3.3.md) | Разорвать цикл games ↔ players | P2 | M | [S3.1](E03-architecture/S3.1.md) |
 | ❌ | [S3.4](E03-architecture/S3.4.md) | Единый формат ответов API | P2 | M | [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S3.5](E03-architecture/S3.5.md) | Атомарное сохранение матча и пересчёта | P2 | M | [S3.3](E03-architecture/S3.3.md) |
