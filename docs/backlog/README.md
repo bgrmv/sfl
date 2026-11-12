@@ -11,7 +11,7 @@
 
 **Поля таблицы:**
 - **ID** — `S<эпик>.<номер>`, ссылка на файл истории. Файл называется так же: `S1.2.md`.
-- **Приоритет**: P0 — немедленно, P1 — до миграции, P2 — миграция, P3 — после миграции.
+- **Приоритет**: P0 — немедленно, P1 — локальный фокус сейчас, P2 — локально после P1, P3 — локально позже (продукт, оптимизация, отложенное), **P4 — отложено: сборка, деплой, CI/CD** (решение 2026-11-12, см. «Порядок работ»). Агент берёт P4 только по прямой просьбе владельца.
 - **Размер** — грубая оценка: S (≤1 дня), M (2–4 дня), L (неделя и больше).
 - **Зависит от** — истории, которые должны быть ✅ до начала этой.
 
@@ -37,6 +37,7 @@
 4. **База остаётся MongoDB и переезжает в два шага.** Сначала прод на MVPS работает с текущим MongoDB Atlas, и при переключении ([S6.7](E06-data-migration/S6.7.md)) данные не трогаются, меняется только DNS. После отключения Azure дамп переносится в compose на MVPS ([S6.9](E06-data-migration/S6.9.md)). Истории про Postgres отменены (⛔). Расчёт статистики защищают golden-master тесты ([S2.2](E02-tests-ci/S2.2.md)).
 5. **Пароли переводятся на современный хеш без участия пользователей.** Сейчас это SHA-512 без соли. При следующем входе Nest проверяет старый хеш и сохраняет новый (argon2id или bcrypt): стратегия в [S4.3](E04-migration-design/S4.3.md), реализация в [S8.7](E08-security-privacy/S8.7.md).
 6. **Версии не зафиксированы в историях.** Целевые версии определяются в [S1.1](E01-dependency-upgrades/S1.1.md) на момент выполнения.
+7. **Сначала локальная работа, сборка, деплой и CI/CD в конец** (решение 2026-11-12). Всё, что относится к Docker-образу, SSR-сборке, хостингу на MVPS, переключению с Azure и CI/CD, получило приоритет P4 и сгруппировано в разделе «Порядок работ». Первыми идут аудиты, безопасность, обновление зависимостей, оптимизация и дизайн, и все они проверяются локально командой `pnpm check` ([S2.8](E02-tests-ci/S2.8.md)), а не CI.
 
 ## Открытые вопросы к команде
 
@@ -47,30 +48,53 @@
 5. Есть ли у вас домен `sfl.com` (в dev-конфиге) или реальный прод-домен другой? Кто управляет его DNS?
 6. ~~Бюджет на VPS~~ — сервер куплен за €8.47 в месяц ([S4.1](E04-migration-design/S4.1.md)). Открыто: какое внешнее хранилище брать для бэкапов ([S7.8](E07-vps-hosting/S7.8.md)).
 
+## Порядок работ
+
+Работаем локально, в dev-контейнере. Каждая группа проверяется командой `pnpm check` ([S2.8](E02-tests-ci/S2.8.md)). Историю берём по правилам из «Для агента»: высший приоритет, зависимости ✅.
+
+### Локально, сейчас (P0–P3)
+
+| Группа | Истории | С чего начать |
+|---|---|---|
+| **1. Аудиты** | [S11.8](E11-dx-docs/S11.8.md) подбор skills → [S11.9](E11-dx-docs/S11.9.md) код, [S11.10](E11-dx-docs/S11.10.md) безопасность, [S12.1](E12-performance/S12.1.md) клиент, [S12.2](E12-performance/S12.2.md) MongoDB → [S11.11](E11-dx-docs/S11.11.md) доступность (после темы) | S11.8 |
+| **2. Безопасность** | [S0.2](E00-security-hotfix/S0.2.md), [S0.3](E00-security-hotfix/S0.3.md), [S0.4](E00-security-hotfix/S0.4.md), [S0.5](E00-security-hotfix/S0.5.md), [S8.8](E08-security-privacy/S8.8.md), [S8.7](E08-security-privacy/S8.7.md), [S8.2](E08-security-privacy/S8.2.md), [S8.1](E08-security-privacy/S8.1.md), [S8.4](E08-security-privacy/S8.4.md) | S0.3, S0.4, S2.8 → S8.8 |
+| **3. Обновление зависимостей** | [S2.8](E02-tests-ci/S2.8.md) → [S1.1](E01-dependency-upgrades/S1.1.md), [S1.2](E01-dependency-upgrades/S1.2.md), [S1.4](E01-dependency-upgrades/S1.4.md)–[S1.10](E01-dependency-upgrades/S1.10.md); страховка тестами: [S2.2](E02-tests-ci/S2.2.md)–[S2.5](E02-tests-ci/S2.5.md) | S2.8, S1.1 |
+| **4. Оптимизация** | [S12.1](E12-performance/S12.1.md), [S12.2](E12-performance/S12.2.md) → [S12.3](E12-performance/S12.3.md), [S12.4](E12-performance/S12.4.md) | S12.1, S12.2 |
+| **5. Дизайн** | [S10.11](E10-product-features/S10.11.md) → [S10.12](E10-product-features/S10.12.md) → [S10.13](E10-product-features/S10.13.md) → [S11.11](E11-dx-docs/S11.11.md) | S10.11 |
+| **Фоном** | Архитектура ([эпик 3](E03-architecture/)), DX ([S11.1](E11-dx-docs/S11.1.md), [S11.2](E11-dx-docs/S11.2.md), [S11.4](E11-dx-docs/S11.4.md), [S11.7](E11-dx-docs/S11.7.md)), продукт ([S10.1](E10-product-features/S10.1.md)–[S10.8](E10-product-features/S10.8.md)) | по мере надобности |
+
+Тема Material ([S10.12](E10-product-features/S10.12.md)) зависит от обновления Angular ([S1.4](E01-dependency-upgrades/S1.4.md)), поэтому выбор направления ([S10.11](E10-product-features/S10.11.md)) можно начинать сразу, а применение темы после апдейта.
+
+### Отложено в конец (P4): сборка, деплой, CI/CD
+
+Возвращаемся, когда локальные группы закрыты или когда нужно выкатывать на MVPS.
+
+| Группа | Истории |
+|---|---|
+| **Сборка** | [S7.1](E07-vps-hosting/S7.1.md) Docker-образ, [S7.5](E07-vps-hosting/S7.5.md) SSR |
+| **Деплой** | Хостинг и инфраструктура: [S7.2](E07-vps-hosting/S7.2.md), [S7.3](E07-vps-hosting/S7.3.md), [S7.4](E07-vps-hosting/S7.4.md), [S7.7](E07-vps-hosting/S7.7.md), [S7.8](E07-vps-hosting/S7.8.md), [S7.9](E07-vps-hosting/S7.9.md). Переезд: [S6.7](E06-data-migration/S6.7.md), [S6.8](E06-data-migration/S6.8.md), [S6.9](E06-data-migration/S6.9.md). Зависят от деплоя: [S8.5](E08-security-privacy/S8.5.md), [S8.6](E08-security-privacy/S8.6.md), [S9.1](E09-observability/S9.1.md), [S9.2](E09-observability/S9.2.md), [S10.9](E10-product-features/S10.9.md), [S10.10](E10-product-features/S10.10.md), [S11.3](E11-dx-docs/S11.3.md) |
+| **CI/CD** | [S2.1](E02-tests-ci/S2.1.md) CI на PR, [S2.6](E02-tests-ci/S2.6.md) E2E, [S2.7](E02-tests-ci/S2.7.md) покрытие, [S1.3](E01-dependency-upgrades/S1.3.md) GitHub Actions, [S1.11](E01-dependency-upgrades/S1.11.md) авто-обновления, [S8.3](E08-security-privacy/S8.3.md) сканеры в CI, [S7.6](E07-vps-hosting/S7.6.md) деплой из Actions |
+
+Локальные замены отложенным проверкам: вместо CI — [S2.8](E02-tests-ci/S2.8.md), вместо сканеров в CI — [S8.8](E08-security-privacy/S8.8.md).
+
 ## Дорожная карта
 
 ```mermaid
 flowchart LR
-  E0["Фаза 0<br/>Эпик 0: hotfix безопасности<br/>+ S11.5 AGENT.md, S11.6 dev-container"] --> P1
-  subgraph P1["Фаза 1"]
-    E1["Эпик 1: обновления"]
-    E2["Эпик 2: тесты и CI"]
-    E4["Эпик 4: spike и дизайн"]
+  E0["Фаза 0<br/>Эпик 0: hotfix безопасности<br/>S11.5 AGENT.md, S11.6 dev-container"] --> L
+  subgraph L["Фаза 1: локальная работа, P1-P3"]
+    A["Аудиты<br/>S11.8-S11.11, S12.1, S12.2"]
+    S["Безопасность<br/>эпик 0, эпик 8, S11.10"]
+    D["Обновление зависимостей<br/>эпик 1, S2.8"]
+    O["Оптимизация<br/>эпик 12"]
+    G["Дизайн<br/>S10.11-S10.13"]
   end
-  P1 --> P2
-  subgraph P2["Фаза 2"]
-    E3["Эпик 3: архитектура"]
-    E7["Эпик 7: VPS, Docker, SSR"]
+  L --> P4
+  subgraph P4["Фаза 2: отложено, P4"]
+    B["Сборка<br/>S7.1, S7.5"]
+    DP["Деплой<br/>эпик 7, S6.7-S6.9"]
+    CI["CI/CD<br/>S2.1, S7.6, S8.3"]
   end
-  P2 --> E6["Фаза 3<br/>Эпик 6: переключение Azure → MVPS<br/>(база в Atlas)"]
-  E6 --> P4
-  E6 --> DB["S6.9: MongoDB Atlas → compose на MVPS"]
-  subgraph P4["Фаза 4"]
-    E8["Эпик 8: безопасность"]
-    E9["Эпик 9: наблюдаемость"]
-    E10["Эпик 10: продукт"]
-  end
-  E11["Эпик 11: DX и документация<br/>(сквозной)"] -.-> P1 & P2 & P4
 ```
 
 ## Сводка эпиков
@@ -79,18 +103,19 @@ flowchart LR
 |---|---|:-:|
 | Эпик 0 — Hotfix безопасности текущего прода | [E00-security-hotfix/](E00-security-hotfix/) | 6 (1 отменена) |
 | Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 11 |
-| Эпик 2 — Тесты и CI | [E02-tests-ci/](E02-tests-ci/) | 7 |
+| Эпик 2 — Тесты и CI | [E02-tests-ci/](E02-tests-ci/) | 8 |
 | Эпик 3 — Улучшение архитектуры | [E03-architecture/](E03-architecture/) | 10 |
 | Эпик 4 — Spike и проектирование переезда | [E04-migration-design/](E04-migration-design/) | 4 (1 отменена) |
 | Эпик 5 — Бэкенд на Supabase ⛔ | [E05-supabase-backend/](E05-supabase-backend/) | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение | [E06-data-migration/](E06-data-migration/) | 9 (5 отменено) |
 | Эпик 7 — Хостинг на VPS | [E07-vps-hosting/](E07-vps-hosting/) | 9 |
-| Эпик 8 — Безопасность и персональные данные | [E08-security-privacy/](E08-security-privacy/) | 7 |
+| Эпик 8 — Безопасность и персональные данные | [E08-security-privacy/](E08-security-privacy/) | 8 |
 | Эпик 9 — Наблюдаемость | [E09-observability/](E09-observability/) | 2 |
 | Эпик 10 — Продуктовые фичи | [E10-product-features/](E10-product-features/) | 13 |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 11 |
+| Эпик 12 — Производительность и оптимизация | [E12-performance/](E12-performance/) | 4 |
 
-Всего историй: 98, из них отменено: 16.
+Всего историй: 104, из них отменено: 16.
 
 ---
 
@@ -111,27 +136,28 @@ flowchart LR
 |:-:|---|---|:-:|:-:|---|
 | ❌ | [S1.1](E01-dependency-upgrades/S1.1.md) | Инвентаризация зависимостей и целевые версии | P0 | S | — |
 | ❌ | [S1.2](E01-dependency-upgrades/S1.2.md) | Единые версии Node.js и pnpm | P0 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
-| ❌ | [S1.3](E01-dependency-upgrades/S1.3.md) | Обновить GitHub Actions | P0 | S | [S1.2](E01-dependency-upgrades/S1.2.md) |
-| ❌ | [S1.4](E01-dependency-upgrades/S1.4.md) | Обновить Angular до актуального мажора | P1 | L | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S1.3](E01-dependency-upgrades/S1.3.md) | Обновить GitHub Actions | P4 | S | [S1.2](E01-dependency-upgrades/S1.2.md) |
+| ❌ | [S1.4](E01-dependency-upgrades/S1.4.md) | Обновить Angular до актуального мажора | P1 | L | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S1.5](E01-dependency-upgrades/S1.5.md) | Обновить клиентские библиотеки | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S1.6](E01-dependency-upgrades/S1.6.md) | ESLint flat config и Prettier | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S1.7](E01-dependency-upgrades/S1.7.md) | Обновить NestJS | P1 | M | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S1.8](E01-dependency-upgrades/S1.8.md) | Перейти на valibot 1.x | P1 | M | [S0.3](E00-security-hotfix/S0.3.md) |
 | ❌ | [S1.9](E01-dependency-upgrades/S1.9.md) | Обновить остальные серверные зависимости | P1 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
 | ❌ | [S1.10](E01-dependency-upgrades/S1.10.md) | Удалить legacy-сервер `server/` | P1 | S | ответ на открытый вопрос 3 |
-| ❌ | [S1.11](E01-dependency-upgrades/S1.11.md) | Автоматические обновления зависимостей | P2 | S | [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S1.11](E01-dependency-upgrades/S1.11.md) | Автоматические обновления зависимостей | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
 
 ## Эпик 2 — Тесты и CI
 
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
-| ❌ | [S2.1](E02-tests-ci/S2.1.md) | CI для каждого PR | P1 | M | [S1.2](E01-dependency-upgrades/S1.2.md) |
+| ❌ | [S2.1](E02-tests-ci/S2.1.md) | CI для каждого PR | P4 | M | [S1.2](E01-dependency-upgrades/S1.2.md), [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S2.2](E02-tests-ci/S2.2.md) | Golden-master тесты расчёта статистики | P1 | L | [S11.2](E11-dx-docs/S11.2.md) |
 | ❌ | [S2.3](E02-tests-ci/S2.3.md) | Unit-тесты доменной логики | P1 | M | — |
 | ❌ | [S2.4](E02-tests-ci/S2.4.md) | API-тесты прав доступа и CRUD | P1 | M | [S0.1](E00-security-hotfix/S0.1.md) |
 | ❌ | [S2.5](E02-tests-ci/S2.5.md) | Перевести клиентские тесты на поддерживаемый раннер | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
-| ❌ | [S2.6](E02-tests-ci/S2.6.md) | E2E-тесты основных сценариев | P2 | M | [S2.1](E02-tests-ci/S2.1.md), [S7.2](E07-vps-hosting/S7.2.md) |
-| ❌ | [S2.7](E02-tests-ci/S2.7.md) | Отчёт о покрытии и пороги | P2 | S | [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S2.6](E02-tests-ci/S2.6.md) | E2E-тесты основных сценариев | P4 | M | [S2.1](E02-tests-ci/S2.1.md), [S7.2](E07-vps-hosting/S7.2.md) |
+| ❌ | [S2.7](E02-tests-ci/S2.7.md) | Отчёт о покрытии и пороги | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S2.8](E02-tests-ci/S2.8.md) | Единая локальная команда проверки | P1 | S | [S1.2](E01-dependency-upgrades/S1.2.md) |
 
 ## Эпик 3 — Улучшение архитектуры
 
@@ -185,23 +211,23 @@ flowchart LR
 | ⛔ | [S6.4](E06-data-migration/S6.4.md) | Сверка данных после переноса | — | — | — |
 | ⛔ | [S6.5](E06-data-migration/S6.5.md) | Перенос пользователей в Supabase Auth | — | — | — |
 | ⛔ | [S6.6](E06-data-migration/S6.6.md) | Репетиции миграции на staging | — | — | — |
-| ❌ | [S6.7](E06-data-migration/S6.7.md) | Переключение с Azure на MVPS и план отката | P2 | M | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md), [S7.6](E07-vps-hosting/S7.6.md), [S7.8](E07-vps-hosting/S7.8.md), [S2.6](E02-tests-ci/S2.6.md) |
-| ❌ | [S6.8](E06-data-migration/S6.8.md) | Отключение Azure | P3 | S | [S6.7](E06-data-migration/S6.7.md) |
-| ❌ | [S6.9](E06-data-migration/S6.9.md) | Перенос MongoDB из Atlas в compose на MVPS | P3 | M | [S6.8](E06-data-migration/S6.8.md), [S7.8](E07-vps-hosting/S7.8.md) |
+| ❌ | [S6.7](E06-data-migration/S6.7.md) | Переключение с Azure на MVPS и план отката | P4 | M | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md), [S7.6](E07-vps-hosting/S7.6.md), [S7.8](E07-vps-hosting/S7.8.md), [S2.6](E02-tests-ci/S2.6.md) |
+| ❌ | [S6.8](E06-data-migration/S6.8.md) | Отключение Azure | P4 | S | [S6.7](E06-data-migration/S6.7.md) |
+| ❌ | [S6.9](E06-data-migration/S6.9.md) | Перенос MongoDB из Atlas в compose на MVPS | P4 | M | [S6.8](E06-data-migration/S6.8.md), [S7.8](E07-vps-hosting/S7.8.md) |
 
 ## Эпик 7 — Хостинг на VPS
 
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
-| ❌ | [S7.1](E07-vps-hosting/S7.1.md) | Один Docker-образ приложения | P2 | S | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md) |
-| ❌ | [S7.2](E07-vps-hosting/S7.2.md) | Docker Compose для staging и prod | P2 | S | [S7.1](E07-vps-hosting/S7.1.md), [S4.1](E04-migration-design/S4.1.md) |
-| ❌ | [S7.3](E07-vps-hosting/S7.3.md) | Домен и HTTPS через Caddy | P2 | S | [S7.2](E07-vps-hosting/S7.2.md), [S7.9](E07-vps-hosting/S7.9.md), ответ на открытый вопрос 5 |
-| ❌ | [S7.4](E07-vps-hosting/S7.4.md) | Заголовки безопасности | P2 | S | [S7.3](E07-vps-hosting/S7.3.md) |
-| ❌ | [S7.5](E07-vps-hosting/S7.5.md) | Nest рендерит Angular через SSR | P2 | M | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md) |
-| ❌ | [S7.6](E07-vps-hosting/S7.6.md) | Деплой из GitHub Actions | P2 | S | [S7.2](E07-vps-hosting/S7.2.md), [S2.1](E02-tests-ci/S2.1.md) |
-| ❌ | [S7.7](E07-vps-hosting/S7.7.md) | Базовая защита VPS | P1 | S | — |
-| ❌ | [S7.8](E07-vps-hosting/S7.8.md) | Бэкапы базы во внешнее хранилище | P2 | S | [S7.2](E07-vps-hosting/S7.2.md), [S6.1](E06-data-migration/S6.1.md) |
-| ❌ | [S7.9](E07-vps-hosting/S7.9.md) | Общий edge-прокси для нескольких проектов на VPS | P2 | S | [S7.7](E07-vps-hosting/S7.7.md) |
+| ❌ | [S7.1](E07-vps-hosting/S7.1.md) | Один Docker-образ приложения | P4 | S | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md) |
+| ❌ | [S7.2](E07-vps-hosting/S7.2.md) | Docker Compose для staging и prod | P4 | S | [S7.1](E07-vps-hosting/S7.1.md), [S4.1](E04-migration-design/S4.1.md) |
+| ❌ | [S7.3](E07-vps-hosting/S7.3.md) | Домен и HTTPS через Caddy | P4 | S | [S7.2](E07-vps-hosting/S7.2.md), [S7.9](E07-vps-hosting/S7.9.md), ответ на открытый вопрос 5 |
+| ❌ | [S7.4](E07-vps-hosting/S7.4.md) | Заголовки безопасности | P4 | S | [S7.3](E07-vps-hosting/S7.3.md) |
+| ❌ | [S7.5](E07-vps-hosting/S7.5.md) | Nest рендерит Angular через SSR | P4 | M | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md) |
+| ❌ | [S7.6](E07-vps-hosting/S7.6.md) | Деплой из GitHub Actions | P4 | S | [S7.2](E07-vps-hosting/S7.2.md), [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S7.7](E07-vps-hosting/S7.7.md) | Базовая защита VPS | P4 | S | — |
+| ❌ | [S7.8](E07-vps-hosting/S7.8.md) | Бэкапы базы во внешнее хранилище | P4 | S | [S7.2](E07-vps-hosting/S7.2.md), [S6.1](E06-data-migration/S6.1.md) |
+| ❌ | [S7.9](E07-vps-hosting/S7.9.md) | Общий edge-прокси для нескольких проектов на VPS | P4 | S | [S7.7](E07-vps-hosting/S7.7.md) |
 
 ## Эпик 8 — Безопасность и персональные данные
 
@@ -209,18 +235,19 @@ flowchart LR
 |:-:|---|---|:-:|:-:|---|
 | ❌ | [S8.1](E08-security-privacy/S8.1.md) | Роли в интерфейсе | P2 | M | [S0.1](E00-security-hotfix/S0.1.md) |
 | ❌ | [S8.2](E08-security-privacy/S8.2.md) | Защита входа от перебора | P2 | S | [S0.1](E00-security-hotfix/S0.1.md) |
-| ❌ | [S8.3](E08-security-privacy/S8.3.md) | Проверка на секреты и уязвимости в CI | P2 | S | [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S8.3](E08-security-privacy/S8.3.md) | Проверка на секреты и уязвимости в CI | P4 | S | [S2.1](E02-tests-ci/S2.1.md), [S8.8](E08-security-privacy/S8.8.md) |
 | ❌ | [S8.4](E08-security-privacy/S8.4.md) | Персональные данные и GDPR | P3 | M | [S0.1](E00-security-hotfix/S0.1.md) |
-| ❌ | [S8.5](E08-security-privacy/S8.5.md) | Страница 404 и страницы ошибок | P3 | S | [S7.5](E07-vps-hosting/S7.5.md) |
-| ❌ | [S8.6](E08-security-privacy/S8.6.md) | Безопасные ссылки и изображения на клиенте | P3 | S | [S7.4](E07-vps-hosting/S7.4.md) |
+| ❌ | [S8.5](E08-security-privacy/S8.5.md) | Страница 404 и страницы ошибок | P4 | S | [S7.5](E07-vps-hosting/S7.5.md) |
+| ❌ | [S8.6](E08-security-privacy/S8.6.md) | Безопасные ссылки и изображения на клиенте | P4 | S | [S7.4](E07-vps-hosting/S7.4.md) |
 | ❌ | [S8.7](E08-security-privacy/S8.7.md) | Современное хеширование паролей | P1 | S | [S4.3](E04-migration-design/S4.3.md), [S2.4](E02-tests-ci/S2.4.md) |
+| ❌ | [S8.8](E08-security-privacy/S8.8.md) | Локальная проверка секретов и уязвимых зависимостей | P1 | S | [S2.8](E02-tests-ci/S2.8.md) |
 
 ## Эпик 9 — Наблюдаемость
 
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
-| ❌ | [S9.1](E09-observability/S9.1.md) | Отслеживание ошибок клиента | P3 | S | [S7.1](E07-vps-hosting/S7.1.md) |
-| ❌ | [S9.2](E09-observability/S9.2.md) | Логи, доступность и алерты | P3 | S | [S7.6](E07-vps-hosting/S7.6.md) |
+| ❌ | [S9.1](E09-observability/S9.1.md) | Отслеживание ошибок клиента | P4 | S | [S7.1](E07-vps-hosting/S7.1.md) |
+| ❌ | [S9.2](E09-observability/S9.2.md) | Логи, доступность и алерты | P4 | S | [S7.6](E07-vps-hosting/S7.6.md) |
 
 ## Эпик 10 — Продуктовые фичи
 
@@ -236,8 +263,8 @@ flowchart LR
 | ❌ | [S10.6](E10-product-features/S10.6.md) | KPI игрока | P3 | M | [S3.1](E03-architecture/S3.1.md) |
 | ❌ | [S10.7](E10-product-features/S10.7.md) | Экспорт в PDF | P3 | M | [S10.3](E10-product-features/S10.3.md) |
 | ❌ | [S10.8](E10-product-features/S10.8.md) | Решить судьбу скрытых страниц | P3 | S | — |
-| ❌ | [S10.9](E10-product-features/S10.9.md) | Плановые задачи на сервере | P3 | S | [S7.6](E07-vps-hosting/S7.6.md) |
-| ❌ | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени | P3 | M | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md) |
+| ❌ | [S10.9](E10-product-features/S10.9.md) | Плановые задачи на сервере | P4 | S | [S7.6](E07-vps-hosting/S7.6.md) |
+| ❌ | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени | P4 | M | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md) |
 | ❌ | [S10.11](E10-product-features/S10.11.md) | Выбор дизайн-направления через design skills | P2 | S | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S10.12](E10-product-features/S10.12.md) | Тема Angular Material: палитра, типографика, тёмная тема | P2 | M | [S10.11](E10-product-features/S10.11.md), [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам | P3 | M | [S10.12](E10-product-features/S10.12.md) |
@@ -246,10 +273,10 @@ flowchart LR
 
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
-| ❌ | [S11.1](E11-dx-docs/S11.1.md) | Локальный запуск за 15 минут | P1 | S | [S1.2](E01-dependency-upgrades/S1.2.md) (обновить после [S7.2](E07-vps-hosting/S7.2.md)) |
+| ❌ | [S11.1](E11-dx-docs/S11.1.md) | Локальный запуск за 15 минут | P1 | S | [S1.2](E01-dependency-upgrades/S1.2.md) (позже обновить после S7.2, она отложена) |
 | ❌ | [S11.2](E11-dx-docs/S11.2.md) | Анонимизированные тестовые данные | P1 | M | [S6.1](E06-data-migration/S6.1.md) |
-| ❌ | [S11.3](E11-dx-docs/S11.3.md) | Обновлять архитектурную документацию | P2 | S | [S6.7](E06-data-migration/S6.7.md) |
-| ❌ | [S11.4](E11-dx-docs/S11.4.md) | Вычистить мусор из репозитория | P1 | M | [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S11.3](E11-dx-docs/S11.3.md) | Обновлять архитектурную документацию | P4 | S | [S6.7](E06-data-migration/S6.7.md) |
+| ❌ | [S11.4](E11-dx-docs/S11.4.md) | Вычистить мусор из репозитория | P1 | M | [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S11.5](E11-dx-docs/S11.5.md) | AGENT.md: инструкции для ИИ-агентов | P0 | S | — |
 | ❌ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
 | ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
@@ -257,3 +284,12 @@ flowchart LR
 | ❌ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.11](E11-dx-docs/S11.11.md) | Аудит доступности и UI на Angular Material | P2 | M | [S11.8](E11-dx-docs/S11.8.md), [S10.12](E10-product-features/S10.12.md) |
+
+## Эпик 12 — Производительность и оптимизация
+
+| Статус | ID | История | Приоритет | Размер | Зависит от |
+|:-:|---|---|:-:|:-:|---|
+| ❌ | [S12.1](E12-performance/S12.1.md) | Аудит производительности клиента | P2 | M | [S11.8](E11-dx-docs/S11.8.md) |
+| ❌ | [S12.2](E12-performance/S12.2.md) | Аудит запросов и индексов MongoDB | P2 | M | [S11.8](E11-dx-docs/S11.8.md) |
+| ❌ | [S12.3](E12-performance/S12.3.md) | Оптимизация клиента по результатам аудита | P3 | M | [S12.1](E12-performance/S12.1.md), [S1.4](E01-dependency-upgrades/S1.4.md) |
+| ❌ | [S12.4](E12-performance/S12.4.md) | Индексы и запросы MongoDB по результатам аудита | P3 | M | [S12.2](E12-performance/S12.2.md) |
