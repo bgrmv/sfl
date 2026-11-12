@@ -26,6 +26,10 @@ services:
       # corepack must not write packageManager into package.json (that is S1.2)
       COREPACK_ENABLE_AUTO_PIN: '0'
       COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+      # The repository is a bind mount from Windows: file events do not reach
+      # the container, so 'nest start --watch' never restarts. Poll instead.
+      TSC_WATCHFILE: PriorityPollingInterval
+      TSC_WATCHDIRECTORY: RecursiveDirectoryUsingDynamicPriorityPolling
     depends_on:
       mongodb:
         condition: service_healthy

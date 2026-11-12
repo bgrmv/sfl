@@ -40,8 +40,6 @@ export class AuthController {
   })
   @UsePipes(new ValibotValidationPipe(AuthRequiredValiSchema))
   async signIn(@Res() res: Response, @Body() auth: Auth) {
-    console.log('signIn:controller:', auth);
-
     const { accessToken, refreshToken } = await this.authService.signIn(auth);
 
     // Set cookie refreshToken

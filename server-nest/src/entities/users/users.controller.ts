@@ -26,8 +26,6 @@ export class UsersController {
   updateTestUsers(
     @Body() updateUserDto: UpdateTestUsersDtoInput,
   ): any | UpdateTestUsersDtoOutput {
-    console.log(updateUserDto);
-
     // return this.usersService.getsUsers();
     return updateUserDto;
   }

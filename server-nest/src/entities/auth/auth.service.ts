@@ -29,7 +29,6 @@ export class AuthService {
   ) {}
 
   async signIn({ email, password }: AuthRequiredValiSchemaOutput) {
-    console.log('signIn:auth service:', { email, password });
     try {
       const user = await this.userModel.findOne({ email }).exec();
 

@@ -16,6 +16,7 @@ import { TeamsModule } from './entities/teams/teams.module';
 import { User, UserSchema, UsersModule } from './entities/users';
 import { UsersService } from './entities/users/users.service';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { describeDatabaseTarget } from './shared/utils/database-target';
 import { ContextInterceptor } from './shared/interceptors/context/context.interceptor';
 import { FileLoggerService } from './shared/services/logger.service';
 
@@ -30,9 +31,15 @@ import { FileLoggerService } from './shared/services/logger.service';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const mongodb = `${configService.getOrThrow<string>('DATABASE_URL')}/${configService.getOrThrow<string>('DATABASE_DB')}`;
+        const url = configService.getOrThrow<string>('DATABASE_URL');
+        const dbName = configService.getOrThrow<string>('DATABASE_DB');
+        const mongodb = `${url}/${dbName}`;
 
-        console.log('Connecting to the database:\n', mongodb);
+        // Host only: the URL itself may contain the user name and password
+        console.log(
+          'Connecting to the database:',
+          describeDatabaseTarget(url, dbName),
+        );
 
         return {
           uri: mongodb,
