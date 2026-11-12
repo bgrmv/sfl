@@ -87,10 +87,10 @@ flowchart LR
 | Эпик 7 — Хостинг на VPS | [E07-vps-hosting/](E07-vps-hosting/) | 9 |
 | Эпик 8 — Безопасность и персональные данные | [E08-security-privacy/](E08-security-privacy/) | 7 |
 | Эпик 9 — Наблюдаемость | [E09-observability/](E09-observability/) | 2 |
-| Эпик 10 — Продуктовые фичи | [E10-product-features/](E10-product-features/) | 10 |
-| Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 7 |
+| Эпик 10 — Продуктовые фичи | [E10-product-features/](E10-product-features/) | 13 |
+| Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 11 |
 
-Всего историй: 91, из них отменено: 16.
+Всего историй: 98, из них отменено: 16.
 
 ---
 
@@ -238,6 +238,9 @@ flowchart LR
 | ❌ | [S10.8](E10-product-features/S10.8.md) | Решить судьбу скрытых страниц | P3 | S | — |
 | ❌ | [S10.9](E10-product-features/S10.9.md) | Плановые задачи на сервере | P3 | S | [S7.6](E07-vps-hosting/S7.6.md) |
 | ❌ | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени | P3 | M | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md) |
+| ❌ | [S10.11](E10-product-features/S10.11.md) | Выбор дизайн-направления через design skills | P2 | S | [S11.8](E11-dx-docs/S11.8.md) |
+| ❌ | [S10.12](E10-product-features/S10.12.md) | Тема Angular Material: палитра, типографика, тёмная тема | P2 | M | [S10.11](E10-product-features/S10.11.md), [S1.4](E01-dependency-upgrades/S1.4.md) |
+| ❌ | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам | P3 | M | [S10.12](E10-product-features/S10.12.md) |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 
@@ -250,3 +253,7 @@ flowchart LR
 | ❌ | [S11.5](E11-dx-docs/S11.5.md) | AGENT.md: инструкции для ИИ-агентов | P0 | S | — |
 | ❌ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
 | ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
+| ❌ | [S11.8](E11-dx-docs/S11.8.md) | Подбор agent skills для аудитов и дизайна | P1 | S | [S11.5](E11-dx-docs/S11.5.md) |
+| ❌ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
+| ❌ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
+| ❌ | [S11.11](E11-dx-docs/S11.11.md) | Аудит доступности и UI на Angular Material | P2 | M | [S11.8](E11-dx-docs/S11.8.md), [S10.12](E10-product-features/S10.12.md) |
