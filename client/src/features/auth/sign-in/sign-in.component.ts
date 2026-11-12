@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'sfl-sign-in',
@@ -38,14 +39,17 @@ export class SignInComponent {
   loading = signal(false);
 
   signInFG = new FormGroup({
-    email: new FormControl<string>('', {
+    email: new FormControl<string>(environment.localCredentials?.email ?? '', {
       nonNullable: true,
       validators: [Validators.email, Validators.required],
     }),
-    password: new FormControl<string>('', {
-      nonNullable: true,
-      validators: [Validators.min(5), Validators.required],
-    }),
+    password: new FormControl<string>(
+      environment.localCredentials?.password ?? '',
+      {
+        nonNullable: true,
+        validators: [Validators.min(5), Validators.required],
+      },
+    ),
   });
 
   get emailFG() {
