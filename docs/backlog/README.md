@@ -102,7 +102,7 @@ flowchart LR
 | Эпик | Папка | Историй |
 |---|---|:-:|
 | Эпик 0 — Hotfix безопасности текущего прода | [E00-security-hotfix/](E00-security-hotfix/) | 6 (1 отменена) |
-| Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 11 |
+| Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 12 (1 отменена) |
 | Эпик 2 — Тесты и CI | [E02-tests-ci/](E02-tests-ci/) | 8 |
 | Эпик 3 — Улучшение архитектуры | [E03-architecture/](E03-architecture/) | 10 |
 | Эпик 4 — Spike и проектирование переезда | [E04-migration-design/](E04-migration-design/) | 4 (1 отменена) |
@@ -115,7 +115,7 @@ flowchart LR
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 11 |
 | Эпик 12 — Производительность и оптимизация | [E12-performance/](E12-performance/) | 4 |
 
-Всего историй: 104, из них отменено: 16.
+Всего историй: 105, из них отменено: 17.
 
 ---
 
@@ -141,10 +141,11 @@ flowchart LR
 | ❌ | [S1.5](E01-dependency-upgrades/S1.5.md) | Обновить клиентские библиотеки | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S1.6](E01-dependency-upgrades/S1.6.md) | ESLint flat config и Prettier | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S1.7](E01-dependency-upgrades/S1.7.md) | Обновить NestJS | P1 | M | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.4](E02-tests-ci/S2.4.md) |
-| ❌ | [S1.8](E01-dependency-upgrades/S1.8.md) | Перейти на valibot 1.x | P1 | M | [S0.3](E00-security-hotfix/S0.3.md) |
+| ⛔ | [S1.8](E01-dependency-upgrades/S1.8.md) | Перейти на valibot 1.x | P1 | M | [S0.3](E00-security-hotfix/S0.3.md) |
 | ❌ | [S1.9](E01-dependency-upgrades/S1.9.md) | Обновить остальные серверные зависимости | P1 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
 | ❌ | [S1.10](E01-dependency-upgrades/S1.10.md) | Удалить legacy-сервер `server/` | P1 | S | ответ на открытый вопрос 3 |
 | ❌ | [S1.11](E01-dependency-upgrades/S1.11.md) | Автоматические обновления зависимостей | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
+| ❌ | [S1.12](E01-dependency-upgrades/S1.12.md) | Заменить valibot на zod | P1 | M | [S0.3](E00-security-hotfix/S0.3.md), [S2.8](E02-tests-ci/S2.8.md) |
 
 ## Эпик 2 — Тесты и CI
 
