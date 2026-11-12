@@ -29,6 +29,13 @@ sudo git config --system --add safe.directory "$ROOT"
 # Same value as on the host, so both sides treat line endings alike
 sudo git config --system core.autocrlf true
 
+echo "==> git identity for commits made inside the container"
+# The container does not inherit the host .gitconfig, and without these two
+# values git refuses to commit. Set only if missing, so a value you set by hand
+# or pass via GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL is not overwritten.
+git config --global --get user.name >/dev/null || git config --global user.name "${GIT_AUTHOR_NAME:-Bogdan Gromov}"
+git config --global --get user.email >/dev/null || git config --global user.email "${GIT_AUTHOR_EMAIL:-250383888+bgrmv@users.noreply.github.com}"
+
 echo "==> Dependencies"
 (cd client && pnpm install --frozen-lockfile --config.confirm-modules-purge=false)
 (cd server-nest && pnpm install --frozen-lockfile --config.confirm-modules-purge=false)
