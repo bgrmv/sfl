@@ -245,20 +245,21 @@ flowchart LR
 
 ## Эпик 8 — Безопасность и персональные данные
 
-| Статус | ID                                     | История                                                        | Приоритет | Размер | Зависит от                                                         |
-| :----: | -------------------------------------- | -------------------------------------------------------------- | :-------: | :----: | ------------------------------------------------------------------ |
-|   ❌   | [S8.1](E08-security-privacy/S8.1.md)   | Роли в интерфейсе                                              |    P2     |   M    | [S0.1](E00-security-hotfix/S0.1.md)                                |
-|   ❌   | [S8.2](E08-security-privacy/S8.2.md)   | Защита входа от перебора                                       |    P2     |   S    | [S0.1](E00-security-hotfix/S0.1.md)                                |
-|   ❌   | [S8.3](E08-security-privacy/S8.3.md)   | Проверка на секреты и уязвимости в CI                          |    P4     |   S    | [S2.1](E02-tests-ci/S2.1.md), [S8.8](E08-security-privacy/S8.8.md) |
-|   ❌   | [S8.4](E08-security-privacy/S8.4.md)   | Персональные данные и GDPR                                     |    P3     |   M    | [S0.1](E00-security-hotfix/S0.1.md)                                |
-|   ❌   | [S8.5](E08-security-privacy/S8.5.md)   | Страница 404 и страницы ошибок                                 |    P4     |   S    | [S7.5](E07-vps-hosting/S7.5.md)                                    |
-|   ❌   | [S8.6](E08-security-privacy/S8.6.md)   | Безопасные ссылки и изображения на клиенте                     |    P4     |   S    | [S7.4](E07-vps-hosting/S7.4.md)                                    |
-|   ❌   | [S8.7](E08-security-privacy/S8.7.md)   | Современное хеширование паролей                                |    P1     |   S    | [S4.3](E04-migration-design/S4.3.md), [S2.4](E02-tests-ci/S2.4.md) |
-|   ✅   | [S8.8](E08-security-privacy/S8.8.md)   | Локальная проверка секретов и уязвимых зависимостей            |    P1     |   S    | [S2.8](E02-tests-ci/S2.8.md)                                       |
-|   ✅   | [S8.9](E08-security-privacy/S8.9.md)   | Авторизация по ролям на сервере и защита от mass assignment    |    P1     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                       |
-|   ✅   | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами |    P1     |   S    | [S0.1](E00-security-hotfix/S0.1.md)                                |
-|   ❌   | [S8.11](E08-security-privacy/S8.11.md) | Защита от перебора, заголовки и Swagger                        |    P2     |   S    | [S2.4](E02-tests-ci/S2.4.md)                                       |
-|   ❌   | [S8.12](E08-security-privacy/S8.12.md) | Сессии и токены: отзыв, Secure, секреты JWT                    |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md), [S8.9](E08-security-privacy/S8.9.md) |
+| Статус | ID                                     | История                                                        | Приоритет | Размер | Зависит от                                                                                                         |
+| :----: | -------------------------------------- | -------------------------------------------------------------- | :-------: | :----: | ------------------------------------------------------------------------------------------------------------------ |
+|   ❌   | [S8.1](E08-security-privacy/S8.1.md)   | Роли в интерфейсе                                              |    P2     |   M    | [S0.1](E00-security-hotfix/S0.1.md)                                                                                |
+|   ❌   | [S8.2](E08-security-privacy/S8.2.md)   | Защита входа от перебора                                       |    P2     |   S    | [S0.1](E00-security-hotfix/S0.1.md)                                                                                |
+|   ❌   | [S8.3](E08-security-privacy/S8.3.md)   | Проверка на секреты и уязвимости в CI                          |    P4     |   S    | [S2.1](E02-tests-ci/S2.1.md), [S8.8](E08-security-privacy/S8.8.md)                                                 |
+|   ❌   | [S8.4](E08-security-privacy/S8.4.md)   | Персональные данные и GDPR                                     |    P3     |   M    | [S0.1](E00-security-hotfix/S0.1.md)                                                                                |
+|   ❌   | [S8.5](E08-security-privacy/S8.5.md)   | Страница 404 и страницы ошибок                                 |    P4     |   S    | [S7.5](E07-vps-hosting/S7.5.md)                                                                                    |
+|   ❌   | [S8.6](E08-security-privacy/S8.6.md)   | Безопасные ссылки и изображения на клиенте                     |    P4     |   S    | [S7.4](E07-vps-hosting/S7.4.md)                                                                                    |
+|   ❌   | [S8.7](E08-security-privacy/S8.7.md)   | Современное хеширование паролей                                |    P1     |   S    | [S4.3](E04-migration-design/S4.3.md), [S2.4](E02-tests-ci/S2.4.md)                                                 |
+|   ✅   | [S8.8](E08-security-privacy/S8.8.md)   | Локальная проверка секретов и уязвимых зависимостей            |    P1     |   S    | [S2.8](E02-tests-ci/S2.8.md)                                                                                       |
+|   ✅   | [S8.9](E08-security-privacy/S8.9.md)   | Авторизация по ролям на сервере и защита от mass assignment    |    P1     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                                                       |
+|   ✅   | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами |    P1     |   S    | [S0.1](E00-security-hotfix/S0.1.md)                                                                                |
+|   ❌   | [S8.11](E08-security-privacy/S8.11.md) | Защита от перебора, заголовки и Swagger                        |    P2     |   S    | [S2.4](E02-tests-ci/S2.4.md)                                                                                       |
+|   ❌   | [S8.12](E08-security-privacy/S8.12.md) | Сессии и токены: отзыв, Secure, секреты JWT                    |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md), [S8.9](E08-security-privacy/S8.9.md)                                                 |
+|   ❌   | [S8.13](E08-security-privacy/S8.13.md) | Вход через Google и привязка аккаунта к игроку                 |    P3     |   L    | [S8.9](E08-security-privacy/S8.9.md), [S8.10](E08-security-privacy/S8.10.md), [S4.3](E04-migration-design/S4.3.md) |
 
 ## Эпик 9 — Наблюдаемость
 
@@ -271,24 +272,27 @@ flowchart LR
 
 Истории взяты из TODO в [README.md](../../README.md). Описания уточняются с владельцем продукта.
 
-| Статус | ID                                       | История                                                     | Приоритет | Размер | Зависит от                                                                         |
-| :----: | ---------------------------------------- | ----------------------------------------------------------- | :-------: | :----: | ---------------------------------------------------------------------------------- |
-|   ❌   | [S10.1](E10-product-features/S10.1.md)   | Пагинация матчей от новых к старым                          |    P3     |   S    | [S3.4](E03-architecture/S3.4.md)                                                   |
-|   ❌   | [S10.2](E10-product-features/S10.2.md)   | Удалённые матчи не отображаются                             |    P3     |   S    | —                                                                                  |
-|   ❌   | [S10.3](E10-product-features/S10.3.md)   | Дашборд с графиками                                         |    P3     |   M    | —                                                                                  |
-|   ❌   | [S10.4](E10-product-features/S10.4.md)   | Графики на страницах матча и игрока                         |    P3     |   M    | —                                                                                  |
-|   ❌   | [S10.5](E10-product-features/S10.5.md)   | Рейтинг капитанов                                           |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                   |
-|   ❌   | [S10.6](E10-product-features/S10.6.md)   | KPI игрока                                                  |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                   |
-|   ❌   | [S10.7](E10-product-features/S10.7.md)   | Экспорт в PDF                                               |    P3     |   M    | [S10.3](E10-product-features/S10.3.md)                                             |
-|   ❌   | [S10.8](E10-product-features/S10.8.md)   | Решить судьбу скрытых страниц                               |    P3     |   S    | —                                                                                  |
-|   ❌   | [S10.9](E10-product-features/S10.9.md)   | Плановые задачи на сервере                                  |    P4     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                    |
-|   ❌   | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени                               |    P4     |   M    | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md)                   |
-|   ❌   | [S10.11](E10-product-features/S10.11.md) | Выбор дизайн-направления через design skills                |    P2     |   S    | [S11.8](E11-dx-docs/S11.8.md)                                                      |
-|   ❌   | [S10.12](E10-product-features/S10.12.md) | Тема Angular Material: палитра, типографика, тёмная тема    |    P2     |   M    | [S10.11](E10-product-features/S10.11.md), [S1.4](E01-dependency-upgrades/S1.4.md)  |
-|   ❌   | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам                            |    P3     |   M    | [S10.12](E10-product-features/S10.12.md)                                           |
-|   ❌   | [S10.14](E10-product-features/S10.14.md) | Состояния интерфейса и движение                             |    P2     |   M    | [S3.10](E03-architecture/S3.10.md)                                                 |
-|   ❌   | [S10.15](E10-product-features/S10.15.md) | Мультиязычность интерфейса (английский, латышский, русский) |    P3     |   M    | [S10.14](E10-product-features/S10.14.md), [S10.12](E10-product-features/S10.12.md) |
-|   ❌   | [S10.16](E10-product-features/S10.16.md) | Понятность форм, навигации и текстов                        |    P2     |   M    | [S10.14](E10-product-features/S10.14.md)                                           |
+| Статус | ID                                       | История                                                     | Приоритет | Размер | Зависит от                                                                                                         |
+| :----: | ---------------------------------------- | ----------------------------------------------------------- | :-------: | :----: | ------------------------------------------------------------------------------------------------------------------ |
+|   ❌   | [S10.1](E10-product-features/S10.1.md)   | Пагинация матчей от новых к старым                          |    P3     |   S    | [S3.4](E03-architecture/S3.4.md)                                                                                   |
+|   ❌   | [S10.2](E10-product-features/S10.2.md)   | Удалённые матчи не отображаются                             |    P3     |   S    | —                                                                                                                  |
+|   ❌   | [S10.3](E10-product-features/S10.3.md)   | Дашборд с графиками                                         |    P3     |   M    | —                                                                                                                  |
+|   ❌   | [S10.4](E10-product-features/S10.4.md)   | Графики на страницах матча и игрока                         |    P3     |   M    | —                                                                                                                  |
+|   ❌   | [S10.5](E10-product-features/S10.5.md)   | Рейтинг капитанов                                           |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                                                   |
+|   ❌   | [S10.6](E10-product-features/S10.6.md)   | KPI игрока                                                  |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                                                   |
+|   ❌   | [S10.7](E10-product-features/S10.7.md)   | Экспорт в PDF                                               |    P3     |   M    | [S10.3](E10-product-features/S10.3.md)                                                                             |
+|   ❌   | [S10.8](E10-product-features/S10.8.md)   | Решить судьбу скрытых страниц                               |    P3     |   S    | —                                                                                                                  |
+|   ❌   | [S10.9](E10-product-features/S10.9.md)   | Плановые задачи на сервере                                  |    P4     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                                                    |
+|   ❌   | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени                               |    P4     |   M    | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md)                                                   |
+|   ❌   | [S10.11](E10-product-features/S10.11.md) | Выбор дизайн-направления через design skills                |    P2     |   S    | [S11.8](E11-dx-docs/S11.8.md)                                                                                      |
+|   ❌   | [S10.12](E10-product-features/S10.12.md) | Тема Angular Material: палитра, типографика, тёмная тема    |    P2     |   M    | [S10.11](E10-product-features/S10.11.md), [S1.4](E01-dependency-upgrades/S1.4.md)                                  |
+|   ❌   | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам                            |    P3     |   M    | [S10.12](E10-product-features/S10.12.md)                                                                           |
+|   ❌   | [S10.14](E10-product-features/S10.14.md) | Состояния интерфейса и движение                             |    P2     |   M    | [S3.10](E03-architecture/S3.10.md)                                                                                 |
+|   ❌   | [S10.15](E10-product-features/S10.15.md) | Мультиязычность интерфейса (английский, латышский, русский) |    P3     |   M    | [S10.14](E10-product-features/S10.14.md), [S10.12](E10-product-features/S10.12.md)                                 |
+|   ❌   | [S10.16](E10-product-features/S10.16.md) | Понятность форм, навигации и текстов                        |    P2     |   M    | [S10.14](E10-product-features/S10.14.md)                                                                           |
+|   ❌   | [S10.17](E10-product-features/S10.17.md) | Личный кабинет игрока                                       |    P3     |   L    | [S10.12](E10-product-features/S10.12.md), [S8.1](E08-security-privacy/S8.1.md)                                     |
+|   ❌   | [S10.18](E10-product-features/S10.18.md) | Статус матча «Пропущен»                                     |    P3     |   S    | —                                                                                                                  |
+|   ❌   | [S10.19](E10-product-features/S10.19.md) | Админка: отдельная часть клиента и фото                     |    P3     |   L    | [S3.17](E03-architecture/S3.17.md), [S10.12](E10-product-features/S10.12.md), [S8.1](E08-security-privacy/S8.1.md) |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 
