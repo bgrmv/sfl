@@ -288,6 +288,7 @@ flowchart LR
 |   ❌   | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам                            |    P3     |   M    | [S10.12](E10-product-features/S10.12.md)                                           |
 |   ❌   | [S10.14](E10-product-features/S10.14.md) | Состояния интерфейса и движение                             |    P2     |   M    | [S3.10](E03-architecture/S3.10.md)                                                 |
 |   ❌   | [S10.15](E10-product-features/S10.15.md) | Мультиязычность интерфейса (английский, латышский, русский) |    P3     |   M    | [S10.14](E10-product-features/S10.14.md), [S10.12](E10-product-features/S10.12.md) |
+|   ❌   | [S10.16](E10-product-features/S10.16.md) | Понятность форм, навигации и текстов                        |    P2     |   M    | [S10.14](E10-product-features/S10.14.md)                                           |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 
