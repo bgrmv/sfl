@@ -282,7 +282,7 @@ flowchart LR
 | ❌ | [S11.3](E11-dx-docs/S11.3.md) | Обновлять архитектурную документацию | P4 | S | [S6.7](E06-data-migration/S6.7.md) |
 | ❌ | [S11.4](E11-dx-docs/S11.4.md) | Вычистить мусор из репозитория | P1 | M | [S2.8](E02-tests-ci/S2.8.md) |
 | ✅ | [S11.5](E11-dx-docs/S11.5.md) | AGENT.md: инструкции для ИИ-агентов | P0 | S | — |
-| ❌ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
+| ✅ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
 | ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
 | ❌ | [S11.8](E11-dx-docs/S11.8.md) | Подбор agent skills для аудитов и дизайна | P1 | S | [S11.5](E11-dx-docs/S11.5.md) |
 | ❌ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |

@@ -42,23 +42,17 @@
     "@angular/cli": "~22.2.7",
     "@angular/compiler-cli": "~22.2.6",
     "@eslint/js": "^9",
-    "@types/jasmine": "~5.1.4",
     "@types/lodash-es": "^4.17.12",
     "angular-eslint": "^22",
     "eslint": "^9.39.5",
-    "istanbul-lib-instrument": "^6.0.3",
-    "jasmine-core": "~5.1.2",
-    "karma": "~6.4.3",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.1",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "jsdom": "^31.0.1",
     "prettier": "3.2.5",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8"
+    "typescript-eslint": "^8",
+    "vitest": "^5.0.0"
   },
   "packageManager": "pnpm@9.12.3",
   "engines": {
-    "node": ">=22.0.0 <23"
+    "node": "^22.22.3"
   }
 }

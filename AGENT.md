@@ -22,7 +22,7 @@ SFL — приложение для любительской футбольно�
 
 ## Команды
 
-**Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. Шаги, которые падают по известным причинам (сейчас `client:test`), пропускаются с выводом причины; список — константа `KNOWN` в скрипте.
+**Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. Шаги, которые падают по известным причинам, пропускаются с выводом причины; список — константа `KNOWN` в скрипте (сейчас пуст).
 
 Остальные команды запускай из папки пакета.
 
@@ -32,7 +32,7 @@ SFL — приложение для любительской футбольно�
 | Запуск | `pnpm dev -- --host 0.0.0.0` (https, порт 4200) | `pnpm start:dev` (порт 3001) |
 | Линт | `pnpm lint` | `pnpm lint` (с `--fix`) |
 | Типы и сборка | `pnpm build` | `pnpm build` |
-| Тесты | `pnpm test` (Karma, нужен браузер) | `pnpm test` (vitest, watch); один прогон: `pnpm vitest run` |
+| Тесты | `pnpm test` (Vitest через `ng test`, браузер не нужен); один прогон: `pnpm exec ng test --watch=false` | `pnpm test` (vitest, watch); один прогон: `pnpm vitest run` |
 | Prod-сборка | `pnpm build:prod` | `pnpm build` |
 
 ## Соглашения

@@ -141,7 +141,7 @@ pnpm check --skip=client:build  # пропустить шаг
 pnpm check --include-known      # включить шаги, которые падают по известным причинам
 ```
 
-Команда ничего не правит и не ходит в сеть и в базу. Шаг `client:test` пропускается с указанием причины: Karma требует Chrome, клиент переходит на Vitest ([S2.5](docs/backlog/E02-tests-ci/S2.5.md)).
+Команда ничего не правит и не ходит в сеть и в базу. Пропускаемых шагов сейчас нет (список `KNOWN` в [scripts/check.mjs](scripts/check.mjs) пуст).
 
 ## Epics
 

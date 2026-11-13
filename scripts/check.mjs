@@ -16,7 +16,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STEPS = [
   { id: 'client:lint', cwd: 'client', cmd: 'pnpm exec ng lint' },
   { id: 'client:types', cwd: 'client', cmd: 'pnpm exec tsc --noEmit -p tsconfig.app.json && pnpm exec tsc --noEmit -p tsconfig.spec.json' },
-  { id: 'client:test', cwd: 'client', cmd: 'pnpm exec ng test --watch=false --browsers=ChromeHeadless' },
+  { id: 'client:test', cwd: 'client', cmd: 'pnpm exec ng test --watch=false' },
   { id: 'client:build', cwd: 'client', cmd: 'pnpm build:prod' },
   { id: 'server:lint', cwd: 'server-nest', cmd: 'pnpm lint:check' },
   { id: 'server:types', cwd: 'server-nest', cmd: 'pnpm exec tsc --noEmit -p tsconfig.json' },
@@ -26,9 +26,7 @@ const STEPS = [
 
 // Шаги, которые сейчас падают по известным причинам. Пропускаются явно, с выводом причины.
 // Когда причина устранена, строку удалить.
-const KNOWN = {
-  'client:test': 'Karma требует Chrome, которого нет в контейнере; переход на Vitest в S2.5 (docs/backlog/E02-tests-ci/S2.5.md)',
-};
+const KNOWN = {};
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
