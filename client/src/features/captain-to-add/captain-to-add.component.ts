@@ -84,8 +84,8 @@ export class CaptainToAddComponent
   readonly loading$ = new Subject();
 
   @HostListener('click', ['$event.target'])
-  handleClick(target: Element) {
-    const captainEl = target.closest('sfl-captain-card');
+  handleClick(target: EventTarget | null) {
+    const captainEl = (target as Element | null)?.closest('sfl-captain-card');
     if (!captainEl) {
       return;
     }

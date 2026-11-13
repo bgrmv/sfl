@@ -9,12 +9,14 @@
     <sfl-captains-table></sfl-captains-table>
   </mat-tab>
 
-  <mat-tab *ngIf="user.isAdmin">
-    <ng-template mat-tab-label>
-      <mat-icon fontIcon="manage_accounts"></mat-icon>
-      Admin panel
-    </ng-template>
+  @if (user.isAdmin) {
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon fontIcon="manage_accounts"></mat-icon>
+        Admin panel
+      </ng-template>
 
-    <sfl-captains-admin-widget></sfl-captains-admin-widget>
-  </mat-tab>
+      <sfl-captains-admin-widget></sfl-captains-admin-widget>
+    </mat-tab>
+  }
 </mat-tab-group>

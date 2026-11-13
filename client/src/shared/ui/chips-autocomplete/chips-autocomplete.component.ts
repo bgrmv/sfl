@@ -9,7 +9,7 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatIconModule } from '@angular/material/icon';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 
@@ -20,7 +20,6 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
     FormsModule,
     MatFormFieldModule,
     MatChipsModule,
-    NgFor,
     MatIconModule,
     MatAutocompleteModule,
     ReactiveFormsModule,

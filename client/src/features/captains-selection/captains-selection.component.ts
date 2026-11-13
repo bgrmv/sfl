@@ -34,8 +34,8 @@ export class CaptainsSelectionComponent extends BaseUnsubscribeComponent {
   );
 
   @HostListener('click', ['$event.target'])
-  handleClick(target: Element) {
-    const captainEl = target.closest('sfl-captain-stats-card');
+  handleClick(target: EventTarget | null) {
+    const captainEl = (target as Element | null)?.closest('sfl-captain-stats-card');
     if (!captainEl) {
       return;
     }
