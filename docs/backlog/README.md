@@ -59,7 +59,7 @@
 | Группа | Истории | С чего начать |
 |---|---|---|
 | **1. Аудиты** | [S11.8](E11-dx-docs/S11.8.md) подбор skills → [S11.9](E11-dx-docs/S11.9.md) код, [S11.10](E11-dx-docs/S11.10.md) безопасность, [S12.1](E12-performance/S12.1.md) клиент, [S12.2](E12-performance/S12.2.md) MongoDB → [S11.11](E11-dx-docs/S11.11.md) доступность (после темы) | S11.8 |
-| **2. Безопасность** | [S0.2](E00-security-hotfix/S0.2.md), [S0.3](E00-security-hotfix/S0.3.md), [S0.4](E00-security-hotfix/S0.4.md), [S0.5](E00-security-hotfix/S0.5.md), [S8.8](E08-security-privacy/S8.8.md), [S8.7](E08-security-privacy/S8.7.md), [S8.2](E08-security-privacy/S8.2.md), [S8.1](E08-security-privacy/S8.1.md), [S8.4](E08-security-privacy/S8.4.md) | S0.3, S0.4, S2.8 → S8.8 |
+| **2. Безопасность** | [S0.2](E00-security-hotfix/S0.2.md), [S0.3](E00-security-hotfix/S0.3.md), [S0.4](E00-security-hotfix/S0.4.md), [S0.5](E00-security-hotfix/S0.5.md), [S8.8](E08-security-privacy/S8.8.md), [S8.7](E08-security-privacy/S8.7.md), [S8.11](E08-security-privacy/S8.11.md), [S8.12](E08-security-privacy/S8.12.md), [S8.2](E08-security-privacy/S8.2.md), [S8.1](E08-security-privacy/S8.1.md), [S8.4](E08-security-privacy/S8.4.md) | S0.3, S0.4, S2.8 → S8.8 |
 | **3. Обновление зависимостей** | [S2.8](E02-tests-ci/S2.8.md) → [S1.1](E01-dependency-upgrades/S1.1.md), [S1.2](E01-dependency-upgrades/S1.2.md), [S1.4](E01-dependency-upgrades/S1.4.md)–[S1.10](E01-dependency-upgrades/S1.10.md); страховка тестами: [S2.2](E02-tests-ci/S2.2.md)–[S2.5](E02-tests-ci/S2.5.md) | S2.8, S1.1 |
 | **4. Оптимизация** | [S12.1](E12-performance/S12.1.md), [S12.2](E12-performance/S12.2.md) → [S12.3](E12-performance/S12.3.md), [S12.4](E12-performance/S12.4.md) | S12.1, S12.2 |
 | **5. Дизайн** | [S10.11](E10-product-features/S10.11.md) → [S10.12](E10-product-features/S10.12.md) → [S10.13](E10-product-features/S10.13.md) → [S11.11](E11-dx-docs/S11.11.md) | S10.11 |
@@ -117,7 +117,7 @@ flowchart LR
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 12 |
 | Эпик 12 — Производительность и оптимизация | [E12-performance/](E12-performance/) | 4 |
 
-Всего историй: 111, из них отменено: 18.
+Всего историй: 113, из них отменено: 18.
 
 ---
 
@@ -249,6 +249,8 @@ flowchart LR
 | ❌ | [S8.8](E08-security-privacy/S8.8.md) | Локальная проверка секретов и уязвимых зависимостей | P1 | S | [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S8.9](E08-security-privacy/S8.9.md) | Авторизация по ролям на сервере и защита от mass assignment | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами | P1 | S | [S0.1](E00-security-hotfix/S0.1.md) |
+| ❌ | [S8.11](E08-security-privacy/S8.11.md) | Защита от перебора, заголовки и Swagger | P2 | S | [S2.4](E02-tests-ci/S2.4.md) |
+| ❌ | [S8.12](E08-security-privacy/S8.12.md) | Сессии и токены: отзыв, Secure, секреты JWT | P2 | M | [S2.4](E02-tests-ci/S2.4.md), [S8.9](E08-security-privacy/S8.9.md) |
 
 ## Эпик 9 — Наблюдаемость
 
@@ -290,7 +292,7 @@ flowchart LR
 | ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
 | ✅ | [S11.8](E11-dx-docs/S11.8.md) | Подбор agent skills для аудитов и дизайна | P1 | S | [S11.5](E11-dx-docs/S11.5.md) |
 | ✅ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
-| ❌ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
+| ✅ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.11](E11-dx-docs/S11.11.md) | Аудит доступности и UI на Angular Material | P2 | M | [S11.8](E11-dx-docs/S11.8.md), [S10.12](E10-product-features/S10.12.md) |
 | ❌ | [S11.12](E11-dx-docs/S11.12.md) | EditorConfig и единые окончания строк | P1 | S | — |
 
