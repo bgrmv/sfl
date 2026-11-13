@@ -106,18 +106,18 @@ flowchart LR
 | Эпик 0 — Hotfix безопасности текущего прода | [E00-security-hotfix/](E00-security-hotfix/) | 7 (1 отменена) |
 | Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 12 (2 отменены) |
 | Эпик 2 — Тесты и CI | [E02-tests-ci/](E02-tests-ci/) | 8 |
-| Эпик 3 — Улучшение архитектуры | [E03-architecture/](E03-architecture/) | 10 |
+| Эпик 3 — Улучшение архитектуры | [E03-architecture/](E03-architecture/) | 12 |
 | Эпик 4 — Spike и проектирование переезда | [E04-migration-design/](E04-migration-design/) | 4 (1 отменена) |
 | Эпик 5 — Бэкенд на Supabase ⛔ | [E05-supabase-backend/](E05-supabase-backend/) | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение | [E06-data-migration/](E06-data-migration/) | 9 (5 отменено) |
 | Эпик 7 — Хостинг на VPS | [E07-vps-hosting/](E07-vps-hosting/) | 9 |
-| Эпик 8 — Безопасность и персональные данные | [E08-security-privacy/](E08-security-privacy/) | 8 |
+| Эпик 8 — Безопасность и персональные данные | [E08-security-privacy/](E08-security-privacy/) | 10 |
 | Эпик 9 — Наблюдаемость | [E09-observability/](E09-observability/) | 2 |
 | Эпик 10 — Продуктовые фичи | [E10-product-features/](E10-product-features/) | 13 |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/) | 12 |
 | Эпик 12 — Производительность и оптимизация | [E12-performance/](E12-performance/) | 4 |
 
-Всего историй: 107, из них отменено: 18.
+Всего историй: 111, из них отменено: 18.
 
 ---
 
@@ -177,6 +177,8 @@ flowchart LR
 | ❌ | [S3.8](E03-architecture/S3.8.md) | Границы слоёв клиента проверяются линтером | P2 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
 | ❌ | [S3.9](E03-architecture/S3.9.md) | Вести ADR | P1 | S | — |
 | ❌ | [S3.10](E03-architecture/S3.10.md) | Обработка ошибок и сессии на клиенте | P2 | M | [S3.6](E03-architecture/S3.6.md) |
+| ❌ | [S3.11](E03-architecture/S3.11.md) | Исправить расчёт метаданных матча и игрока | P1 | M | [S2.3](E02-tests-ci/S2.3.md) |
+| ❌ | [S3.12](E03-architecture/S3.12.md) | Корректные HTTP-ошибки и обработка исключений | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
 
 ## Эпик 4 — Spike и проектирование переезда
 
@@ -245,6 +247,8 @@ flowchart LR
 | ❌ | [S8.6](E08-security-privacy/S8.6.md) | Безопасные ссылки и изображения на клиенте | P4 | S | [S7.4](E07-vps-hosting/S7.4.md) |
 | ❌ | [S8.7](E08-security-privacy/S8.7.md) | Современное хеширование паролей | P1 | S | [S4.3](E04-migration-design/S4.3.md), [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S8.8](E08-security-privacy/S8.8.md) | Локальная проверка секретов и уязвимых зависимостей | P1 | S | [S2.8](E02-tests-ci/S2.8.md) |
+| ❌ | [S8.9](E08-security-privacy/S8.9.md) | Авторизация по ролям на сервере и защита от mass assignment | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
+| ❌ | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами | P1 | S | [S0.1](E00-security-hotfix/S0.1.md) |
 
 ## Эпик 9 — Наблюдаемость
 
@@ -285,7 +289,7 @@ flowchart LR
 | ✅ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
 | ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
 | ✅ | [S11.8](E11-dx-docs/S11.8.md) | Подбор agent skills для аудитов и дизайна | P1 | S | [S11.5](E11-dx-docs/S11.5.md) |
-| ❌ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
+| ✅ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.11](E11-dx-docs/S11.11.md) | Аудит доступности и UI на Angular Material | P2 | M | [S11.8](E11-dx-docs/S11.8.md), [S10.12](E10-product-features/S10.12.md) |
 | ❌ | [S11.12](E11-dx-docs/S11.12.md) | EditorConfig и единые окончания строк | P1 | S | — |
