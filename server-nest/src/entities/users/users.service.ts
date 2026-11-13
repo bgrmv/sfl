@@ -30,7 +30,8 @@ export class UsersService {
     }
 
     // A duplicate email is a MongoDB error 11000, the exception filter makes it 409
-    await this.userModel.create(user);
+    // `roles` are role ids as strings: Mongoose casts them to ObjectId
+    await this.userModel.create(user as unknown as IUser);
 
     return await this.userModel.findOne({ email: user.email }).exec();
   }

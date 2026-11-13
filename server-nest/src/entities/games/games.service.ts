@@ -74,7 +74,7 @@ export class GamesService {
       return await this.runMetadataFlow(
         createdGame.toJSON({
           flattenObjectIds: false,
-        }),
+        }) as unknown as WithId<IGame>,
       );
     } catch (error) {
       this.logger.error('Failed to create game', {
@@ -122,7 +122,7 @@ export class GamesService {
       return await this.runMetadataFlow(
         updatedGame.toJSON({
           flattenObjectIds: false,
-        }),
+        }) as unknown as WithId<IGame>,
       );
     } catch (error) {
       this.logger.error('Failed to replace game', { _id, error });

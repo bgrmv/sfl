@@ -145,6 +145,8 @@ const PUBLIC = [
   'GET /charts/top-ancient-rating-system-players',
 ];
 
+let gameCounter = 0;
+
 describe('API: access matrix', () => {
   let t: TestApp;
   let jwt: JwtService;
@@ -165,8 +167,9 @@ describe('API: access matrix', () => {
       .set('Authorization', bearer(t))
       .send(
         gameBody([a.id, b.id], {
-          number: 10 + Math.floor(Math.random() * 20),
-          season: 2000 + Math.floor(Math.random() * 1000),
+          // a unique (season, number) per target, seasons start at 2010
+          number: 1 + (gameCounter % 50),
+          season: 2010 + Math.floor(gameCounter++ / 50),
         }),
       );
     const player = (

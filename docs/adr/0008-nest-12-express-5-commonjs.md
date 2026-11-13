@@ -16,3 +16,5 @@
 ## Последствия
 
 Wildcard-маршруты в Express 5 именуются (`/{*splat}`, `*splat`): это важно для catch-all маршрута SSR ([S7.5](../backlog/E07-vps-hosting/S7.5.md)). `@nestjs/serve-static` 12 регистрирует собственный catch-all `*path` для `public/` на уровне Express, а не контроллером Nest, поэтому тест полноты прав смотрит только маршруты `/rest`. Если Node понизят ниже 22.12 или появится top-level `await` в зависимости, потребуется переход на ESM. `@nestjs/swagger` 12 не принимает `status` в `@ApiOkResponse` и подобных декораторах.
+
+Сервер собирается TypeScript 6 с `module` и `moduleResolution: nodenext` ([S1.13](../backlog/E01-dependency-upgrades/S1.13.md)): режим `nodenext` в TS ≥ 5.8 разрешает `require` ESM-пакетов из CommonJS-файла. TypeScript 7 пока не поддерживают `typescript-eslint` и `@nestjs/swagger`.

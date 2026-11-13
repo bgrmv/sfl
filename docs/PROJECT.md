@@ -15,10 +15,10 @@ SFL — приложение для любительской футбольно�
 | Область | Требование | Сейчас | Статус |
 |---|---|---|---|
 | Клиент | Angular 22+, standalone, **signals**, `@ngrx/signals` для состояния | Angular 22.2, NgRx 22, сигналы частично | есть (S1.4); полный переход на signals — по мере работы |
-| Сервер | NestJS, Express, Mongoose | Nest 12.5, Express 5.3, Mongoose 8.24 | Mongoose 9 — отдельно; выбор платформы — [ADR 0008](adr/0008-nest-12-express-5-commonjs.md) |
+| Сервер | NestJS, Express, Mongoose | Nest 12.5, Express 5.3, Mongoose 9.12 | выбор платформы — [ADR 0008](adr/0008-nest-12-express-5-commonjs.md) |
 | Валидация | **zod** | valibot 0.29 | цель: S1.12 |
 | Тесты | **Vitest** на клиенте и сервере | Vitest 5 на сервере, Vitest через `ng test` на клиенте | есть; покрытие — S2.2–S2.5 |
-| Линт | **ESLint** (без `--fix` в проверках) | ESLint 9, flat config в обоих пакетах | есть (S1.6) |
+| Линт | **ESLint** (без `--fix` в проверках) | сервер ESLint 10, клиент ESLint 9, flat config в обоих пакетах | есть (S1.6, S1.13) |
 | Формат | **Prettier** | один корневой `.prettierrc`, 3.10.1 | есть; проверка формата клиента — S11.7 |
 | Пакеты | **pnpm** через corepack | pnpm | есть |
 | Агенты | `AGENT.md` — единый файл правил; `CLAUDE.md` и `AGENTS.md` ссылаются на него | — | есть |
