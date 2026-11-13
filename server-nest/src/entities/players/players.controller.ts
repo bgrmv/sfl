@@ -8,7 +8,6 @@ import {
   NotFoundException,
   Param,
   ParseBoolPipe,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -136,7 +135,7 @@ export class PlayersController {
   ) {
     const { user: userBody, ...playerBody } = body;
 
-    const updatedUser = await this.usersService.patch(userBody.id, userBody);
+    await this.usersService.patch(userBody.id, userBody);
     const updatedPlayer = await this.playersService.patch(
       req.params.id,
       playerBody,

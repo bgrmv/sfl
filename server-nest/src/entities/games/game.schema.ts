@@ -188,14 +188,14 @@ export const PlayerStatisticSchema =
   timestamps: true,
   versionKey: '_gen',
   toObject: {
-    transform: (doc, ret, options) => {
+    transform: (doc, ret) => {
       ret.id = ret._id;
       delete ret._id;
       return ret;
     },
   },
   toJSON: {
-    transform: (doc, ret, options) => {
+    transform: (doc, ret) => {
       ret.id = ret._id;
       delete ret._id;
       return ret;

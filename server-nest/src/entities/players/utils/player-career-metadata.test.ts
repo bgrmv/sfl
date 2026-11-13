@@ -1,21 +1,10 @@
-import {
-  IPlayerMetadata,
-  METADATA_DEFAULT,
-  RATING_SYSTEM_DEFAULT,
-} from '../constants/player-career-metadata';
+import { RATING_SYSTEM_DEFAULT } from '../constants/player-career-metadata';
 import {
   calculateCareerAncientRatingSystem,
   calculateCareerPositionalRatingSystem,
 } from './player-career-metadata';
 
 describe('player-career-metadata', () => {
-  const original = { ...METADATA_DEFAULT };
-  let inputMock: IPlayerMetadata = { ...METADATA_DEFAULT };
-
-  beforeEach(() => {
-    inputMock = { ...METADATA_DEFAULT };
-  });
-
   describe('calculateCareerAncientRatingSystem', () => {
     it('should count career anctientRatingSystem properly', () => {
       expect(

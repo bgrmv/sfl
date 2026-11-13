@@ -25,7 +25,10 @@ describe('ValibotValidationPipe', () => {
       expect(e).toBeInstanceOf(BadRequestException);
       const res = (e as BadRequestException).getResponse() as any;
       expect((e as BadRequestException).getStatus()).toBe(400);
-      expect(res.issues.map((i: any) => i.path)).toEqual(['name', 'nested.age']);
+      expect(res.issues.map((i: any) => i.path)).toEqual([
+        'name',
+        'nested.age',
+      ]);
       res.issues.forEach((i: any) => expect(typeof i.message).toBe('string'));
     }
   });

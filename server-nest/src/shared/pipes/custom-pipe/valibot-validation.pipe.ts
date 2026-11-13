@@ -7,7 +7,7 @@ export interface ValidationIssue {
   message: string;
 }
 
-const toPath = (issue: v.ValiError["issues"][number]): string =>
+const toPath = (issue: v.ValiError['issues'][number]): string =>
   (issue.path ?? [])
     .map((item: { key: unknown }) => String(item.key))
     .join('.');

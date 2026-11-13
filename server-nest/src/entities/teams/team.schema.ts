@@ -13,7 +13,7 @@ export enum EnumTeamColor {
   Red = 'RED',
 }
 
-const transform = (doc, ret, options) => {
+const transform = (doc, ret) => {
   ret.id = ret._id;
   delete ret._id;
   return ret;

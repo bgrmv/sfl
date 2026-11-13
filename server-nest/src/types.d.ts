@@ -4,7 +4,7 @@ declare global {
     // See for example method-override.d.ts (https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/method-override/index.d.ts)
     export interface Request {
       user?: Partial<import('./entities/users').User>; // Define your custom property
-      cookies?: {};
+      cookies?: Record<string, any>;
     }
     interface Response {}
     interface Locals {}

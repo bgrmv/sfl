@@ -27,8 +27,7 @@ const STEPS = [
 // Шаги, которые сейчас падают по известным причинам. Пропускаются явно, с выводом причины.
 // Когда причина устранена, строку удалить.
 const KNOWN = {
-  'client:test': 'нужен браузер (Chrome) и раннер Karma устарел, S2.5 (docs/backlog/E02-tests-ci/S2.5.md)',
-  'server:lint': 'конфиг .eslintrc.js невалиден для ESLint 8, S1.6 (docs/backlog/E01-dependency-upgrades/S1.6.md)',
+  'client:test': 'Karma требует Chrome, которого нет в контейнере; переход на Vitest в S2.5 (docs/backlog/E02-tests-ci/S2.5.md)',
 };
 
 const args = process.argv.slice(2);

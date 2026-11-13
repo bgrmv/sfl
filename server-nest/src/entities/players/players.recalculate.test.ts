@@ -7,7 +7,12 @@ import { PlayersService } from './players.service';
 
 const makeService = (impl: (id: string) => Promise<void>) => {
   const logger = { info: vi.fn(), error: vi.fn() };
-  const service = new PlayersService(null as any, null as any, null as any, logger as any);
+  const service = new PlayersService(
+    null as any,
+    null as any,
+    null as any,
+    logger as any,
+  );
   const calls: string[] = [];
   (service as any).recalculateSeasonMetadata = async (id: string) => {
     calls.push(`start ${id}`);
@@ -33,11 +38,16 @@ describe('recalculatePlayersSeasonAndCareerMetadata', () => {
       if (id === 'a') throw new Error('boom');
     });
 
-    const result = service.recalculatePlayersSeasonAndCareerMetadata(2025, ['a', 'b']);
+    const result = service.recalculatePlayersSeasonAndCareerMetadata(2025, [
+      'a',
+      'b',
+    ]);
 
     await expect(result).rejects.toBeInstanceOf(InternalServerErrorException);
     await result.catch((e: InternalServerErrorException) => {
-      expect((e.getResponse() as any).failed).toEqual([{ playerId: 'a', error: 'boom' }]);
+      expect((e.getResponse() as any).failed).toEqual([
+        { playerId: 'a', error: 'boom' },
+      ]);
     });
     expect(calls).toContain('end b');
     expect(logger.error).toHaveBeenCalled();

@@ -98,7 +98,7 @@ docker compose -f .devcontainer/docker-compose.yml stop    # stop; start brings 
 ### Data
 
 - Seed: roles, an admin, 12 players (`player01@sfl.local`…) and teams BMW and HONDA. All data is synthetic.
-- Games are not seeded: the server calculates their metadata, so create them in the client as admin.
+- Games are not seeded by `seed.cjs`: the server calculates their metadata. Start server-nest, then run `node .devcontainer/seed-games.cjs`: it creates 3 synthetic games through the API as `admin@sfl.local` (skipped if games exist; do not use on a prod copy). More games: create them in the client as admin.
 - Reset the database and seed again: `node .devcontainer/seed.cjs --reset`
 - Dump all collections to `_dumps/<db>-<date>-<time>/` (ignored by git): `node .devcontainer/db-dump.cjs`. Pass a directory to dump somewhere else.
 - Restore a dump: `node .devcontainer/db-restore.cjs _dumps/<dir>`. It only fills empty collections; add `--drop` to replace existing ones. Compass exports (`<db>.<collection>.json`) restore the same way.
@@ -141,7 +141,7 @@ pnpm check --skip=client:build  # пропустить шаг
 pnpm check --include-known      # включить шаги, которые падают по известным причинам
 ```
 
-Команда ничего не правит и не ходит в сеть и в базу. Шаги `client:test` (нужен браузер, [S2.5](docs/backlog/E02-tests-ci/S2.5.md)) и `server:lint` (старый конфиг ESLint, [S1.6](docs/backlog/E01-dependency-upgrades/S1.6.md)) пропускаются с указанием причины.
+Команда ничего не правит и не ходит в сеть и в базу. Шаг `client:test` пропускается с указанием причины: Karma требует Chrome, клиент переходит на Vitest ([S2.5](docs/backlog/E02-tests-ci/S2.5.md)).
 
 ## Epics
 

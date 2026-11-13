@@ -5,14 +5,14 @@ import { EnumRole } from './constants';
 @Schema({
   versionKey: false,
   toObject: {
-    transform: (doc, ret, options) => {
+    transform: (doc, ret) => {
       ret.id = ret._id;
       delete ret._id;
       return ret;
     },
   },
   toJSON: {
-    transform: (doc, ret, options) => {
+    transform: (doc, ret) => {
       ret.id = ret._id;
       delete ret._id;
       return ret;

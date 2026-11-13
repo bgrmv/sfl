@@ -4,7 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable()
 export class ContextInterceptor implements NestInterceptor {
@@ -14,7 +14,6 @@ export class ContextInterceptor implements NestInterceptor {
     }
 
     const req = context.switchToHttp().getRequest();
-    const res = context.switchToHttp().getResponse();
 
     const accessToken = (req as any).accessToken;
 

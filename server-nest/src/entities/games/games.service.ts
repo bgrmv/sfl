@@ -90,9 +90,7 @@ export class GamesService {
     }
 
     try {
-      const updatedGame = await this.gameModel
-        .findOneAndUpdate({ _id }, game)
-        .exec();
+      await this.gameModel.findOneAndUpdate({ _id }, game).exec();
 
       return await this.runMetadataFlow(game);
     } catch (error) {
@@ -191,7 +189,7 @@ export class GamesService {
       0,
     );
     const totalGoalsByAuto: number = game.statistics.reduce(
-      (curr, next) => curr + 0, // TODO (next.goalAuto ?? 0),
+      (curr) => curr + 0, // TODO (next.goalAuto ?? 0),
       0,
     );
     const totalPasses: number = game.statistics.reduce(

@@ -118,7 +118,9 @@ describe('AuthGuard: access matrix', () => {
   });
 
   it('answers 401 without a token on every non-public route', async () => {
-    const closed = routes.filter((route) => !PUBLIC_ROUTES.includes(key(route)));
+    const closed = routes.filter(
+      (route) => !PUBLIC_ROUTES.includes(key(route)),
+    );
     expect(closed.length).toBeGreaterThan(0);
 
     for (const route of closed) {
