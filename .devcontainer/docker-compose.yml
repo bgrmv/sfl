@@ -2,7 +2,10 @@ name: sfl-dev
 
 services:
   workspace:
-    image: mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+    # Own image: the Microsoft one ships an old Node 22, see Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: sleep infinity
     # Published by Docker, not forwarded by VS Code: they work even when
     # no VS Code window is attached to the container

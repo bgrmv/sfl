@@ -5,6 +5,19 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+echo "==> Node version"
+# engines.node in package.json is the minimum Angular CLI needs: an old image fails later with a confusing error
+node -e '
+const need = require("./package.json").engines.node.replace(/^[^0-9]*/, "").split(".").map(Number);
+const have = process.versions.node.split(".").map(Number);
+const ok = have[0] === need[0] && (have[1] > need[1] || (have[1] === need[1] && have[2] >= need[2]));
+if (!ok) {
+  console.error(`Node ${process.versions.node} is older than ${need.join(".")} required by engines. Rebuild the container: .devcontainer/Dockerfile installs the pinned Node.`);
+  process.exit(1);
+}
+console.log(`Node ${process.versions.node}`);
+'
+
 # pnpm version comes from packageManager in client/package.json
 PNPM_VERSION="$(node -p "require('./client/package.json').packageManager.split('@')[1]")"
 

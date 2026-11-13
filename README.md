@@ -66,6 +66,8 @@ Needed after changes in `.devcontainer/` (compose, features, `post-create.sh`). 
    ```
 3. **Reopen in Container**. It creates a new container and runs `post-create.sh`.
 
+The image is built from [.devcontainer/Dockerfile](.devcontainer/Dockerfile): the Microsoft base image ships an old Node 22, so the Dockerfile installs a pinned Node (checksum verified). Angular CLI 22 needs `engines.node` of the root `package.json`; if the container has an older Node, `post-create.sh` stops with a hint. To bump Node, change `NODE_VERSION` and both checksums in the Dockerfile, then rebuild.
+
 Volumes are kept: the database, `node_modules`, the pnpm store and the Claude login. Leave `sfl-dev-mongodb-1` as is.
 
 Not everything needs a rebuild:
