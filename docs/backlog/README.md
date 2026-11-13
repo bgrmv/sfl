@@ -156,7 +156,7 @@ flowchart LR
 |:-:|---|---|:-:|:-:|---|
 | ❌ | [S2.1](E02-tests-ci/S2.1.md) | CI для каждого PR | P4 | M | [S1.2](E01-dependency-upgrades/S1.2.md), [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S2.2](E02-tests-ci/S2.2.md) | Golden-master тесты расчёта статистики | P1 | L | [S11.2](E11-dx-docs/S11.2.md) |
-| ❌ | [S2.3](E02-tests-ci/S2.3.md) | Unit-тесты доменной логики | P1 | M | — |
+| ✅ | [S2.3](E02-tests-ci/S2.3.md) | Unit-тесты доменной логики | P1 | M | — |
 | ✅ | [S2.4](E02-tests-ci/S2.4.md) | API-тесты прав доступа и CRUD | P1 | M | [S0.1](E00-security-hotfix/S0.1.md) |
 | ❌ | [S2.5](E02-tests-ci/S2.5.md) | Клиентские тесты на Vitest вместо Karma/Jasmine | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S2.6](E02-tests-ci/S2.6.md) | E2E-тесты основных сценариев | P4 | M | [S2.1](E02-tests-ci/S2.1.md), [S7.2](E07-vps-hosting/S7.2.md) |
@@ -177,7 +177,7 @@ flowchart LR
 | ❌ | [S3.8](E03-architecture/S3.8.md) | Границы слоёв клиента проверяются линтером | P2 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
 | ❌ | [S3.9](E03-architecture/S3.9.md) | Вести ADR | P1 | S | — |
 | ❌ | [S3.10](E03-architecture/S3.10.md) | Обработка ошибок и сессии на клиенте | P2 | M | [S3.6](E03-architecture/S3.6.md) |
-| ❌ | [S3.11](E03-architecture/S3.11.md) | Исправить расчёт метаданных матча и игрока | P1 | M | [S2.3](E02-tests-ci/S2.3.md) |
+| ❌ | [S3.11](E03-architecture/S3.11.md) | Исправить расчёт метаданных матча и игрока | P1 | L | [S2.3](E02-tests-ci/S2.3.md) |
 | ✅ | [S3.12](E03-architecture/S3.12.md) | Корректные HTTP-ошибки и обработка исключений | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
 
 ## Эпик 4 — Spike и проектирование переезда

@@ -19,14 +19,16 @@ export default defineConfig({
 
     exclude: [...configDefaults.exclude, 'e2e/**/*'], // Exclude e2e tests from this config
     coverage: {
+      provider: 'v8',
       reporter: ['text', 'html'], // Coverage reports in console and HTML format
-      // provider: 'c8',                   // Use c8 for coverage
-      // reporter: ['text', 'html'],       // Coverage report formats
-      include: ['**/*.(t|j)s'], // Collect coverage from TypeScript and JavaScript files
+      include: ['src/**/*.ts'],
+      exclude: ['**/*.test.ts', '**/*.d.ts'],
       reportsDirectory: '../coverage', // Specify directory for coverage reports
-    },
-    alias: {
-      '@': '/src', // Set up @ as a shortcut for src folder
+      // League calculation rules must stay covered (S2.3)
+      thresholds: {
+        'src/entities/players/utils/**': { lines: 80, branches: 80 },
+        'src/entities/games/games.service.ts': { lines: 80, branches: 80 },
+      },
     },
   },
 });
