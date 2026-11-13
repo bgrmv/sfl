@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpService } from '@shared/services/http.service';
 import { map, Observable } from 'rxjs';
 
@@ -28,7 +28,7 @@ export type TTopAncientRatingSystem = {
   };
 };
 
-@Injectable()
+@Service({ autoProvided: false })
 export class ChartsService {
   private readonly httpService = inject(HttpService);
 

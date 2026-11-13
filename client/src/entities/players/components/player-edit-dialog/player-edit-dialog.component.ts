@@ -16,7 +16,6 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogContent,
   MatDialogRef,
   MatDialogTitle,
@@ -27,22 +26,21 @@ import { IPlayerDTO } from '@entities/games/types';
 import { PlayersService } from '@entities/players/services/players.service';
 
 @Component({
-    selector: 'sfl-player-edit-dialog',
-    imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        MatButtonModule,
-        MatDialogTitle,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
-        ReactiveFormsModule,
-    ],
-    providers: [PlayersService],
-    templateUrl: './player-edit-dialog.component.html',
-    styleUrl: './player-edit-dialog.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-player-edit-dialog',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    ReactiveFormsModule,
+  ],
+  providers: [PlayersService],
+  templateUrl: './player-edit-dialog.component.html',
+  styleUrl: './player-edit-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerEditDialogComponent {
   private readonly destroyRef = inject(DestroyRef);

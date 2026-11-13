@@ -1,4 +1,4 @@
-<h1>Select Captain (Team: {{ team }})</h1>
+<h1>Select Captain (Team: {{ team() }})</h1>
 
 <p>{{ captains$ | async | json }}</p>
 <p>{{ captainsWithoutTeam$ | async | json }}</p>
@@ -8,7 +8,7 @@
   <sfl-captain-stats-card
     [captain]="captain"
     [class.active]="true"
-  ></sfl-captain-stats-card>
+  />
   <button
     mat-flat-button
     color="warn"
@@ -27,7 +27,7 @@
         [captain]="captain"
         [attr.data-captain-id]="captain.id"
         [class.odd]="odd"
-      ></sfl-captain-stats-card>
+      />
     }
   </div>
 }

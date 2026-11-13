@@ -1,17 +1,17 @@
 <section>
   @for (game of games(); track game.id) {
     @defer {
-      <sfl-game-card [gameCard]="game"></sfl-game-card>
+      <sfl-game-card [gameCard]="game" />
     } @placeholder (minimum 1s) {
       <mat-progress-bar
         mode="indeterminate"
         style="height: 200px"
-      ></mat-progress-bar>
+      />
     } @loading (minimum 1.5s) {
       <mat-progress-bar
         mode="indeterminate"
         style="height: 200px"
-      ></mat-progress-bar>
+      />
     }
   }
 </section>

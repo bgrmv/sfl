@@ -1,12 +1,10 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ITeamDTO } from '@entities/games/types';
 import { HttpService } from '@shared/services/http.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TeamsService {
   private readonly httpService = inject(HttpService);
 

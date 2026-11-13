@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogContent,
   MatDialogRef,
   MatDialogTitle,
@@ -36,7 +35,6 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
@@ -46,7 +44,7 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
   providers: [PlayersService],
   template: `
     @if (loadingSignal()) {
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar mode="indeterminate" />
     }
 
     <mat-dialog-content>
@@ -70,7 +68,7 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
             aria-label="Copy"
             [disabled]="true"
           >
-            <mat-icon fontIcon="content_copy"></mat-icon>
+            <mat-icon fontIcon="content_copy" />
           </button>
         </mat-form-field>
 
@@ -101,7 +99,9 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
               matInput
               type="text"
               [disabled]="true"
-              [value]="data.player.user?.email | nilToDash"
+              [value]="
+                $safeNavigationMigration(data.player.user?.email) | nilToDash
+              "
             />
           </mat-form-field>
 
@@ -111,7 +111,9 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
               matInput
               type="text"
               [disabled]="true"
-              [value]="data.player.user?.name | nilToDash"
+              [value]="
+                $safeNavigationMigration(data.player.user?.name) | nilToDash
+              "
             />
           </mat-form-field>
 
@@ -121,7 +123,9 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
               matInput
               type="text"
               [disabled]="true"
-              [value]="data.player.user?.surname | nilToDash"
+              [value]="
+                $safeNavigationMigration(data.player.user?.surname) | nilToDash
+              "
             />
           </mat-form-field>
         </div>

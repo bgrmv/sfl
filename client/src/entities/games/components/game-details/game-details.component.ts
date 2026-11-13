@@ -1,5 +1,12 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { CommonModule } from '@angular/common';
+import {
+  NgClass,
+  NgTemplateOutlet,
+  JsonPipe,
+  DatePipe,
+  LowerCasePipe,
+  UpperCasePipe,
+} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,20 +33,25 @@ import { omit } from 'lodash-es';
 import { filter, map, switchMap } from 'rxjs';
 
 @Component({
-    selector: 'sfl-game-details',
-    imports: [
-        CommonModule,
-        MatProgressBarModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        NilToDashPipe,
-        MatTableModule,
-        MatTooltipModule,
-    ],
-    templateUrl: './game-details.component.html',
-    styleUrl: './game-details.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-game-details',
+  imports: [
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    NilToDashPipe,
+    MatTableModule,
+    MatTooltipModule,
+    DatePipe,
+    JsonPipe,
+    LowerCasePipe,
+    NgClass,
+    NgTemplateOutlet,
+    UpperCasePipe,
+  ],
+  templateUrl: './game-details.component.html',
+  styleUrl: './game-details.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameDetailsComponent implements OnInit {
   protected readonly loading = signal<boolean>(false);

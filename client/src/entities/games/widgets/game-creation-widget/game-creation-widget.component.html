@@ -5,7 +5,7 @@
   <sup>/ {{ totalWeeks() }}</sup>
   ({{ playedAt() | date: 'dd/MM/yyyy' }})
 </h1>
-<mat-divider></mat-divider>
+<mat-divider />
 
 <br />
 
@@ -113,7 +113,7 @@
 </form>
 
 @if (!storeLoaded()) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <mat-progress-bar mode="indeterminate" />
 }
 
 @if (teams(); as teams) {
@@ -139,7 +139,7 @@
             (click)="swapStatistics()"
             [disabled]="!swapEnabled() || !!errors().size"
           >
-            <mat-icon fontIcon="swap_horiz"></mat-icon>
+            <mat-icon fontIcon="swap_horiz" />
           </button>
 
           <button
@@ -147,7 +147,7 @@
             [disabled]="!!errors().size"
             cdkDragHandle
           >
-            <mat-icon fontIcon="drag_handle"></mat-icon>
+            <mat-icon fontIcon="drag_handle" />
           </button>
         </div>
 
@@ -156,7 +156,7 @@
             [idx]="idx"
             [team]="team"
             [mode]="modeSignal()"
-          ></sfl-game-team-create>
+          />
         } @else {
           Loading or error
         }

@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogContent,
   MatDialogRef,
   MatDialogTitle,
@@ -23,7 +22,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GameService } from '@entities/games/services/game.service';
 import { IGameDTO, TGameFinalWithoutStatistics } from '@entities/games/types';
-import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
+
 import { catchError, delay, of, switchMap, tap } from 'rxjs';
 
 @Component({
@@ -35,17 +34,15 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     MatIconModule,
-    NilToDashPipe,
   ],
   providers: [GameService],
   template: `
     @if (loadingSignal()) {
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar mode="indeterminate" />
     }
 
     <h2 mat-dialog-title>Delete game</h2>

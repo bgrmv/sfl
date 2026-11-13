@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -23,7 +23,7 @@ type GetParams = {
   limit?: number;
 };
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class HttpService {
   #httpClient = inject(HttpClient);
 

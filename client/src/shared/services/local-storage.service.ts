@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Service({ autoProvided: false })
 export class LocalStorageService {
   #dataSubject = new BehaviorSubject<any>({});
-  #data$ = this.#dataSubject.asObservable();
 
   constructor() {
     // Initialize the BehaviorSubject with the data from localStorage or an empty object

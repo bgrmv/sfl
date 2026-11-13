@@ -1,6 +1,6 @@
 <form class="search-captain-form">
   @if (loading$ | async) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar mode="indeterminate" />
   }
 
   <mat-form-field class="search-captain-field-full-width">
@@ -34,4 +34,4 @@
 <sfl-captains-cards
   [captains]="(captains$ | async) ?? []"
   [variant]="variantEnum.Preview"
-></sfl-captains-cards>
+/>

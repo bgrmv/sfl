@@ -48,7 +48,7 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
         </div>
 
         <div class="tab-content">
-          <sfl-players-table></sfl-players-table>
+          <sfl-players-table />
         </div>
       </div>
     </sfl-page>

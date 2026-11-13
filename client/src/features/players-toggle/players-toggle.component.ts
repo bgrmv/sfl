@@ -6,7 +6,7 @@ import {
   effect,
   inject,
   OnDestroy,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -40,7 +40,7 @@ export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
     this.dataSource.data = this.playersStore.players();
   });
 
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly sort = viewChild.required(MatSort);
 
   readonly dataSource = new MatTableDataSource<TPlayerFinal>([]);
   readonly displayedColumns: (keyof TPlayerFinal | 'actions')[] = [
@@ -56,7 +56,7 @@ export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort();
   }
 
   toggleCaptain(player: TPlayerFinal) {

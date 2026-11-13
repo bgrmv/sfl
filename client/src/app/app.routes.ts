@@ -1,11 +1,20 @@
 import { Routes } from '@angular/router';
 import { GAMES_ROUTES } from '@entities/games';
 import { PLAYERS_ROUTES } from '@entities/players';
-import { HomeComponent } from 'src/pages/home/home.component';
 
 export const routes: Routes = [
-  { path: '', title: 'Home', component: HomeComponent },
-  { path: 'home', title: 'Home', component: HomeComponent },
+  {
+    path: '',
+    title: 'Home',
+    loadComponent: () =>
+      import('src/pages/home/home.component').then(m => m.HomeComponent),
+  },
+  {
+    path: 'home',
+    title: 'Home',
+    loadComponent: () =>
+      import('src/pages/home/home.component').then(m => m.HomeComponent),
+  },
   {
     path: 'sign-in',
     title: 'Sign In',

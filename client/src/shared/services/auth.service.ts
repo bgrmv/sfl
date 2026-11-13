@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { computed, inject, signal, Service } from '@angular/core';
 import { delay, tap } from 'rxjs';
 import { HttpService } from './http.service';
 
@@ -9,9 +9,7 @@ interface User {
   accessToken?: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AuthService {
   private readonly httpService = inject(HttpService);
 

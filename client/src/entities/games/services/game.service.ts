@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpService } from '@shared/services/http.service';
 import { map, Observable } from 'rxjs';
 import { IGameDTO } from '../types';
 
-@Injectable()
+@Service({ autoProvided: false })
 export class GameService {
   private readonly httpService = inject(HttpService);
 

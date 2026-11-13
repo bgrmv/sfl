@@ -1,4 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { TChosenPlayer } from '../types';
 
@@ -36,6 +41,7 @@ import { TChosenPlayer } from '../types';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mat-card class="player-card player-card__stats">
       <mat-card-header>
@@ -64,7 +70,7 @@ import { TChosenPlayer } from '../types';
         <p>Max Lost Strek: {{ player.maxLostStreak }}</p>
 
         <!-- Ng-content -->
-        <ng-content></ng-content>
+        <ng-content />
       </mat-card-content>
     </mat-card>
   `,

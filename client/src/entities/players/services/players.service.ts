@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { IPlayerDTO, TPlayerFinal } from '@entities/games/types';
 import { HttpService } from '@shared/services/http.service';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -13,7 +13,7 @@ export type PlayersResponse = {
   page: number;
 };
 
-@Injectable()
+@Service({ autoProvided: false })
 export class PlayersService {
   #httpService = inject(HttpService);
 

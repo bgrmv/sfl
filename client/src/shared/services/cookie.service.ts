@@ -1,7 +1,6 @@
+import { inject, DOCUMENT, Service } from '@angular/core';
 
-import { Injectable, inject, DOCUMENT } from '@angular/core';
-
-@Injectable()
+@Service({ autoProvided: false })
 export class CookieService {
   #document = inject(DOCUMENT);
 

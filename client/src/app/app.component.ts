@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { AsideComponent } from 'src/shared/ui/core/aside';
 
-import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -29,6 +28,7 @@ import { NavigationComponent } from '../shared/ui/core/navigation/navigation.com
     RouterModule,
     NavigationComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     HttpService,
     CookieService,
@@ -38,9 +38,6 @@ import { NavigationComponent } from '../shared/ui/core/navigation/navigation.com
   ],
 })
 export class AppComponent {
-  #cookieService = inject(CookieService);
-  #jwtService = inject(JwtService);
-  #httpClient = inject(HttpClient);
   private readonly router = inject(Router);
 
   private readonly authService = inject(AuthService);

@@ -6,7 +6,7 @@ import {
   effect,
   inject,
   OnDestroy,
-  ViewChild,
+  viewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -71,14 +71,14 @@ export class PlayersTableComponent implements OnDestroy, AfterViewInit {
     this.dataSource.data = this.playersStore.playersEntities();
   });
 
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly sort = viewChild.required(MatSort);
 
   ngOnDestroy() {
     this.playersEffectRef.destroy();
   }
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort();
   }
 
   readonly dataSource = new MatTableDataSource<TPlayerFinal>([]);

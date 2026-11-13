@@ -5,7 +5,7 @@ import {
   CdkDropList,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { DatePipe, UpperCasePipe, KeyValuePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -50,33 +50,35 @@ import { range } from 'lodash-es';
 import { distinctUntilChanged, filter, map } from 'rxjs';
 
 @Component({
-    selector: 'sfl-game-creation-widget',
-    imports: [
-        CommonModule,
-        // Material
-        MatButtonModule,
-        // MatRadioModule,
-        MatFormFieldModule,
-        MatInputModule,
-        // TODO i dont need selection and options
-        MatSelectModule,
-        MatIconModule,
-        MatOptionModule,
-        ReactiveFormsModule,
-        MatProgressBarModule,
-        MatListModule,
-        MatExpansionModule,
-        // CDK
-        CdkDropList,
-        CdkDrag,
-        CdkDragHandle,
-        // Custom
-        GameTeamCreateComponent,
-    ],
-    templateUrl: './game-creation-widget.component.html',
-    styleUrl: './game-creation-widget.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [NewGameStore, GameService, PlayersService, MatDialog]
+  selector: 'sfl-game-creation-widget',
+  imports: [
+    // Material
+    MatButtonModule,
+    // MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    // TODO i dont need selection and options
+    MatSelectModule,
+    MatIconModule,
+    MatOptionModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    MatListModule,
+    MatExpansionModule,
+    // CDK
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    // Custom
+    GameTeamCreateComponent,
+    DatePipe,
+    KeyValuePipe,
+    UpperCasePipe,
+  ],
+  templateUrl: './game-creation-widget.component.html',
+  styleUrl: './game-creation-widget.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [NewGameStore, GameService, PlayersService, MatDialog],
 })
 export class GameCreationWidgetComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

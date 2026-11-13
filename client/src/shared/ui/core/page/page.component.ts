@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
-    selector: 'sfl-page',
-    imports: [CommonModule, MatDividerModule],
-    styles: `
+  selector: 'sfl-page',
+  imports: [MatDividerModule, UpperCasePipe],
+  styles: `
     :host {
       position: relative;
       .page-container {
@@ -16,12 +16,12 @@ import { MatDividerModule } from '@angular/material/divider';
       }
     }
   `,
-    template: `
+  template: `
     <div>
       <h1>
         {{ title() | uppercase }}
       </h1>
-      <mat-divider></mat-divider>
+      <mat-divider />
       <br />
 
       <div class="page-container">
@@ -29,7 +29,7 @@ import { MatDividerModule } from '@angular/material/divider';
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageComponent {
   public readonly title = input.required<string>();

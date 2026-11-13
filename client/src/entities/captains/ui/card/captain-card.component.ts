@@ -1,5 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  input,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { CardVariantEnum } from '@shared/constants/card';
 import { TCaptain } from '../../types';
@@ -7,7 +13,7 @@ import { TCaptain } from '../../types';
 @Component({
   selector: 'sfl-captain-card',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, MatCardModule],
+  imports: [MatCardModule, NgTemplateOutlet],
   styles: [
     `
       :host.odd {
@@ -42,13 +48,14 @@ import { TCaptain } from '../../types';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    @switch (variant) {
+    @switch (variant()) {
       @case (variantEnum.Stats) {
-        <ng-container *ngTemplateOutlet="simple"></ng-container>
+        <ng-container *ngTemplateOutlet="simple" />
       }
       @case (variantEnum.Preview) {
-        <ng-container *ngTemplateOutlet="full"></ng-container>
+        <ng-container *ngTemplateOutlet="full" />
       }
       @default {
         Default card
@@ -112,6 +119,6 @@ import { TCaptain } from '../../types';
 export class CaptainCardComponent {
   readonly variantEnum = CardVariantEnum;
   @Input({ required: true }) captain!: TCaptain;
-  @Input() hasData = false;
-  @Input() variant?: CardVariantEnum;
+  readonly hasData = input(false);
+  readonly variant = input<CardVariantEnum>();
 }

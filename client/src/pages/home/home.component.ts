@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { TopAncientRatingSystemPlayersComponent } from '@entities/charts/components/top-ancient-rating-system-players/top-ancient-rating-system-players.component';
 import { TopTotalPointsPlayersComponent } from '@entities/charts/components/top-total-points-players/top-total-points-players.component';
@@ -15,6 +15,7 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [AuthService],
 })
 export class HomeComponent {

@@ -1,21 +1,22 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  input,
+} from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
 import { TCaptain } from '../../types';
 import { CaptainCardComponent } from '../card/captain-card.component';
-import { CaptainToChooseDirective } from '../../directives/captain-to-choose.directive';
+
 import { CardVariantEnum } from '@shared/constants/card';
 import { CaptainStatsCardComponent } from '../card/captain-stats-card.component';
 
 @Component({
   selector: 'sfl-captains-cards',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    MatCardModule,
-    CaptainToChooseDirective,
-    CaptainCardComponent,
-    CaptainStatsCardComponent,
-  ],
+  imports: [MatCardModule, CaptainCardComponent, CaptainStatsCardComponent],
   // styleUrls: ['./captain-card.component.scss'],
   styles: [
     `
@@ -46,32 +47,33 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
     `,
   ],
   // templateUrl: './captain-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <!-- Captains-cards  [class]="variant" -->
     @switch (variant) {
       @case (cardVariantEnum.Stats) {
         <section class="captains-cards">
-          @for (captain of captains; track captain; let oddd = $odd) {
+          @for (captain of captains(); track captain; let oddd = $odd) {
             <sfl-captain-stats-card
               appCaptainToChoose
               [captain]="captain"
               [variant]="variant"
               [class.odd]="oddd"
               [attr.data-captain-id]="captain.id"
-            ></sfl-captain-stats-card>
+            />
           }
         </section>
       }
       @case (cardVariantEnum.Preview) {
         <section class="captains-cards">
-          @for (captain of captains; track captain; let oddd = $odd) {
+          @for (captain of captains(); track captain; let oddd = $odd) {
             <sfl-captain-card
               appCaptainToChoose
               [captain]="captain"
               [variant]="variant"
               [attr.data-captain-id]="captain.id"
               [class.odd]="oddd"
-            ></sfl-captain-card>
+            />
           }
         </section>
       }
@@ -82,7 +84,7 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
   `,
 })
 export class CaptainsCardsComponent {
-  @Input({ required: true }) captains!: TCaptain[];
+  readonly captains = input.required<TCaptain[]>();
   @Input() variant?: CardVariantEnum;
   readonly cardVariantEnum = CardVariantEnum;
 }

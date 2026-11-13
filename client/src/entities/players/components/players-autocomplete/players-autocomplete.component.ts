@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { CommonModule } from '@angular/common';
+import { JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,23 +32,23 @@ import { CreatePlayerDialogComponent } from '../create-player-dialog/create-play
  */
 
 @Component({
-    selector: 'sfl-players-autocomplete',
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatChipsModule,
-        MatIconModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-        CommonModule,
-        MatSelectModule,
-        MatListModule,
-        MatButtonModule,
-        MatTooltipModule,
-    ],
-    templateUrl: './players-autocomplete.component.html',
-    styleUrl: './players-autocomplete.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-players-autocomplete',
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatIconModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatListModule,
+    MatButtonModule,
+    MatTooltipModule,
+    JsonPipe,
+  ],
+  templateUrl: './players-autocomplete.component.html',
+  styleUrl: './players-autocomplete.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayersAutocompleteComponent {
   readonly dialog = inject(MatDialog);

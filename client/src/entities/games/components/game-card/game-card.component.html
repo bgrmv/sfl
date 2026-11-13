@@ -30,13 +30,17 @@
         <div class="score-wrapper">
           <p
             class="score"
-            [textContent]="gameCard().metadata?.scoreFirstDraft"
+            [textContent]="
+              $safeNavigationMigration(gameCard().metadata?.scoreFirstDraft)
+            "
             [matTooltip]="gameCard().teams[0].name"
           ></p>
           <p class="colomn">:</p>
           <p
             class="score"
-            [textContent]="gameCard().metadata?.scoreSecondDraft"
+            [textContent]="
+              $safeNavigationMigration(gameCard().metadata?.scoreSecondDraft)
+            "
             [matTooltip]="gameCard().teams[1].name"
           ></p>
         </div>
@@ -63,7 +67,7 @@
           (click)="edit()"
         >
           Edit
-          <mat-icon fontIcon="edit"></mat-icon>
+          <mat-icon fontIcon="edit" />
         </button>
 
         <button
@@ -73,7 +77,7 @@
           (click)="delete()"
         >
           Delete
-          <mat-icon fontIcon="delete"></mat-icon>
+          <mat-icon fontIcon="delete" />
         </button>
       }
     </mat-card-actions>

@@ -1,4 +1,4 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
@@ -28,7 +28,6 @@ import {
 } from 'rxjs';
 
 import {
-  CaptainCardComponent,
   CaptainsCardsComponent,
   CaptainsStore,
   TCaptain,
@@ -49,7 +48,6 @@ import { displayFn } from '../../entities/captains/utils/autocomplete';
   imports: [
     MatRadioModule,
     FormsModule,
-    JsonPipe,
     AsyncPipe,
     MatStepperModule,
     ReactiveFormsModule,
@@ -59,7 +57,6 @@ import { displayFn } from '../../entities/captains/utils/autocomplete';
     MatIconModule,
     MatAutocompleteModule,
     MatProgressBarModule,
-    CaptainCardComponent,
     CaptainsCardsComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

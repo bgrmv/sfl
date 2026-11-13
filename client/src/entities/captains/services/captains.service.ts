@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpService } from '@shared/services/http.service';
 import { firstValueFrom } from 'rxjs';
 import { TCaptain } from '../types';
@@ -8,7 +8,7 @@ type ResponseCaptains = {
   page: number;
 };
 
-@Injectable()
+@Service({ autoProvided: false })
 export class CaptainsService {
   private readonly useMock = true;
 

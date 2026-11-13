@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+import { DatePipe, LowerCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,17 +22,18 @@ import { EnumGameStatus } from '../../constants';
 import { GameDeleteDialogComponent } from '../game-delete-dialog/game-delete-dialog.component';
 
 @Component({
-    selector: 'sfl-game-card',
-    imports: [
-        CommonModule,
-        MatIconModule,
-        MatCardModule,
-        MatButtonModule,
-        MatTooltipModule,
-    ],
-    templateUrl: './game-card.component.html',
-    styleUrl: './game-card.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-game-card',
+  imports: [
+    MatIconModule,
+    MatCardModule,
+    MatButtonModule,
+    MatTooltipModule,
+    DatePipe,
+    LowerCasePipe,
+  ],
+  templateUrl: './game-card.component.html',
+  styleUrl: './game-card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameCardComponent {
   private readonly router = inject(Router);

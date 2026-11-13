@@ -14,14 +14,14 @@
           <mat-icon
             class="reorder"
             fontIcon="reorder"
-          ></mat-icon>
+          />
         </mat-header-cell>
 
         <mat-cell *matCellDef="let element">
           <mat-icon
             class="reorder"
             fontIcon="reorder"
-          ></mat-icon>
+          />
         </mat-cell>
       </ng-container>
 
@@ -89,7 +89,7 @@
             #mvpToggle
             [checked]="row.isMVP"
             (change)="toggleIsMVP(row)"
-          ></mat-slide-toggle>
+          />
         </mat-cell>
       </ng-container>
     } @else if (column.columnDef === 'isCaptain') {
@@ -103,7 +103,7 @@
             #isCaptainToggleRef
             [checked]="row.isCaptain"
             (change)="toggleIsCaptain(row)"
-          ></mat-slide-toggle>
+          />
         </mat-cell>
       </ng-container>
     } @else if (column.columnDef === 'isTransfer') {
@@ -112,7 +112,7 @@
           <mat-icon
             fontIcon="repeat"
             matTooltip="Transferable (such a player play for both teams)"
-          ></mat-icon>
+          />
         </mat-header-cell>
 
         <mat-cell *matCellDef="let row">
@@ -124,7 +124,7 @@
               [checked]="row.isTransfer"
               (change)="toggleIsTransfer(row, $event.checked)"
               [disabled]="row.isCaptain"
-            ></mat-slide-toggle>
+            />
           }
         </mat-cell>
       </ng-container>
@@ -155,11 +155,11 @@
     }
   }
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-header-row *matHeaderRowDef="displayedColumns" />
   <mat-row
     class="draggable-row"
     *matRowDef="let row; columns: displayedColumns"
     cdkDrag
     [cdkDragData]="row"
-  ></mat-row>
+  />
 </mat-table>

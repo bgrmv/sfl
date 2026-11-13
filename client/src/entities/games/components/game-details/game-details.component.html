@@ -26,7 +26,7 @@
           <mat-icon
             fontIcon="content_copy"
             color="primary"
-          ></mat-icon>
+          />
         </button>
       </mat-form-field>
 
@@ -48,7 +48,7 @@
           matInput
           type="text"
           readonly
-          [value]="game?.season"
+          [value]="$safeNavigationMigration(game?.season)"
         />
       </mat-form-field>
 
@@ -82,7 +82,7 @@
             dataSource: dataSourceFirstDraft(),
             isFirstDraft: true
           }"
-        ></ng-container>
+        />
       </div>
 
       <div class="metadata-score">
@@ -109,7 +109,7 @@
             dataSource: dataSourceSecondDraft(),
             isFirstDraft: false
           }"
-        ></ng-container>
+        />
       </div>
     </fieldset>
   </form>
@@ -149,7 +149,7 @@
         *matFooterCellDef
         colspan="8"
         style="text-align: center"
-        [ngClass]="team.name?.toLowerCase()"
+        [ngClass]="$safeNavigationMigration(team.name?.toLowerCase())"
       >
         {{ team.name }}
       </th>
@@ -160,7 +160,7 @@
         *matHeaderCellDef
         colspan="8"
         style="text-align: center"
-        [ngClass]="team.name?.toLowerCase()"
+        [ngClass]="$safeNavigationMigration(team.name?.toLowerCase())"
       >
         {{ team.name }}
       </td>
@@ -197,9 +197,9 @@
         mat-cell
         *matCellDef="let element"
         [matTooltip]="
-          (element.user?.name | nilToDash) +
+          ($safeNavigationMigration(element.user?.name) | nilToDash) +
           ' ' +
-          (element.user?.surname | nilToDash)
+          ($safeNavigationMigration(element.user?.surname) | nilToDash)
         "
       >
         {{ element.nickname }}
@@ -215,7 +215,7 @@
         <mat-icon
           fontIcon="copyright"
           matTooltip="Captain"
-        ></mat-icon>
+        />
       </th>
 
       <td
@@ -223,7 +223,7 @@
         *matCellDef="let element"
       >
         @if (element.isCaptain) {
-          <mat-icon fontIcon="check"></mat-icon>
+          <mat-icon fontIcon="check" />
         }
       </td>
     </ng-container>
@@ -293,7 +293,7 @@
         *matCellDef="let element"
       >
         @if (element.isMVP) {
-          <mat-icon fontIcon="check"></mat-icon>
+          <mat-icon fontIcon="check" />
         }
       </td>
     </ng-container>
@@ -312,7 +312,7 @@
         *matCellDef="let element"
       >
         @if (element.isTransfer) {
-          <mat-icon fontIcon="check"></mat-icon>
+          <mat-icon fontIcon="check" />
         }
       </td>
     </ng-container>

@@ -6,7 +6,7 @@ import { SignInComponent } from '@features';
   selector: 'sfl-sign-in-page',
   imports: [SignInComponent],
   template: `
-    <sfl-sign-in></sfl-sign-in>
+    <sfl-sign-in />
   `,
   styleUrls: ['./sign-in-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

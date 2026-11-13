@@ -21,7 +21,7 @@
         matInput
         type="text"
         readonly
-        [value]="player()?.id"
+        [value]="$safeNavigationMigration(player()?.id)"
       />
       <button
         matSuffix
@@ -34,7 +34,7 @@
         <mat-icon
           fontIcon="content_copy"
           color="primary"
-        ></mat-icon>
+        />
       </button>
     </mat-form-field>
 
@@ -44,7 +44,7 @@
         matInput
         type="text"
         readonly
-        [value]="player()?.nickname | nilToDash"
+        [value]="$safeNavigationMigration(player()?.nickname) | nilToDash"
       />
     </mat-form-field>
 
@@ -54,7 +54,7 @@
         matInput
         type="number"
         readonly
-        [value]="player()?.number | nilToDash"
+        [value]="$safeNavigationMigration(player()?.number) | nilToDash"
       />
     </mat-form-field>
 
@@ -65,7 +65,7 @@
           matInput
           type="text"
           readonly
-          [value]="player()?.user?.email | nilToDash"
+          [value]="$safeNavigationMigration(player()?.user?.email) | nilToDash"
         />
       </mat-form-field>
 
@@ -75,7 +75,7 @@
           matInput
           type="text"
           readonly
-          [value]="player()?.user?.name | nilToDash"
+          [value]="$safeNavigationMigration(player()?.user?.name) | nilToDash"
         />
       </mat-form-field>
 
@@ -85,7 +85,9 @@
           matInput
           type="text"
           readonly
-          [value]="player()?.user?.surname | nilToDash"
+          [value]="
+            $safeNavigationMigration(player()?.user?.surname) | nilToDash
+          "
         />
       </mat-form-field>
     </div>

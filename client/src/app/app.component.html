@@ -23,7 +23,7 @@
     <div class="header-side-block">
       @if (userSignal()) {
         <div>
-          <mat-icon fontIcon="person"></mat-icon>
+          <mat-icon fontIcon="person" />
           {{ userSignal()?.email }}
         </div>
 
@@ -36,7 +36,7 @@
           <mat-icon
             fontIcon="logout"
             iconPositionEnd
-          ></mat-icon>
+          />
         </button>
       } @else {
         <a
@@ -47,7 +47,7 @@
           <mat-icon
             fontIcon="login"
             iconPositionEnd
-          ></mat-icon>
+          />
         </a>
       }
     </div>
@@ -62,12 +62,12 @@
     [opened]="false"
     class="mat-sidenav"
   >
-    <sfl-aside></sfl-aside>
+    <sfl-aside />
   </mat-sidenav>
 
   <mat-sidenav-content>
     <main>
-      <router-outlet></router-outlet>
+      <router-outlet />
     </main>
   </mat-sidenav-content>
 </mat-sidenav-container>

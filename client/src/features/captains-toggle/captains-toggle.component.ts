@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ViewChild, OnInit, AfterViewInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  AfterViewInit,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -30,8 +38,7 @@ export class CaptainsToggleComponent implements OnInit, AfterViewInit {
   private _destroyRef = inject(DestroyRef);
   private captainsStore = inject(CaptainsStore);
 
-
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly sort = viewChild.required(MatSort);
 
   ngOnInit() {
     this.captainsStore.captains$
@@ -42,7 +49,7 @@ export class CaptainsToggleComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort();
   }
 
   readonly dataSource = new MatTableDataSource<TCaptain>([]);
