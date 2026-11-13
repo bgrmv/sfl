@@ -103,8 +103,10 @@ export interface IPlayerCommonTotalsMetadata {
   totalPoints: number;
 }
 
-export interface IPlayerMetadata
-  extends Omit<IPlayerCommonTotalsMetadata, 'totalPoints'> {
+export interface IPlayerMetadata extends Omit<
+  IPlayerCommonTotalsMetadata,
+  'totalPoints'
+> {
   totalGames: number;
   totalWonGames: number;
   totalDraws: number;
@@ -168,8 +170,7 @@ export enum EnumPlayerPosition {
 }
 
 export const RATING_SYSTEM_DEFAULT:
-  | IAncientRatingSystem
-  | IPositionalRatingSystem = Object.freeze({
+  IAncientRatingSystem | IPositionalRatingSystem = Object.freeze({
   plusMinus: 0,
   lastResult: 0,
   totalPoints: 0,

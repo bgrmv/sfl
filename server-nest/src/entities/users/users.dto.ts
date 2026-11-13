@@ -19,7 +19,7 @@ export const UpdateTestUsersDto = v.transform(
     // source: v.string([v.url()]),
     size: v.string(),
   }),
-  (input) => ({
+  input => ({
     ...input,
     size: Number(input.size),
   }),

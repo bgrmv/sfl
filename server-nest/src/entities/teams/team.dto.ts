@@ -3,7 +3,7 @@ import { EnumTeamColor } from './team.schema';
 
 const nullToDefaultString = v.transform(
   v.union([v.string(), v.null_()]),
-  (value) => {
+  value => {
     return value === null ? '' : value;
   },
 );
@@ -24,12 +24,12 @@ export const TeamUpdateDTO = v.transform(
     id: v.string([v.toTrimmed()]),
     ...TeamBaseDTO,
   }),
-  (input) => ({
+  input => ({
     ...input,
   }),
 );
 
-export const TeamTransformDTO = v.transform(TeamSaveDTO, (input) => ({
+export const TeamTransformDTO = v.transform(TeamSaveDTO, input => ({
   ...input,
 }));
 

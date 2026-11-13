@@ -21,7 +21,7 @@ export class ValibotValidationPipe implements PipeTransform {
       return v.parse(this.schema, value);
     } catch (error) {
       if (error instanceof v.ValiError) {
-        const issues: ValidationIssue[] = error.issues.map((issue) => ({
+        const issues: ValidationIssue[] = error.issues.map(issue => ({
           path: toPath(issue),
           message: issue.message,
         }));

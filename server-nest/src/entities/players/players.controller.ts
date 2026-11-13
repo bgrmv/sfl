@@ -104,7 +104,7 @@ export class PlayersController {
     // If `ids` is provided as a comma-separated string, split it into an array
     const idsArray = Array.isArray(ids)
       ? ids
-      : ids?.split(',').map((id) => new Types.ObjectId(id.trim()));
+      : ids?.split(',').map(id => new Types.ObjectId(id.trim()));
 
     return res.json(
       Array.from(
@@ -159,7 +159,7 @@ export class PlayersController {
   ): Promise<any> {
     // TODO all settled
     const createdPlayers = await Promise.all(
-      players.map(async (player) => {
+      players.map(async player => {
         const { user: userBody, ...playerBody } = player;
 
         const user = await this.usersService.createUser({
@@ -174,7 +174,7 @@ export class PlayersController {
           userId: user.id,
         });
       }),
-    ).catch((e) => {
+    ).catch(e => {
       this.logger.error('Failed to create player', { error: e });
       return new InternalServerErrorException('Unexpected error occurred');
     });

@@ -131,7 +131,7 @@ export class GamesService {
 
     await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
       game.season,
-      game.statistics.map((s) => s.playerId.toString()),
+      game.statistics.map(s => s.playerId.toString()),
     );
 
     return !!game;
@@ -159,7 +159,7 @@ export class GamesService {
 
     await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
       game.season,
-      game.statistics.map((s) => s.playerId.toString()),
+      game.statistics.map(s => s.playerId.toString()),
     );
 
     return gameWithMetadata.toJSON();
@@ -174,7 +174,7 @@ export class GamesService {
 
     // Common
     const totalPlayers: number = new Set(
-      game.statistics.map((s) => s.playerId.toString()),
+      game.statistics.map(s => s.playerId.toString()),
     ).size;
     const totalGoalsByLeg: number = game.statistics.reduce(
       (curr, next) => curr + next.goalsByLeg,
@@ -189,7 +189,7 @@ export class GamesService {
       0,
     );
     const totalGoalsByAuto: number = game.statistics.reduce(
-      (curr) => curr + 0, // TODO (next.goalAuto ?? 0),
+      curr => curr + 0, // TODO (next.goalAuto ?? 0),
       0,
     );
     const totalPasses: number = game.statistics.reduce(
@@ -246,15 +246,13 @@ export class GamesService {
     // Captains
     const captainFirstDraft: string = game.statistics
       .find(
-        (stat) =>
-          stat.isCaptain && stat.teamId.toString() === teamFirstIdHelper,
+        stat => stat.isCaptain && stat.teamId.toString() === teamFirstIdHelper,
       )!
       .playerId.toString();
 
     const captainSecondDraft: string = game.statistics
       .find(
-        (stat) =>
-          stat.isCaptain && stat.teamId.toString() === teamSecondIdHelper,
+        stat => stat.isCaptain && stat.teamId.toString() === teamSecondIdHelper,
       )!
       .playerId.toString();
 
@@ -281,18 +279,18 @@ export class GamesService {
 
     // Players
     const playerIdsOfFirstDraft = game.statistics
-      .filter((stat) => stat.teamId.toString() === teamFirstIdHelper)
-      .map((stat) => stat.playerId.toString());
+      .filter(stat => stat.teamId.toString() === teamFirstIdHelper)
+      .map(stat => stat.playerId.toString());
     const playerIdsOfSecondDraft = game.statistics
-      .filter((stat) => stat.teamId.toString() === teamSecondIdHelper)
-      .map((stat) => stat.playerId.toString());
+      .filter(stat => stat.teamId.toString() === teamSecondIdHelper)
+      .map(stat => stat.playerId.toString());
 
     // MVPs
     // mvpByPassesIds
     const maxPassesNumberHelper = [
       ...new Set(
         game.statistics
-          .map((stat) => stat.passes)
+          .map(stat => stat.passes)
           .sort((pass1, pass2) => pass2 - pass1),
       ),
     ].at(0);
@@ -300,14 +298,14 @@ export class GamesService {
     const mvpByPassesIds: string[] = !maxPassesNumberHelper
       ? []
       : game.statistics
-          .filter((stat) => stat.passes === maxPassesNumberHelper)
-          .map((stat) => stat.playerId.toString());
+          .filter(stat => stat.passes === maxPassesNumberHelper)
+          .map(stat => stat.playerId.toString());
 
     // mvpByGoalsIds
     const maxGoalNumberHelper = [
       ...new Set(
         game.statistics
-          .map((stat) => stat.goalsByHead)
+          .map(stat => stat.goalsByHead)
           .sort((goal1, goal2) => goal2 - goal1),
       ),
     ].at(0);
@@ -315,14 +313,14 @@ export class GamesService {
     const mvpByGoalsIds: string[] = !maxGoalNumberHelper
       ? []
       : game.statistics
-          .filter((stat) => stat.goalsByHead === maxGoalNumberHelper)
-          .map((stat) => stat.playerId.toString());
+          .filter(stat => stat.goalsByHead === maxGoalNumberHelper)
+          .map(stat => stat.playerId.toString());
 
     // mvpByGoalsHeadIds
     const maxGoalsHeadNumberHelper = [
       ...new Set(
         game.statistics
-          .map((stat) => stat.goalsByHead)
+          .map(stat => stat.goalsByHead)
           .sort((goalHead1, goalHead2) => goalHead2 - goalHead1),
       ),
     ].at(0);
@@ -330,8 +328,8 @@ export class GamesService {
     const mvpByGoalsHeadIds: string[] = !maxGoalsHeadNumberHelper
       ? []
       : game.statistics
-          .filter((stat) => stat.goalsByHead === maxGoalsHeadNumberHelper)
-          .map((stat) => stat.playerId.toString());
+          .filter(stat => stat.goalsByHead === maxGoalsHeadNumberHelper)
+          .map(stat => stat.playerId.toString());
 
     // mvpListIds
     const mvpListIds: string[] = game.statistics.reduce(
@@ -426,7 +424,7 @@ export class GamesService {
     const gameMetadata: IGameMetadata = game.metadata;
 
     const statistics: PlayerStatistic[] = game.statistics.filter(
-      (s) => s.playerId.toString() === playerId,
+      s => s.playerId.toString() === playerId,
     );
     const isPlayerInBothTeams = statistics.length === 2;
 

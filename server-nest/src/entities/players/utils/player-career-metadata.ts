@@ -28,9 +28,7 @@ export function accumulatePlayerCareerMetadata(
   input: IPlayerMetadata,
 ): IPlayerMetadata {
   const gamesResults = original.gamesResults.concat(input.gamesResults) as (
-    | 1
-    | 0
-    | -1
+    1 | 0 | -1
   )[];
 
   return {

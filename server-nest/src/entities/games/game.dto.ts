@@ -39,7 +39,7 @@ export const SaveGameDTO = v.transform(
   (input): Omit<IGame, 'id'> => ({
     ...input,
     playedAt: new Date(input.playedAt),
-    statistics: input.statistics.map((s) => ({
+    statistics: input.statistics.map(s => ({
       ...s,
       position: s.position ?? null,
     })),
@@ -51,7 +51,7 @@ export const UpdateGameDTO = v.transform(
     id: v.string([v.toTrimmed()]),
     ...GameBaseDTO,
   }),
-  (input) => ({
+  input => ({
     ...input,
   }),
 );

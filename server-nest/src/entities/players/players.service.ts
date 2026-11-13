@@ -173,7 +173,7 @@ export class PlayersService {
 
     try {
       const seasonMetadata = seasonData
-        .map((seasonGame) => ({
+        .map(seasonGame => ({
           ...seasonGame,
           id: seasonGame._id.toString(),
         }))

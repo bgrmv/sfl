@@ -66,7 +66,7 @@ export class UsersService {
           { $set: { ...body } },
         )
         .exec();
-    } catch (error) {
+    } catch {
       return null;
     }
   }

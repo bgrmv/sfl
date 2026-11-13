@@ -79,7 +79,7 @@ export class AuthService {
       return await this.jwtService.verifyAsync(accessToken, {
         secret: this.accessTokenSecret,
       });
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -111,7 +111,7 @@ export class AuthService {
       return await this.jwtService.verifyAsync(refreshToken, {
         secret: this.refreshTokenSecret,
       });
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -128,7 +128,7 @@ export class AuthService {
       surname: user.surname,
       avatar: user.avatar,
       age: user.age,
-      roles: user.roles.map((role) => role.name),
+      roles: user.roles.map(role => role.name),
     };
   }
 }

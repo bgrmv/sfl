@@ -75,9 +75,9 @@ describe('AuthGuard: access matrix', () => {
     routes = app
       .getHttpAdapter()
       .getInstance()
-      ._router.stack.filter((layer) => layer.route)
-      .flatMap((layer) =>
-        Object.keys(layer.route.methods).map((method) => ({
+      ._router.stack.filter(layer => layer.route)
+      .flatMap(layer =>
+        Object.keys(layer.route.methods).map(method => ({
           method: method.toUpperCase(),
           path: layer.route.path,
         })),
@@ -118,9 +118,7 @@ describe('AuthGuard: access matrix', () => {
   });
 
   it('answers 401 without a token on every non-public route', async () => {
-    const closed = routes.filter(
-      (route) => !PUBLIC_ROUTES.includes(key(route)),
-    );
+    const closed = routes.filter(route => !PUBLIC_ROUTES.includes(key(route)));
     expect(closed.length).toBeGreaterThan(0);
 
     for (const route of closed) {
@@ -141,7 +139,7 @@ describe('AuthGuard: access matrix', () => {
   });
 
   it('lets public routes through without a token', async () => {
-    const open = routes.filter((route) => PUBLIC_ROUTES.includes(key(route)));
+    const open = routes.filter(route => PUBLIC_ROUTES.includes(key(route)));
     expect(open).toHaveLength(PUBLIC_ROUTES.length);
 
     for (const route of open) {

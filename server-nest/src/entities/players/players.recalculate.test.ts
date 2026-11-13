@@ -25,7 +25,7 @@ const makeService = (impl: (id: string) => Promise<void>) => {
 describe('recalculatePlayersSeasonAndCareerMetadata', () => {
   it('awaits every player sequentially before resolving', async () => {
     const { service, calls } = makeService(
-      () => new Promise((r) => setTimeout(r, 5)),
+      () => new Promise(r => setTimeout(r, 5)),
     );
 
     await service.recalculatePlayersSeasonAndCareerMetadata(2025, ['a', 'b']);
@@ -34,7 +34,7 @@ describe('recalculatePlayersSeasonAndCareerMetadata', () => {
   });
 
   it('reports failed players in the error and the log, and still processes the rest', async () => {
-    const { service, calls, logger } = makeService(async (id) => {
+    const { service, calls, logger } = makeService(async id => {
       if (id === 'a') throw new Error('boom');
     });
 
@@ -69,7 +69,7 @@ describe('RecalculateSeasonDTO', () => {
     { seasonId: '2025', playerIds: ['a'] },
     { seasonId: 2025, playerIds: [] },
     { seasonId: 2025, playerIds: 'a' },
-  ])('rejects %j with 400', (body) => {
+  ])('rejects %j with 400', body => {
     expect(() => pipe.transform(body)).toThrow('Validation failed');
   });
 });
