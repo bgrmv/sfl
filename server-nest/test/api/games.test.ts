@@ -173,29 +173,54 @@ describe('API: games', () => {
     });
   });
 
-  describe('known defects of the current API (see the S11.9 audit)', () => {
-    // it.fails passes while the defect exists and turns red once it is fixed:
-    // then drop `.fails` to turn it into a regular regression test.
+  describe('error statuses (S3.12)', () => {
+    const auth = () => ({ Authorization: bearer(t) });
+    const MISSING = '64b7f0f0f0f0f0f0f0f0f0f0';
 
-    // S3.12
-    it.fails('a duplicate game answers 409, not 500', async () => {
+    it('a duplicate game answers 409', async () => {
       await post(gameBody(playerIds, { number: 20 }));
       const res = await post(gameBody(playerIds, { number: 20 }));
 
       expect(res.status).toBe(409);
     });
 
-    // S3.12
-    it.fails('deleting a missing game answers 404, not 500', async () => {
-      const res = await t
+    it('a missing game answers 404 on delete, PATCH and PUT', async () => {
+      const del = await t.api().delete(`/rest/games/${MISSING}`).set(auth());
+      const patch = await t
         .api()
-        .delete('/rest/games/64b7f0f0f0f0f0f0f0f0f0f0')
-        .set('Authorization', bearer(t));
+        .patch(`/rest/games/${MISSING}`)
+        .set(auth())
+        .send({ ...gameBody(playerIds), id: MISSING });
+      const put = await t
+        .api()
+        .put(`/rest/games/${MISSING}`)
+        .set(auth())
+        .send(gameBody(playerIds));
 
-      expect(res.status).toBe(404);
+      expect([del.status, patch.status, put.status]).toEqual([404, 404, 404]);
     });
 
-    // S3.12
+    it('a broken game id answers 400, not 500', async () => {
+      const res = await t.api().get('/rest/games/not-an-id');
+
+      expect(res.status).toBe(400);
+    });
+
+    it('the error body is { statusCode, message }', async () => {
+      const res = await t.api().delete(`/rest/games/${MISSING}`).set(auth());
+
+      expect(res.body).toMatchObject({
+        statusCode: 404,
+        message: 'Game is not found',
+      });
+    });
+  });
+
+  describe('known defects of the current API (see the S11.9 audit)', () => {
+    // it.fails passes while the defect exists and turns red once it is fixed:
+    // then drop `.fails` to turn it into a regular regression test.
+
+    // S3.11 (A7)
     it.fails(
       'a game without a captain answers 400 and is not stored',
       async () => {
@@ -216,7 +241,7 @@ describe('API: games', () => {
       },
     );
 
-    // S3.11
+    // S3.11 (A8)
     it.fails('the create response already contains metadata', async () => {
       const res = await post(gameBody(playerIds, { number: 22 }));
 

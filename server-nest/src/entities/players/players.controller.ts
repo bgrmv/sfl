@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseBoolPipe,
@@ -17,7 +16,9 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiProperty,
   ApiQuery,
@@ -28,6 +29,8 @@ import type { Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
 import {
+  CreatePlayersDTO,
+  CreatePlayersDTOOutput,
   RecalculateSeasonDTO,
   RecalculateSeasonDTOOutput,
   UpdatePlayerDTO,
@@ -53,6 +56,15 @@ export class PlayerCreationDTO {
   };
 }
 
+// TODO: look the USER role up by name instead of a fixed id
+const USER_ROLE_ID = '658ddee2f71a72e6d8ea95f8';
+
+function assertObjectId(id: string, name = 'id'): void {
+  if (!Types.ObjectId.isValid(id) || id.length !== 24) {
+    throw new BadRequestException(`Invalid ${name}`);
+  }
+}
+
 @ApiTags('player')
 @Controller('players')
 export class PlayersController {
@@ -61,32 +73,6 @@ export class PlayersController {
     private readonly playersService: PlayersService,
     private readonly logger: FileLoggerService,
   ) {}
-
-  @ApiOkResponse({ status: 200, type: Player })
-  @ApiBadRequestResponse({ status: 400, description: 'Bad Request' })
-  @ApiInternalServerErrorResponse({
-    status: 500,
-    description: 'Internal Server Error',
-  })
-  @Public()
-  @Get(':id')
-  async findById(@Req() req: Request, @Param('id') id: string) {
-    if (!id.trim()) {
-      throw new BadRequestException('Id is empty');
-    }
-
-    try {
-      const player = await this.playersService.findById(id);
-      if (!player) {
-        throw new NotFoundException('Player is not found');
-      }
-      return presentPlayer(player, isAdmin(req));
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error.message || 'Unexpected error occurred',
-      );
-    }
-  }
 
   @Public()
   @Get()
@@ -97,27 +83,37 @@ export class PlayersController {
   })
   @ApiQuery({ name: 'ids', required: false, type: String, isArray: true })
   @ApiOkResponse({ status: 200, type: () => [Player] })
+  @ApiBadRequestResponse({ status: 400, description: 'Invalid ids' })
   async find(
     @Req() req: Request,
     @Res() res,
-    @Query('ids') ids?: string,
-    @Query('includeMetadata', ParseBoolPipe) includeMetadata?: boolean,
+    @Query('ids') ids?: string | string[],
+    @Query('includeMetadata', new ParseBoolPipe({ optional: true }))
+    includeMetadata = false,
   ) {
     this.logger.info('Find players', { ids, includeMetadata });
-    // If `ids` is provided as a comma-separated string, split it into an array
-    const idsArray = Array.isArray(ids)
-      ? ids
-      : ids?.split(',').map(id => new Types.ObjectId(id.trim()));
+
+    // `ids` is a comma-separated string or a repeated parameter
+    const idsList = (Array.isArray(ids) ? ids : (ids ?? '').split(','))
+      .map(id => id.trim())
+      .filter(Boolean);
+    idsList.forEach(id => assertObjectId(id, 'ids'));
 
     const admin = isAdmin(req);
     const players = await this.playersService.find(
-      { ids: idsArray },
+      {
+        ids:
+          ids === undefined
+            ? undefined
+            : idsList.map(id => new Types.ObjectId(id)),
+      },
       includeMetadata,
     );
 
     return res.json(players.map(player => presentPlayer(player, admin)));
   }
 
+  // Declared before ':id', otherwise 'captains' is taken for an id
   @Public()
   @Get('captains')
   async findCaptains(@Req() req: Request, @Res() res: Response) {
@@ -126,17 +122,27 @@ export class PlayersController {
     return res.json(captains.map(captain => presentPlayer(captain, admin)));
   }
 
+  @ApiOkResponse({ status: 200, type: Player })
+  @ApiBadRequestResponse({ status: 400, description: 'Invalid id' })
+  @ApiNotFoundResponse({ description: 'Player is not found' })
+  @Public()
+  @Get(':id')
+  async findById(@Req() req: Request, @Param('id') id: string) {
+    assertObjectId(id);
+
+    return presentPlayer(await this.playersService.findById(id), isAdmin(req));
+  }
+
   @Patch(':id')
   @ApiBadRequestResponse({ status: 400, description: 'Invalid body or id' })
+  @ApiNotFoundResponse({ description: 'Player is not found' })
   async update(
     @Res() res: Response,
     @Param('id') id: string,
     @Body(new ValibotValidationPipe(UpdatePlayerDTO))
     { user: userBody, ...playerBody }: UpdatePlayerDTOOutput,
   ) {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid player id');
-    }
+    assertObjectId(id);
 
     // The user comes from the player, so the body cannot point to someone else
     const userId = await this.playersService.findUserId(id);
@@ -159,48 +165,29 @@ export class PlayersController {
     isArray: true,
   })
   @ApiResponse({ type: Player, isArray: true, status: 200 })
-  @ApiResponse({ type: String, status: 400, schema: { example: 'error' } })
-  // @UsePipes(new ValibotValidationPipe(UpdateTestUsersDto))
+  @ApiBadRequestResponse({ description: 'Invalid body' })
+  @ApiConflictResponse({ description: 'The email is already taken' })
   async create(
-    @Body() players: PlayerCreationDTO[],
+    @Body(new ValibotValidationPipe(CreatePlayersDTO))
+    players: CreatePlayersDTOOutput,
     @Res() res: Response,
-  ): Promise<any> {
-    // TODO all settled
-    const createdPlayers = await Promise.all(
-      players.map(async player => {
-        const { user: userBody, ...playerBody } = player;
+  ) {
+    // All or nothing: a failure rolls back and answers with an error status
+    const created = await this.playersService.createWithUsers(players, [
+      USER_ROLE_ID,
+    ]);
 
-        const user = await this.usersService.createUser({
-          name: userBody.name,
-          surname: userBody.surname,
-          email: userBody.email,
-          roles: ['658ddee2f71a72e6d8ea95f8'], // TODO, check is USER ROLE,
-        });
-
-        return await this.playersService.create({
-          ...playerBody,
-          userId: user.id,
-        });
-      }),
-    ).catch(e => {
-      this.logger.error('Failed to create player', { error: e });
-      return new InternalServerErrorException('Unexpected error occurred');
-    });
-
-    return res.json(createdPlayers);
+    return res.json(created);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Player, status: 200 })
-  @ApiBadRequestResponse({
-    status: 400,
-    description: 'Bad request response with no content',
-  })
-  async delete(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('id') id: string,
-  ) {
+  @ApiBadRequestResponse({ status: 400, description: 'Invalid id' })
+  @ApiNotFoundResponse({ description: 'Player is not found' })
+  @ApiConflictResponse({ description: 'The player has games' })
+  async delete(@Res() res: Response, @Param('id') id: string) {
+    assertObjectId(id);
+
     return res.json(await this.playersService.delete(id));
   }
 

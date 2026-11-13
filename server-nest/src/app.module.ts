@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -15,6 +15,7 @@ import { RolesModule } from './entities/roles/roles.module';
 import { TeamsModule } from './entities/teams/teams.module';
 import { User, UserSchema, UsersModule } from './entities/users';
 import { UsersService } from './entities/users/users.service';
+import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { describeDatabaseTarget } from './shared/utils/database-target';
@@ -81,6 +82,10 @@ import { FileLoggerService } from './shared/services/logger.service';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
     },
     {
       provide: APP_INTERCEPTOR,

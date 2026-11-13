@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  InternalServerErrorException,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
@@ -48,15 +42,9 @@ export class ChartsController {
     @Query('season', ParseIntPipe) season: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ): Promise<TResponse<any>> {
-    try {
-      return {
-        data: await this.chartsService.topTotalPointsPlayers({ season, limit }),
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error.message || 'Unexpected error occurred',
-      );
-    }
+    return {
+      data: await this.chartsService.topTotalPointsPlayers({ season, limit }),
+    };
   }
 
   @ApiQuery({ name: 'season', required: true, type: Number })
@@ -72,17 +60,11 @@ export class ChartsController {
     @Query('season', new ParseIntPipe()) season: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ): Promise<TResponse<any>> {
-    try {
-      return {
-        data: await this.chartsService.topAncientRatingSystemPlayers({
-          season,
-          limit,
-        }),
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error.message || 'Unexpected error occurred',
-      );
-    }
+    return {
+      data: await this.chartsService.topAncientRatingSystemPlayers({
+        season,
+        limit,
+      }),
+    };
   }
 }

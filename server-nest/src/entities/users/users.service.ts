@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import mongoose, { Model } from 'mongoose';
@@ -21,20 +25,14 @@ export class UsersService {
     surname?: string;
     roles: string[];
   }) {
-    if (!user.roles) {
-      return null;
+    if (!user.roles?.length) {
+      throw new BadRequestException('A user needs at least one role');
     }
 
-    try {
-      await this.userModel.create(user);
+    // A duplicate email is a MongoDB error 11000, the exception filter makes it 409
+    await this.userModel.create(user);
 
-      return await this.userModel.findOne({ email: user.email }).exec();
-    } catch (error) {
-      this.logger.error('Failed to create user', { user, error });
-      throw new InternalServerErrorException(
-        'Unexpected error occurred while creating user',
-      );
-    }
+    return await this.userModel.findOne({ email: user.email }).exec();
   }
 
   getsUsers() {
@@ -56,20 +54,20 @@ export class UsersService {
       .exec();
   }
 
-  async patch(
-    id: string | mongoose.Types.UUID,
-    body: Partial<IUser>,
-  ): Promise<IUser | null> {
-    try {
-      await this.userModel
-        .findOneAndUpdate(
-          { _id: new mongoose.Types.UUID(id) },
-          { $set: { ...body } },
-        )
-        .exec();
-    } catch {
-      return null;
+  async patch(id: string | mongoose.Types.UUID, body: Partial<IUser>) {
+    const user = await this.userModel
+      .findOneAndUpdate(
+        { _id: new mongoose.Types.UUID(id) },
+        { $set: { ...body } },
+        { new: true },
+      )
+      .exec();
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
     }
+
+    return user;
   }
 
   /** Returns false if there is no such user. The password is stored hashed (S8.7 changes the algorithm). */

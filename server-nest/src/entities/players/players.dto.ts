@@ -33,3 +33,19 @@ export const UpdatePlayerDTO = v.object({
 });
 
 export type UpdatePlayerDTOOutput = v.Output<typeof UpdatePlayerDTO>;
+
+// POST /players: players are created together with their users
+export const CreatePlayersDTO = v.array(
+  v.object({
+    nickname: v.string([v.toTrimmed(), v.minLength(1)]),
+    number: v.optional(v.number([v.integer(), v.minValue(1), v.maxValue(999)])),
+    user: v.object({
+      email: v.string([v.toTrimmed(), v.email()]),
+      name: v.optional(v.string([v.toTrimmed()])),
+      surname: v.optional(v.string([v.toTrimmed()])),
+    }),
+  }),
+  [v.minLength(1), v.maxLength(100)],
+);
+
+export type CreatePlayersDTOOutput = v.Output<typeof CreatePlayersDTO>;

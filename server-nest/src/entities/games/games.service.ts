@@ -1,8 +1,9 @@
 import {
-  BadRequestException,
   ConflictException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -51,7 +52,9 @@ export class GamesService {
         season: game.season,
       })
     ) {
-      throw ConflictException;
+      throw new ConflictException(
+        'A game with this number and season already exists',
+      );
     }
 
     try {
@@ -64,7 +67,7 @@ export class GamesService {
         .exec();
 
       if (!createdGame) {
-        throw BadRequestException;
+        throw new InternalServerErrorException('Created game is not found');
       }
 
       return await this.runMetadataFlow(
@@ -78,6 +81,9 @@ export class GamesService {
         number: game.number,
         error,
       });
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Unexpected error occurred');
     }
   }
@@ -86,7 +92,7 @@ export class GamesService {
     this.logger.info('Update game', { _id });
 
     if (!(await this.gameModel.exists({ _id }))) {
-      throw BadRequestException;
+      throw new NotFoundException('Game is not found');
     }
 
     try {
@@ -95,6 +101,9 @@ export class GamesService {
       return await this.runMetadataFlow(game);
     } catch (error) {
       this.logger.error('Failed to update game', { _id, error });
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Unexpected error occurred');
     }
   }
@@ -106,7 +115,7 @@ export class GamesService {
         .exec();
 
       if (!updatedGame) {
-        throw BadRequestException;
+        throw new NotFoundException('Game is not found');
       }
 
       return await this.runMetadataFlow(
@@ -116,6 +125,9 @@ export class GamesService {
       );
     } catch (error) {
       this.logger.error('Failed to replace game', { _id, error });
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Unexpected error occurred');
     }
   }
@@ -126,7 +138,7 @@ export class GamesService {
     const game = await this.gameModel.findOneAndDelete({ _id }).exec();
 
     if (!game) {
-      throw BadRequestException;
+      throw new NotFoundException('Game is not found');
     }
 
     await this.playersService.recalculatePlayersSeasonAndCareerMetadata(

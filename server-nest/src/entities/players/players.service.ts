@@ -1,6 +1,8 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   Optional,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -32,9 +34,12 @@ export class PlayersService {
   ) {}
 
   async findById(id: string): Promise<ServerPlayer> {
-    return (
-      await this.playerModel.findById(id).populate('user').exec()
-    ).toJSON();
+    const player = await this.playerModel.findById(id).populate('user').exec();
+    if (!player) {
+      throw new NotFoundException('Player is not found');
+    }
+
+    return player.toJSON();
   }
 
   /** Id of the user behind the player, or null if there is no such player. */
@@ -73,53 +78,106 @@ export class PlayersService {
   async patch(
     id: string,
     player: Partial<ServerPlayer>,
-  ): Promise<ServerPlayer | null> {
-    try {
-      await this.playerModel
-        .findByIdAndUpdate({ _id: id }, { $set: { ...player } })
-        .exec();
-      return await this.playerModel.findById(id).populate('user').exec();
-    } catch (error) {
-      console.error(error);
-      return null;
+  ): Promise<ServerPlayer> {
+    const updated = await this.playerModel
+      .findByIdAndUpdate(id, { $set: { ...player } }, { new: true })
+      .populate('user')
+      .exec();
+
+    if (!updated) {
+      throw new NotFoundException('Player is not found');
     }
+
+    return updated;
   }
 
   async create(player: {
     nickname: string;
     userId: string | Types.UUID;
-    number: number;
+    number?: number;
   }): Promise<any> {
+    const { id } = await this.playerModel.create({
+      nickname: player.nickname,
+      user: new mongoose.Types.UUID(player.userId),
+      number: player.number,
+    });
+
+    return await this.playerModel.findById(id).populate('user').exec();
+  }
+
+  /**
+   * Creates players with their users, all or nothing. MongoDB transactions need
+   * a replica set, so a failure removes whatever was already created.
+   */
+  async createWithUsers(
+    inputs: {
+      nickname: string;
+      number?: number;
+      user: { email: string; name?: string; surname?: string };
+    }[],
+    roleIds: string[],
+  ): Promise<any[]> {
+    const emails = inputs.map(({ user }) => user.email);
+    if (new Set(emails).size !== emails.length) {
+      throw new ConflictException('Emails in the request must be unique');
+    }
+
+    const created: { playerId?: string; userId: string }[] = [];
     try {
-      const { id } = await this.playerModel.create({
-        nickname: player.nickname,
-        user: new mongoose.Types.UUID(player.userId),
-        number: player.number,
+      const players: any[] = [];
+
+      for (const { user: userBody, ...playerBody } of inputs) {
+        const user = await this.usersService.createUser({
+          ...userBody,
+          roles: roleIds,
+        });
+        const entry: { playerId?: string; userId: string } = {
+          userId: user.id.toString(),
+        };
+        created.push(entry);
+
+        const player = await this.create({ ...playerBody, userId: user.id });
+        entry.playerId = player.id;
+        players.push(player);
+      }
+
+      return players;
+    } catch (error) {
+      this.logger.error('Failed to create players, rolling back', {
+        created: created.length,
+        error,
       });
 
-      return await this.playerModel.findById(id).populate('user').exec();
-    } catch (error) {
-      console.error(error);
-      return null;
+      for (const { playerId, userId } of created) {
+        if (playerId) {
+          await this.playerModel.findByIdAndDelete(playerId).exec();
+        }
+        await this.usersService.deleteUserById(userId);
+      }
+
+      throw error;
     }
   }
 
-  async delete(id: string): Promise<ServerPlayer | null> {
-    let deletedPlayer: ServerPlayer | null = null;
-    try {
-      deletedPlayer = await this.playerModel
-        .findByIdAndDelete({ _id: id })
-        .populate('user')
-        .exec();
-
-      const userId = deletedPlayer.user.id.toString()!;
-      await this.usersService.deleteUserById(userId);
-
-      return deletedPlayer;
-    } catch (error) {
-      console.error(error);
-      return null;
+  async delete(id: string): Promise<ServerPlayer> {
+    // The games keep the player id in their statistics and metadata: deleting
+    // would leave dangling references and break the season totals
+    if (await this.gameModel.exists({ 'statistics.playerId': id })) {
+      throw new ConflictException('The player has games and cannot be deleted');
     }
+
+    const deletedPlayer = await this.playerModel
+      .findByIdAndDelete(id)
+      .populate('user')
+      .exec();
+
+    if (!deletedPlayer) {
+      throw new NotFoundException('Player is not found');
+    }
+
+    await this.usersService.deleteUserById(deletedPlayer.user.id.toString());
+
+    return deletedPlayer;
   }
 
   public async recalculatePlayersSeasonAndCareerMetadata(

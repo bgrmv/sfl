@@ -322,41 +322,150 @@ describe('API: players', () => {
     });
   });
 
-  describe('known defects of the current API (see the S11.9 audit)', () => {
-    // it.fails passes while the defect exists and turns red once it is fixed:
-    // then drop `.fails` to turn it into a regular regression test.
+  describe('statuses and all-or-nothing creation (S3.12)', () => {
+    const MISSING = '64b7f0f0f0f0f0f0f0f0f0f0';
+    const create = (body: unknown) =>
+      t
+        .api()
+        .post('/rest/players')
+        .set(auth())
+        .send(body as object);
+    const person = (n: string) => ({
+      nickname: `Nick ${n}`,
+      number: 5,
+      user: { email: `${n}@sfl.test` },
+    });
 
-    // S3.12: /players/captains is shadowed by /players/:id
-    it.fails('GET /players/captains answers 200', async () => {
+    it('GET /players/captains answers 200 with the captains only', async () => {
+      const [a, b] = await createPlayers(t, 2);
+      await t.api().patch(`/rest/players/${a.id}`).set(auth()).send({
+        isCaptain: true,
+      });
+
       const res = await t.api().get('/rest/players/captains');
+
+      expect(res.status).toBe(200);
+      const ids = res.body.map((p: { id: string }) => p.id);
+      expect(ids).toContain(a.id);
+      expect(ids).not.toContain(b.id);
+    });
+
+    it('a missing player answers 404, a broken id 400', async () => {
+      expect((await t.api().get(`/rest/players/${MISSING}`)).status).toBe(404);
+      expect((await t.api().get('/rest/players/not-an-id')).status).toBe(400);
+      expect(
+        (await t.api().delete('/rest/players/not-an-id').set(auth())).status,
+      ).toBe(400);
+      expect(
+        (await t.api().delete(`/rest/players/${MISSING}`).set(auth())).status,
+      ).toBe(404);
+    });
+
+    it('a duplicate email answers 409, not 201', async () => {
+      await create([person('twin')]);
+      const res = await create([person('twin')]);
+
+      expect(res.status).toBe(409);
+    });
+
+    it('a failed batch creates nobody: the first record is rolled back', async () => {
+      await create([person('taken')]);
+
+      const res = await create([person('fresh'), person('taken')]);
+
+      expect(res.status).toBe(409);
+      expect(
+        await t.model('User').countDocuments({ email: 'fresh@sfl.test' }),
+      ).toBe(0);
+      expect(
+        await t.model('Player').countDocuments({ nickname: 'Nick fresh' }),
+      ).toBe(0);
+    });
+
+    it('the same email twice in one request answers 409 before anything is created', async () => {
+      const res = await create([person('dup'), person('dup')]);
+
+      expect(res.status).toBe(409);
+      expect(
+        await t.model('User').countDocuments({ email: 'dup@sfl.test' }),
+      ).toBe(0);
+    });
+
+    it.each([
+      ['an empty list', []],
+      ['not a list', { nickname: 'x' }],
+      ['no user', [{ nickname: 'x', number: 1 }]],
+      ['an invalid email', [{ nickname: 'x', user: { email: 'nope' } }]],
+      ['an empty nickname', [{ nickname: '', user: { email: 'a@b.co' } }]],
+    ])('POST /players: %s answers 400', async (_name, body) => {
+      const res = await create(body);
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toBe('Validation failed');
+    });
+
+    it('GET /players?ids=bad answers 400', async () => {
+      const res = await t.api().get('/rest/players').query({ ids: 'bad,ids' });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('GET /players works without includeMetadata', async () => {
+      const res = await t.api().get('/rest/players');
 
       expect(res.status).toBe(200);
     });
 
-    // S3.12
-    it.fails(
-      'a failed creation answers with an error status, not 201',
-      async () => {
-        const body = [
-          { nickname: 'Twin', number: 7, user: { email: 'twin@sfl.test' } },
-        ];
-        await t.api().post('/rest/players').set(auth()).send(body);
+    it('a player with games cannot be deleted: 409, the records stay', async () => {
+      const [a, b] = await createPlayers(t, 2);
+      await t
+        .api()
+        .post('/rest/games')
+        .set(auth())
+        .send(gameBody([a.id, b.id], { number: 31, season: 2021 }));
 
-        const duplicate = await t
+      const res = await t.api().delete(`/rest/players/${a.id}`).set(auth());
+
+      expect(res.status).toBe(409);
+      expect((await t.api().get(`/rest/players/${a.id}`)).status).toBe(200);
+    });
+
+    it('PATCH of a taken email answers 409', async () => {
+      const [a, b] = await createPlayers(t, 2);
+      const other = (await t.api().get(`/rest/players/${b.id}`).set(auth()))
+        .body.user.email;
+
+      const res = await t
+        .api()
+        .patch(`/rest/players/${a.id}`)
+        .set(auth())
+        .send({ user: { email: other } });
+
+      expect(res.status).toBe(409);
+    });
+
+    it('every error has the same shape: statusCode and message', async () => {
+      const responses = await Promise.all([
+        t.api().get('/rest/players/not-an-id'),
+        t.api().get(`/rest/players/${MISSING}`),
+        t.api().post('/rest/players').set(auth()).send([]),
+        t.api().post('/rest/players'),
+        t
           .api()
           .post('/rest/players')
-          .set(auth())
-          .send(body);
+          .set('Authorization', `Bearer ${t.userToken}`),
+        create([person('twin')]),
+      ]);
 
-        expect(duplicate.status).toBeGreaterThanOrEqual(400);
-      },
-    );
-
-    // S3.12
-    it.fails('a missing player answers 404, not 500', async () => {
-      const res = await t.api().get('/rest/players/64b7f0f0f0f0f0f0f0f0f0f0');
-
-      expect(res.status).toBe(404);
+      expect(responses.map(r => r.status)).toEqual([
+        400, 404, 400, 401, 403, 409,
+      ]);
+      for (const { status, body } of responses) {
+        expect(body).toMatchObject({
+          statusCode: status,
+          message: expect.anything(),
+        });
+      }
     });
   });
 });

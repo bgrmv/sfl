@@ -17,6 +17,8 @@ type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
 interface Target {
   gameId: string;
   playerId: string;
+  /** A player without games: the only kind that can be deleted. */
+  freePlayerId: string;
   userId: string;
   playerIds: [string, string];
 }
@@ -73,7 +75,7 @@ const CLOSED: Case[] = [
   {
     name: 'DELETE /players/:id',
     method: 'delete',
-    path: t => `/players/${t.playerId}`,
+    path: t => `/players/${t.freePlayerId}`,
   },
   {
     name: 'POST /players/recalculate/season',
@@ -156,7 +158,7 @@ describe('API: access matrix', () => {
 
   /** Fresh records for every case, so that DELETE does not break the next one. */
   async function target(): Promise<Target> {
-    const [a, b] = await createPlayers(t, 2);
+    const [a, b, free] = await createPlayers(t, 3);
     const game = await t
       .api()
       .post('/rest/games')
@@ -174,6 +176,7 @@ describe('API: access matrix', () => {
     return {
       gameId: game.body.id,
       playerId: a.id,
+      freePlayerId: free.id,
       userId: player.user.id,
       playerIds: [a.id, b.id],
     };

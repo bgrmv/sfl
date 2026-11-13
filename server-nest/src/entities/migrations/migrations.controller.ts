@@ -1,4 +1,4 @@
-import { Controller, InternalServerErrorException, Post } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
@@ -36,14 +36,8 @@ export class MigrationsController {
   // Changes data, so it is a POST (ADMIN only by default)
   @Post('convert-players-user-to-uuid')
   async getPlayersSeasonsTotalPoints(): Promise<TResponse<Player[]>> {
-    try {
-      return {
-        data: await this.migrationsService.convertPlayerUserToUUID(),
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error.message || 'Unexpected error occurred',
-      );
-    }
+    return {
+      data: await this.migrationsService.convertPlayerUserToUUID(),
+    };
   }
 }

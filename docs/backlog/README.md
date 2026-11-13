@@ -178,7 +178,7 @@ flowchart LR
 | ❌ | [S3.9](E03-architecture/S3.9.md) | Вести ADR | P1 | S | — |
 | ❌ | [S3.10](E03-architecture/S3.10.md) | Обработка ошибок и сессии на клиенте | P2 | M | [S3.6](E03-architecture/S3.6.md) |
 | ❌ | [S3.11](E03-architecture/S3.11.md) | Исправить расчёт метаданных матча и игрока | P1 | M | [S2.3](E02-tests-ci/S2.3.md) |
-| ❌ | [S3.12](E03-architecture/S3.12.md) | Корректные HTTP-ошибки и обработка исключений | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
+| ✅ | [S3.12](E03-architecture/S3.12.md) | Корректные HTTP-ошибки и обработка исключений | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
 
 ## Эпик 4 — Spike и проектирование переезда
 
