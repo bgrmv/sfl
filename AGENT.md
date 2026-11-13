@@ -4,7 +4,7 @@
 
 ## Проект
 
-SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md).
+SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md). Язык и правила лиги (матч, трансфер, система счёта, MVP): [GLOSSARY.md](GLOSSARY.md); меняешь правило расчёта — сначала обнови его там.
 
 | Папка | Что это |
 |---|---|
@@ -40,7 +40,7 @@ SFL — приложение для любительской футбольно�
 - Клиент: слои FSD, импорты только «вниз» (`pages` → `widgets` → `features` → `entities` → `shared`). Состояние — `@ngrx/signals`.
 - Права: новый серверный маршрут по умолчанию доступен только `ADMIN`; открыть его можно `@Public()` или `@Roles(...)`, и тогда нужна строка в матрице `test/api/access.test.ts` ([docs/PROJECT.md](docs/PROJECT.md), раздел 5.1).
 - Ошибки API: бросай исключения Nest **экземплярами** (`throw new NotFoundException()`), не глотай ошибки в сервисах; формат ответа задаёт глобальный фильтр ([docs/PROJECT.md](docs/PROJECT.md), раздел 5.2).
-- Серверные тесты: юнит-тесты рядом с кодом (`src/**/*.test.ts`), API-тесты в `server-nest/test/api/` на `mongodb-memory-server` (внешняя база не нужна; первый запуск скачивает бинарник mongod). Известные дефекты помечены `it.fails` со ссылкой на историю: исправил дефект — убери `.fails`.
+- Серверные тесты: юнит-тесты рядом с кодом (`src/**/*.test.ts`), API-тесты в `server-nest/test/api/` на `mongodb-memory-server` (внешняя база не нужна; первый запуск скачивает бинарник mongod). Известные дефекты помечены `it.fails` со ссылкой на историю: исправил дефект — убери `.fails`. Покрытие: `pnpm test:coverage` (порог 80% на расчёте статистики).
 - Сервер: модуль на сущность (контроллер, сервис, схема Mongoose, DTO). Валидация сейчас valibot, переходим на zod ([S1.12](docs/backlog/E01-dependency-upgrades/S1.12.md)): новый код пиши с учётом этого.
 - Коммиты: `feat:` / `fix:` / `chore:` / `docs:` с областью и ID истории, как в `git log`: `fix(server): ... (S0.4)`. Сообщения на английском, документация и бэклог на русском.
 - Комментарии в коде — только когда причина неочевидна.
