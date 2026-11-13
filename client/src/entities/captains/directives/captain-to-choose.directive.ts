@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
+import { Directive, ElementRef, HostListener, inject } from '@angular/core';
 import { CaptainsService } from '../services/captains.service';
 
 @Directive({
@@ -7,6 +7,9 @@ import { CaptainsService } from '../services/captains.service';
   providers: [CaptainsService],
 })
 export class CaptainToChooseDirective {
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private captainsService = inject(CaptainsService);
+
   @HostListener('mouseover')
   onMouseOver() {
     this.el.nativeElement.style.boxShadow = '1px 1px 5px 2px black';
@@ -22,10 +25,7 @@ export class CaptainToChooseDirective {
     // TODO: pick the captain from the card's data-captain attribute
   }
 
-  constructor(
-    private el: ElementRef<HTMLElement>,
-    private captainsService: CaptainsService,
-  ) {
+  constructor() {
     this.el.nativeElement.style.cursor = 'pointer';
   }
 }

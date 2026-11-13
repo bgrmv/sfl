@@ -1,8 +1,7 @@
 <form class="search-captain-form">
-  <mat-progress-bar
-    mode="indeterminate"
-    *ngIf="loading$ | async"
-  ></mat-progress-bar>
+  @if (loading$ | async) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
 
   <mat-form-field class="search-captain-field-full-width">
     <mat-label>Capitan to add...</mat-label>
@@ -23,11 +22,11 @@
         *ngFor="
           let captainToAdd of (filteredPlayers$ | async) || (players$ | async)
         "
-        [value]="captainToAdd"
+      [value]="captainToAdd"
       >
-        #{{ captainToAdd.number }} /
-        {{ captainToAdd.nickname }}
-      </mat-option> -->
+      #{{ captainToAdd.number }} /
+      {{ captainToAdd.nickname }}
+    </mat-option> -->
     </mat-autocomplete>
   </mat-form-field>
 </form>

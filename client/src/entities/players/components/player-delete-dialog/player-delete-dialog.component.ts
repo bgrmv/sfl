@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -28,25 +27,24 @@ import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
 import { catchError, delay, of, switchMap, tap } from 'rxjs';
 
 @Component({
-    selector: 'sfl-player-edit-dialog',
-    imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        MatButtonModule,
-        MatDialogTitle,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
-        MatProgressBarModule,
-        MatProgressSpinnerModule,
-        ReactiveFormsModule,
-        MatIconModule,
-        NilToDashPipe,
-    ],
-    providers: [PlayersService],
-    template: `
+  selector: 'sfl-player-edit-dialog',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    NilToDashPipe,
+  ],
+  providers: [PlayersService],
+  template: `
     @if (loadingSignal()) {
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     }
@@ -153,8 +151,8 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
       </button>
     </mat-dialog-actions>
   `,
-    styleUrl: './player-delete-dialog.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './player-delete-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerDeleteDialogComponent {
   private readonly destroyRef = inject(DestroyRef);

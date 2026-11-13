@@ -3,7 +3,6 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   effect,
   inject,
   OnDestroy,
@@ -44,8 +43,6 @@ export class GamesTableComponent implements OnDestroy, AfterViewInit {
   readonly gamesEffectRef = effect(() => {
     this.dataSource.data = this.gameStore.games();
   });
-
-  constructor(private _destroyRef: DestroyRef) {}
 
   @ViewChild(MatSort) sort!: MatSort;
 

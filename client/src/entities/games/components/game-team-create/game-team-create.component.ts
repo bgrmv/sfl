@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,22 +23,20 @@ import { PlayersAutocompleteComponent } from '@entities/players/components/playe
 import { GameCreatePlayerStatisticsComponent } from '../game-create-player-statistics/game-create-player-statistics.component';
 
 @Component({
-    selector: 'sfl-game-team-create',
-    imports: [
-        CommonModule,
-        MatDividerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        ReactiveFormsModule,
-        MatExpansionModule,
-        // Custom
-        GameCreatePlayerStatisticsComponent,
-        PlayersAutocompleteComponent,
-    ],
-    templateUrl: './game-team-create.component.html',
-    styleUrl: './game-team-create.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-game-team-create',
+  imports: [
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
+    GameCreatePlayerStatisticsComponent,
+    PlayersAutocompleteComponent,
+  ],
+  templateUrl: './game-team-create.component.html',
+  styleUrl: './game-team-create.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameTeamCreateComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

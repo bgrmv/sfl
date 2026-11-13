@@ -3,10 +3,9 @@
     [formGroup]="signInFG"
     (ngSubmit)="onSubmit()"
   >
-    <mat-progress-bar
-      mode="indeterminate"
-      *ngIf="loading()"
-    ></mat-progress-bar>
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
 
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>

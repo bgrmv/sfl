@@ -5,11 +5,11 @@ import { CardVariantEnum } from '@shared/constants/card';
 import { TCaptain } from '../../types';
 
 @Component({
-    selector: 'sfl-captain-card',
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [CommonModule, MatCardModule],
-    styles: [
-        `
+  selector: 'sfl-captain-card',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [CommonModule, MatCardModule],
+  styles: [
+    `
       :host.odd {
         box-shadow: 2px 0 2px 2px #ccc;
       }
@@ -41,19 +41,19 @@ import { TCaptain } from '../../types';
         }
       }
     `,
-    ],
-    template: `
-    <ng-container [ngSwitch]="variant">
-      <ng-container *ngSwitchCase="variantEnum.Stats">
+  ],
+  template: `
+    @switch (variant) {
+      @case (variantEnum.Stats) {
         <ng-container *ngTemplateOutlet="simple"></ng-container>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="variantEnum.Preview">
+      }
+      @case (variantEnum.Preview) {
         <ng-container *ngTemplateOutlet="full"></ng-container>
-      </ng-container>
-
-      <ng-container *ngSwitchDefault>Default card</ng-container>
-    </ng-container>
+      }
+      @default {
+        Default card
+      }
+    }
 
     <!-- Captain Card [Simple] -->
     <ng-template #simple>
@@ -62,15 +62,17 @@ import { TCaptain } from '../../types';
           <mat-card-title-group>
             <mat-card-title>
               {{ captain.nickname }}
-              <span *ngIf="captain?.team">({{ captain.team }})</span>
+              @if (captain?.team) {
+                <span>({{ captain.team }})</span>
+              }
             </mat-card-title>
             <mat-card-subtitle>
               {{ captain.nickname }}
             </mat-card-subtitle>
             <!-- <img
-              mat-card-sm-image
-              src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-            /> -->
+        mat-card-sm-image
+        src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+        /> -->
           </mat-card-title-group>
         </mat-card-header>
         <mat-card-content>
@@ -102,10 +104,10 @@ import { TCaptain } from '../../types';
           alt="Photo of a Shiba Inu"
         />
         <!-- <mat-card-content> </mat-card-content>
-        <mat-card-actions> </mat-card-actions> -->
+    <mat-card-actions> </mat-card-actions> -->
       </mat-card>
     </ng-template>
-  `
+  `,
 })
 export class CaptainCardComponent {
   readonly variantEnum = CardVariantEnum;

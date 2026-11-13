@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { TChosenPlayer } from '../types';
 
 @Component({
-    selector: 'sfl-player-stats-card',
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [CommonModule, MatCardModule],
-    styles: [
-        `
+  selector: 'sfl-player-stats-card',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [MatCardModule],
+  styles: [
+    `
       :host.active {
         & .player-card__stats {
           background: aquamarine;
@@ -36,14 +35,16 @@ import { TChosenPlayer } from '../types';
         }
       }
     `,
-    ],
-    template: `
+  ],
+  template: `
     <mat-card class="player-card player-card__stats">
       <mat-card-header>
         <mat-card-title-group>
           <mat-card-title>
             {{ player.nickname }}
-            <span *ngIf="player?.team">({{ player.team }})</span>
+            @if (player?.team) {
+              <span>({{ player.team }})</span>
+            }
           </mat-card-title>
           <mat-card-subtitle>
             {{ player.nickname }}
@@ -66,7 +67,7 @@ import { TChosenPlayer } from '../types';
         <ng-content></ng-content>
       </mat-card-content>
     </mat-card>
-  `
+  `,
 })
 export class PlayerStatsCardComponent {
   @Input({ required: true }) player!: TChosenPlayer;

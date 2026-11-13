@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { TCaptain } from '../../types';
 import { CaptainCardComponent } from '../card/captain-card.component';
@@ -8,18 +8,17 @@ import { CardVariantEnum } from '@shared/constants/card';
 import { CaptainStatsCardComponent } from '../card/captain-stats-card.component';
 
 @Component({
-    selector: 'sfl-captains-cards',
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [
-        CommonModule,
-        MatCardModule,
-        CaptainToChooseDirective,
-        CaptainCardComponent,
-        CaptainStatsCardComponent,
-    ],
-    // styleUrls: ['./captain-card.component.scss'],
-    styles: [
-        `
+  selector: 'sfl-captains-cards',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+    MatCardModule,
+    CaptainToChooseDirective,
+    CaptainCardComponent,
+    CaptainStatsCardComponent,
+  ],
+  // styleUrls: ['./captain-card.component.scss'],
+  styles: [
+    `
       /* :host {
         width: 100%;
         display: block;
@@ -45,38 +44,42 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
         }
       }
     `,
-    ],
-    // templateUrl: './captain-card.component.html',
-    template: `
+  ],
+  // templateUrl: './captain-card.component.html',
+  template: `
     <!-- Captains-cards  [class]="variant" -->
-    <ng-container [ngSwitch]="variant">
-      <ng-container *ngSwitchCase="cardVariantEnum.Stats"
-        ><section class="captains-cards">
-          <sfl-captain-stats-card
-            appCaptainToChoose
-            *ngFor="let captain of captains; odd as oddd"
-            [captain]="captain"
-            [variant]="variant"
-            [class.odd]="oddd"
-            [attr.data-captain-id]="captain.id"
-          ></sfl-captain-stats-card></section
-      ></ng-container>
-
-      <ng-container *ngSwitchCase="cardVariantEnum.Preview"
-        ><section class="captains-cards">
-          <sfl-captain-card
-            appCaptainToChoose
-            [captain]="captain"
-            [variant]="variant"
-            [attr.data-captain-id]="captain.id"
-            *ngFor="let captain of captains; odd as oddd"
-            [class.odd]="oddd"
-          ></sfl-captain-card></section
-      ></ng-container>
-
-      <ng-container *ngSwitchDefault>#Default cards</ng-container>
-    </ng-container>
-  `
+    @switch (variant) {
+      @case (cardVariantEnum.Stats) {
+        <section class="captains-cards">
+          @for (captain of captains; track captain; let oddd = $odd) {
+            <sfl-captain-stats-card
+              appCaptainToChoose
+              [captain]="captain"
+              [variant]="variant"
+              [class.odd]="oddd"
+              [attr.data-captain-id]="captain.id"
+            ></sfl-captain-stats-card>
+          }
+        </section>
+      }
+      @case (cardVariantEnum.Preview) {
+        <section class="captains-cards">
+          @for (captain of captains; track captain; let oddd = $odd) {
+            <sfl-captain-card
+              appCaptainToChoose
+              [captain]="captain"
+              [variant]="variant"
+              [attr.data-captain-id]="captain.id"
+              [class.odd]="oddd"
+            ></sfl-captain-card>
+          }
+        </section>
+      }
+      @default {
+        #Default cards
+      }
+    }
+  `,
 })
 export class CaptainsCardsComponent {
   @Input({ required: true }) captains!: TCaptain[];

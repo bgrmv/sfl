@@ -1,10 +1,4 @@
-import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  ViewChild, OnInit, AfterViewInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ViewChild, OnInit, AfterViewInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,25 +13,23 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CaptainsStore, TCaptain } from '@entities/captains';
 
 @Component({
-    selector: 'sfl-captains-toggle',
-    templateUrl: './captains-toggle.component.html',
-    styleUrls: ['./captains-toggle.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatCardModule,
-        MatSortModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSlideToggleModule,
-    ]
+  selector: 'sfl-captains-toggle',
+  templateUrl: './captains-toggle.component.html',
+  styleUrls: ['./captains-toggle.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatTableModule,
+    MatCardModule,
+    MatSortModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+  ],
 })
 export class CaptainsToggleComponent implements OnInit, AfterViewInit {
-  constructor(
-    private _destroyRef: DestroyRef,
-    private captainsStore: CaptainsStore,
-  ) {}
+  private _destroyRef = inject(DestroyRef);
+  private captainsStore = inject(CaptainsStore);
+
 
   @ViewChild(MatSort) sort!: MatSort;
 

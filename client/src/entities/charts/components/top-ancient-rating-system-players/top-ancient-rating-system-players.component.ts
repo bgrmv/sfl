@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -83,19 +82,18 @@ const CHART_OPTIONS_DEFAULT = {
 } as Highcharts.Options;
 
 @Component({
-    selector: 'sfl-top-ancient-rating-system-players',
-    imports: [
-        CommonModule,
-        HighchartsChartModule,
-        MatCardModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatSelectModule,
-    ],
-    templateUrl: './top-ancient-rating-system-players.component.html',
-    styleUrl: './top-ancient-rating-system-players.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [ChartsService]
+  selector: 'sfl-top-ancient-rating-system-players',
+  imports: [
+    HighchartsChartModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
+  templateUrl: './top-ancient-rating-system-players.component.html',
+  styleUrl: './top-ancient-rating-system-players.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ChartsService],
 })
 export class TopAncientRatingSystemPlayersComponent implements OnInit {
   private destroyRef = inject(DestroyRef);

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -19,28 +18,27 @@ import { TPlayerFinal } from '@entities/games/types';
 import { PlayersStore } from '@entities/players';
 
 @Component({
-    selector: 'sfl-players-toggle',
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatCardModule,
-        MatSortModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSlideToggleModule,
-    ],
-    templateUrl: './players-toggle.component.html',
-    styleUrls: ['./players-toggle.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-players-toggle',
+  imports: [
+    MatTableModule,
+    MatCardModule,
+    MatSortModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+  ],
+  templateUrl: './players-toggle.component.html',
+  styleUrls: ['./players-toggle.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
+  private _destroyRef = inject(DestroyRef);
+
   readonly playersStore = inject(PlayersStore);
 
   readonly playersEffectRef = effect(() => {
     this.dataSource.data = this.playersStore.players();
   });
-
-  constructor(private _destroyRef: DestroyRef) {}
 
   @ViewChild(MatSort) sort!: MatSort;
 

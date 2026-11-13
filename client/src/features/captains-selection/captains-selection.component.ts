@@ -1,11 +1,5 @@
 import { CardVariantEnum } from '@shared/constants/card';
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  Input,
-} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, HostListener, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { map } from 'rxjs/operators';
 
@@ -24,9 +18,8 @@ import { FormControl } from '@angular/forms';
     imports: [CommonModule, MatButtonModule, CaptainStatsCardComponent]
 })
 export class CaptainsSelectionComponent extends BaseUnsubscribeComponent {
-  constructor(private captainsStore: CaptainsStore) {
-    super();
-  }
+  private captainsStore = inject(CaptainsStore);
+
 
   @Input() team!: TeamEnum;
   @Input() control!: FormControl<boolean | null>;

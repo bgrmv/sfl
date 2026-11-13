@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -28,18 +27,17 @@ export type GamePlayerStatistic = TPlayerStatisticFinal & {
 };
 
 @Component({
-    selector: 'sfl-game-create-player-statistics',
-    imports: [
-        CommonModule,
-        MatIconModule,
-        MatTooltipModule,
-        MatTableModule,
-        MatSlideToggleModule,
-        DragDropModule,
-    ],
-    templateUrl: './game-create-player-statistics.component.html',
-    styleUrl: './game-create-player-statistics.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'sfl-game-create-player-statistics',
+  imports: [
+    MatIconModule,
+    MatTooltipModule,
+    MatTableModule,
+    MatSlideToggleModule,
+    DragDropModule,
+  ],
+  templateUrl: './game-create-player-statistics.component.html',
+  styleUrl: './game-create-player-statistics.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameCreatePlayerStatisticsComponent {
   private readonly newGameStore = inject(NewGameStore);

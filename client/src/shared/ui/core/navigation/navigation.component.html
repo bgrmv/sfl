@@ -1,13 +1,13 @@
 <nav class="navigation">
-  <a
-    [routerLink]="link.href"
-    routerLinkActive="active"
-    *ngFor="let link of links"
-  >
-    <mat-icon
-      *ngIf="link.icon"
-      [fontIcon]="link.icon"
-    ></mat-icon>
-    {{ link.name | uppercase }}
-  </a>
+  @for (link of links; track link) {
+    <a
+      [routerLink]="link.href"
+      routerLinkActive="active"
+    >
+      @if (link.icon) {
+        <mat-icon [fontIcon]="link.icon"></mat-icon>
+      }
+      {{ link.name | uppercase }}
+    </a>
+  }
 </nav>

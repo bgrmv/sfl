@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -56,20 +55,19 @@ export function emailEndsWithSflComValidator(): ValidatorFn {
 }
 
 @Component({
-    selector: 'sfl-create-player-dialog',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatProgressBarModule,
-    ],
-    templateUrl: './create-player-dialog.component.html',
-    styleUrl: './create-player-dialog.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [PlayersService]
+  selector: 'sfl-create-player-dialog',
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatProgressBarModule,
+  ],
+  templateUrl: './create-player-dialog.component.html',
+  styleUrl: './create-player-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [PlayersService],
 })
 export class CreatePlayerDialogComponent implements OnInit, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);

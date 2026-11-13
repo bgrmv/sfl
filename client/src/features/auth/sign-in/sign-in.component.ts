@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormControl,
@@ -16,24 +15,23 @@ import { AuthService } from '@shared/services/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-    selector: 'sfl-sign-in',
-    imports: [
-        CommonModule,
-        MatIconModule,
-        MatInputModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatProgressBarModule,
-        RouterModule,
-        ReactiveFormsModule,
-    ],
-    templateUrl: './sign-in.component.html',
-    styleUrls: ['./sign-in.component.css']
+  selector: 'sfl-sign-in',
+  imports: [
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatProgressBarModule,
+    RouterModule,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.css'],
 })
 export class SignInComponent {
-  private readonly authService = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private router: Router) {}
+  private readonly authService = inject(AuthService);
 
   loading = signal(false);
 

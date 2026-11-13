@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -30,33 +29,34 @@ import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
 import { AuthService } from '@shared/services/auth.service';
 
 @Component({
-    selector: 'sfl-players-table',
-    templateUrl: './players-table.component.html',
-    styleUrls: ['./players-table.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatCardModule,
-        MatSortModule,
-        MatButtonModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        MatButtonModule,
-        MatProgressBarModule,
-        NilToDashPipe,
-    ],
-    providers: [
-        // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
-        // https://angular.io/api/core/FactoryProvider
-        CaptainsService,
-        // To use CaptainsService - useEffects
-        // provideComponentStore(PlayersStore),
-    ]
+  selector: 'sfl-players-table',
+  templateUrl: './players-table.component.html',
+  styleUrls: ['./players-table.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatTableModule,
+    MatCardModule,
+    MatSortModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    NilToDashPipe,
+  ],
+  providers: [
+    // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
+    // https://angular.io/api/core/FactoryProvider
+    CaptainsService,
+    // To use CaptainsService - useEffects
+    // provideComponentStore(PlayersStore),
+  ],
 })
 export class PlayersTableComponent implements OnDestroy, AfterViewInit {
+  private _destroyRef = inject(DestroyRef);
+
   private dialog = inject(MatDialog);
   private readonly router = inject(Router);
   private readonly playersStore = inject(PlayersStore);
@@ -70,8 +70,6 @@ export class PlayersTableComponent implements OnDestroy, AfterViewInit {
   playersEffectRef = effect(() => {
     this.dataSource.data = this.playersStore.playersEntities();
   });
-
-  constructor(private _destroyRef: DestroyRef) {}
 
   @ViewChild(MatSort) sort!: MatSort;
 

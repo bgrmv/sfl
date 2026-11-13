@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -14,18 +13,16 @@ import { AuthService } from '@shared/services/auth.service';
 import { PageComponent } from '@shared/ui/core/page/page.component';
 
 @Component({
-    imports: [
-        CommonModule,
-        MatIconModule,
-        MatTabsModule,
-        MatButtonModule,
-        MatDividerModule,
-        // Features
-        PlayersTableComponent,
-        PlayerCreateButtonComponent,
-        PageComponent,
-    ],
-    styles: `
+  imports: [
+    MatIconModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatDividerModule,
+    PlayersTableComponent,
+    PlayerCreateButtonComponent,
+    PageComponent,
+  ],
+  styles: `
     :host {
       .tab-container {
         margin: 12px 24px;
@@ -41,7 +38,7 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
       }
     }
   `,
-    template: `
+  template: `
     <sfl-page title="players">
       <div class="tab-container">
         <div class="tab-header">
@@ -56,17 +53,17 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
       </div>
     </sfl-page>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
-        // https://angular.io/api/core/FactoryProvider
-        CaptainsService,
-        PlayersService,
-        // Move to the widget
-        // // To use CaptainsService - useEffects
-        PlayersStore,
-        AuthService,
-    ]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
+    // https://angular.io/api/core/FactoryProvider
+    CaptainsService,
+    PlayersService,
+    // Move to the widget
+    // // To use CaptainsService - useEffects
+    PlayersStore,
+    AuthService,
+  ],
 })
 export class PlayersMainPageComponent {
   private readonly authService = inject(AuthService);

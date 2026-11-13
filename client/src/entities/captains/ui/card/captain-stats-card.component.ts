@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { TCaptain } from '../../types';
 
 @Component({
-    selector: 'sfl-captain-stats-card',
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [CommonModule, MatCardModule],
-    styles: [
-        `
+  selector: 'sfl-captain-stats-card',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [MatCardModule],
+  styles: [
+    `
       :host.active {
         & .captain-card__stats {
           background: aquamarine;
@@ -37,14 +36,16 @@ import { TCaptain } from '../../types';
         }
       }
     `,
-    ],
-    template: `
+  ],
+  template: `
     <mat-card class="captain-card captain-card__stats">
       <mat-card-header>
         <mat-card-title-group>
           <mat-card-title>
             {{ captain.nickname }}
-            <span *ngIf="captain?.team">({{ captain.team }})</span>
+            @if (captain?.team) {
+              <span>({{ captain.team }})</span>
+            }
           </mat-card-title>
           <mat-card-subtitle>{{ captain.nickname }}</mat-card-subtitle>
           <img
@@ -62,7 +63,7 @@ import { TCaptain } from '../../types';
         <p>Max Lost Strek: {{ captain.maxLostStreak }}</p>
       </mat-card-content>
     </mat-card>
-  `
+  `,
 })
 export class CaptainStatsCardComponent {
   @Input({ required: true }) captain!: TCaptain;

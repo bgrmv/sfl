@@ -4,25 +4,30 @@
 <p>{{ captainsWithoutTeam$ | async | json }}</p>
 <p>{{ selectedCaptain$ | async | json }}</p>
 
-<ng-container
-  *ngIf="(selectedCaptain$ | async)! as captain; else captainsCorousel"
->
+@if ((selectedCaptain$ | async)!; as captain) {
   <sfl-captain-stats-card
     [captain]="captain"
     [class.active]="true"
   ></sfl-captain-stats-card>
-  <button mat-flat-button color="warn" (click)="deleteSelected(captain.id)">
+  <button
+    mat-flat-button
+    color="warn"
+    (click)="deleteSelected(captain.id)"
+  >
     Reset
   </button>
-</ng-container>
-
-<ng-template #captainsCorousel>
+} @else {
   <div class="captains-corousel">
-    <sfl-captain-stats-card
-      *ngFor="let captain of captainsWithoutTeam$ | async; let odd = odd"
-      [captain]="captain"
-      [attr.data-captain-id]="captain.id"
-      [class.odd]="odd"
-    ></sfl-captain-stats-card>
+    @for (
+      captain of captainsWithoutTeam$ | async;
+      track captain;
+      let odd = $odd
+    ) {
+      <sfl-captain-stats-card
+        [captain]="captain"
+        [attr.data-captain-id]="captain.id"
+        [class.odd]="odd"
+      ></sfl-captain-stats-card>
+    }
   </div>
-</ng-template>
+}
