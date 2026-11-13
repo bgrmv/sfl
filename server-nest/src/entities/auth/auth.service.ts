@@ -10,7 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { hash } from 'src/shared/utils/string';
 import { IUser, User } from '../users';
-import { AuthRequiredValiSchemaOutput } from './auth.dto';
+import { AuthRequiredOutput } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn({ email, password }: AuthRequiredValiSchemaOutput) {
+  async signIn({ email, password }: AuthRequiredOutput) {
     try {
       const user = await this.userModel.findOne({ email }).exec();
 

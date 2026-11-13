@@ -27,7 +27,7 @@ import {
 } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { Types } from 'mongoose';
-import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
+import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import {
   CreatePlayersDTO,
   CreatePlayersDTOOutput,
@@ -139,7 +139,7 @@ export class PlayersController {
   async update(
     @Res() res: Response,
     @Param('id') id: string,
-    @Body(new ValibotValidationPipe(UpdatePlayerDTO))
+    @Body(new ZodValidationPipe(UpdatePlayerDTO))
     { user: userBody, ...playerBody }: UpdatePlayerDTOOutput,
   ) {
     assertObjectId(id);
@@ -168,7 +168,7 @@ export class PlayersController {
   @ApiBadRequestResponse({ description: 'Invalid body' })
   @ApiConflictResponse({ description: 'The email is already taken' })
   async create(
-    @Body(new ValibotValidationPipe(CreatePlayersDTO))
+    @Body(new ZodValidationPipe(CreatePlayersDTO))
     players: CreatePlayersDTOOutput,
     @Res() res: Response,
   ) {
@@ -211,7 +211,7 @@ export class PlayersController {
     description: 'Recalculation failed for some players (see `failed`)',
   })
   async recalculateSeason(
-    @Body(new ValibotValidationPipe(RecalculateSeasonDTO))
+    @Body(new ZodValidationPipe(RecalculateSeasonDTO))
     { seasonId, playerIds }: RecalculateSeasonDTOOutput,
   ) {
     this.logger.info('Recalculate player season and career', {

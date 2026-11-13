@@ -1,7 +1,7 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ValibotValidationPipe } from '../../shared/pipes/custom-pipe/valibot-validation.pipe';
+import { ZodValidationPipe } from '../../shared/pipes/custom-pipe/zod-validation.pipe';
 import { RecalculateSeasonDTO } from './players.dto';
 import { PlayersService } from './players.service';
 
@@ -55,7 +55,7 @@ describe('recalculatePlayersSeasonAndCareerMetadata', () => {
 });
 
 describe('RecalculateSeasonDTO', () => {
-  const pipe = new ValibotValidationPipe(RecalculateSeasonDTO);
+  const pipe = new ZodValidationPipe(RecalculateSeasonDTO);
 
   it('accepts a valid body', () => {
     expect(pipe.transform({ seasonId: 2025, playerIds: ['abc'] })).toEqual({

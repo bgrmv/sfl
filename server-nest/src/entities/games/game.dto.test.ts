@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ValibotValidationPipe } from '../../shared/pipes/custom-pipe/valibot-validation.pipe';
+import { ZodValidationPipe } from '../../shared/pipes/custom-pipe/zod-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
 import { EnumGameStatus } from './game.schema';
 
@@ -51,18 +51,18 @@ const clientGame = {
 
 describe('game DTOs accept client payloads', () => {
   it('POST/PUT body (SaveGameDTO) incl. extra id and no metadata', () => {
-    const pipe = new ValibotValidationPipe(SaveGameDTO);
+    const pipe = new ZodValidationPipe(SaveGameDTO);
     expect(() => pipe.transform({ ...clientGame, id: 'x' })).not.toThrow();
   });
 
   it('PATCH body (UpdateGameDTO)', () => {
-    const pipe = new ValibotValidationPipe(UpdateGameDTO);
+    const pipe = new ZodValidationPipe(UpdateGameDTO);
     expect(() => pipe.transform({ ...clientGame, id: 'x' })).not.toThrow();
   });
 });
 
 describe('game rules checked by the DTO', () => {
-  const pipe = new ValibotValidationPipe(SaveGameDTO);
+  const pipe = new ZodValidationPipe(SaveGameDTO);
   const messagesOf = (body: unknown): string[] => {
     try {
       pipe.transform(body);

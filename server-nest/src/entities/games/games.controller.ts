@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { Public } from 'src/shared/decorators/public.decorator';
-import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
+import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
 import { Game, IGame, UpdateGame } from './game.schema';
 import { GamesService } from './games.service';
@@ -89,7 +89,7 @@ export class GamesController {
     status: 201,
     description: 'The record has been successfully created.',
   })
-  @UsePipes(new ValibotValidationPipe(SaveGameDTO))
+  @UsePipes(new ZodValidationPipe(SaveGameDTO))
   async save(@Res() res: Response, @Body() game: IGame) {
     return res.json(await this.gamesService.create(game));
   }
@@ -103,7 +103,7 @@ export class GamesController {
   })
   async update(
     @Param('id') id: string,
-    @Body(new ValibotValidationPipe(UpdateGameDTO)) game: IGame,
+    @Body(new ZodValidationPipe(UpdateGameDTO)) game: IGame,
   ) {
     const updatedGame = await this.gamesService.update(id, game);
 
@@ -122,7 +122,7 @@ export class GamesController {
   async replace(
     @Res() res: Response,
     @Param('id') id: string,
-    @Body(new ValibotValidationPipe(SaveGameDTO)) game: IGame,
+    @Body(new ZodValidationPipe(SaveGameDTO)) game: IGame,
   ) {
     return res.json(await this.gamesService.replace(id, game));
   }

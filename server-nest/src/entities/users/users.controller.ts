@@ -9,7 +9,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
+import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import {
   SetPasswordDTO,
   SetPasswordDTOOutput,
@@ -36,7 +36,7 @@ export class UsersController {
   // }
 
   @Post('test-users')
-  @UsePipes(new ValibotValidationPipe(UpdateTestUsersDto))
+  @UsePipes(new ZodValidationPipe(UpdateTestUsersDto))
   updateTestUsers(
     @Body() updateUserDto: UpdateTestUsersDtoInput,
   ): any | UpdateTestUsersDtoOutput {
@@ -48,7 +48,7 @@ export class UsersController {
   @Post(':id/password')
   async setPassword(
     @Param('id') id: string,
-    @Body(new ValibotValidationPipe(SetPasswordDTO))
+    @Body(new ZodValidationPipe(SetPasswordDTO))
     { password }: SetPasswordDTOOutput,
   ) {
     if (!UUID_PATTERN.test(id)) {

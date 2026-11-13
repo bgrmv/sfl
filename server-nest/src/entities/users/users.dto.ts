@@ -1,35 +1,22 @@
-import * as v from 'valibot';
+import { z } from 'zod';
 
-// Schema for CreateUserSettingsDto
-// export const createUserSettingsSchema = v.object({
-//   receiveNotifications: v.boolean().optional(),
-//   receiveEmails: v.boolean().optional(),
-//   receiveSMS: v.boolean().optional(),
-// });
-
-// export type ImageInput = v.Input<typeof ImageSchema>;
-// export type ImageOutput = v.Output<typeof ImageSchema>;
-
-// Schema for CreateUserDto
-export const UpdateTestUsersDto = v.transform(
-  v.object({
-    status: v.optional(v.picklist(['public', 'private']), 'private'),
-    created: v.optional(v.date(), () => new Date()),
-    // title: v.string([v.maxLength(100)]),
-    // source: v.string([v.url()]),
-    size: v.string(),
-  }),
-  input => ({
+// Stub of an admin test route
+export const UpdateTestUsersDto = z
+  .object({
+    status: z.enum(['public', 'private']).default('private'),
+    created: z.date().default(() => new Date()),
+    size: z.string(),
+  })
+  .transform(input => ({
     ...input,
     size: Number(input.size),
-  }),
-);
+  }));
 
-export type UpdateTestUsersDtoInput = v.Input<typeof UpdateTestUsersDto>;
-export type UpdateTestUsersDtoOutput = v.Output<typeof UpdateTestUsersDto>;
+export type UpdateTestUsersDtoInput = z.input<typeof UpdateTestUsersDto>;
+export type UpdateTestUsersDtoOutput = z.output<typeof UpdateTestUsersDto>;
 
-export const SetPasswordDTO = v.object({
-  password: v.string([v.minLength(8), v.maxLength(128)]),
+export const SetPasswordDTO = z.object({
+  password: z.string().min(8).max(128),
 });
 
-export type SetPasswordDTOOutput = v.Output<typeof SetPasswordDTO>;
+export type SetPasswordDTOOutput = z.output<typeof SetPasswordDTO>;

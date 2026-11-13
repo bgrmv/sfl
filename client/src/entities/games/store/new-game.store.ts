@@ -39,6 +39,7 @@ import {
   TPlayerStatisticFinal,
   TTeamFinal,
 } from '../types';
+import { validateGameRules } from './game-rules';
 import { withPlayersFeature } from './players.feature';
 import { withPlayerStatisticsFeature } from './statistics.feature';
 import { withTeamsFeature } from './teams.feature';
@@ -353,13 +354,6 @@ function validateTeamsAndStatistics({
     );
   }
 
-  if (statisticsA.length && !statisticsA.some(stat => stat.isCaptain)) {
-    errorsMap.set(
-      'statistics:teamA:captainRequired',
-      `Team ${teamNameA} captain is required`,
-    );
-  }
-
   // if (statisticsPassesA < statisticsGaolsA) {
   //   errorsMap.set(
   //     'statistics:teamA:passesLessThanGoals',
@@ -371,13 +365,6 @@ function validateTeamsAndStatistics({
     errorsMap.set(
       'statistics:teamB:atleastOne',
       `Team ${teamNameB} must have at least one player`,
-    );
-  }
-
-  if (statisticsB.length && !statisticsB.some(stat => stat.isCaptain)) {
-    errorsMap.set(
-      'statistics:teamB:captainRequired',
-      `Team ${teamNameB} captain is required`,
     );
   }
 
@@ -633,6 +620,13 @@ export const NewGameStore = signalStore(
 
           const errors = new Map([
             ...validateTeamsAndStatistics({
+              teams: store.teamsEntities(),
+              statistics: store.statisticsEntities(),
+            }),
+            // The rules of the server (@sfl/schemas): one captain per team,
+            // a position for every player of a published game
+            ...validateGameRules({
+              status: store.game().status,
               teams: store.teamsEntities(),
               statistics: store.statisticsEntities(),
             }),

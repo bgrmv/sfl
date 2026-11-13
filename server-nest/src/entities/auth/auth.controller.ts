@@ -13,8 +13,8 @@ import { addDays } from 'date-fns';
 import type { Request, Response } from 'express';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
-import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
-import { AuthRequiredValiSchema } from './auth.dto';
+import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
+import { AuthRequiredSchema } from './auth.dto';
 import { Auth } from './auth.schema';
 import { AuthService } from './auth.service';
 
@@ -40,7 +40,7 @@ export class AuthController {
     description: 'auth model',
     required: true,
   })
-  @UsePipes(new ValibotValidationPipe(AuthRequiredValiSchema))
+  @UsePipes(new ZodValidationPipe(AuthRequiredSchema))
   async signIn(@Res() res: Response, @Body() auth: Auth) {
     const { accessToken, refreshToken } = await this.authService.signIn(auth);
 

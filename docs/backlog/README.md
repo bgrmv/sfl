@@ -149,7 +149,7 @@ flowchart LR
 | ✅ | [S1.9](E01-dependency-upgrades/S1.9.md) | Обновить остальные серверные зависимости | P1 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
 | ✅ | [S1.10](E01-dependency-upgrades/S1.10.md) | Удалить legacy-сервер `server/` | P1 | S | ответ на открытый вопрос 3 |
 | ❌ | [S1.11](E01-dependency-upgrades/S1.11.md) | Автоматические обновления зависимостей | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
-| ❌ | [S1.12](E01-dependency-upgrades/S1.12.md) | Заменить valibot на zod, общие схемы клиент/сервер | P1 | M | [S0.3](E00-security-hotfix/S0.3.md), [S2.8](E02-tests-ci/S2.8.md), [S3.2](E03-architecture/S3.2.md) |
+| ✅ | [S1.12](E01-dependency-upgrades/S1.12.md) | Заменить valibot на zod, общие схемы клиент/сервер | P1 | M | [S0.3](E00-security-hotfix/S0.3.md), [S2.8](E02-tests-ci/S2.8.md), [S3.2](E03-architecture/S3.2.md) |
 
 ## Эпик 2 — Тесты и CI
 

@@ -1,16 +1,16 @@
 import { BadRequestException } from '@nestjs/common';
 import { describe, expect, it } from 'vitest';
-import * as v from 'valibot';
+import { z } from 'zod';
 
-import { ValibotValidationPipe } from './valibot-validation.pipe';
+import { ZodValidationPipe } from './zod-validation.pipe';
 
-const schema = v.object({
-  name: v.string(),
-  nested: v.object({ age: v.number() }),
+const schema = z.object({
+  name: z.string(),
+  nested: z.object({ age: z.number() }),
 });
 
-describe('ValibotValidationPipe', () => {
-  const pipe = new ValibotValidationPipe(schema);
+describe('ZodValidationPipe', () => {
+  const pipe = new ZodValidationPipe(schema);
 
   it('returns parsed value for valid body', () => {
     const body = { name: 'a', nested: { age: 1 } };

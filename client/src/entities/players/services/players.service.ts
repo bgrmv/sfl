@@ -1,7 +1,9 @@
 import { inject, Service } from '@angular/core';
 import { IPlayerDTO, TPlayerFinal } from '@entities/games/types';
+import { playerSchema, playersSchema } from '@sfl/schemas';
+import { checkedResponse } from '@shared/api/checked-response';
 import { HttpService } from '@shared/services/http.service';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 
 type ResponseCaptains = {
   players: IPlayerDTO[];
@@ -18,17 +20,22 @@ export class PlayersService {
   #httpService = inject(HttpService);
 
   findOne(id: string): Observable<IPlayerDTO> {
-    return this.#httpService.get<TPlayerFinal>(`players/${id}`);
+    return this.#httpService.get<unknown>(`players/${id}`).pipe(
+      checkedResponse(playerSchema, 'GET players/:id'),
+      map(player => player as IPlayerDTO),
+    );
   }
 
   find(ids?: string, includeMetadata = false): Observable<TPlayerFinal[]> {
-    return this.#httpService.get<
-      TPlayerFinal[],
-      { ids?: string; includeMetadata: boolean }
-    >('players', {
-      ...(ids ? { ids } : {}),
-      includeMetadata,
-    });
+    return this.#httpService
+      .get<unknown, { ids?: string; includeMetadata: boolean }>('players', {
+        ...(ids ? { ids } : {}),
+        includeMetadata,
+      })
+      .pipe(
+        checkedResponse(playersSchema, 'GET players'),
+        map(players => players as TPlayerFinal[]),
+      );
   }
 
   create(player: IPlayerDTO): Observable<IPlayerDTO[]> {
@@ -43,7 +50,10 @@ export class PlayersService {
   }
 
   getCaptainsPlayers(): Observable<IPlayerDTO[]> {
-    return this.#httpService.get<IPlayerDTO[]>('players/captains');
+    return this.#httpService.get<unknown>('players/captains').pipe(
+      checkedResponse(playersSchema, 'GET players/captains'),
+      map(players => players as IPlayerDTO[]),
+    );
   }
 
   async getList(page: number = 0): Promise<ResponseCaptains> {

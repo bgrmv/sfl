@@ -11,7 +11,7 @@ import {
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { Public } from 'src/shared/decorators/public.decorator';
-import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
+import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { TeamSaveDTO } from './team.dto';
 import { ITeam, Team, UpdateTeam } from './team.schema';
 import { TeamsService } from './teams.service';
@@ -37,7 +37,7 @@ export class TeamsController {
     status: HttpStatus.CREATED,
     description: 'The record has been successfully created.',
   })
-  @UsePipes(new ValibotValidationPipe(TeamSaveDTO))
+  @UsePipes(new ZodValidationPipe(TeamSaveDTO))
   async save(@Body() team: ITeam) {
     await this.teamsService.save(team);
 
