@@ -27,3 +27,9 @@ export const UpdateTestUsersDto = v.transform(
 
 export type UpdateTestUsersDtoInput = v.Input<typeof UpdateTestUsersDto>;
 export type UpdateTestUsersDtoOutput = v.Output<typeof UpdateTestUsersDto>;
+
+export const SetPasswordDTO = v.object({
+  password: v.string([v.minLength(8), v.maxLength(128)]),
+});
+
+export type SetPasswordDTOOutput = v.Output<typeof SetPasswordDTO>;

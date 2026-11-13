@@ -37,6 +37,17 @@ export class PlayersService {
     ).toJSON();
   }
 
+  /** Id of the user behind the player, or null if there is no such player. */
+  async findUserId(id: string): Promise<string | null> {
+    const player = await this.playerModel
+      .findById(id)
+      .select('user')
+      .lean()
+      .exec();
+
+    return player ? player.user.toString() : null;
+  }
+
   async find(
     { ids }: { ids?: Types.ObjectId[] },
     includeMetadata = false,

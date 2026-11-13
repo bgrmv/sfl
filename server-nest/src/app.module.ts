@@ -16,6 +16,7 @@ import { TeamsModule } from './entities/teams/teams.module';
 import { User, UserSchema, UsersModule } from './entities/users';
 import { UsersService } from './entities/users/users.service';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { RolesGuard } from './shared/guards/roles.guard';
 import { describeDatabaseTarget } from './shared/utils/database-target';
 import { ContextInterceptor } from './shared/interceptors/context/context.interceptor';
 import { FileLoggerService } from './shared/services/logger.service';
@@ -75,6 +76,11 @@ import { FileLoggerService } from './shared/services/logger.service';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    // Then roles: ADMIN unless a route says otherwise with @Roles() (S8.9)
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     {
       provide: APP_INTERCEPTOR,

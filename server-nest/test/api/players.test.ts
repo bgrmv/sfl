@@ -106,6 +106,71 @@ describe('API: players', () => {
     expect(res.body).toMatchObject({ success: 'OK', seasonId: 2024 });
   });
 
+  describe('PATCH /players/:id: only whitelisted fields (S8.9)', () => {
+    const patch = (id: string, body: object) =>
+      t.api().patch(`/rest/players/${id}`).set(auth()).send(body);
+
+    const storedUser = (email: string) =>
+      t.model('User').findOne({ email }).lean();
+
+    it('does not change password, roles and unknown fields of the user', async () => {
+      const [player] = await createPlayers(t, 1);
+      const current = (await t.api().get(`/rest/players/${player.id}`)).body;
+      const before = await storedUser(current.user.email);
+
+      const res = await patch(player.id, {
+        nickname: 'Whitelisted',
+        user: {
+          id: current.user.id,
+          name: 'Changed',
+          password: 'plain-text',
+          roles: [],
+          isAdmin: true,
+        },
+        metadata: { hacked: true },
+      });
+
+      expect(isSuccess(res.status)).toBe(true);
+      const after = await storedUser(current.user.email);
+      expect(after.name).toBe('Changed');
+      expect(after.password).toBe(before.password);
+      expect(after.roles).toEqual(before.roles);
+      expect(after).not.toHaveProperty('isAdmin');
+
+      const stored = await t.model('Player').findById(player.id).lean();
+      expect(stored.nickname).toBe('Whitelisted');
+      expect(JSON.stringify(stored.metadata ?? {})).not.toContain('hacked');
+    });
+
+    it('takes the user from the player, not from the body', async () => {
+      const [a, b] = await createPlayers(t, 2);
+      const userB = (await t.api().get(`/rest/players/${b.id}`)).body.user;
+
+      await patch(a.id, { user: { id: userB.id, name: 'Intruder' } });
+
+      const after = await t.api().get(`/rest/players/${b.id}`);
+      expect(after.body.user.name).not.toBe('Intruder');
+    });
+
+    it('answers 404 for a missing player and 400 for a broken id', async () => {
+      expect(
+        (await patch('64b7f0f0f0f0f0f0f0f0f0f0', { nickname: 'x' })).status,
+      ).toBe(404);
+      expect((await patch('not-an-id', { nickname: 'x' })).status).toBe(400);
+    });
+
+    it.each([
+      ['empty nickname', { nickname: '' }],
+      ['number out of range', { number: 0 }],
+      ['unknown status', { status: 'FLYING' }],
+      ['invalid email', { user: { email: 'not-an-email' } }],
+    ])('answers 400: %s', async (_name, body) => {
+      const [player] = await createPlayers(t, 1);
+
+      expect((await patch(player.id, body)).status).toBe(400);
+    });
+  });
+
   describe('invalid body: 400', () => {
     it.each([
       ['no playerIds', { seasonId: 2024 }],
@@ -174,30 +239,6 @@ describe('API: players', () => {
 
       expect(res.status).toBe(404);
     });
-
-    // S8.9
-    it.fails(
-      'PATCH does not let change roles and password of the user',
-      async () => {
-        const [player] = await createPlayers(t, 1);
-        const current = (await t.api().get(`/rest/players/${player.id}`)).body;
-
-        await t
-          .api()
-          .patch(`/rest/players/${player.id}`)
-          .set(auth())
-          .send({
-            nickname: player.nickname,
-            user: { id: current.user.id, password: 'plain-text', roles: [] },
-          });
-
-        const stored = await t
-          .model('User')
-          .findOne({ email: current.user.email })
-          .lean();
-        expect(stored.password).not.toBe('plain-text');
-      },
-    );
 
     // S8.10
     it.fails('public GET /players does not expose emails', async () => {

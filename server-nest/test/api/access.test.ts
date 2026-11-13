@@ -26,6 +26,8 @@ interface Case {
   method: Method;
   path: (t: Target) => string;
   body?: (t: Target) => object;
+  /** Any signed-in user may call it; otherwise only ADMIN. */
+  anyRole?: boolean;
 }
 
 // Every route that changes data, plus the protected reads. A new route must be
@@ -100,7 +102,7 @@ const CLOSED: Case[] = [
     name: 'POST /roles',
     method: 'post',
     path: () => '/roles',
-    body: () => ({ name: 'USER' }),
+    body: () => ({ name: 'TEST' }),
   },
   { name: 'GET /users', method: 'get', path: () => '/users' },
   {
@@ -110,11 +112,22 @@ const CLOSED: Case[] = [
     body: () => ({ size: '3' }),
   },
   {
-    name: 'GET /migrations/convert-players-user-to-uuid',
-    method: 'get',
+    name: 'POST /migrations/convert-players-user-to-uuid',
+    method: 'post',
     path: () => '/migrations/convert-players-user-to-uuid',
   },
-  { name: 'GET /auth/whoami', method: 'get', path: () => '/auth/whoami' },
+  {
+    name: 'POST /users/:id/password',
+    method: 'post',
+    path: t => `/users/${t.userId}/password`,
+    body: () => ({ password: 'new-password-1' }),
+  },
+  {
+    name: 'GET /auth/whoami',
+    method: 'get',
+    path: () => '/auth/whoami',
+    anyRole: true,
+  },
 ];
 
 const PUBLIC = [
@@ -191,6 +204,35 @@ describe('API: access matrix', () => {
       );
     },
   );
+
+  it.each(CLOSED.map(c => [c.name, c] as const))(
+    '%s: a plain USER gets 403 (200 where any role is allowed)',
+    async (_name, c) => {
+      const res = await send(c, await target(), {
+        Authorization: `Bearer ${t.userToken}`,
+      });
+
+      expect(res.status).toBe(c.anyRole ? 200 : 403);
+    },
+  );
+
+  it('a plain USER changes nothing: the records are still there', async () => {
+    const tg = await target();
+    const headers = { Authorization: `Bearer ${t.userToken}` };
+
+    await t.api().delete(`/rest/players/${tg.playerId}`).set(headers);
+    await t.api().delete(`/rest/games/${tg.gameId}`).set(headers);
+    await t
+      .api()
+      .patch(`/rest/players/${tg.playerId}`)
+      .set(headers)
+      .send({ nickname: 'hacked' });
+
+    const player = await t.api().get(`/rest/players/${tg.playerId}`);
+    const game = await t.api().get(`/rest/games/${tg.gameId}`);
+    expect(player.body.nickname).not.toBe('hacked');
+    expect(game.body).toMatchObject({ id: tg.gameId });
+  });
 
   it('the matrix covers every route that is not public', () => {
     const covered = CLOSED.map(c => c.name);

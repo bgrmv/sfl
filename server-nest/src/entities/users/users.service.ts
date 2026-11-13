@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import mongoose, { Model } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
+import { hash } from 'src/shared/utils/string';
 import { IUser, User } from './users.schema';
 
 @Injectable()
@@ -69,6 +70,20 @@ export class UsersService {
     } catch {
       return null;
     }
+  }
+
+  /** Returns false if there is no such user. The password is stored hashed (S8.7 changes the algorithm). */
+  async setPassword(
+    id: string | mongoose.Types.UUID,
+    password: string,
+  ): Promise<boolean> {
+    const user = await this.userModel
+      .findByIdAndUpdate(new mongoose.Types.UUID(id), {
+        $set: { password: hash(password) },
+      })
+      .exec();
+
+    return !!user;
   }
 
   deleteUserById(id: string | mongoose.Types.UUID) {

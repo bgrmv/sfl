@@ -13,7 +13,7 @@ export class MigrationsService {
   async convertPlayerUserToUUID(): Promise<Player[]> {
     const cursor = this.playerModel.find().cursor();
 
-    cursor.eachAsync(async doc => {
+    await cursor.eachAsync(async doc => {
       doc.user = new mongoose.Types.UUID(doc.user.toString());
       return await doc.save();
     });

@@ -27,10 +27,11 @@ import {
 import type { Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
-import { ClientPlayer } from '.';
 import {
   RecalculateSeasonDTO,
   RecalculateSeasonDTOOutput,
+  UpdatePlayerDTO,
+  UpdatePlayerDTOOutput,
 } from './players.dto';
 import { Public } from '../../shared/decorators/public.decorator';
 import { FileLoggerService } from '../../shared/services/logger.service';
@@ -125,21 +126,28 @@ export class PlayersController {
     return res.json(captains);
   }
 
-  // TODO add bot validation
   @Patch(':id')
+  @ApiBadRequestResponse({ status: 400, description: 'Invalid body or id' })
   async update(
-    @Req() req: Request,
     @Res() res: Response,
     @Param('id') id: string,
-    @Body() body: ClientPlayer,
+    @Body(new ValibotValidationPipe(UpdatePlayerDTO))
+    { user: userBody, ...playerBody }: UpdatePlayerDTOOutput,
   ) {
-    const { user: userBody, ...playerBody } = body;
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid player id');
+    }
 
-    await this.usersService.patch(userBody.id, userBody);
-    const updatedPlayer = await this.playersService.patch(
-      req.params.id,
-      playerBody,
-    );
+    // The user comes from the player, so the body cannot point to someone else
+    const userId = await this.playersService.findUserId(id);
+    if (!userId) {
+      throw new NotFoundException('Player is not found');
+    }
+
+    if (userBody && Object.keys(userBody).length) {
+      await this.usersService.patch(userId, userBody);
+    }
+    const updatedPlayer = await this.playersService.patch(id, playerBody);
 
     return res.json(updatedPlayer);
   }

@@ -12,6 +12,7 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { addDays } from 'date-fns';
 import type { Request, Response } from 'express';
 import { Public } from 'src/shared/decorators/public.decorator';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 import { ValibotValidationPipe } from 'src/shared/pipes/custom-pipe/valibot-validation.pipe';
 import { AuthRequiredValiSchema } from './auth.dto';
 import { Auth } from './auth.schema';
@@ -26,6 +27,7 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
+  @Roles() // any signed-in user
   @Get('whoami')
   whoami(@Req() req: Request) {
     return (req as any)?.user;

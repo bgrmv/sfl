@@ -1,4 +1,4 @@
-import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
+import { Controller, InternalServerErrorException, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
@@ -33,7 +33,8 @@ export class MigrationsController {
     status: 500,
     description: 'Internal Server Error',
   })
-  @Get('convert-players-user-to-uuid')
+  // Changes data, so it is a POST (ADMIN only by default)
+  @Post('convert-players-user-to-uuid')
   async getPlayersSeasonsTotalPoints(): Promise<TResponse<Player[]>> {
     try {
       return {
