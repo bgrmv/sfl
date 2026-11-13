@@ -12,8 +12,10 @@ export default defineConfig({
   },
   test: {
     globals: true, // Use global `describe`, `it`, etc.
-    include: ['src/**/*.test.ts'], // Specify test file pattern
+    include: ['src/**/*.test.ts', 'test/**/*.test.ts'], // Unit tests next to code, API tests in test/
     environment: 'node',
+    silent: 'passed-only', // logs of passed tests (Nest, winston) only add noise
+    hookTimeout: 120_000, // the first run downloads the mongod binary
 
     exclude: [...configDefaults.exclude, 'e2e/**/*'], // Exclude e2e tests from this config
     coverage: {

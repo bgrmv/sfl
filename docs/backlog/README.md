@@ -157,7 +157,7 @@ flowchart LR
 | ❌ | [S2.1](E02-tests-ci/S2.1.md) | CI для каждого PR | P4 | M | [S1.2](E01-dependency-upgrades/S1.2.md), [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S2.2](E02-tests-ci/S2.2.md) | Golden-master тесты расчёта статистики | P1 | L | [S11.2](E11-dx-docs/S11.2.md) |
 | ❌ | [S2.3](E02-tests-ci/S2.3.md) | Unit-тесты доменной логики | P1 | M | — |
-| ❌ | [S2.4](E02-tests-ci/S2.4.md) | API-тесты прав доступа и CRUD | P1 | M | [S0.1](E00-security-hotfix/S0.1.md) |
+| ✅ | [S2.4](E02-tests-ci/S2.4.md) | API-тесты прав доступа и CRUD | P1 | M | [S0.1](E00-security-hotfix/S0.1.md) |
 | ❌ | [S2.5](E02-tests-ci/S2.5.md) | Клиентские тесты на Vitest вместо Karma/Jasmine | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S2.6](E02-tests-ci/S2.6.md) | E2E-тесты основных сценариев | P4 | M | [S2.1](E02-tests-ci/S2.1.md), [S7.2](E07-vps-hosting/S7.2.md) |
 | ❌ | [S2.7](E02-tests-ci/S2.7.md) | Отчёт о покрытии и пороги | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
