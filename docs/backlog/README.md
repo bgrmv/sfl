@@ -284,7 +284,7 @@ flowchart LR
 | ✅ | [S11.5](E11-dx-docs/S11.5.md) | AGENT.md: инструкции для ИИ-агентов | P0 | S | — |
 | ✅ | [S11.6](E11-dx-docs/S11.6.md) | Dev-container для локальной разработки | P0 | M | — |
 | ❌ | [S11.7](E11-dx-docs/S11.7.md) | Pre-commit хуки: husky и lint-staged | P1 | S | [S1.6](E01-dependency-upgrades/S1.6.md) |
-| ❌ | [S11.8](E11-dx-docs/S11.8.md) | Подбор agent skills для аудитов и дизайна | P1 | S | [S11.5](E11-dx-docs/S11.5.md) |
+| ✅ | [S11.8](E11-dx-docs/S11.8.md) | Подбор agent skills для аудитов и дизайна | P1 | S | [S11.5](E11-dx-docs/S11.5.md) |
 | ❌ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.11](E11-dx-docs/S11.11.md) | Аудит доступности и UI на Angular Material | P2 | M | [S11.8](E11-dx-docs/S11.8.md), [S10.12](E10-product-features/S10.12.md) |
