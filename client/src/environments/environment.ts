@@ -1,3 +1,4 @@
+import { API_URL } from './api-url.generated';
 import { isDevMode } from '@angular/core';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
@@ -7,7 +8,7 @@ export const environment = {
     email: 'dev-admin@sfl.local',
     password: 'dev-admin',
   },
-  API_KEY: 'https://sfl.com:3001/rest',
+  apiUrl: API_URL,
   providers: [
     provideStoreDevtools({
       maxAge: 25,

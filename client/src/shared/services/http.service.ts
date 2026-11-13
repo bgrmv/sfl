@@ -3,7 +3,7 @@ import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-const API_URL = environment.API_KEY;
+const API_URL = environment.apiUrl;
 
 const GET_HEADERS = new HttpHeaders();
 

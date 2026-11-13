@@ -141,6 +141,19 @@ cd server-nest && pnpm test && pnpm build && pnpm lint
 cd client && pnpm build && pnpm lint
 ```
 
+## Окружения клиента
+
+Адрес API подставляется при сборке скриптом [client/scripts/set-env.mjs](client/scripts/set-env.mjs) (запускается из `predev`, `prebuild`, `pretest`, `prelint`) в неотслеживаемый файл `client/src/environments/api-url.generated.ts`. Задаётся переменными `APP_ENV` и `API_URL`:
+
+| `APP_ENV` | Где | `API_URL` по умолчанию |
+|---|---|---|
+| `local` (по умолчанию) | dev-container | `https://sfl.com:3001/rest` |
+| `preview` | предпросмотр PR | тот же origin: `/rest` |
+| `staging` | staging | тот же origin: `/rest` |
+| `production` | прод | тот же origin: `/rest` |
+
+Пример: `APP_ENV=staging API_URL=https://staging.example.com/rest pnpm build:prod`. Поле в коде называется `environment.apiUrl`.
+
 ## Проверка перед коммитом
 
 Из корня репозитория:
