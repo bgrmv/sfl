@@ -299,7 +299,7 @@ flowchart LR
 | ✅ | [S11.9](E11-dx-docs/S11.9.md) | Аудит кода: качество и ошибки | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ✅ | [S11.10](E11-dx-docs/S11.10.md) | Аудит безопасности | P1 | M | [S11.8](E11-dx-docs/S11.8.md) |
 | ❌ | [S11.11](E11-dx-docs/S11.11.md) | Аудит доступности и UI на Angular Material | P2 | M | [S11.8](E11-dx-docs/S11.8.md), [S10.12](E10-product-features/S10.12.md) |
-| ❌ | [S11.12](E11-dx-docs/S11.12.md) | EditorConfig и единые окончания строк | P1 | S | — |
+| ✅ | [S11.12](E11-dx-docs/S11.12.md) | EditorConfig и единые окончания строк | P1 | S | — |
 
 ## Эпик 12 — Производительность и оптимизация
 
