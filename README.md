@@ -1,5 +1,16 @@
 # SFL
 
+Amateur football league app: Angular SPA + NestJS API + MongoDB.
+
+## Documentation
+
+- [GLOSSARY.md](GLOSSARY.md): the language and the rules of the league (game, transfer, rating systems, MVP).
+- [docs/PROJECT.md](docs/PROJECT.md): stack, methodologies, access rights and error format.
+- [docs/adr/](docs/adr/README.md): architecture decisions and why they were made.
+- [docs/backlog/](docs/backlog/README.md): the plan, one story per file, statuses in the index.
+- [docs/audits/](docs/audits/): audit reports (code, security).
+- [AGENT.md](AGENT.md): rules for AI agents working in the repository.
+
 ## Dev-container
 
 Local development without installing Node.js or MongoDB on your machine. Config: [.devcontainer/](.devcontainer/).

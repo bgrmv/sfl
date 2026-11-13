@@ -4,7 +4,7 @@
 
 ## Проект
 
-SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md). Язык и правила лиги (матч, трансфер, система счёта, MVP): [GLOSSARY.md](GLOSSARY.md); меняешь правило расчёта — сначала обнови его там.
+SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md). Архитектурные решения и причины: [docs/adr/](docs/adr/README.md). Язык и правила лиги (матч, трансфер, система счёта, MVP): [GLOSSARY.md](GLOSSARY.md); меняешь правило расчёта — сначала обнови его там.
 
 | Папка | Что это |
 |---|---|
