@@ -1,0 +1,12 @@
+{
+  "name": "sfl",
+  "private": true,
+  "description": "Корень репозитория: только общие команды, зависимостей нет",
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=22.0.0 <23"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs"
+  }
+}

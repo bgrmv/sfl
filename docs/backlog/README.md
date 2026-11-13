@@ -74,7 +74,7 @@
 | Группа | Истории |
 |---|---|
 | **Сборка** | [S7.1](E07-vps-hosting/S7.1.md) Docker-образ, [S7.5](E07-vps-hosting/S7.5.md) SSR |
-| **Деплой** | Хостинг и инфраструктура: [S7.2](E07-vps-hosting/S7.2.md), [S7.3](E07-vps-hosting/S7.3.md), [S7.4](E07-vps-hosting/S7.4.md), [S7.7](E07-vps-hosting/S7.7.md), [S7.8](E07-vps-hosting/S7.8.md), [S7.9](E07-vps-hosting/S7.9.md). Переезд: [S6.7](E06-data-migration/S6.7.md), [S6.8](E06-data-migration/S6.8.md), [S6.9](E06-data-migration/S6.9.md). Зависят от деплоя: [S8.5](E08-security-privacy/S8.5.md), [S8.6](E08-security-privacy/S8.6.md), [S9.1](E09-observability/S9.1.md), [S9.2](E09-observability/S9.2.md), [S10.9](E10-product-features/S10.9.md), [S10.10](E10-product-features/S10.10.md), [S11.3](E11-dx-docs/S11.3.md) |
+| **Деплой** | Хостинг и инфраструктура: [S7.2](E07-vps-hosting/S7.2.md), [S7.3](E07-vps-hosting/S7.3.md), [S7.4](E07-vps-hosting/S7.4.md), [S7.7](E07-vps-hosting/S7.7.md), [S7.8](E07-vps-hosting/S7.8.md), [S7.9](E07-vps-hosting/S7.9.md). Ротация учётных данных: [S0.7](E00-security-hotfix/S0.7.md). Переезд: [S6.7](E06-data-migration/S6.7.md), [S6.8](E06-data-migration/S6.8.md), [S6.9](E06-data-migration/S6.9.md). Зависят от деплоя: [S8.5](E08-security-privacy/S8.5.md), [S8.6](E08-security-privacy/S8.6.md), [S9.1](E09-observability/S9.1.md), [S9.2](E09-observability/S9.2.md), [S10.9](E10-product-features/S10.9.md), [S10.10](E10-product-features/S10.10.md), [S11.3](E11-dx-docs/S11.3.md) |
 | **CI/CD** | [S2.1](E02-tests-ci/S2.1.md) CI на PR, [S2.6](E02-tests-ci/S2.6.md) E2E, [S2.7](E02-tests-ci/S2.7.md) покрытие, [S1.11](E01-dependency-upgrades/S1.11.md) авто-обновления, [S8.3](E08-security-privacy/S8.3.md) сканеры в CI, [S7.6](E07-vps-hosting/S7.6.md) деплой из Actions |
 
 Локальные замены отложенным проверкам: вместо CI — [S2.8](E02-tests-ci/S2.8.md), вместо сканеров в CI — [S8.8](E08-security-privacy/S8.8.md).
@@ -129,16 +129,16 @@ flowchart LR
 | ✅ | [S0.2](E00-security-hotfix/S0.2.md) | Убрать пароль и учётные данные базы из логов | P0 | S | — |
 | ✅ | [S0.3](E00-security-hotfix/S0.3.md) | Валидация должна отклонять неверные данные | P0 | S | — |
 | ✅ | [S0.4](E00-security-hotfix/S0.4.md) | Пересчёт статистики через POST и с ожиданием результата | P0 | S | [S0.1](E00-security-hotfix/S0.1.md) |
-| ❌ | [S0.5](E00-security-hotfix/S0.5.md) | Убрать хеши паролей и персональные данные из git | P0 | M | — |
+| ✅ | [S0.5](E00-security-hotfix/S0.5.md) | Убрать хеши паролей и персональные данные из git | P0 | M | — |
 | ⛔ | [S0.6](E00-security-hotfix/S0.6.md) | Вынести SSL-passphrase из кода | — | — | — |
-| ❌ | [S0.7](E00-security-hotfix/S0.7.md) | Ротация учётных данных после публикации в git | P0 | S | — |
+| ❌ | [S0.7](E00-security-hotfix/S0.7.md) | Ротация учётных данных после публикации в git | P4 | S | — |
 
 ## Эпик 1 — Обновление зависимостей и инструментов
 
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
-| ❌ | [S1.1](E01-dependency-upgrades/S1.1.md) | Инвентаризация зависимостей и целевые версии | P0 | S | — |
-| ❌ | [S1.2](E01-dependency-upgrades/S1.2.md) | Единые версии Node.js и pnpm | P0 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
+| ✅ | [S1.1](E01-dependency-upgrades/S1.1.md) | Инвентаризация зависимостей и целевые версии | P0 | S | — |
+| ✅ | [S1.2](E01-dependency-upgrades/S1.2.md) | Единые версии Node.js и pnpm | P0 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
 | ⛔ | [S1.3](E01-dependency-upgrades/S1.3.md) | Обновить GitHub Actions | — | — | — |
 | ❌ | [S1.4](E01-dependency-upgrades/S1.4.md) | Обновить Angular до актуального мажора | P1 | L | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S1.5](E01-dependency-upgrades/S1.5.md) | Обновить клиентские библиотеки | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
@@ -161,7 +161,7 @@ flowchart LR
 | ❌ | [S2.5](E02-tests-ci/S2.5.md) | Перевести клиентские тесты на поддерживаемый раннер | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ❌ | [S2.6](E02-tests-ci/S2.6.md) | E2E-тесты основных сценариев | P4 | M | [S2.1](E02-tests-ci/S2.1.md), [S7.2](E07-vps-hosting/S7.2.md) |
 | ❌ | [S2.7](E02-tests-ci/S2.7.md) | Отчёт о покрытии и пороги | P4 | S | [S2.1](E02-tests-ci/S2.1.md) |
-| ❌ | [S2.8](E02-tests-ci/S2.8.md) | Единая локальная команда проверки | P1 | S | [S1.2](E01-dependency-upgrades/S1.2.md) |
+| ✅ | [S2.8](E02-tests-ci/S2.8.md) | Единая локальная команда проверки | P1 | S | [S1.2](E01-dependency-upgrades/S1.2.md) |
 
 ## Эпик 3 — Улучшение архитектуры
 

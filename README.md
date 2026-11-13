@@ -130,6 +130,19 @@ cd server-nest && pnpm test && pnpm build && pnpm lint
 cd client && pnpm build && pnpm lint
 ```
 
+## Проверка перед коммитом
+
+Из корня репозитория:
+
+```bash
+pnpm check                      # lint, типы, тесты, prod-сборка; падает на первой ошибке
+pnpm check --all                # прогнать всё и показать сводку
+pnpm check --skip=client:build  # пропустить шаг
+pnpm check --include-known      # включить шаги, которые падают по известным причинам
+```
+
+Команда ничего не правит и не ходит в сеть и в базу. Шаги `client:test` (нужен браузер, [S2.5](docs/backlog/E02-tests-ci/S2.5.md)) и `server:lint` (старый конфиг ESLint, [S1.6](docs/backlog/E01-dependency-upgrades/S1.6.md)) пропускаются с указанием причины.
+
 ## Epics
 
 - [ ] - Capitans score

@@ -3,10 +3,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-# Until S1.2 sets packageManager in package.json, pnpm is pinned here
-PNPM_VERSION="9.12.3"
-
 cd "$ROOT"
+
+# pnpm version comes from packageManager in client/package.json
+PNPM_VERSION="$(node -p "require('./client/package.json').packageManager.split('@')[1]")"
 
 echo "==> pnpm $PNPM_VERSION via corepack"
 # The image ships a global pnpm from npm that shadows the corepack shim
@@ -14,7 +14,6 @@ npm uninstall -g pnpm >/dev/null 2>&1 || true
 hash -r
 sudo corepack enable
 export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-# Do not write packageManager into package.json: that is S1.2
 export COREPACK_ENABLE_AUTO_PIN=0
 corepack prepare "pnpm@$PNPM_VERSION" --activate
 
