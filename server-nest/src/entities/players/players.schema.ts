@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { EnumPlayerStatus } from '@sfl/schemas';
 import { User } from '../users';
 
 import mongoose from 'mongoose';
@@ -43,13 +44,7 @@ export interface ClientPlayer {
   metadata: TPlayerMetadata;
 }
 
-export enum EnumPlayerStatus {
-  Deceased = 'DECEASED',
-  Retired = 'RETIRED',
-  Inactive = 'INACTIVE',
-  Injured = 'INJURED',
-  Active = 'ACTIVE',
-}
+export { EnumPlayerStatus };
 
 export enum EnumPlayerCollection {
   Player = 'players',

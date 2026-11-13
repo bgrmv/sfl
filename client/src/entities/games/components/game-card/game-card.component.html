@@ -1,4 +1,7 @@
-@if ([enumGameStatus.New, enumGameStatus.Draft].includes(gameCard().status)) {
+@if (
+  gameCard().status === enumGameStatus.New ||
+  gameCard().status === enumGameStatus.Draft
+) {
   <mat-card
     class="card-border"
     [class]="wonTeamClass() | lowercase"

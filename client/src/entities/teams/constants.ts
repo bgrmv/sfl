@@ -1,4 +1,1 @@
-export enum EnumTeamColor {
-  White = 'WHITE',
-  Red = 'RED',
-}
+export { EnumTeamColor } from '@sfl/schemas';

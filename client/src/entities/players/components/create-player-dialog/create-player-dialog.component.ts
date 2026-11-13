@@ -135,9 +135,9 @@ export class CreatePlayerDialogComponent implements OnInit, AfterViewInit {
   onSubmit() {
     // TODO - exclude type casting
     const player = this.formGroup.getRawValue() as IPlayerDTO;
-    player.user.email = player.user.email.endsWith(emailDomen)
-      ? player.user.email
-      : player.user.email + emailDomen;
+    // The form requires the email, the shared type leaves it optional for non-admins
+    const email = player.user.email ?? '';
+    player.user.email = email.endsWith(emailDomen) ? email : email + emailDomen;
 
     of(player)
       .pipe(

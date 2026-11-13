@@ -1,17 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { EnumTeamColor, type TeamDTO } from '@sfl/schemas';
 
-export interface ITeam {
-  id: string;
-  name: string;
-  color: EnumTeamColor;
-  description?: string;
-}
+// The same shape the API exchanges with the client (@sfl/schemas)
+export type ITeam = TeamDTO;
 
-export enum EnumTeamColor {
-  White = 'WHITE',
-  Red = 'RED',
-}
+export { EnumTeamColor };
 
 const transform = (_doc, ret: Record<string, any>) => {
   ret.id = ret._id;

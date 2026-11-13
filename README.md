@@ -72,7 +72,7 @@ Not everything needs a rebuild:
 
 | Changed | What to do |
 |---|---|
-| Image, `features`, the `workspace` service in compose (env, mounts, ports), or you want `post-create.sh` to run again | Rebuild |
+| Image, `features`, the `workspace` service in compose (env, mounts, ports; for example a volume for a new `packages/*/node_modules`), or you want `post-create.sh` to run again | Rebuild |
 | `extensions` list | Install them (see Troubleshooting), no rebuild |
 | `settings`, `portsAttributes` | **Developer: Reload Window** |
 | `package.json` dependencies | `pnpm install` in the container |

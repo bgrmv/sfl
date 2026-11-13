@@ -1,25 +1,29 @@
 // TODO X imports - isolate
 
-import { EnumTeamColor } from '@entities/teams/constants';
+import {
+  EnumPlayerPosition,
+  type GameDTO,
+  type PlayerDTO,
+  type PlayerStatisticDTO,
+  type TeamDTO,
+} from '@sfl/schemas';
 import { EnumGameStatus } from './constants';
 
 // Game
 export interface IGameSettings {}
-export interface IGameDTO {
-  id: string;
-  number: number;
-  season: number;
+// The shape of the API is GameDTO (@sfl/schemas); the client keeps dates as Date
+// and has the extra placeholder status of a game that is not played yet
+export type IGameDTO = Omit<
+  GameDTO,
+  'playedAt' | 'createdAt' | 'updatedAt' | 'status' | 'teams' | 'statistics'
+> & {
   playedAt: Date;
   createdAt?: Date;
   updatedAt?: Date;
-  teams: ITeamDTO[];
   status: EnumGameStatus;
+  teams: ITeamDTO[];
   statistics: IPlayerStatisticDTO[];
-  link: string;
-  description: string;
-  notes: [string, string];
-  metadata?: any;
-}
+};
 
 export type TGameFinal = SetOptional<IGameDTO, 'id'> & IGameSettings;
 
@@ -27,67 +31,24 @@ export type TGameFinalWithoutStatistics = Omit<TGameFinal, 'statistics'>;
 
 // Team
 export interface ITeamSettings {}
-export interface ITeamDTO {
-  id: string;
-  name: string;
-  color: EnumTeamColor;
-  description?: string;
-  logo?: string | null;
-}
+// The shape of the API, declared once in @sfl/schemas
+export type ITeamDTO = TeamDTO;
 export type TTeamFinal = ITeamDTO & ITeamSettings;
 
 // Players
 export interface IPlayerSettings {}
-export interface IPlayerDTO {
-  id: string;
-  number?: number;
-  avatar?: string;
-  isCaptain: boolean;
-  nickname: string;
-
-  user: {
-    id: string;
-    email: string;
-    name?: string;
-    surname?: string;
-    avatar?: string;
-  };
-}
+export type IPlayerDTO = PlayerDTO;
 export type TPlayerFinal = IPlayerDTO & IPlayerSettings;
 
 // Statistic
-export enum EnumPlayerPosition {
-  Goalkeeper = 'GK',
-  Defender = 'DEF',
-  Midfielder = 'MID',
-  ForwardStriker = 'FRWD',
-}
+export { EnumPlayerPosition };
 
 export interface IPlayerStatisticSettings {
   id: string;
   playerData: TPlayerFinal;
 }
 
-export interface IPlayerStatisticDTO {
-  playerId: string;
-  teamId: string;
-
-  passes: number;
-  goalsByLeg: number;
-  goalsByHead: number;
-  goalsByAuto: number;
-  goalsByPenalty: number;
-
-  isMVP: boolean;
-  isCaptain: boolean;
-  isTransfer: boolean;
-
-  position: EnumPlayerPosition;
-  // More details
-  // distance?: number;
-  // injure?: boolean;
-  // pulse?: number;
-}
+export type IPlayerStatisticDTO = PlayerStatisticDTO;
 
 export type TPlayerStatisticFinal = IPlayerStatisticDTO &
   IPlayerStatisticSettings;

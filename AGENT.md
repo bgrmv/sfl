@@ -10,11 +10,12 @@ SFL — приложение для любительской футбольно�
 |---|---|
 | `client/` | Angular SPA (слои FSD: `app`, `pages`, `widgets`, `features`, `entities`, `shared`) |
 | `server-nest/` | основной API: NestJS, Mongoose |
+| `packages/` | общие пакеты workspace: `@sfl/schemas` (enum и DTO API для клиента и сервера) |
 | `docs/backlog/` | истории по эпикам `E00`–`E12`, статусы в `README.md` |
 | `.devcontainer/` | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md)) |
 | `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты» |
 
-Позже появятся `packages/`, `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
+Позже появятся `packages/domain`, `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
 
 ## Окружение
 
@@ -22,13 +23,15 @@ SFL — приложение для любительской футбольно�
 
 ## Команды
 
+**Общие пакеты (`packages/*`) читаются клиентом и сервером из `dist/`: `pnpm build:packages` из корня их собирает; `pnpm check` и скрипты `dev`, `build`, `test` делают это сами.** Меняешь форму API — меняй её в `@sfl/schemas`, а не в клиенте и сервере по отдельности ([ADR 0009](docs/adr/0009-pnpm-workspace-separate-lockfiles.md)).
+
 **Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. Шаги, которые падают по известным причинам, пропускаются с выводом причины; список — константа `KNOWN` в скрипте (сейчас пуст).
 
 Остальные команды запускай из папки пакета.
 
 | Действие | `client/` | `server-nest/` |
 |---|---|---|
-| Установка | `pnpm install` | `pnpm install` |
+| Установка | `pnpm install` из корня ставит всё (workspace) | то же |
 | Запуск | `pnpm dev -- --host 0.0.0.0` (https, порт 4200) | `pnpm start:dev` (порт 3001) |
 | Линт | `pnpm lint` | `pnpm lint` (с `--fix`) |
 | Типы и сборка | `pnpm build` | `pnpm build` |

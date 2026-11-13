@@ -4,10 +4,15 @@
   "description": "SFL (Saturday Football League) client",
   "scripts": {
     "ng": "ng",
+    "predev": "pnpm --dir .. build:packages",
     "dev": "ng serve",
+    "prebuild": "pnpm --dir .. build:packages",
     "build": "ng build",
+    "prebuild:prod": "pnpm --dir .. build:packages",
     "build:prod": "ng build --configuration production",
+    "prewatch": "pnpm --dir .. build:packages",
     "watch": "ng build  --configuration development --watch",
+    "pretest": "pnpm --dir .. build:packages",
     "test": "ng test",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix"
@@ -29,6 +34,7 @@
     "@ngrx/signals": "^22.0.1",
     "@ngrx/store": "~22.0.1",
     "@ngrx/store-devtools": "^22.0.1",
+    "@sfl/schemas": "workspace:*",
     "date-fns": "^4.4.0",
     "highcharts": "^13.1.1",
     "highcharts-angular": "^5.4.1",

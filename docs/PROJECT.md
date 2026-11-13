@@ -56,6 +56,7 @@ SFL — приложение для любительской футбольно�
 |---|---|---|
 | `client/` | Angular SPA, FSD | интерфейс |
 | `server-nest/` | NestJS API, Mongoose, `src/entities/*`, `src/shared`, `src/config` | бизнес-логика и данные |
+| `packages/schemas/` | `@sfl/schemas`: enum и DTO API, одно объявление для клиента и сервера ([ADR 0009](adr/0009-pnpm-workspace-separate-lockfiles.md)) | общий контракт |
 | `docs/` | `PROJECT.md` (этот файл), `skills.md`, `backlog/`, `upgrades.md`, `archive/` | документация |
 | `scripts/` | `check.mjs` и другие скрипты репозитория | инструменты |
 | `.devcontainer/` | окружение разработки | инфраструктура |

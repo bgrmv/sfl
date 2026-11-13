@@ -169,7 +169,7 @@ flowchart LR
 | Статус | ID | История | Приоритет | Размер | Зависит от |
 |:-:|---|---|:-:|:-:|---|
 | ❌ | [S3.1](E03-architecture/S3.1.md) | Вынести доменную логику в независимый модуль | P1 | L | [S2.2](E02-tests-ci/S2.2.md), [S2.3](E02-tests-ci/S2.3.md) |
-| ❌ | [S3.2](E03-architecture/S3.2.md) | pnpm workspace и общие схемы и типы | P1 | M | [S1.2](E01-dependency-upgrades/S1.2.md) |
+| ✅ | [S3.2](E03-architecture/S3.2.md) | pnpm workspace и общие схемы и типы | P1 | M | [S1.2](E01-dependency-upgrades/S1.2.md) |
 | ❌ | [S3.3](E03-architecture/S3.3.md) | Разорвать цикл games ↔ players | P2 | M | [S3.1](E03-architecture/S3.1.md) |
 | ❌ | [S3.4](E03-architecture/S3.4.md) | Единый формат ответов API | P2 | M | [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S3.5](E03-architecture/S3.5.md) | Атомарное сохранение матча и пересчёта | P2 | M | [S3.3](E03-architecture/S3.3.md) |

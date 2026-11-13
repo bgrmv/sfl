@@ -1,30 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { ObjectId } from 'src/constants';
-import { EnumPlayerPosition } from '../players/constants/player-career-metadata';
+import {
+  EnumGameStatus,
+  EnumPlayerPosition,
+  type PlayerStatisticDTO,
+} from '@sfl/schemas';
 import { ITeam, Team } from '../teams/team.schema';
 
-export interface IPlayerStatistic {
-  playerId: string;
-  teamId: string;
-
-  passes: number;
-  goalsByLeg: number;
-  goalsByHead: number;
-  goalsByPenalty: number;
+// The API shape (@sfl/schemas). Games stored before own goals were counted
+// have no `goalsByAuto`, so in the database it is optional.
+export type IPlayerStatistic = Omit<PlayerStatisticDTO, 'goalsByAuto'> & {
   goalsByAuto?: number;
+};
 
-  isMVP: boolean;
-  isTransfer: boolean;
-  isCaptain: boolean;
-
-  position: EnumPlayerPosition | null;
-
-  // More details
-  // distance?: number;
-  // injure?: boolean;
-  // pulse?: number;
-}
+export { EnumGameStatus };
 
 export interface IPlayerGameResultMetadata {
   isMvp: boolean;
@@ -115,12 +105,6 @@ export interface IGame {
   link: string;
   notes: [string, string];
   metadata: IGameMetadata;
-}
-
-export enum EnumGameStatus {
-  New = 'new',
-  Draft = 'draft',
-  Published = 'published',
 }
 
 @Schema({

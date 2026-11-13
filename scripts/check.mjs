@@ -6,7 +6,8 @@
 //   pnpm check --all                 прогнать всё и напечатать сводку
 //   pnpm check --skip=client:test    пропустить шаги (через запятую)
 //   pnpm check --include-known       включить шаги из KNOWN (они падают по известным причинам)
-//   pnpm check --only=server         только пакет (client | server) или шаг (server:test)
+//   pnpm check --only=server         только пакет (client | server) или шаг (server:test);
+//                                    общие пакеты (packages:build) собираются всегда
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,6 +15,8 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const STEPS = [
+  // The client and the server read the shared packages from their dist/
+  { id: 'packages:build', cwd: '.', cmd: 'pnpm build:packages' },
   { id: 'client:lint', cwd: 'client', cmd: 'pnpm exec ng lint' },
   { id: 'client:types', cwd: 'client', cmd: 'pnpm exec tsc --noEmit -p tsconfig.app.json && pnpm exec tsc --noEmit -p tsconfig.spec.json' },
   { id: 'client:test', cwd: 'client', cmd: 'pnpm exec ng test --watch=false' },
@@ -45,7 +48,7 @@ if (unknown.length) {
 const results = [];
 let failed = false;
 for (const step of STEPS) {
-  const selected = !only.length || only.some((o) => step.id === o || step.id.startsWith(`${o}:`));
+  const selected = step.id === 'packages:build' || !only.length || only.some((o) => step.id === o || step.id.startsWith(`${o}:`));
   if (!selected) continue;
   const label = step.id.padEnd(13);
   if (skip.has(step.id)) {

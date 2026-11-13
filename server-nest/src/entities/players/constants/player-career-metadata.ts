@@ -1,3 +1,5 @@
+import { EnumPlayerPosition } from '@sfl/schemas';
+
 export interface IRatingSystem {
   /**
    * +/- Statistics
@@ -164,12 +166,7 @@ export type TPlayerMetadata = {
   byCareer: IPlayerMetadata;
 };
 
-export enum EnumPlayerPosition {
-  Goalkeeper = 'GK',
-  Defender = 'DEF',
-  Midfielder = 'MID',
-  ForwardStriker = 'FRWD',
-}
+export { EnumPlayerPosition };
 
 export const RATING_SYSTEM_DEFAULT:
   IAncientRatingSystem | IPositionalRatingSystem = Object.freeze({
