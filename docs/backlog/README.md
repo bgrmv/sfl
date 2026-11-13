@@ -185,6 +185,8 @@ flowchart LR
 |   ❌   | [S3.14](E03-architecture/S3.14.md) | Пересчёт метаданных всех матчей после исправления расчёта       |    P2     |   S    | [S3.11](E03-architecture/S3.11.md)                                        |
 |   ❌   | [S3.15](E03-architecture/S3.15.md) | Перейти на zoneless и убрать zone.js                            |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md) |
 |   ❌   | [S3.16](E03-architecture/S3.16.md) | Signal forms: пилот на одной форме                              |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md) |
+|   ❌   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                          |
+|   ❌   | [S3.18](E03-architecture/S3.18.md) | Реактивность клиента по практикам Angular 22                    |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md)                                   |
 
 ## Эпик 4 — Spike и проектирование переезда
 
@@ -269,21 +271,23 @@ flowchart LR
 
 Истории взяты из TODO в [README.md](../../README.md). Описания уточняются с владельцем продукта.
 
-| Статус | ID                                       | История                                                  | Приоритет | Размер | Зависит от                                                                        |
-| :----: | ---------------------------------------- | -------------------------------------------------------- | :-------: | :----: | --------------------------------------------------------------------------------- |
-|   ❌   | [S10.1](E10-product-features/S10.1.md)   | Пагинация матчей от новых к старым                       |    P3     |   S    | [S3.4](E03-architecture/S3.4.md)                                                  |
-|   ❌   | [S10.2](E10-product-features/S10.2.md)   | Удалённые матчи не отображаются                          |    P3     |   S    | —                                                                                 |
-|   ❌   | [S10.3](E10-product-features/S10.3.md)   | Дашборд с графиками                                      |    P3     |   M    | —                                                                                 |
-|   ❌   | [S10.4](E10-product-features/S10.4.md)   | Графики на страницах матча и игрока                      |    P3     |   M    | —                                                                                 |
-|   ❌   | [S10.5](E10-product-features/S10.5.md)   | Рейтинг капитанов                                        |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                  |
-|   ❌   | [S10.6](E10-product-features/S10.6.md)   | KPI игрока                                               |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                  |
-|   ❌   | [S10.7](E10-product-features/S10.7.md)   | Экспорт в PDF                                            |    P3     |   M    | [S10.3](E10-product-features/S10.3.md)                                            |
-|   ❌   | [S10.8](E10-product-features/S10.8.md)   | Решить судьбу скрытых страниц                            |    P3     |   S    | —                                                                                 |
-|   ❌   | [S10.9](E10-product-features/S10.9.md)   | Плановые задачи на сервере                               |    P4     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                   |
-|   ❌   | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени                            |    P4     |   M    | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md)                  |
-|   ❌   | [S10.11](E10-product-features/S10.11.md) | Выбор дизайн-направления через design skills             |    P2     |   S    | [S11.8](E11-dx-docs/S11.8.md)                                                     |
-|   ❌   | [S10.12](E10-product-features/S10.12.md) | Тема Angular Material: палитра, типографика, тёмная тема |    P2     |   M    | [S10.11](E10-product-features/S10.11.md), [S1.4](E01-dependency-upgrades/S1.4.md) |
-|   ❌   | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам                         |    P3     |   M    | [S10.12](E10-product-features/S10.12.md)                                          |
+| Статус | ID                                       | История                                                     | Приоритет | Размер | Зависит от                                                                         |
+| :----: | ---------------------------------------- | ----------------------------------------------------------- | :-------: | :----: | ---------------------------------------------------------------------------------- |
+|   ❌   | [S10.1](E10-product-features/S10.1.md)   | Пагинация матчей от новых к старым                          |    P3     |   S    | [S3.4](E03-architecture/S3.4.md)                                                   |
+|   ❌   | [S10.2](E10-product-features/S10.2.md)   | Удалённые матчи не отображаются                             |    P3     |   S    | —                                                                                  |
+|   ❌   | [S10.3](E10-product-features/S10.3.md)   | Дашборд с графиками                                         |    P3     |   M    | —                                                                                  |
+|   ❌   | [S10.4](E10-product-features/S10.4.md)   | Графики на страницах матча и игрока                         |    P3     |   M    | —                                                                                  |
+|   ❌   | [S10.5](E10-product-features/S10.5.md)   | Рейтинг капитанов                                           |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                   |
+|   ❌   | [S10.6](E10-product-features/S10.6.md)   | KPI игрока                                                  |    P3     |   M    | [S3.1](E03-architecture/S3.1.md)                                                   |
+|   ❌   | [S10.7](E10-product-features/S10.7.md)   | Экспорт в PDF                                               |    P3     |   M    | [S10.3](E10-product-features/S10.3.md)                                             |
+|   ❌   | [S10.8](E10-product-features/S10.8.md)   | Решить судьбу скрытых страниц                               |    P3     |   S    | —                                                                                  |
+|   ❌   | [S10.9](E10-product-features/S10.9.md)   | Плановые задачи на сервере                                  |    P4     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                    |
+|   ❌   | [S10.10](E10-product-features/S10.10.md) | Обновления в реальном времени                               |    P4     |   M    | [S7.3](E07-vps-hosting/S7.3.md), [S7.5](E07-vps-hosting/S7.5.md)                   |
+|   ❌   | [S10.11](E10-product-features/S10.11.md) | Выбор дизайн-направления через design skills                |    P2     |   S    | [S11.8](E11-dx-docs/S11.8.md)                                                      |
+|   ❌   | [S10.12](E10-product-features/S10.12.md) | Тема Angular Material: палитра, типографика, тёмная тема    |    P2     |   M    | [S10.11](E10-product-features/S10.11.md), [S1.4](E01-dependency-upgrades/S1.4.md)  |
+|   ❌   | [S10.13](E10-product-features/S10.13.md) | Применить тему ко всем страницам                            |    P3     |   M    | [S10.12](E10-product-features/S10.12.md)                                           |
+|   ❌   | [S10.14](E10-product-features/S10.14.md) | Состояния интерфейса и движение                             |    P2     |   M    | [S3.10](E03-architecture/S3.10.md)                                                 |
+|   ❌   | [S10.15](E10-product-features/S10.15.md) | Мультиязычность интерфейса (английский, латышский, русский) |    P3     |   M    | [S10.14](E10-product-features/S10.14.md), [S10.12](E10-product-features/S10.12.md) |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 
