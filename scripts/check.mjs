@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Единая локальная проверка (S2.8): lint, типы, тесты, prod-сборка обоих пакетов.
-// Не меняет исходники, не ходит в сеть и в базу. Сборка пишет только в dist/ (в .gitignore).
+// Не меняет исходники и не ходит в базу. Сборка пишет только в dist/ (в .gitignore).
+// Шаги audit:* ходят в реестр npm (pnpm audit), остальные работают без сети.
+// secrets:* требуют gitleaks (ставится в dev-container, .devcontainer/install-gitleaks.sh), конфиг .gitleaks.toml (S8.8).
 //
 //   pnpm check                       до первой ошибки
 //   pnpm check --all                 прогнать всё и напечатать сводку
@@ -26,6 +28,11 @@ const STEPS = [
   { id: 'server:types', cwd: 'server-nest', cmd: 'pnpm exec tsc --noEmit -p tsconfig.json' },
   { id: 'server:test', cwd: 'server-nest', cmd: 'pnpm vitest run' },
   { id: 'server:build', cwd: 'server-nest', cmd: 'pnpm build' },
+  { id: 'audit:client', cwd: 'client', cmd: 'pnpm audit --audit-level high' },
+  { id: 'audit:server', cwd: 'server-nest', cmd: 'pnpm audit --audit-level high' },
+  { id: 'audit:packages', cwd: 'packages/schemas', cmd: 'pnpm audit --audit-level high' },
+  { id: 'secrets:tree', cwd: '.', cmd: 'gitleaks dir . --no-banner --redact -c .gitleaks.toml' },
+  { id: 'secrets:history', cwd: '.', cmd: 'gitleaks git . --no-banner --redact -c .gitleaks.toml' },
 ];
 
 // Шаги, которые сейчас падают по известным причинам. Пропускаются явно, с выводом причины.
@@ -51,7 +58,7 @@ let failed = false;
 for (const step of STEPS) {
   const selected = step.id.startsWith('packages:') || !only.length || only.some((o) => step.id === o || step.id.startsWith(`${o}:`));
   if (!selected) continue;
-  const label = step.id.padEnd(13);
+  const label = step.id.padEnd(16);
   if (skip.has(step.id)) {
     results.push({ step, status: 'пропущен (--skip)' });
     console.log(`${label} пропущен (--skip)`);
@@ -79,6 +86,6 @@ for (const step of STEPS) {
 
 if (all) {
   console.log('\nСводка:');
-  for (const { step, status } of results) console.log(`  ${step.id.padEnd(13)} ${status}`);
+  for (const { step, status } of results) console.log(`  ${step.id.padEnd(16)} ${status}`);
 }
 process.exit(failed ? 1 : 0);

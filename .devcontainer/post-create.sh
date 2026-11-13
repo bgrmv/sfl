@@ -42,6 +42,9 @@ pnpm install --frozen-lockfile --config.confirm-modules-purge=false
 # The client and the server read the shared packages from their dist/
 pnpm build:packages
 
+echo "==> gitleaks (secret scanner for pnpm check)"
+bash .devcontainer/install-gitleaks.sh
+
 echo "==> server-nest/.env"
 if [ ! -f server-nest/.env ]; then
   cp .devcontainer/server-nest.env server-nest/.env

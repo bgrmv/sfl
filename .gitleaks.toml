@@ -1,0 +1,27 @@
+# Secret scanner config (S8.8). Run via `pnpm check` (steps secrets:tree, secrets:history).
+# Every exception below says why it is safe; do not add one without a reason.
+title = "SFL"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Local and generated folders that are not tracked by git: prod dumps, backups, dev certificates (ssl/ is a self-signed sfl.com pair for the dev server; its key was committed once in 2023, commit 1ab22f14, and protects nothing), dependency stores and build output"
+paths = [
+  '''^_dumps/''',
+  '''^_backups/''',
+  '''^ssl/''',
+  '''(^|/)\.pnpm-store/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)dist/''',
+  '''(^|/)\.angular/''',
+]
+
+[[allowlists]]
+description = "Password hashes of fake users in old mock data and an old dump; the only real test account is rotated in S0.7. Reviewed in docs/audits/secrets-2026-11-13.md"
+paths = [
+  '''^client/src/entities/players/services/players\.mock\.ts$''',
+  '''^client/public/mock/list\.json$''',
+  '''^server/src/app/db/entities/user\.json$''',
+  '''^server-nest/README\.md$''',
+]

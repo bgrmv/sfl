@@ -159,7 +159,7 @@ cd client && pnpm build && pnpm lint
 Из корня репозитория:
 
 ```bash
-pnpm check                      # lint, типы, тесты, prod-сборка; падает на первой ошибке
+pnpm check                      # lint, типы, тесты, prod-сборка, audit и поиск секретов; падает на первой ошибке
 pnpm check --all                # прогнать всё и показать сводку
 pnpm check --skip=client:build  # пропустить шаг
 pnpm check --include-known      # включить шаги, которые падают по известным причинам

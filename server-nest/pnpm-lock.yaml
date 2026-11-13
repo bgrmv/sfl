@@ -4,6 +4,35 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  body-parser@<1.20.9: ^1.20.9
+  proxy-addr@<2.0.8: ^2.0.8
+  multer: ^2.0.2
+  jws@<3.2.3: ^3.2.3
+  lodash@<4.18.0: ^4.18.0
+  path-to-regexp@<0.2.0: ^0.1.13
+  path-to-regexp@>=0.2.0 <1.0.0: ^1.9.0
+  path-to-regexp@>=3.0.0 <3.3.0: ^3.3.0
+  rollup@<4.59.0: ^4.59.0
+  flatted@<3.4.2: ^3.4.2
+  brace-expansion@<1.1.20: ^1.1.20
+  brace-expansion@>=2.0.0 <2.1.6: ^2.1.6
+  minimatch@<3.1.4: ^3.1.4
+  minimatch@>=8.0.0 <8.0.6: ^8.0.6
+  minimatch@>=9.0.0 <9.0.7: ^9.0.7
+  glob@>=10.0.0 <10.5.0: ^10.5.0
+  cross-spawn@<7.0.5: ^7.0.5
+  braces@<3.0.3: ^3.0.3
+  picomatch@<2.3.2: ^2.3.2
+  picomatch@>=3.0.0 <3.0.2: ^3.0.2
+  tmp@<0.2.6: ^0.2.6
+  js-yaml@>=4.0.0 <4.3.2: ^4.3.2
+  serialize-javascript@<7.0.3: ^7.0.3
+  browserslist@<4.28.7: ^4.28.7
+  postcss@<8.5.18: ^8.5.18
+  nanoid@<3.3.18: ^3.3.18
+  source-map-js@<1.2.2: ^1.2.2
+
 importers:
 
   .:
@@ -776,7 +805,7 @@ packages:
     resolution: {integrity: sha512-P9ZvnfouRu4MSC+ilERaw6FmZs8zqKhpHxEs4aGDGWQAMzQGXnhvCSvoNwokfNvdt7t3Y5Y4p6gStQgezeIqug==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: ^4.59.0
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -1722,7 +1751,7 @@ packages:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: ^3 || ^4
+      picomatch: ^3.0.2
     peerDependenciesMeta:
       picomatch:
         optional: true
@@ -2841,7 +2870,7 @@ packages:
       bun-types-no-globals: '*'
       esbuild: '*'
       rolldown: '*'
-      rollup: '*'
+      rollup: ^4.59.0
       unloader: '*'
       vite: '*'
       webpack: '*'
@@ -2871,7 +2900,7 @@ packages:
     resolution: {integrity: sha512-t8wonIOdQyOjtPd2VktlBu6QjTVTks6v8bSi7kd0r2Vll8TK1JYDZtRRdbmCHOAMphkZgrzK+L+vXK4pyZ8t4A==}
     hasBin: true
     peerDependencies:
-      browserslist: '>= 4.21.0'
+      browserslist: ^4.28.7
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}

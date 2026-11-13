@@ -25,7 +25,7 @@ SFL — приложение для любительской футбольно�
 
 **Общие пакеты (`packages/*`) читаются клиентом и сервером из `dist/`: `pnpm build:packages` из корня их собирает; `pnpm check` и скрипты `dev`, `build`, `test` делают это сами.** Меняешь форму API — меняй её в `@sfl/schemas`, а не в клиенте и сервере по отдельности ([ADR 0009](docs/adr/0009-pnpm-workspace-separate-lockfiles.md)).
 
-**Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. Шаги, которые падают по известным причинам, пропускаются с выводом причины; список — константа `KNOWN` в скрипте (сейчас пуст).
+**Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. В `pnpm check` входят также `pnpm audit --audit-level high` (нужна сеть) и gitleaks по дереву и истории (`.gitleaks.toml`, исключения только с причиной; в старом контейнере: `bash .devcontainer/install-gitleaks.sh`). Шаги, которые падают по известным причинам, пропускаются с выводом причины; список — константа `KNOWN` в скрипте (сейчас пуст).
 
 Адрес API клиента задают `APP_ENV` и `API_URL` при сборке ([README](README.md), «Окружения клиента»); `client/src/environments/api-url.generated.ts` создаётся скриптом и не коммитится.
 
