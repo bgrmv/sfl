@@ -16,8 +16,8 @@ import {
   TTopAncientRatingSystem,
 } from '@entities/charts/charts.service';
 
-import { HighchartsChartModule } from 'highcharts-angular';
-import Highcharts from 'highcharts/es-modules/masters/highcharts.src';
+import { HighchartsChartComponent } from 'highcharts-angular';
+import type Highcharts from 'highcharts';
 import { switchMap, take } from 'rxjs';
 
 const LIMIT = 30;
@@ -84,7 +84,7 @@ const CHART_OPTIONS_DEFAULT = {
 @Component({
   selector: 'sfl-top-ancient-rating-system-players',
   imports: [
-    HighchartsChartModule,
+    HighchartsChartComponent,
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
@@ -99,7 +99,6 @@ export class TopAncientRatingSystemPlayersComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private chartsService = inject(ChartsService);
 
-  protected readonly highcharts = Highcharts;
   protected readonly chartOptionsSignal = signal(CHART_OPTIONS_DEFAULT);
 
   protected readonly season = signal<number>(new Date().getFullYear());

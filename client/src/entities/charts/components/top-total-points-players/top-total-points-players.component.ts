@@ -12,8 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ChartsService } from '@entities/charts/charts.service';
-import Highcharts from 'highcharts';
-import { HighchartsChartModule } from 'highcharts-angular';
+import { HighchartsChartComponent } from 'highcharts-angular';
 import { switchMap, take } from 'rxjs';
 
 const LIMIT = 30;
@@ -100,7 +99,7 @@ const CHART_OPTIONS_DEFAULT = Object.freeze({
 @Component({
   selector: 'sfl-top-total-points-players',
   imports: [
-    HighchartsChartModule,
+    HighchartsChartComponent,
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
@@ -115,7 +114,6 @@ export class TopTotalPointsPlayersComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private chartsService = inject(ChartsService);
 
-  protected readonly highcharts = Highcharts;
   protected readonly chartOptionsSignal = signal(CHART_OPTIONS_DEFAULT);
 
   protected readonly loading = signal<boolean>(true);

@@ -1,3 +1,4 @@
+import { provideHighcharts } from 'highcharts-angular';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TopTotalPointsPlayersComponent } from './top-total-points-players.component';
@@ -8,7 +9,8 @@ describe('TopTotalPointsPlayersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopTotalPointsPlayersComponent]
+      imports: [TopTotalPointsPlayersComponent],
+      providers: [provideHighcharts({ instance: () => import('highcharts') })],
     })
     .compileComponents();
 

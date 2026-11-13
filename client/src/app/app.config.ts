@@ -11,6 +11,7 @@ import {
 } from '@angular/common/http';
 import { jwtInterceptor } from '@shared/interceptors/jwt.interceptor';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideHighcharts } from 'highcharts-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withXhr(), withInterceptors([jwtInterceptor])),
     provideAnimations(),
     provideStore(),
+    provideHighcharts({ instance: () => import('highcharts') }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
 };
