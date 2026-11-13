@@ -31,10 +31,9 @@ export class ChartsController {
   constructor(private readonly chartsService: ChartsService) {}
 
   @ApiQuery({ name: 'season', required: true, type: Number })
-  @ApiOkResponse({ status: 200, type: Array })
-  @ApiBadRequestResponse({ status: 400, description: 'Bad Request' })
+  @ApiOkResponse({ type: Array })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal Server Error',
   })
   @Get('top-total-points-players')
@@ -49,10 +48,9 @@ export class ChartsController {
 
   @ApiQuery({ name: 'season', required: true, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiOkResponse({ status: 200, type: Array })
-  @ApiBadRequestResponse({ status: 400, description: 'Bad Request' })
+  @ApiOkResponse({ type: Array })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal Server Error',
   })
   @Get('top-ancient-rating-system-players')

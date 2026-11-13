@@ -242,18 +242,21 @@ describe('API: access matrix', () => {
   it('the matrix covers every route that is not public', () => {
     const covered = CLOSED.map(c => c.name);
     const router = (
-      t.app.getHttpServer()._events.request._router.stack as any[]
-    ).flatMap(layer =>
+      t.app.getHttpServer()._events.request.router as { stack: any[] }
+    ).stack.flatMap(layer =>
       layer.route
         ? [layer.route]
         : (layer.handle?.stack?.map((l: any) => l.route).filter(Boolean) ?? []),
     );
 
-    const all = router.flatMap((r: any) =>
-      Object.keys(r.methods).map(
-        m => `${m.toUpperCase()} ${r.path.replace(/^\/rest/, '')}`,
-      ),
-    );
+    // Only the API: serve-static adds its own catch-all route for `public/`
+    const all = router
+      .filter((r: any) => r.path.startsWith('/rest'))
+      .flatMap((r: any) =>
+        Object.keys(r.methods).map(
+          m => `${m.toUpperCase()} ${r.path.replace(/^\/rest/, '')}`,
+        ),
+      );
     const closed = all.filter((route: string) => !PUBLIC.includes(route));
 
     expect(closed.sort()).toEqual(covered.sort());

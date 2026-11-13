@@ -82,8 +82,8 @@ export class PlayersController {
     required: false,
   })
   @ApiQuery({ name: 'ids', required: false, type: String, isArray: true })
-  @ApiOkResponse({ status: 200, type: () => [Player] })
-  @ApiBadRequestResponse({ status: 400, description: 'Invalid ids' })
+  @ApiOkResponse({ type: () => [Player] })
+  @ApiBadRequestResponse({ description: 'Invalid ids' })
   async find(
     @Req() req: Request,
     @Res() res,
@@ -122,8 +122,8 @@ export class PlayersController {
     return res.json(captains.map(captain => presentPlayer(captain, admin)));
   }
 
-  @ApiOkResponse({ status: 200, type: Player })
-  @ApiBadRequestResponse({ status: 400, description: 'Invalid id' })
+  @ApiOkResponse({ type: Player })
+  @ApiBadRequestResponse({ description: 'Invalid id' })
   @ApiNotFoundResponse({ description: 'Player is not found' })
   @Public()
   @Get(':id')
@@ -134,7 +134,7 @@ export class PlayersController {
   }
 
   @Patch(':id')
-  @ApiBadRequestResponse({ status: 400, description: 'Invalid body or id' })
+  @ApiBadRequestResponse({ description: 'Invalid body or id' })
   @ApiNotFoundResponse({ description: 'Player is not found' })
   async update(
     @Res() res: Response,
@@ -181,8 +181,8 @@ export class PlayersController {
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: Player, status: 200 })
-  @ApiBadRequestResponse({ status: 400, description: 'Invalid id' })
+  @ApiOkResponse({ type: Player })
+  @ApiBadRequestResponse({ description: 'Invalid id' })
   @ApiNotFoundResponse({ description: 'Player is not found' })
   @ApiConflictResponse({ description: 'The player has games' })
   async delete(@Res() res: Response, @Param('id') id: string) {
@@ -203,9 +203,8 @@ export class PlayersController {
       },
     },
   })
-  @ApiOkResponse({ status: 200, description: 'Recalculation is finished' })
+  @ApiOkResponse({ description: 'Recalculation is finished' })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Invalid body',
   })
   @ApiInternalServerErrorResponse({

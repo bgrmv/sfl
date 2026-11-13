@@ -143,7 +143,7 @@ flowchart LR
 | ❌ | [S1.4](E01-dependency-upgrades/S1.4.md) | Обновить Angular до актуального мажора | P1 | L | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.8](E02-tests-ci/S2.8.md) |
 | ❌ | [S1.5](E01-dependency-upgrades/S1.5.md) | Обновить клиентские библиотеки | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
 | ✅ | [S1.6](E01-dependency-upgrades/S1.6.md) | ESLint flat config и Prettier | P1 | M | [S1.4](E01-dependency-upgrades/S1.4.md) |
-| ❌ | [S1.7](E01-dependency-upgrades/S1.7.md) | Обновить NestJS | P1 | M | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.4](E02-tests-ci/S2.4.md) |
+| ✅ | [S1.7](E01-dependency-upgrades/S1.7.md) | Обновить NestJS | P1 | M | [S1.1](E01-dependency-upgrades/S1.1.md), [S2.4](E02-tests-ci/S2.4.md) |
 | ⛔ | [S1.8](E01-dependency-upgrades/S1.8.md) | Перейти на valibot 1.x | P1 | M | [S0.3](E00-security-hotfix/S0.3.md) |
 | ✅ | [S1.9](E01-dependency-upgrades/S1.9.md) | Обновить остальные серверные зависимости | P1 | S | [S1.1](E01-dependency-upgrades/S1.1.md) |
 | ✅ | [S1.10](E01-dependency-upgrades/S1.10.md) | Удалить legacy-сервер `server/` | P1 | S | ответ на открытый вопрос 3 |

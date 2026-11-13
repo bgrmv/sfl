@@ -27,10 +27,9 @@ export class PlayerCreationDTO {
 export class MigrationsController {
   constructor(private readonly migrationsService: MigrationsService) {}
 
-  @ApiOkResponse({ status: 200, type: Array })
-  @ApiBadRequestResponse({ status: 400, description: 'Bad Request' })
+  @ApiOkResponse({ type: Array })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal Server Error',
   })
   // Changes data, so it is a POST (ADMIN only by default)

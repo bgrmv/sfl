@@ -72,10 +72,10 @@ describe('AuthGuard: access matrix', () => {
     app.use(cookieParser());
     await app.init();
 
-    routes = app
-      .getHttpAdapter()
-      .getInstance()
-      ._router.stack.filter(layer => layer.route)
+    // Express 5 calls it `router`, Express 4 `_router`
+    const expressApp = app.getHttpAdapter().getInstance();
+    routes = (expressApp.router ?? expressApp._router).stack
+      .filter(layer => layer.route)
       .flatMap(layer =>
         Object.keys(layer.route.methods).map(method => ({
           method: method.toUpperCase(),

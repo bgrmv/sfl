@@ -34,3 +34,4 @@
 | [0005](0005-zoneless-change-detection.md) | Zoneless-режим Angular и удаление zone.js | принято |
 | [0006](0006-server-roles-closed-by-default.md) | Права на сервере: закрыто по умолчанию | принято |
 | [0007](0007-signal-forms-single-store.md) | Формы на signal forms, `@ngrx/signals` — единственный стор | принято |
+| [0008](0008-nest-12-express-5-commonjs.md) | NestJS 12 на Express 5, сервер остаётся на CommonJS | принято |
