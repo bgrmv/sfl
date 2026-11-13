@@ -248,7 +248,7 @@ flowchart LR
 | ❌ | [S8.7](E08-security-privacy/S8.7.md) | Современное хеширование паролей | P1 | S | [S4.3](E04-migration-design/S4.3.md), [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S8.8](E08-security-privacy/S8.8.md) | Локальная проверка секретов и уязвимых зависимостей | P1 | S | [S2.8](E02-tests-ci/S2.8.md) |
 | ✅ | [S8.9](E08-security-privacy/S8.9.md) | Авторизация по ролям на сервере и защита от mass assignment | P1 | M | [S2.4](E02-tests-ci/S2.4.md) |
-| ❌ | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами | P1 | S | [S0.1](E00-security-hotfix/S0.1.md) |
+| ✅ | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами | P1 | S | [S0.1](E00-security-hotfix/S0.1.md) |
 | ❌ | [S8.11](E08-security-privacy/S8.11.md) | Защита от перебора, заголовки и Swagger | P2 | S | [S2.4](E02-tests-ci/S2.4.md) |
 | ❌ | [S8.12](E08-security-privacy/S8.12.md) | Сессии и токены: отзыв, Secure, секреты JWT | P2 | M | [S2.4](E02-tests-ci/S2.4.md), [S8.9](E08-security-privacy/S8.9.md) |
 

@@ -22,17 +22,30 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+    const req = context.switchToHttp().getRequest<Request>();
+
     if (isPublic) {
+      // Public routes stay open, but a valid token still identifies the caller,
+      // so that an ADMIN gets full data (S8.10). A bad token is not an error here.
+      await this.authenticate(req).catch(() => false);
       return true;
     }
 
-    const req = context.switchToHttp().getRequest<Request>();
+    if (await this.authenticate(req)) {
+      return true;
+    }
+
+    throw new UnauthorizedException();
+  }
+
+  /** Puts the user and a fresh access token into the request; false if there is no valid token. */
+  private async authenticate(req: Request): Promise<boolean> {
     const authHeader = req.headers.authorization;
     const accessToken = authHeader && authHeader.split(' ')[1];
     const refreshToken = (req.cookies as any)?.refreshToken;
 
     if (!accessToken && !refreshToken) {
-      throw new UnauthorizedException();
+      return false;
     }
 
     const verifedAccess = await this.authService.verifyAccessToken(accessToken);
@@ -59,6 +72,6 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    throw new UnauthorizedException();
+    return false;
   }
 }

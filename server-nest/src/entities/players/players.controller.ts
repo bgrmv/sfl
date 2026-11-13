@@ -36,6 +36,7 @@ import {
 import { Public } from '../../shared/decorators/public.decorator';
 import { FileLoggerService } from '../../shared/services/logger.service';
 import { UsersService } from '../users/users.service';
+import { isAdmin, presentPlayer } from './utils/present-player';
 import { Player } from './players.schema';
 import { PlayersService } from './players.service';
 
@@ -69,7 +70,7 @@ export class PlayersController {
   })
   @Public()
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  async findById(@Req() req: Request, @Param('id') id: string) {
     if (!id.trim()) {
       throw new BadRequestException('Id is empty');
     }
@@ -79,7 +80,7 @@ export class PlayersController {
       if (!player) {
         throw new NotFoundException('Player is not found');
       }
-      return player;
+      return presentPlayer(player, isAdmin(req));
     } catch (error) {
       throw new InternalServerErrorException(
         error.message || 'Unexpected error occurred',
@@ -97,6 +98,7 @@ export class PlayersController {
   @ApiQuery({ name: 'ids', required: false, type: String, isArray: true })
   @ApiOkResponse({ status: 200, type: () => [Player] })
   async find(
+    @Req() req: Request,
     @Res() res,
     @Query('ids') ids?: string,
     @Query('includeMetadata', ParseBoolPipe) includeMetadata?: boolean,
@@ -107,23 +109,21 @@ export class PlayersController {
       ? ids
       : ids?.split(',').map(id => new Types.ObjectId(id.trim()));
 
-    return res.json(
-      Array.from(
-        await this.playersService.find(
-          {
-            ids: idsArray,
-          },
-          includeMetadata,
-        ),
-      ),
+    const admin = isAdmin(req);
+    const players = await this.playersService.find(
+      { ids: idsArray },
+      includeMetadata,
     );
+
+    return res.json(players.map(player => presentPlayer(player, admin)));
   }
 
   @Public()
   @Get('captains')
-  async findCaptains(@Res() res: Response) {
+  async findCaptains(@Req() req: Request, @Res() res: Response) {
+    const admin = isAdmin(req);
     const captains = await this.playersService.findCaptains();
-    return res.json(captains);
+    return res.json(captains.map(captain => presentPlayer(captain, admin)));
   }
 
   @Patch(':id')

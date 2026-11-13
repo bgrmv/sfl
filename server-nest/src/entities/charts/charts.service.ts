@@ -26,8 +26,6 @@ export class ChartsService {
       nickname: string;
       user: {
         name?: string;
-        surname?: string;
-        email?: string;
       };
       ancientRatingSystem: {
         plusMinus: number;
@@ -72,8 +70,16 @@ export class ChartsService {
             },
           },
           { $unwind: '$user' },
+          // Public data: only what the chart labels need (S8.10). A whitelist, so
+          // that a new user field never leaks (a nested $set would merge, not replace)
           {
-            $unset: ['_id', 'user.password', 'user.roles'],
+            $project: {
+              _id: 0,
+              id: 1,
+              nickname: 1,
+              totalPoints: 1,
+              user: { name: '$user.name' },
+            },
           },
         ],
         { maxTimeMS: 60000, allowDiskUse: true },
@@ -93,8 +99,6 @@ export class ChartsService {
       nickname: string;
       user: {
         name?: string;
-        surname?: string;
-        email?: string;
       };
       ancientRatingSystem: {
         plusMinus: number;
@@ -141,8 +145,16 @@ export class ChartsService {
             },
           },
           { $unwind: '$user' },
+          // Public data: only what the chart labels need (S8.10). A whitelist, so
+          // that a new user field never leaks (a nested $set would merge, not replace)
           {
-            $unset: ['_id', 'user.password', 'user.roles'],
+            $project: {
+              _id: 0,
+              id: 1,
+              nickname: 1,
+              ancientRatingSystem: 1,
+              user: { name: '$user.name' },
+            },
           },
         ],
         { maxTimeMS: 60000, allowDiskUse: true },

@@ -167,7 +167,9 @@ describe('API: access matrix', () => {
           season: 2000 + Math.floor(Math.random() * 1000),
         }),
       );
-    const player = (await t.api().get(`/rest/players/${a.id}`)).body;
+    const player = (
+      await t.api().get(`/rest/players/${a.id}`).set('Authorization', bearer(t))
+    ).body;
 
     return {
       gameId: game.body.id,

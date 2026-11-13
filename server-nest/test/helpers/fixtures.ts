@@ -13,7 +13,11 @@ export async function createPlayers(t: TestApp, count: number) {
     return {
       nickname: `player-${counter}`,
       number: counter,
-      user: { email: `player-${counter}@sfl.test`, name: 'Test' },
+      user: {
+        email: `player-${counter}@sfl.test`,
+        name: 'Test',
+        surname: 'Secret',
+      },
     };
   });
 
