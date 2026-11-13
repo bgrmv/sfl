@@ -44,14 +44,14 @@ Git needs no login: the editor passes your `.gitconfig` and the Windows credenti
 
 Run them from the command palette (`Ctrl+Shift+P`), category **Dev Containers**.
 
-| Command | What it does |
-|---|---|
-| **Reopen in Container** | The main command. Reads `devcontainer.json`, builds the image with features (Claude Code), creates the containers, runs `post-create.sh` once and attaches the editor. If the container already exists, it only starts and attaches it. |
-| **Reopen Folder Locally** | Returns the window to the host. The containers keep running. |
-| **Rebuild Container** | VS Code only. Recreates the container from the current config. Antigravity has no such command: see [Rebuild](#rebuild). |
-| **Attach to Running Container** | Attaches to any running container as it is: no config, no features, no `post-create.sh`. Use it to look into other containers (for example `sfl-dev-mongodb-1`), not for the workspace. |
-| **Open Folder in Container** | Same as Reopen in Container, but for a folder you pick. |
-| **Show … Dev Containers Log** | The build and start log. Look here first when the container does not start. |
+| Command                         | What it does                                                                                                                                                                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reopen in Container**         | The main command. Reads `devcontainer.json`, builds the image with features (Claude Code), creates the containers, runs `post-create.sh` once and attaches the editor. If the container already exists, it only starts and attaches it. |
+| **Reopen Folder Locally**       | Returns the window to the host. The containers keep running.                                                                                                                                                                            |
+| **Rebuild Container**           | VS Code only. Recreates the container from the current config. Antigravity has no such command: see [Rebuild](#rebuild).                                                                                                                |
+| **Attach to Running Container** | Attaches to any running container as it is: no config, no features, no `post-create.sh`. Use it to look into other containers (for example `sfl-dev-mongodb-1`), not for the workspace.                                                 |
+| **Open Folder in Container**    | Same as Reopen in Container, but for a folder you pick.                                                                                                                                                                                 |
+| **Show … Dev Containers Log**   | The build and start log. Look here first when the container does not start.                                                                                                                                                             |
 
 ### Rebuild
 
@@ -70,14 +70,14 @@ Volumes are kept: the database, `node_modules`, the pnpm store and the Claude lo
 
 Not everything needs a rebuild:
 
-| Changed | What to do |
-|---|---|
-| Image, `features`, the `workspace` service in compose (env, mounts, ports; for example a volume for a new `packages/*/node_modules`), or you want `post-create.sh` to run again | Rebuild |
-| `extensions` list | Install them (see Troubleshooting), no rebuild |
-| `settings`, `portsAttributes` | **Developer: Reload Window** |
-| `package.json` dependencies | `pnpm install` in the container |
-| `server-nest/.env` | Restart the server |
-| The `mongodb` service in compose | On the host: `docker compose -p sfl-dev up -d mongodb` |
+| Changed                                                                                                                                                                         | What to do                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Image, `features`, the `workspace` service in compose (env, mounts, ports; for example a volume for a new `packages/*/node_modules`), or you want `post-create.sh` to run again | Rebuild                                                |
+| `extensions` list                                                                                                                                                               | Install them (see Troubleshooting), no rebuild         |
+| `settings`, `portsAttributes`                                                                                                                                                   | **Developer: Reload Window**                           |
+| `package.json` dependencies                                                                                                                                                     | `pnpm install` in the container                        |
+| `server-nest/.env`                                                                                                                                                              | Restart the server                                     |
+| The `mongodb` service in compose                                                                                                                                                | On the host: `docker compose -p sfl-dev up -d mongodb` |
 
 ### Hybrid mode: editor and agent on the host
 
@@ -145,14 +145,25 @@ cd client && pnpm build && pnpm lint
 
 Адрес API подставляется при сборке скриптом [client/scripts/set-env.mjs](client/scripts/set-env.mjs) (запускается из `predev`, `prebuild`, `pretest`, `prelint`) в неотслеживаемый файл `client/src/environments/api-url.generated.ts`. Задаётся переменными `APP_ENV` и `API_URL`:
 
-| `APP_ENV` | Где | `API_URL` по умолчанию |
-|---|---|---|
-| `local` (по умолчанию) | dev-container | `https://sfl.com:3001/rest` |
-| `preview` | предпросмотр PR | тот же origin: `/rest` |
-| `staging` | staging | тот же origin: `/rest` |
-| `production` | прод | тот же origin: `/rest` |
+| `APP_ENV`              | Где             | `API_URL` по умолчанию      |
+| ---------------------- | --------------- | --------------------------- |
+| `local` (по умолчанию) | dev-container   | `https://sfl.com:3001/rest` |
+| `preview`              | предпросмотр PR | тот же origin: `/rest`      |
+| `staging`              | staging         | тот же origin: `/rest`      |
+| `production`           | прод            | тот же origin: `/rest`      |
 
 Пример: `APP_ENV=staging API_URL=https://staging.example.com/rest pnpm build:prod`. Поле в коде называется `environment.apiUrl`.
+
+## Pre-commit хуки
+
+`pnpm install` в корне ставит husky (скрипт `prepare`, в dev-container это делает post-create). Хук [.husky/pre-commit](.husky/pre-commit) запускает `lint-staged` ([lint-staged.config.mjs](lint-staged.config.mjs)) только по staged-файлам и `gitleaks` по staged-изменениям:
+
+- `client/**/*.ts`: `eslint --fix`, затем `prettier --write` (конфиг клиента);
+- `server-nest/**/*.ts`: `eslint --fix` (форматирует eslint-plugin-prettier, конфиг сервера);
+- остальные `*.{html,scss,json,md}`: `prettier --write`;
+- ошибка ESLint, которую нельзя исправить автоматически, или найденный секрет отклоняют коммит.
+
+Хуки быстрые и не заменяют `pnpm check`: он проверяет весь код. Не обходите хук через `--no-verify` без причины в описании PR. На bind-mount Windows хук занимает ~12 с из-за медленного git.
 
 ## Проверка перед коммитом
 
@@ -212,7 +223,7 @@ pnpm check --include-known      # включить шаги, которые па
 ## Plan
 
 - [ ] - Create user table and seed it with all players for all years
-    https://orkhan-gitbook-io.translate.goog/typeorm/docs/migrations?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_hl=ru&_x_tr_pto=wapp
+      https://orkhan-gitbook-io.translate.goog/typeorm/docs/migrations?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_hl=ru&_x_tr_pto=wapp
   - [ ] - 2011
   - [ ] - 2012
   - [ ] - 2013

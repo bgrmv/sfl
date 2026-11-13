@@ -6,14 +6,14 @@
 
 SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md). Архитектурные решения и причины: [docs/adr/](docs/adr/README.md). Язык и правила лиги (матч, трансфер, система счёта, MVP): [GLOSSARY.md](GLOSSARY.md); меняешь правило расчёта — сначала обнови его там.
 
-| Папка | Что это |
-|---|---|
-| `client/` | Angular SPA (слои FSD: `app`, `pages`, `widgets`, `features`, `entities`, `shared`) |
-| `server-nest/` | основной API: NestJS, Mongoose |
-| `packages/` | общие пакеты workspace: `@sfl/schemas` (enum и DTO API для клиента и сервера) |
-| `docs/backlog/` | истории по эпикам `E00`–`E12`, статусы в `README.md` |
-| `.devcontainer/` | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md)) |
-| `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты» |
+| Папка                          | Что это                                                                             |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| `client/`                      | Angular SPA (слои FSD: `app`, `pages`, `widgets`, `features`, `entities`, `shared`) |
+| `server-nest/`                 | основной API: NestJS, Mongoose                                                      |
+| `packages/`                    | общие пакеты workspace: `@sfl/schemas` (enum и DTO API для клиента и сервера)       |
+| `docs/backlog/`                | истории по эпикам `E00`–`E12`, статусы в `README.md`                                |
+| `.devcontainer/`               | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md))                     |
+| `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты»                                                 |
 
 Позже появятся `packages/domain`, `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
 
@@ -31,14 +31,14 @@ SFL — приложение для любительской футбольно�
 
 Остальные команды запускай из папки пакета.
 
-| Действие | `client/` | `server-nest/` |
-|---|---|---|
-| Установка | `pnpm install` из корня ставит всё (workspace) | то же |
-| Запуск | `pnpm dev -- --host 0.0.0.0` (https, порт 4200) | `pnpm start:dev` (порт 3001) |
-| Линт | `pnpm lint` | `pnpm lint` (с `--fix`) |
-| Типы и сборка | `pnpm build` | `pnpm build` |
-| Тесты | `pnpm test` (Vitest через `ng test`, браузер не нужен); один прогон: `pnpm exec ng test --watch=false` | `pnpm test` (vitest, watch); один прогон: `pnpm vitest run` |
-| Prod-сборка | `pnpm build:prod` | `pnpm build` |
+| Действие      | `client/`                                                                                              | `server-nest/`                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| Установка     | `pnpm install` из корня ставит всё (workspace)                                                         | то же                                                       |
+| Запуск        | `pnpm dev -- --host 0.0.0.0` (https, порт 4200)                                                        | `pnpm start:dev` (порт 3001)                                |
+| Линт          | `pnpm lint`                                                                                            | `pnpm lint` (с `--fix`)                                     |
+| Типы и сборка | `pnpm build`                                                                                           | `pnpm build`                                                |
+| Тесты         | `pnpm test` (Vitest через `ng test`, браузер не нужен); один прогон: `pnpm exec ng test --watch=false` | `pnpm test` (vitest, watch); один прогон: `pnpm vitest run` |
+| Prod-сборка   | `pnpm build:prod`                                                                                      | `pnpm build`                                                |
 
 ## Соглашения
 
@@ -48,6 +48,7 @@ SFL — приложение для любительской футбольно�
 - Серверные тесты: юнит-тесты рядом с кодом (`src/**/*.test.ts`), API-тесты в `server-nest/test/api/` на `mongodb-memory-server` (внешняя база не нужна; первый запуск скачивает бинарник mongod). Известные дефекты помечены `it.fails` со ссылкой на историю: исправил дефект — убери `.fails`. Покрытие: `pnpm test:coverage` (порог 80% на расчёте статистики).
 - Сервер: модуль на сущность (контроллер, сервис, схема Mongoose, DTO). Валидация на zod: формы данных API объявлены один раз в `packages/schemas` на `zod/mini`, серверные DTO без клиента — на обычном `zod` ([ADR 0010](docs/adr/0010-zod-mini-in-shared-schemas.md)).
 - Коммиты: `feat:` / `fix:` / `chore:` / `docs:` с областью и ID истории, как в `git log`: `fix(server): ... (S0.4)`. Сообщения на английском, документация и бэклог на русском.
+- Pre-commit хук (husky, lint-staged, gitleaks по staged) ставится сам после `pnpm install`; не обходи его через `--no-verify` без причины в описании PR ([README](README.md), «Pre-commit хуки»).
 - Комментарии в коде — только когда причина неочевидна.
 
 ## Запреты
