@@ -56,7 +56,7 @@ export enum EnumPlayerCollection {
   Test = '_players_tests',
 }
 
-const transform = (doc, ret) => {
+const transform = (_doc, ret: Record<string, any>) => {
   ret.id = ret._id;
   delete ret._id;
   delete ret._gen;
