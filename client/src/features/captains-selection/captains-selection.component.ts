@@ -16,14 +16,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  standalone: true,
-  selector: 'sfl-captains-selection',
-  templateUrl: './captains-selection.component.html',
-  styleUrls: ['./captains-selection.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, MatButtonModule, CaptainStatsCardComponent],
-  // providers: [provideComponentStore(CaptainsStore)],
+    selector: 'sfl-captains-selection',
+    templateUrl: './captains-selection.component.html',
+    styleUrls: ['./captains-selection.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [CommonModule, MatButtonModule, CaptainStatsCardComponent]
 })
 export class CaptainsSelectionComponent extends BaseUnsubscribeComponent {
   constructor(private captainsStore: CaptainsStore) {

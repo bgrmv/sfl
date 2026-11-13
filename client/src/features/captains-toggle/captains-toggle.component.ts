@@ -19,20 +19,19 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CaptainsStore, TCaptain } from '@entities/captains';
 
 @Component({
-  selector: 'sfl-captains-toggle',
-  standalone: true,
-  templateUrl: './captains-toggle.component.html',
-  styleUrls: ['./captains-toggle.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule,
-  ],
+    selector: 'sfl-captains-toggle',
+    templateUrl: './captains-toggle.component.html',
+    styleUrls: ['./captains-toggle.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatCardModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSlideToggleModule,
+    ]
 })
 export class CaptainsToggleComponent implements OnInit, AfterViewInit {
   constructor(

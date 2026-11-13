@@ -5,12 +5,11 @@ import { CardVariantEnum } from '@shared/constants/card';
 import { TCaptain } from '../../types';
 
 @Component({
-  standalone: true,
-  selector: 'sfl-captain-card',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, MatCardModule],
-  styles: [
-    `
+    selector: 'sfl-captain-card',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [CommonModule, MatCardModule],
+    styles: [
+        `
       :host.odd {
         box-shadow: 2px 0 2px 2px #ccc;
       }
@@ -42,8 +41,8 @@ import { TCaptain } from '../../types';
         }
       }
     `,
-  ],
-  template: `
+    ],
+    template: `
     <ng-container [ngSwitch]="variant">
       <ng-container *ngSwitchCase="variantEnum.Stats">
         <ng-container *ngTemplateOutlet="simple"></ng-container>
@@ -106,7 +105,7 @@ import { TCaptain } from '../../types';
         <mat-card-actions> </mat-card-actions> -->
       </mat-card>
     </ng-template>
-  `,
+  `
 })
 export class CaptainCardComponent {
   readonly variantEnum = CardVariantEnum;

@@ -21,20 +21,19 @@ import { TPlayerFinal } from '../../../games/types';
 import { PlayersService } from '../../services/players.service';
 
 @Component({
-  selector: 'sfl-player-details',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatProgressBarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    NilToDashPipe,
-  ],
-  templateUrl: './player-details.component.html',
-  styleUrl: './player-details.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [PlayersService],
+    selector: 'sfl-player-details',
+    imports: [
+        CommonModule,
+        MatProgressBarModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        NilToDashPipe,
+    ],
+    templateUrl: './player-details.component.html',
+    styleUrl: './player-details.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [PlayersService]
 })
 export class PlayerDetailsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

@@ -30,33 +30,31 @@ import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
 import { AuthService } from '@shared/services/auth.service';
 
 @Component({
-  selector: 'sfl-players-table',
-  standalone: true,
-  templateUrl: './players-table.component.html',
-  styleUrls: ['./players-table.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatProgressBarModule,
-    NilToDashPipe,
-  ],
-  providers: [
-    // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
-    // https://angular.io/api/core/FactoryProvider
-    CaptainsService,
-
-    // To use CaptainsService - useEffects
-    // provideComponentStore(PlayersStore),
-  ],
+    selector: 'sfl-players-table',
+    templateUrl: './players-table.component.html',
+    styleUrls: ['./players-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatCardModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        MatProgressBarModule,
+        NilToDashPipe,
+    ],
+    providers: [
+        // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
+        // https://angular.io/api/core/FactoryProvider
+        CaptainsService,
+        // To use CaptainsService - useEffects
+        // provideComponentStore(PlayersStore),
+    ]
 })
 export class PlayersTableComponent implements OnDestroy, AfterViewInit {
   private dialog = inject(MatDialog);

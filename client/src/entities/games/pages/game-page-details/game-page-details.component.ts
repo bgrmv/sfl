@@ -16,17 +16,16 @@ import { catchError, map, switchMap } from 'rxjs';
 import { IGameDTO } from '../../types';
 
 @Component({
-  selector: 'sfl-game-page-details',
-  standalone: true,
-  imports: [GameDetailsComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [GameService, PlayersService],
-  styles: ``,
-  template: `
+    selector: 'sfl-game-page-details',
+    imports: [GameDetailsComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [GameService, PlayersService],
+    styles: ``,
+    template: `
     @if (game(); as game) {
       <sfl-game-details [game]="game!" />
     }
-  `,
+  `
 })
 export class GamePageDetailsComponent implements OnInit {
   private readonly router = inject(Router);

@@ -99,20 +99,19 @@ const CHART_OPTIONS_DEFAULT = Object.freeze({
 });
 
 @Component({
-  selector: 'sfl-top-total-points-players',
-  standalone: true,
-  imports: [
-    CommonModule,
-    HighchartsChartModule,
-    MatCardModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatSelectModule,
-  ],
-  templateUrl: './top-total-points-players.component.html',
-  styleUrl: './top-total-points-players.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ChartsService],
+    selector: 'sfl-top-total-points-players',
+    imports: [
+        CommonModule,
+        HighchartsChartModule,
+        MatCardModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+    ],
+    templateUrl: './top-total-points-players.component.html',
+    styleUrl: './top-total-points-players.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [ChartsService]
 })
 export class TopTotalPointsPlayersComponent implements OnInit {
   private destroyRef = inject(DestroyRef);

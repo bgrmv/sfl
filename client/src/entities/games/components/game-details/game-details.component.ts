@@ -26,21 +26,20 @@ import { omit } from 'lodash-es';
 import { filter, map, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'sfl-game-details',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatProgressBarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    NilToDashPipe,
-    MatTableModule,
-    MatTooltipModule,
-  ],
-  templateUrl: './game-details.component.html',
-  styleUrl: './game-details.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sfl-game-details',
+    imports: [
+        CommonModule,
+        MatProgressBarModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        NilToDashPipe,
+        MatTableModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './game-details.component.html',
+    styleUrl: './game-details.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GameDetailsComponent implements OnInit {
   protected readonly loading = signal<boolean>(false);

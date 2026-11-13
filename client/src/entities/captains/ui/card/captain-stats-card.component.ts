@@ -4,12 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { TCaptain } from '../../types';
 
 @Component({
-  standalone: true,
-  selector: 'sfl-captain-stats-card',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, MatCardModule],
-  styles: [
-    `
+    selector: 'sfl-captain-stats-card',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [CommonModule, MatCardModule],
+    styles: [
+        `
       :host.active {
         & .captain-card__stats {
           background: aquamarine;
@@ -38,8 +37,8 @@ import { TCaptain } from '../../types';
         }
       }
     `,
-  ],
-  template: `
+    ],
+    template: `
     <mat-card class="captain-card captain-card__stats">
       <mat-card-header>
         <mat-card-title-group>
@@ -63,7 +62,7 @@ import { TCaptain } from '../../types';
         <p>Max Lost Strek: {{ captain.maxLostStreak }}</p>
       </mat-card-content>
     </mat-card>
-  `,
+  `
 })
 export class CaptainStatsCardComponent {
   @Input({ required: true }) captain!: TCaptain;

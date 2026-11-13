@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SignInComponent } from '@features';
 
 @Component({
-  selector: 'sfl-sign-in-page',
-  standalone: true,
-  imports: [CommonModule, SignInComponent],
-  template: `<sfl-sign-in></sfl-sign-in>`,
-  styleUrls: ['./sign-in-page.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sfl-sign-in-page',
+    imports: [CommonModule, SignInComponent],
+    template: `<sfl-sign-in></sfl-sign-in>`,
+    styleUrls: ['./sign-in-page.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignInPageComponent {}

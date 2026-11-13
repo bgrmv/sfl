@@ -13,12 +13,11 @@ import { PlayersStore } from '@entities/players/store/players.store';
 import { CreatePlayerDialogComponent } from '../create-player-dialog/create-player-dialog.component';
 
 @Component({
-  selector: 'sfl-player-create-button',
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule],
-  templateUrl: './player-create-button.component.html',
-  styleUrl: './player-create-button.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sfl-player-create-button',
+    imports: [CommonModule, MatButtonModule, MatIconModule],
+    templateUrl: './player-create-button.component.html',
+    styleUrl: './player-create-button.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerCreateButtonComponent {
   @Optional()

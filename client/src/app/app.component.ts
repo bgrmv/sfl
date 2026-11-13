@@ -17,28 +17,27 @@ import { AuthService } from '../shared/services/auth.service';
 import { NavigationComponent } from '../shared/ui/core/navigation/navigation.component';
 
 @Component({
-  selector: 'sfl-root',
-  standalone: true,
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    AsideComponent,
-    MatIconModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    RouterModule,
-    NavigationComponent,
-  ],
-  providers: [
-    HttpService,
-    CookieService,
-    JwtService,
-    LocalStorageService,
-    RouterModule,
-  ],
+    selector: 'sfl-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    imports: [
+        CommonModule,
+        RouterOutlet,
+        AsideComponent,
+        MatIconModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        RouterModule,
+        NavigationComponent,
+    ],
+    providers: [
+        HttpService,
+        CookieService,
+        JwtService,
+        LocalStorageService,
+        RouterModule,
+    ]
 })
 export class AppComponent {
   #cookieService = inject(CookieService);

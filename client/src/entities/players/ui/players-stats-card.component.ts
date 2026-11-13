@@ -4,12 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { TChosenPlayer } from '../types';
 
 @Component({
-  standalone: true,
-  selector: 'sfl-player-stats-card',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, MatCardModule],
-  styles: [
-    `
+    selector: 'sfl-player-stats-card',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [CommonModule, MatCardModule],
+    styles: [
+        `
       :host.active {
         & .player-card__stats {
           background: aquamarine;
@@ -37,8 +36,8 @@ import { TChosenPlayer } from '../types';
         }
       }
     `,
-  ],
-  template: `
+    ],
+    template: `
     <mat-card class="player-card player-card__stats">
       <mat-card-header>
         <mat-card-title-group>
@@ -67,7 +66,7 @@ import { TChosenPlayer } from '../types';
         <ng-content></ng-content>
       </mat-card-content>
     </mat-card>
-  `,
+  `
 })
 export class PlayerStatsCardComponent {
   @Input({ required: true }) player!: TChosenPlayer;

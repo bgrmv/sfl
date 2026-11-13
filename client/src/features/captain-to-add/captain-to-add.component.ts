@@ -42,30 +42,29 @@ import { BaseUnsubscribeComponent } from 'src/shared/classes/base-unsubscribe-co
 import { displayFn } from '../../entities/captains/utils/autocomplete';
 
 @Component({
-  standalone: true,
-  selector: 'sfl-captain-to-add',
-  templateUrl: './captain-to-add.component.html',
-  styleUrls: ['./captain-to-add.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    MatRadioModule,
-    FormsModule,
-    NgFor,
-    NgIf,
-    JsonPipe,
-    AsyncPipe,
-    MatStepperModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatAutocompleteModule,
-    MatProgressBarModule,
-    CaptainCardComponent,
-    CaptainsCardsComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sfl-captain-to-add',
+    templateUrl: './captain-to-add.component.html',
+    styleUrls: ['./captain-to-add.component.scss'],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        MatRadioModule,
+        FormsModule,
+        NgFor,
+        NgIf,
+        JsonPipe,
+        AsyncPipe,
+        MatStepperModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatProgressBarModule,
+        CaptainCardComponent,
+        CaptainsCardsComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CaptainToAddComponent
   extends BaseUnsubscribeComponent

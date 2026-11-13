@@ -18,22 +18,20 @@ import { GamesStore } from '@entities/games/store/games.store';
 import { PageComponent } from '@shared/ui/core/page/page.component';
 
 @Component({
-  selector: 'sfl-games-page',
-  standalone: true,
-  imports: [
-    // Material
-    FormsModule,
-    MatDividerModule,
-    MatProgressBarModule,
-    MatFormFieldModule,
-    MatSelectModule,
-
-    // Component
-    PageComponent,
-    GamesListComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: `
+    selector: 'sfl-games-page',
+    imports: [
+        // Material
+        FormsModule,
+        MatDividerModule,
+        MatProgressBarModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        // Component
+        PageComponent,
+        GamesListComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: `
     .actions {
       display: flex;
       align-items: center;
@@ -41,7 +39,7 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
       padding: 0;
     }
   `,
-  template: `
+    template: `
     <sfl-page title="games">
       <div>
         <div class="actions">
@@ -63,7 +61,7 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
       </div>
     </sfl-page>
   `,
-  providers: [GameService, GamesStore],
+    providers: [GameService, GamesStore]
 })
 export class GamesPageComponent implements OnInit {
   private readonly gamesStore = inject(GamesStore);

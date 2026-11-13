@@ -16,20 +16,19 @@ import { AuthService } from '@shared/services/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'sfl-sign-in',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatProgressBarModule,
-    RouterModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.css'],
+    selector: 'sfl-sign-in',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatProgressBarModule,
+        RouterModule,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './sign-in.component.html',
+    styleUrls: ['./sign-in.component.css']
 })
 export class SignInComponent {
   private readonly authService = inject(AuthService);

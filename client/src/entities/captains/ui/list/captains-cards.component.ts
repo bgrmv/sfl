@@ -8,19 +8,18 @@ import { CardVariantEnum } from '@shared/constants/card';
 import { CaptainStatsCardComponent } from '../card/captain-stats-card.component';
 
 @Component({
-  standalone: true,
-  selector: 'sfl-captains-cards',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    CommonModule,
-    MatCardModule,
-    CaptainToChooseDirective,
-    CaptainCardComponent,
-    CaptainStatsCardComponent,
-  ],
-  // styleUrls: ['./captain-card.component.scss'],
-  styles: [
-    `
+    selector: 'sfl-captains-cards',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        CommonModule,
+        MatCardModule,
+        CaptainToChooseDirective,
+        CaptainCardComponent,
+        CaptainStatsCardComponent,
+    ],
+    // styleUrls: ['./captain-card.component.scss'],
+    styles: [
+        `
       /* :host {
         width: 100%;
         display: block;
@@ -46,9 +45,9 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
         }
       }
     `,
-  ],
-  // templateUrl: './captain-card.component.html',
-  template: `
+    ],
+    // templateUrl: './captain-card.component.html',
+    template: `
     <!-- Captains-cards  [class]="variant" -->
     <ng-container [ngSwitch]="variant">
       <ng-container *ngSwitchCase="cardVariantEnum.Stats"
@@ -77,7 +76,7 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
 
       <ng-container *ngSwitchDefault>#Default cards</ng-container>
     </ng-container>
-  `,
+  `
 })
 export class CaptainsCardsComponent {
   @Input({ required: true }) captains!: TCaptain[];

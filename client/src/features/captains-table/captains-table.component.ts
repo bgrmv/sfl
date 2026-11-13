@@ -15,19 +15,18 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CaptainsStore, TCaptain } from '@entities/captains';
 
 @Component({
-  selector: 'sfl-captains-table',
-  standalone: true,
-  templateUrl: './captains-table.component.html',
-  styleUrls: ['./captains-table.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+    selector: 'sfl-captains-table',
+    templateUrl: './captains-table.component.html',
+    styleUrls: ['./captains-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatCardModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+    ]
 })
 export class CaptainsTableComponent implements OnInit, AfterViewInit {
   constructor(

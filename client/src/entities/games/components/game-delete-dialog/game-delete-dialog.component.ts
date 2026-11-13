@@ -28,25 +28,24 @@ import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
 import { catchError, delay, of, switchMap, tap } from 'rxjs';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    NilToDashPipe,
-  ],
-  providers: [GameService],
-  template: `
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatProgressBarModule,
+        MatProgressSpinnerModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        NilToDashPipe,
+    ],
+    providers: [GameService],
+    template: `
     @if (loadingSignal()) {
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     }
@@ -77,8 +76,8 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
       </button>
     </mat-dialog-actions>
   `,
-  styles: '',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: '',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GameDeleteDialogComponent {
   private readonly destroyRef = inject(DestroyRef);

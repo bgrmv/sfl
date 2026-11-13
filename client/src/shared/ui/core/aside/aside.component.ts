@@ -7,18 +7,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
 @Component({
-  selector: 'sfl-aside',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatIconModule,
-    MatListModule,
-    MatExpansionModule,
-  ],
-  templateUrl: './aside.component.html',
-  styleUrls: ['./aside.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    selector: 'sfl-aside',
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatIconModule,
+        MatListModule,
+        MatExpansionModule,
+    ],
+    templateUrl: './aside.component.html',
+    styleUrls: ['./aside.component.css'],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AsideComponent {
   links = [

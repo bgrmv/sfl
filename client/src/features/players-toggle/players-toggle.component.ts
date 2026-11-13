@@ -19,20 +19,19 @@ import { TPlayerFinal } from '@entities/games/types';
 import { PlayersStore } from '@entities/players';
 
 @Component({
-  selector: 'sfl-players-toggle',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule,
-  ],
-  templateUrl: './players-toggle.component.html',
-  styleUrls: ['./players-toggle.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sfl-players-toggle',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatCardModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSlideToggleModule,
+    ],
+    templateUrl: './players-toggle.component.html',
+    styleUrls: ['./players-toggle.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
   readonly playersStore = inject(PlayersStore);

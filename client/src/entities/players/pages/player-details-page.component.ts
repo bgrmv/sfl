@@ -2,17 +2,16 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlayerDetailsComponent } from '@entities/players/components/player-details/player-details.component';
 
 @Component({
-  selector: 'sfl-player-details-page',
-  standalone: true,
-  imports: [PlayerDetailsComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: 'sfl-player-details-page',
+    imports: [PlayerDetailsComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
     <sfl-player-details />
   `,
-  styles: `
+    styles: `
     :host {
       display: block;
     }
-  `,
+  `
 })
 export class PlayerDetailsPageComponent {}

@@ -22,18 +22,17 @@ import { EnumGameStatus } from '../../constants';
 import { GameDeleteDialogComponent } from '../game-delete-dialog/game-delete-dialog.component';
 
 @Component({
-  selector: 'sfl-game-card',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatCardModule,
-    MatButtonModule,
-    MatTooltipModule,
-  ],
-  templateUrl: './game-card.component.html',
-  styleUrl: './game-card.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sfl-game-card',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatCardModule,
+        MatButtonModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './game-card.component.html',
+    styleUrl: './game-card.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GameCardComponent {
   private readonly router = inject(Router);
