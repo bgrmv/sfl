@@ -1,6 +1,5 @@
 // What a Game adds to a player's Season (GLOSSARY: Old / New rating system,
-// Plus-minus, Last result). Where the code differs from a rule, the test is
-// written for the rule and marked `it.fails` with the item of S3.11.
+// Plus-minus, Last result); a test is named after the rule.
 import {
   EnumPlayerPosition,
   METADATA_BY_GAME_DEFAULT,
@@ -112,8 +111,7 @@ describe('Season: results of a player', () => {
     });
   });
 
-  // GLOSSARY: Last result gives a transfer 0; S3.11 A11 (now -1)
-  it.fails('a transfer has a Last result of 0', () => {
+  it('a transfer has a Last result of 0', () => {
     const season = add({ asTransfer: true, asSecondDraft: true });
 
     expect(season.ancientRatingSystem.lastResult).toBe(0);
@@ -173,9 +171,7 @@ describe('Season: New rating system', () => {
     expect(season.positionalRatingSystem.totalPoints).toBe(-4);
   });
 
-  // GLOSSARY: both systems exist side by side; S3.11 A12: the New system adds
-  // its points to the totals of the Old one
-  it.fails('is counted from its own totals, not from the Old system', () => {
+  it('is counted from its own totals, not from the Old system', () => {
     // game 1: a goalkeeper wins with 5 passes: Old 5, New 5 + 4
     const first = add(
       { ...won, hasPosition: Goalkeeper, totalPasses: 5 },
@@ -187,7 +183,7 @@ describe('Season: New rating system', () => {
     expect(second.positionalRatingSystem.totalPoints).toBe(10);
   });
 
-  it.fails('plus-minus and Last result are its own too', () => {
+  it('plus-minus and Last result are its own too', () => {
     const first = add(won, gameOf(2, 0, 'g1'));
     const other = {
       ...first,
@@ -203,15 +199,13 @@ describe('Season: New rating system', () => {
     expect(second.positionalRatingSystem.lastResult).toBe(2);
   });
 
-  // GLOSSARY: Head goal is x2 everywhere; S3.11 A12
-  it.fails('a head goal weighs 2', () => {
+  it('a head goal weighs 2', () => {
     const season = add({ totalGoalsByHead: 1 });
 
     expect(season.positionalRatingSystem.totalPoints).toBe(2);
   });
 
-  // GLOSSARY: Transfer gets no result, so no bonus; S3.11 A11
-  it.fails('a transfer gets no bonus or penalty of the position', () => {
+  it('a transfer gets no bonus or penalty of the position', () => {
     const season = add({
       asTransfer: true,
       asSecondDraft: true,
@@ -253,16 +247,12 @@ describe('Season: captains', () => {
     });
   });
 
-  // S3.11 A13: the game is appended to the list of all games
-  it.fails(
-    'the list of captained games holds only the games as a captain',
-    () => {
-      const first = add({}, gameOf(0, 0, 'g1'));
-      const second = add({ asCaptain: true }, gameOf(0, 0, 'g2'), first);
+  it('the list of captained games holds only the games as a captain', () => {
+    const first = add({}, gameOf(0, 0, 'g1'));
+    const second = add({ asCaptain: true }, gameOf(0, 0, 'g2'), first);
 
-      expect(second.captainedGamesIds).toEqual(['g2']);
-    },
-  );
+    expect(second.captainedGamesIds).toEqual(['g2']);
+  });
 });
 
 describe('Season: MVP and goals totals', () => {

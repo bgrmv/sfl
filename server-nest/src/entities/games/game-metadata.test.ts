@@ -1,7 +1,5 @@
 // League rules for a Game: score, result, captains, MVP and what a player gets
-// out of it. The vocabulary is GLOSSARY.md. Where the code still differs from
-// a rule, the test is written for the rule and marked `it.fails` with the item
-// of S3.11: fixing the code turns it red, then `.fails` is dropped.
+// out of it. The vocabulary is GLOSSARY.md; a test is named after the rule.
 import { EnumPlayerPosition } from '../players/constants/player-career-metadata';
 import { GamesService } from './games.service';
 
@@ -117,8 +115,7 @@ describe('Game: score', () => {
     ).rejects.toThrow();
   });
 
-  // GLOSSARY: Own goal; S3.11 A5
-  it.fails('an own goal counts for the opponent team', async () => {
+  it('an own goal counts for the opponent team', async () => {
     const m = await calcGame(withCaptains({ goalsByAuto: 1 }, {}));
 
     expect(m.score).toEqual([0, 1]);
@@ -191,16 +188,14 @@ describe('Game: captains', () => {
     });
   });
 
-  // S3.11 A4: captainWon and captainLost both point at the second captain
-  it.fails('in a draw there is no winning and no losing captain', async () => {
+  it('in a draw there is no winning and no losing captain', async () => {
     const m = await calcGame(game());
 
     expect(m.captainWon).toBeNull();
     expect(m.captainLost).toBeNull();
   });
 
-  // S3.11 A7: a draft without a captain is a rejected game, not a crash
-  it.fails('a game without a captain in a draft is rejected', async () => {
+  it('a game without a captain in a draft is rejected', async () => {
     const g = game();
     g.statistics[1].isCaptain = false;
 
@@ -239,29 +234,21 @@ describe('Game: MVP', () => {
     expect(m.mvpByGoalsIds).toEqual([]);
   });
 
-  // S3.11 A3: mvpByGoalsIds looks at head goals only
-  it.fails(
-    'the goal leader is MVP by goals, whatever the kind of goals',
-    async () => {
-      const m = await calcGame(
-        withCaptains({ goalsByLeg: 3 }, { goalsByLeg: 1 }),
-      );
+  it('the goal leader is MVP by goals, whatever the kind of goals', async () => {
+    const m = await calcGame(
+      withCaptains({ goalsByLeg: 3 }, { goalsByLeg: 1 }),
+    );
 
-      expect(m.mvpByGoalsIds).toEqual(['white-cap']);
-    },
-  );
+    expect(m.mvpByGoalsIds).toEqual(['white-cap']);
+  });
 
-  // GLOSSARY: Head goal is x2 in MVP by goals; S3.11 A3/A6
-  it.fails(
-    'a head goal is worth two leg goals for the MVP by goals',
-    async () => {
-      const m = await calcGame(
-        withCaptains({ goalsByLeg: 2 }, { goalsByHead: 1 }),
-      );
+  it('a head goal is worth two leg goals for the MVP by goals', async () => {
+    const m = await calcGame(
+      withCaptains({ goalsByLeg: 2 }, { goalsByHead: 1 }),
+    );
 
-      expect(m.mvpByGoalsIds.sort()).toEqual(['red-cap', 'white-cap']);
-    },
-  );
+    expect(m.mvpByGoalsIds.sort()).toEqual(['red-cap', 'white-cap']);
+  });
 });
 
 describe('Player in a Game: result', () => {
@@ -283,8 +270,7 @@ describe('Player in a Game: result', () => {
     expect(r).toMatchObject({ hasDraw: true, hasWon: false, hasLose: false });
   });
 
-  // S3.11 A1: hasWon and hasLose are computed for the first draft only
-  it.fails('a player of the winning second draft wins', async () => {
+  it('a player of the winning second draft wins', async () => {
     const g = withCaptains({}, { goalsByLeg: 3 }, stat('red-2', RED));
 
     expect(await resultOf('red-2', g)).toMatchObject({
@@ -294,7 +280,7 @@ describe('Player in a Game: result', () => {
     });
   });
 
-  it.fails('a player of the losing second draft loses', async () => {
+  it('a player of the losing second draft loses', async () => {
     const g = withCaptains({ goalsByLeg: 3 }, {}, stat('red-2', RED));
 
     expect(await resultOf('red-2', g)).toMatchObject({
@@ -348,8 +334,7 @@ describe('Player in a Game: goals and points', () => {
     });
   });
 
-  // S3.11 A2: the penalty is read from the head goals
-  it.fails('a penalty is counted as a penalty goal', async () => {
+  it('a penalty is counted as a penalty goal', async () => {
     const g = withCaptains({ goalsByPenalty: 2 }, {});
 
     expect(await resultOf('white-cap', g)).toMatchObject({
@@ -358,25 +343,19 @@ describe('Player in a Game: goals and points', () => {
     });
   });
 
-  // GLOSSARY: Head goal is x2 everywhere; S3.11 A2/A6 (the penalty bug
-  // copies the head goals, so only a case with all three kinds tells them apart)
-  it.fails(
-    'a head goal weighs 2, a leg goal and a penalty 1, for the player',
-    async () => {
-      const g = withCaptains(
-        { goalsByLeg: 1, goalsByHead: 1, goalsByPenalty: 1, passes: 1 },
-        {},
-      );
+  it('a head goal weighs 2, a leg goal and a penalty 1, for the player', async () => {
+    const g = withCaptains(
+      { goalsByLeg: 1, goalsByHead: 1, goalsByPenalty: 1, passes: 1 },
+      {},
+    );
 
-      expect(await resultOf('white-cap', g)).toMatchObject({
-        totalGoals: 4,
-        totalPoints: 5,
-      });
-    },
-  );
+    expect(await resultOf('white-cap', g)).toMatchObject({
+      totalGoals: 4,
+      totalPoints: 5,
+    });
+  });
 
-  // GLOSSARY: Own goal gives the author -1 point; S3.11 A5
-  it.fails('an own goal costs the author a point', async () => {
+  it('an own goal costs the author a point', async () => {
     const g = withCaptains({ goalsByAuto: 1, passes: 1 }, {});
 
     expect(await resultOf('white-cap', g)).toMatchObject({
@@ -405,17 +384,13 @@ describe('Player in a Game: transfer (plays for both teams)', () => {
     });
   });
 
-  // GLOSSARY: Transfer; S3.11 A11: only the first row of the statistics is used
-  it.fails(
-    'goals and passes of both teams count for the transfer',
-    async () => {
-      expect(await resultOf('guest', transferGame())).toMatchObject({
-        totalGoalsByLeg: 2,
-        totalPasses: 1,
-        totalPoints: 3,
-      });
-    },
-  );
+  it('goals and passes of both teams count for the transfer', async () => {
+    expect(await resultOf('guest', transferGame())).toMatchObject({
+      totalGoalsByLeg: 2,
+      totalPasses: 1,
+      totalPoints: 3,
+    });
+  });
 
   it('the goals of a transfer go to the team they were scored for', async () => {
     const m = await calcGame(transferGame());

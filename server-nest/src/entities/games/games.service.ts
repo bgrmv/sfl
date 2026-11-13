@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   HttpException,
   Injectable,
@@ -166,6 +167,7 @@ export class GamesService {
             players: playersMetadata,
           },
         },
+        { new: true },
       )
       .exec();
 
@@ -185,46 +187,34 @@ export class GamesService {
     const teamSecondIdHelper = game.teams.at(1).id.toString();
 
     // Common
+    // Rules of the league: GLOSSARY.md (a head goal weighs 2, an own goal
+    // goes to the opponent and costs its author a point)
+    const sumOf = (pick: (stat: PlayerStatistic) => number): number =>
+      game.statistics.reduce((curr, stat) => curr + (pick(stat) ?? 0), 0);
+    const scoredGoals = (stat: PlayerStatistic): number =>
+      (stat.goalsByLeg ?? 0) +
+      (stat.goalsByHead ?? 0) * 2 +
+      (stat.goalsByPenalty ?? 0);
+
     const totalPlayers: number = new Set(
       game.statistics.map(s => s.playerId.toString()),
     ).size;
-    const totalGoalsByLeg: number = game.statistics.reduce(
-      (curr, next) => curr + next.goalsByLeg,
-      0,
-    );
-    const totalGoalsByHead: number = game.statistics.reduce(
-      (curr, next) => curr + next.goalsByHead,
-      0,
-    );
-    const totalGoalsByPenalty: number = game.statistics.reduce(
-      (curr, next) => curr + next.goalsByPenalty,
-      0,
-    );
-    const totalGoalsByAuto: number = game.statistics.reduce(
-      curr => curr + 0, // TODO (next.goalAuto ?? 0),
-      0,
-    );
-    const totalPasses: number = game.statistics.reduce(
-      (curr, next) => curr + next.passes,
-      0,
-    );
-
-    const totalGoals: number =
-      totalGoalsByLeg + totalGoalsByHead * 2 + totalGoalsByPenalty;
-    const totalPoints: number = totalGoals + totalPasses;
+    const totalGoalsByLeg: number = sumOf(s => s.goalsByLeg);
+    const totalGoalsByHead: number = sumOf(s => s.goalsByHead);
+    const totalGoalsByPenalty: number = sumOf(s => s.goalsByPenalty);
+    const totalGoalsByAuto: number = sumOf(s => s.goalsByAuto);
+    const totalPasses: number = sumOf(s => s.passes);
 
     // Score
     const score: [number, number] = game.statistics.reduce(
       (curr, next) => {
-        const currentScore =
-          (next.goalsByLeg ?? 0) +
-          (next.goalsByHead ?? 0) * 2 +
-          (next.goalsByPenalty ?? 0);
+        const own = scoredGoals(next);
+        const auto = next.goalsByAuto ?? 0;
 
         if (next.teamId.toString() === teamFirstIdHelper) {
-          return [curr.at(0) + currentScore, curr.at(1)];
+          return [curr.at(0) + own, curr.at(1) + auto];
         } else if (next.teamId.toString() === teamSecondIdHelper) {
-          return [curr.at(0), curr.at(1) + currentScore];
+          return [curr.at(0) + auto, curr.at(1) + own];
         } else {
           throw new InternalServerErrorException(
             'Unexpected error occurred while calculating score metadata',
@@ -236,6 +226,12 @@ export class GamesService {
     const scoreIsDraw: boolean = score.at(0) === score.at(1);
     const scoreFirstDraft: number = score.at(0);
     const scoreSecondDraft: number = score.at(1);
+
+    // Goals of the game: everything on the scoreboard, own goals included
+    const totalGoals: number = scoreFirstDraft + scoreSecondDraft;
+    // Points of the players: goals and passes, minus own goals
+    const totalPoints: number =
+      sumOf(scoredGoals) + totalPasses - totalGoalsByAuto;
 
     // Team
     const teamWon: string | null = scoreIsDraw
@@ -255,25 +251,28 @@ export class GamesService {
     const isTeamFromSecondDraftWon = scoreFirstDraft < scoreSecondDraft;
     const isTeamFromSecondDraftLost = scoreFirstDraft > scoreSecondDraft;
 
-    // Captains
-    const captainFirstDraft: string = game.statistics
-      .find(
-        stat => stat.isCaptain && stat.teamId.toString() === teamFirstIdHelper,
-      )!
-      .playerId.toString();
+    // Captains: exactly one per draft
+    const captainsOf = (teamId: string): string[] =>
+      game.statistics
+        .filter(stat => stat.isCaptain && stat.teamId.toString() === teamId)
+        .map(stat => stat.playerId.toString());
+    const captainsFirst = [...new Set(captainsOf(teamFirstIdHelper))];
+    const captainsSecond = [...new Set(captainsOf(teamSecondIdHelper))];
+    if (captainsFirst.length !== 1 || captainsSecond.length !== 1) {
+      throw new BadRequestException('Each team needs exactly one captain');
+    }
 
-    const captainSecondDraft: string = game.statistics
-      .find(
-        stat => stat.isCaptain && stat.teamId.toString() === teamSecondIdHelper,
-      )!
-      .playerId.toString();
+    const captainFirstDraft: string = captainsFirst[0];
+    const captainSecondDraft: string = captainsSecond[0];
 
-    const captainWon: string | null =
-      scoreFirstDraft > scoreSecondDraft
+    const captainWon: string | null = scoreIsDraw
+      ? null
+      : isTeamFromFirstDraftWon
         ? captainFirstDraft
         : captainSecondDraft;
-    const captainLost: string | null =
-      scoreFirstDraft < scoreSecondDraft
+    const captainLost: string | null = scoreIsDraw
+      ? null
+      : isTeamFromFirstDraftLost
         ? captainFirstDraft
         : captainSecondDraft;
 
@@ -297,51 +296,24 @@ export class GamesService {
       .filter(stat => stat.teamId.toString() === teamSecondIdHelper)
       .map(stat => stat.playerId.toString());
 
-    // MVPs
-    // mvpByPassesIds
-    const maxPassesNumberHelper = [
-      ...new Set(
-        game.statistics
-          .map(stat => stat.passes)
-          .sort((pass1, pass2) => pass2 - pass1),
-      ),
-    ].at(0);
+    // MVPs: a player who plays for both teams is one player, rows are summed.
+    // The leaders of a tie all get it; with nothing scored there is no leader.
+    const leadersBy = (pick: (stat: PlayerStatistic) => number): string[] => {
+      const totals = new Map<string, number>();
+      for (const stat of game.statistics) {
+        const id = stat.playerId.toString();
+        totals.set(id, (totals.get(id) ?? 0) + (pick(stat) ?? 0));
+      }
+      const max = Math.max(0, ...totals.values());
 
-    const mvpByPassesIds: string[] = !maxPassesNumberHelper
-      ? []
-      : game.statistics
-          .filter(stat => stat.passes === maxPassesNumberHelper)
-          .map(stat => stat.playerId.toString());
+      return max === 0
+        ? []
+        : [...totals].filter(([, total]) => total === max).map(([id]) => id);
+    };
 
-    // mvpByGoalsIds
-    const maxGoalNumberHelper = [
-      ...new Set(
-        game.statistics
-          .map(stat => stat.goalsByHead)
-          .sort((goal1, goal2) => goal2 - goal1),
-      ),
-    ].at(0);
-
-    const mvpByGoalsIds: string[] = !maxGoalNumberHelper
-      ? []
-      : game.statistics
-          .filter(stat => stat.goalsByHead === maxGoalNumberHelper)
-          .map(stat => stat.playerId.toString());
-
-    // mvpByGoalsHeadIds
-    const maxGoalsHeadNumberHelper = [
-      ...new Set(
-        game.statistics
-          .map(stat => stat.goalsByHead)
-          .sort((goalHead1, goalHead2) => goalHead2 - goalHead1),
-      ),
-    ].at(0);
-
-    const mvpByGoalsHeadIds: string[] = !maxGoalsHeadNumberHelper
-      ? []
-      : game.statistics
-          .filter(stat => stat.goalsByHead === maxGoalsHeadNumberHelper)
-          .map(stat => stat.playerId.toString());
+    const mvpByPassesIds: string[] = leadersBy(s => s.passes);
+    const mvpByGoalsIds: string[] = leadersBy(scoredGoals);
+    const mvpByGoalsHeadIds: string[] = leadersBy(s => s.goalsByHead);
 
     // mvpListIds
     const mvpListIds: string[] = game.statistics.reduce(
@@ -440,43 +412,39 @@ export class GamesService {
     );
     const isPlayerInBothTeams = statistics.length === 2;
 
-    // Player can be transfered and play for both team
-    const statistic = isPlayerInBothTeams
-      ? statistics.at(0)
-      : statistics.reduce(
-          (acc, next) => {
-            return {
-              playerId: next.playerId.toString(),
-              teamId: next.teamId.toString(),
+    // A transfer plays for both teams: the rows of both teams are summed
+    const statistic = statistics.reduce(
+      (acc, next) => ({
+        playerId: next.playerId.toString(),
+        teamId: next.teamId.toString(),
 
-              passes: acc.passes + next.passes,
-              goalsByLeg: acc.goalsByLeg + next.goalsByLeg,
-              goalsByHead: acc.goalsByHead + next.goalsByHead,
-              goalsByAuto: acc.goalsByAuto + next.goalsByAuto,
-              goalsByPenalty: acc.goalsByPenalty + next.goalsByPenalty,
+        passes: acc.passes + (next.passes ?? 0),
+        goalsByLeg: acc.goalsByLeg + (next.goalsByLeg ?? 0),
+        goalsByHead: acc.goalsByHead + (next.goalsByHead ?? 0),
+        goalsByAuto: acc.goalsByAuto + (next.goalsByAuto ?? 0),
+        goalsByPenalty: acc.goalsByPenalty + (next.goalsByPenalty ?? 0),
 
-              isMVP: acc.isMVP || next.isMVP,
-              isCaptain: acc.isCaptain || next.isCaptain,
-              isTransfer: acc.isTransfer || next.isTransfer,
-              position: acc.position || next.position,
-            };
-          },
-          {
-            playerId: '',
-            teamId: '',
+        isMVP: acc.isMVP || next.isMVP,
+        isCaptain: acc.isCaptain || next.isCaptain,
+        isTransfer: acc.isTransfer || next.isTransfer,
+        position: acc.position || next.position,
+      }),
+      {
+        playerId: '',
+        teamId: '',
 
-            passes: 0,
-            goalsByLeg: 0,
-            goalsByHead: 0,
-            goalsByAuto: 0,
-            goalsByPenalty: 0,
+        passes: 0,
+        goalsByLeg: 0,
+        goalsByHead: 0,
+        goalsByAuto: 0,
+        goalsByPenalty: 0,
 
-            isMVP: false,
-            isCaptain: false,
-            isTransfer: false,
-            position: null,
-          } as PlayerStatistic,
-        );
+        isMVP: false,
+        isCaptain: false,
+        isTransfer: false,
+        position: null,
+      } as PlayerStatistic,
+    );
 
     // Previous metadata to recalculate
 
@@ -484,11 +452,6 @@ export class GamesService {
 
     try {
       // TODO move to helpers
-      const isTeamFromFirstDraftWon =
-        gameMetadata.scoreFirstDraft > gameMetadata.scoreSecondDraft;
-      const isTeamFromSecondDraftWon =
-        gameMetadata.scoreFirstDraft < gameMetadata.scoreSecondDraft;
-
       const asFirstDraft = isPlayerInBothTeams
         ? true
         : gameMetadata.playerIdsOfFirstDraft.includes(playerId);
@@ -501,31 +464,35 @@ export class GamesService {
 
         isMvp: gameMetadata.mvpListIds.includes(playerId),
         isMvpByPasses: gameMetadata.mvpByPassesIds.includes(playerId),
-        isMvpByGoals:
-          gameMetadata.mvpByGoalsIds.includes(playerId) ||
-          gameMetadata.mvpByGoalsHeadIds.includes(playerId),
+        isMvpByGoals: gameMetadata.mvpByGoalsIds.includes(playerId),
 
         asCaptain: statistic.isCaptain,
         asFirstDraft,
         asSecondDraft,
         asTransfer: statistic.isTransfer,
         hasPosition: statistic.position,
+        // The result is the result of the draft; a transfer has none
         hasWon: isPlayerInBothTeams
           ? false
-          : asFirstDraft && isTeamFromFirstDraftWon,
+          : asFirstDraft
+            ? gameMetadata.scoreFirstDraft > gameMetadata.scoreSecondDraft
+            : gameMetadata.scoreSecondDraft > gameMetadata.scoreFirstDraft,
         hasLose: isPlayerInBothTeams
           ? false
-          : asFirstDraft && isTeamFromSecondDraftWon,
+          : asFirstDraft
+            ? gameMetadata.scoreFirstDraft < gameMetadata.scoreSecondDraft
+            : gameMetadata.scoreSecondDraft < gameMetadata.scoreFirstDraft,
         hasDraw: isPlayerInBothTeams ? false : gameMetadata.scoreIsDraw,
       };
 
       const totalPasses = statistic.passes;
       const totalGoalsByLeg = statistic.goalsByLeg;
       const totalGoalsByHead = statistic.goalsByHead;
-      const totalGoalsByPenalty = statistic.goalsByHead;
-      const totalGoalsByAuto = 0;
+      const totalGoalsByPenalty = statistic.goalsByPenalty;
+      const totalGoalsByAuto = statistic.goalsByAuto;
+      // A head goal weighs 2; an own goal is not a goal of its author
       const totalGoals =
-        totalGoalsByLeg + totalGoalsByHead + totalGoalsByPenalty;
+        totalGoalsByLeg + totalGoalsByHead * 2 + totalGoalsByPenalty;
 
       const playerCommonTotalsMetadata: IPlayerCommonTotalsMetadata = {
         totalPasses,
@@ -534,11 +501,7 @@ export class GamesService {
         totalGoalsByPenalty,
         totalGoalsByAuto,
         totalGoals,
-        totalPoints:
-          totalGoalsByLeg +
-          totalGoalsByHead +
-          totalGoalsByPenalty +
-          totalPasses,
+        totalPoints: totalGoals + totalPasses - totalGoalsByAuto,
       };
 
       playerGameResultMetadata = {

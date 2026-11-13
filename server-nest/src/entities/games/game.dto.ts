@@ -17,6 +17,39 @@ export const SavePlayerStatisticDTO = v.object({
   position: v.union([v.enum_(EnumPlayerPosition), v.null_()]),
 });
 
+// Rules of a game that depend on several fields (GLOSSARY: Captain, Position)
+type GameDraft = {
+  status: EnumGameStatus;
+  teams: { id: string }[];
+  statistics: v.Output<typeof SavePlayerStatisticDTO>[];
+};
+
+const gameRules = [
+  v.custom<any>(
+    ({ teams, statistics }: GameDraft) =>
+      teams.every(
+        team =>
+          new Set(
+            statistics
+              .filter(stat => stat.isCaptain && stat.teamId === team.id)
+              .map(stat => stat.playerId),
+          ).size === 1,
+      ),
+    'Each team needs exactly one captain',
+  ),
+  v.custom<any>(
+    ({ teams, statistics }: GameDraft) =>
+      statistics.every(stat => teams.some(team => team.id === stat.teamId)),
+    'A statistic refers to a team that is not in the game',
+  ),
+  v.custom<any>(
+    ({ status, statistics }: GameDraft) =>
+      status !== EnumGameStatus.Published ||
+      statistics.every(stat => stat.position !== null),
+    'A published game needs a position for every player',
+  ),
+];
+
 const GameBaseDTO = {
   number: v.number([v.integer(), v.minValue(1), v.maxValue(53)]),
   season: v.number([v.integer(), v.minValue(2010)]),
@@ -33,9 +66,12 @@ const GameBaseDTO = {
 // id: v.string([v.toTrimmed(), v.uuid()]),
 
 export const SaveGameDTO = v.transform(
-  v.object({
-    ...GameBaseDTO,
-  }),
+  v.object(
+    {
+      ...GameBaseDTO,
+    },
+    gameRules,
+  ),
   (input): Omit<IGame, 'id'> => ({
     ...input,
     playedAt: new Date(input.playedAt),
@@ -47,10 +83,13 @@ export const SaveGameDTO = v.transform(
 );
 
 export const UpdateGameDTO = v.transform(
-  v.object({
-    id: v.string([v.toTrimmed()]),
-    ...GameBaseDTO,
-  }),
+  v.object(
+    {
+      id: v.string([v.toTrimmed()]),
+      ...GameBaseDTO,
+    },
+    gameRules,
+  ),
   input => ({
     ...input,
   }),

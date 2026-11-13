@@ -10,8 +10,10 @@ export function getPointsByPosition({
   hasPosition,
   hasDraw,
   hasWon,
+  hasLose,
 }: IPlayerMetadataByGame): -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 {
-  if (hasDraw || !hasPosition) {
+  // No bonus without a position, in a draw, or without a result (a transfer)
+  if (hasDraw || !hasPosition || (!hasWon && !hasLose)) {
     return 0;
   }
 
@@ -46,23 +48,22 @@ export function accumulatePlayerSeasonMetadata(
     ? gameMetadata.scoreFirstDraft - gameMetadata.scoreSecondDraft
     : gameMetadata.scoreSecondDraft - gameMetadata.scoreFirstDraft;
 
-  const lr = input.hasDraw ? 0 : input.hasWon ? 1 : -1;
+  // A draw and a transfer (no result) give 0
+  const lr = input.hasWon ? 1 : input.hasLose ? -1 : 0;
   const gamesResults: (1 | 0 | -1)[] = [...original.gamesResults, lr];
 
-  // Note: looks at IAncientRatingSystem
+  // Old rating system: a pass 1, a leg goal 1, a penalty 1, a head goal 2,
+  // an own goal -1
   const inputAncientTotalPoints =
     input.totalPasses +
     input.totalGoalsByLeg +
     input.totalGoalsByPenalty +
-    input.totalGoalsByHead * 2;
+    input.totalGoalsByHead * 2 -
+    input.totalGoalsByAuto;
 
-  // Note: look at IPositionalRatingSystem
+  // New rating system: the same points plus the bonus of the position
   const positionalTotalPoints =
-    input.totalPasses +
-    input.totalGoalsByLeg +
-    input.totalGoalsByPenalty +
-    input.totalGoalsByHead +
-    getPointsByPosition(input);
+    inputAncientTotalPoints + getPointsByPosition(input);
 
   return {
     totalPasses: sum(original.totalPasses, input.totalPasses),
@@ -106,7 +107,7 @@ export function accumulatePlayerSeasonMetadata(
     gamesMaxLostStreak: getMaxRepeatedCountHelper(gamesResults, -1),
 
     captainedGamesIds: input.asCaptain
-      ? original.gamesIds.concat([gameId])
+      ? original.captainedGamesIds.concat([gameId])
       : original.captainedGamesIds,
     captainedByPlayersIds: input.asCaptain
       ? original.captainedByPlayersIds
@@ -123,10 +124,10 @@ export function accumulatePlayerSeasonMetadata(
     },
     // Positional Rating System
     positionalRatingSystem: {
-      plusMinus: original.ancientRatingSystem.plusMinus + plusMinus,
-      lastResult: original.ancientRatingSystem.lastResult + lr,
+      plusMinus: original.positionalRatingSystem.plusMinus + plusMinus,
+      lastResult: original.positionalRatingSystem.lastResult + lr,
       totalPoints:
-        original.ancientRatingSystem.totalPoints + positionalTotalPoints,
+        original.positionalRatingSystem.totalPoints + positionalTotalPoints,
     },
   };
 }

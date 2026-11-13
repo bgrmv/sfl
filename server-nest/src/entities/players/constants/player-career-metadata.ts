@@ -2,8 +2,8 @@ export interface IRatingSystem {
   /**
    * +/- Statistics
    *
-   * +1 points if you goal scored by your team while you were on the field
-   * -1 point if you goal scored by the opponent while you were on the field
+   * The goal difference of the player's team in the game: own team's score
+   * minus the opponent's. Time on the field is not tracked.
    *
    * Represents players impact.
    */
@@ -42,6 +42,7 @@ export interface IAncientRatingSystem extends IRatingSystem {
    * +1 points for pass
    * +1 points for regular goal or penalty
    * +2 points for goal by head
+   * -1 point for own goal
    */
   totalPoints: number;
 }
@@ -72,7 +73,8 @@ export interface IPositionalRatingSystem extends IRatingSystem {
    * -1 if game is lost
    *
    * +1 points for pass
-   * +1 points any kind of goal
+   * +1 points for regular goal or penalty, +2 for goal by head
+   * -1 point for own goal
    */
   totalPoints: number;
 }

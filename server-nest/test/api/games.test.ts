@@ -216,36 +216,104 @@ describe('API: games', () => {
     });
   });
 
-  describe('known defects of the current API (see the S11.9 audit)', () => {
-    // it.fails passes while the defect exists and turns red once it is fixed:
-    // then drop `.fails` to turn it into a regular regression test.
+  describe('rules of the league on the API', () => {
+    it('a game without a captain in a team answers 400 and is not stored', async () => {
+      const body = gameBody(playerIds, { number: 21 });
+      body.statistics = body.statistics.map(s => ({ ...s, isCaptain: false }));
 
-    // S3.11 (A7)
-    it.fails(
-      'a game without a captain answers 400 and is not stored',
-      async () => {
-        const body = gameBody(playerIds, { number: 21 });
-        body.statistics = body.statistics.map(s => ({
-          ...s,
-          isCaptain: false,
-        }));
+      const res = await post(body);
+      const stored = await t
+        .api()
+        .get('/rest/games')
+        .query({ season: 2024, number: 21 });
 
-        const res = await post(body);
-        const stored = await t
-          .api()
-          .get('/rest/games')
-          .query({ season: 2024, number: 21 });
+      expect(res.status).toBe(400);
+      expect(res.body.issues[0].message).toBe(
+        'Each team needs exactly one captain',
+      );
+      expect(stored.body).toHaveLength(0);
+    });
 
-        expect(res.status).toBe(400);
-        expect(stored.body).toHaveLength(0);
-      },
-    );
+    it('a published game with a player without a position answers 400', async () => {
+      const body = gameBody(playerIds, { number: 23 });
+      body.statistics[1] = { ...body.statistics[1], position: null };
 
-    // S3.11 (A8)
-    it.fails('the create response already contains metadata', async () => {
+      const res = await post(body);
+
+      expect(res.status).toBe(400);
+      expect(res.body.issues[0].message).toBe(
+        'A published game needs a position for every player',
+      );
+    });
+
+    it('the same game as a draft may have players without a position', async () => {
+      const body = gameBody(playerIds, { number: 24, status: 'draft' });
+      body.statistics[1] = { ...body.statistics[1], position: null };
+
+      const res = await post(body);
+
+      expect(isSuccess(res.status)).toBe(true);
+    });
+
+    it('the create response already contains the calculated metadata', async () => {
       const res = await post(gameBody(playerIds, { number: 22 }));
 
       expect(res.body.metadata.score).toEqual([2, 1]);
+      expect(res.body.metadata.players[playerIds[0]]).toMatchObject({
+        hasWon: true,
+      });
+    });
+
+    it('the PATCH response contains the metadata of the stored game', async () => {
+      const created = await post(gameBody(playerIds, { number: 25 }));
+      const id = created.body.id;
+      const stats = gameBody(playerIds).statistics;
+      stats[1] = { ...stats[1], goalsByLeg: 5 };
+
+      const res = await t
+        .api()
+        .patch(`/rest/games/${id}`)
+        .set('Authorization', bearer(t))
+        .send({
+          ...gameBody(playerIds, { number: 25 }),
+          id,
+          statistics: stats,
+        });
+
+      expect(res.body.data.metadata.score).toEqual([2, 5]);
+    });
+  });
+
+  describe('only a published game counts for the players', () => {
+    const season = 2019;
+    const totalGames = async (playerId: string) => {
+      const { body } = await t
+        .api()
+        .get(`/rest/players/${playerId}`)
+        .query({ includeMetadata: true });
+      return body.metadata?.bySeason?.[season]?.totalGames ?? 0;
+    };
+
+    it('a draft is not counted; publishing it counts it; unpublishing takes it back', async () => {
+      const [a, b] = await createPlayers(t, 2);
+      const ids: [string, string] = [a.id, b.id];
+      const draft = gameBody(ids, { number: 40, season, status: 'draft' });
+      const created = await post(draft);
+      const id = created.body.id;
+      expect(await totalGames(a.id)).toBe(0);
+
+      const setStatus = (status: string) =>
+        t
+          .api()
+          .patch(`/rest/games/${id}`)
+          .set('Authorization', bearer(t))
+          .send({ ...gameBody(ids, { number: 40, season, status }), id });
+
+      await setStatus('published');
+      expect(await totalGames(a.id)).toBe(1);
+
+      await setStatus('draft');
+      expect(await totalGames(a.id)).toBe(0);
     });
   });
 });

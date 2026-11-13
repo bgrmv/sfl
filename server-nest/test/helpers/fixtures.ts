@@ -80,8 +80,16 @@ export function gameBody(
     notes: ['', ''],
     metadata: {},
     statistics: [
-      stat(playerIds[0], TEAM_WHITE.id, { isCaptain: true, goalsByLeg: 2 }),
-      stat(playerIds[1], TEAM_RED.id, { isCaptain: true, goalsByLeg: 1 }),
+      stat(playerIds[0], TEAM_WHITE.id, {
+        isCaptain: true,
+        goalsByLeg: 2,
+        position: 'GK',
+      }),
+      stat(playerIds[1], TEAM_RED.id, {
+        isCaptain: true,
+        goalsByLeg: 1,
+        position: 'FRWD',
+      }),
     ],
     ...overrides,
   };

@@ -8,7 +8,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FlattenMaps, Model, Types } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
-import { Game, IGame } from '../games/game.schema';
+import { EnumGameStatus, Game, IGame } from '../games/game.schema';
 import { UsersService } from '../users/users.service';
 import {
   IPlayerMetadata,
@@ -230,6 +230,8 @@ export class PlayersService {
         {
           $match: {
             season,
+            // Only a published game counts (GLOSSARY: Game status)
+            status: EnumGameStatus.Published,
             [`metadata.players.${playerId}`]: {
               $exists: 1,
               $ne: null,
