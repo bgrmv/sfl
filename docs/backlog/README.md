@@ -190,6 +190,8 @@ flowchart LR
 |   ❌   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                            |
 |   ❌   | [S3.18](E03-architecture/S3.18.md) | Реактивность клиента по практикам Angular 22                    |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
 |   ❌   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
+|   ✅   | [S3.20](E03-architecture/S3.20.md) | Убрать вызовы клиента к несуществующим маршрутам API            |    P1     |   S    | —                                                                           |
+|   ❌   | [S3.21](E03-architecture/S3.21.md) | Выровнять REST API: лексика, семантика, топология               |    P2     |   M    | [S3.20](E03-architecture/S3.20.md)                                          |
 
 ## Эпик 4 — Spike и проектирование переезда
 
