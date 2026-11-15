@@ -307,7 +307,7 @@ flowchart LR
 |   ❌   | [S11.1](E11-dx-docs/S11.1.md)   | Локальный запуск за 15 минут               |    P1     |   S    | [S1.2](E01-dependency-upgrades/S1.2.md) (позже обновить после S7.2, она отложена) |
 |   ❌   | [S11.2](E11-dx-docs/S11.2.md)   | Анонимизированные тестовые данные          |    P1     |   M    | [S6.1](E06-data-migration/S6.1.md)                                                |
 |   ❌   | [S11.3](E11-dx-docs/S11.3.md)   | Обновлять архитектурную документацию       |    P4     |   S    | [S6.7](E06-data-migration/S6.7.md)                                                |
-|   ❌   | [S11.4](E11-dx-docs/S11.4.md)   | Вычистить мусор из репозитория             |    P1     |   M    | [S2.8](E02-tests-ci/S2.8.md)                                                      |
+|   ✅   | [S11.4](E11-dx-docs/S11.4.md)   | Вычистить мусор из репозитория             |    P1     |   M    | [S2.8](E02-tests-ci/S2.8.md)                                                      |
 |   ✅   | [S11.5](E11-dx-docs/S11.5.md)   | AGENT.md: инструкции для ИИ-агентов        |    P0     |   S    | —                                                                                 |
 |   ✅   | [S11.6](E11-dx-docs/S11.6.md)   | Dev-container для локальной разработки     |    P0     |   M    | —                                                                                 |
 |   ✅   | [S11.7](E11-dx-docs/S11.7.md)   | Pre-commit хуки: husky и lint-staged       |    P1     |   S    | [S1.6](E01-dependency-upgrades/S1.6.md)                                           |
