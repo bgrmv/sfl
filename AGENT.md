@@ -19,7 +19,7 @@ SFL — приложение для любительской футбольно�
 
 ## Окружение
 
-Работаем в dev-container; Node.js и MongoDB на хосте не нужны. Пакетный менеджер — **pnpm** (через corepack). База: `mongodb://mongodb:27017`, БД `sfl` (`server-nest/.env`, значения dev-only). Изменили настройки контейнера — см. таблицу «что делать» в [README.md](README.md).
+Работаем в dev-container; Node.js и MongoDB на хосте не нужны. Пакетный менеджер — **pnpm** (через corepack). База: `mongodb://mongodb:27017`, БД `sfl` (`server-nest/.env`, значения dev-only). Изменили настройки контейнера — см. раздел «Rebuild» в [docs/development.md](docs/development.md#rebuild).
 
 ## Команды
 
@@ -27,7 +27,7 @@ SFL — приложение для любительской футбольно�
 
 **Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. В `pnpm check` входят также `pnpm audit --audit-level high` (нужна сеть) и gitleaks по дереву и истории (`.gitleaks.toml`, исключения только с причиной; в старом контейнере: `bash .devcontainer/install-gitleaks.sh`). Шаги, которые падают по известным причинам, пропускаются с выводом причины; список — константа `KNOWN` в скрипте (сейчас пуст).
 
-Адрес API клиента задают `APP_ENV` и `API_URL` при сборке ([README](README.md), «Окружения клиента»); `client/src/environments/api-url.generated.ts` создаётся скриптом и не коммитится.
+Адрес API клиента задают `APP_ENV` и `API_URL` при сборке ([docs/development.md](docs/development.md), «Окружения клиента»); `client/src/environments/api-url.generated.ts` создаётся скриптом и не коммитится.
 
 Остальные команды запускай из папки пакета.
 
@@ -48,7 +48,7 @@ SFL — приложение для любительской футбольно�
 - Серверные тесты: юнит-тесты рядом с кодом (`src/**/*.test.ts`), API-тесты в `server-nest/test/api/` на `mongodb-memory-server` (внешняя база не нужна; первый запуск скачивает бинарник mongod). Известные дефекты помечены `it.fails` со ссылкой на историю: исправил дефект — убери `.fails`. Покрытие: `pnpm test:coverage` (порог 80% на расчёте статистики).
 - Сервер: модуль на сущность (контроллер, сервис, схема Mongoose, DTO). Валидация на zod: формы данных API объявлены один раз в `packages/schemas` на `zod/mini`, серверные DTO без клиента — на обычном `zod` ([ADR 0010](docs/adr/0010-zod-mini-in-shared-schemas.md)).
 - Коммиты: `feat:` / `fix:` / `chore:` / `docs:` с областью и ID истории, как в `git log`: `fix(server): ... (S0.4)`. Сообщения на английском, документация и бэклог на русском.
-- Pre-commit хук (husky, lint-staged, gitleaks по staged) ставится сам после `pnpm install`; не обходи его через `--no-verify` без причины в описании PR ([README](README.md), «Pre-commit хуки»).
+- Pre-commit хук (husky, lint-staged, gitleaks по staged) ставится сам после `pnpm install`; не обходи его через `--no-verify` без причины в описании PR ([docs/development.md](docs/development.md), «Pre-commit хуки»).
 - Комментарии в коде — только когда причина неочевидна.
 
 ## Запреты
