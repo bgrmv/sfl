@@ -309,16 +309,20 @@ describe('API: players', () => {
       expect(JSON.stringify(list.body.data)).toContain('@sfl.test');
     });
 
-    it('an ADMIN with only the refresh cookie gets the full user too', async () => {
+    it('an ADMIN with the token from the refresh cookie gets the full user too', async () => {
       const signIn = await t
         .api()
         .post('/rest/auth/sign-in')
         .send({ email: 'admin@sfl.test', password: 'admin-password' });
+      const refreshed = await t
+        .api()
+        .post('/rest/auth/refresh')
+        .set('Cookie', signIn.headers['set-cookie']);
 
       const res = await t
         .api()
         .get(`/rest/players/${playerId}`)
-        .set('Cookie', signIn.headers['set-cookie']);
+        .set('Authorization', `Bearer ${refreshed.body.data.accessToken}`);
 
       expect(res.body.data.user.email).toContain('@sfl.test');
     });

@@ -12,6 +12,8 @@ export const ADMIN_EMAIL = 'admin@sfl.test';
 export const ADMIN_PASSWORD = 'admin-password';
 export const USER_EMAIL = 'user@sfl.test';
 export const USER_PASSWORD = 'user-password';
+export const TEST_ACCESS_SECRET = 'test-access-secret-at-least-32-characters';
+export const TEST_REFRESH_SECRET = 'test-refresh-secret-at-least-32-characters';
 
 export interface TestApp {
   app: INestApplication;
@@ -42,8 +44,8 @@ export async function createTestApp(
     PORT: '0',
     CLIENT_HOSTNAME: 'http://localhost',
     CLIENT_PORT: '4200',
-    ACCESS_TOKEN_SECRET: 'test-access-secret',
-    REFRESH_TOKEN_SECRET: 'test-refresh-secret',
+    ACCESS_TOKEN_SECRET: TEST_ACCESS_SECRET,
+    REFRESH_TOKEN_SECRET: TEST_REFRESH_SECRET,
     // The limits stay out of the way of the tests; a test of the limit lowers them
     SIGN_IN_LIMIT: '1000',
     API_LIMIT: '100000',

@@ -1,17 +1,47 @@
 import {
-  Logger,
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { randomUUID } from 'node:crypto';
+import { Model, Types } from 'mongoose';
 import { hash } from 'src/shared/utils/string';
-import { IUser, User } from '../users';
+import { User } from '../users';
+import {
+  ACCESS_AUDIENCE,
+  JWT_ALGORITHM,
+  JWT_ISSUER,
+  REFRESH_AUDIENCE,
+  REFRESH_GRACE_SECONDS,
+  REFRESH_TTL_SECONDS,
+} from './auth.constants';
+import { Session } from './session.schema';
 import { AuthRequiredOutput } from './auth.dto';
+
+/** The ids of users are UUIDs: a string has to be cast before a query. */
+const uuid = (id: string) => new Types.UUID(id) as unknown as string;
+
+/** All a token holds: who and with which roles. The rest comes from `GET /auth/whoami`. */
+export interface TokenClaims {
+  _id: string;
+  roles: string[];
+  /** `User.tokenVersion` at the time of issue; a refresh token is void when it differs. */
+  tv: number;
+}
+
+/** What a refresh token adds: the session (`sid`) and the number of the token in it (`jti`). */
+export interface RefreshClaims extends TokenClaims {
+  sid: string;
+  jti: string;
+}
+
+/** The user as the API shows it (`whoami`, `req.user` after a refresh). */
+export type SessionUser = Awaited<ReturnType<AuthService['getUser']>>;
 
 @Injectable()
 export class AuthService {
@@ -27,6 +57,8 @@ export class AuthService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Session.name)
+    private sessionModel: Model<Session>,
     private configService: ConfigService,
     private jwtService: JwtService,
   ) {}
@@ -39,12 +71,22 @@ export class AuthService {
         throw new UnauthorizedException();
       }
 
-      const payload = await this.getUser(user);
+      const claims = await this.claimsOf(user._id);
+      const sid = randomUUID();
+      const jti = randomUUID();
+
+      await this.sessionModel.create({
+        _id: sid,
+        userId: String(user._id),
+        jti,
+        rotatedAt: new Date(),
+        expiresAt: this.refreshExpiry(),
+      });
 
       // If authenticated, generate and send an access token and a refresh token
       return {
-        accessToken: await this.generateAccessToken(payload),
-        refreshToken: await this.generateRefreshToken(payload),
+        accessToken: await this.generateAccessToken(claims),
+        refreshToken: await this.generateRefreshToken({ ...claims, sid, jti }),
       };
     } catch (error: any) {
       this.logger.error(error);
@@ -58,74 +100,157 @@ export class AuthService {
   }
 
   /**
-    Access Token:
-    - Short-Lived: Access tokens have a relatively short lifespan, often lasting just a few minutes to a few hours.
-    - Authorization: They are used to grant access to specific resources or perform actions on behalf of a user.
-    - Reduced Security Risk: Because they have a short lifespan, even if they are compromised, the exposure is limited in time.
-    - Stateless Authentication: Access tokens allow stateless authentication, meaning the server doesn't need to store session information for each user. The token contains all the necessary information for authorization.
-
-    Use Cases:
-    - Accessing APIs or protected routes.
-    - Authorizing a user to perform actions, like creating, updating, or deleting data.
-  */
-  public async generateAccessToken(
-    user: Omit<IUser, 'password' | 'roles'> & { roles: string[] },
-  ) {
-    return await this.jwtService.signAsync(user, {
+   * Access token: short-lived (15 minutes), checked without the database, so a
+   * change of roles reaches it at most 15 minutes later.
+   */
+  public async generateAccessToken(claims: TokenClaims) {
+    return await this.jwtService.signAsync(claims, {
       expiresIn: '15m',
       secret: this.accessTokenSecret,
+      algorithm: JWT_ALGORITHM,
+      issuer: JWT_ISSUER,
+      audience: ACCESS_AUDIENCE,
     });
   }
 
-  public async verifyAccessToken(accessToken: string): Promise<any> {
-    try {
-      return await this.jwtService.verifyAsync(accessToken, {
-        secret: this.accessTokenSecret,
-      });
-    } catch {
-      return null;
-    }
+  public async verifyAccessToken(
+    accessToken: string,
+  ): Promise<TokenClaims | null> {
+    return this.verify(accessToken, this.accessTokenSecret, ACCESS_AUDIENCE);
   }
 
   /**
-    Refresh Token:
-    - Long-Lived: Refresh tokens have a longer lifespan, potentially weeks or months.
-    - Securely Obtaining New Access Tokens: They are used to obtain new access tokens when the previous access token expires.
-    - Stored Securely: Refresh tokens are usually stored on the client-side in a secure HTTP-only cookie or a local storage mechanism.
-    - Reduced Password Exposure: Refresh tokens can help reduce the exposure of the user's credentials (username and password) since they are used less frequently.
-    - Enhanced Security: If a refresh token is compromised, the attacker can only obtain new access tokens but not the user's credentials.
-
-    Use Cases:
-    - Keeping a user authenticated over a longer period without requiring frequent login.
-    - Managing access tokens for long-running sessions, such as in mobile or single-page applications.
-    - Reducing the need for users to repeatedly log in.
-  */
-  public async generateRefreshToken(
-    user: Omit<IUser, 'password' | 'roles'> & { roles: string[] },
-  ) {
-    return this.jwtService.signAsync(user, {
-      expiresIn: '1d',
+   * Refresh token: lives one day, sits in an HttpOnly cookie, changes at every
+   * refresh, is void after sign-out and after a change of the password.
+   */
+  public async generateRefreshToken(claims: RefreshClaims) {
+    return this.jwtService.signAsync(claims, {
+      expiresIn: REFRESH_TTL_SECONDS,
       secret: this.refreshTokenSecret,
+      algorithm: JWT_ALGORITHM,
+      issuer: JWT_ISSUER,
+      audience: REFRESH_AUDIENCE,
     });
   }
 
-  public async verifyRefreshToken(refreshToken: string): Promise<any> {
-    try {
-      return await this.jwtService.verifyAsync(refreshToken, {
-        secret: this.refreshTokenSecret,
-      });
-    } catch {
+  public async verifyRefreshToken(
+    refreshToken: string,
+  ): Promise<RefreshClaims | null> {
+    return this.verify<RefreshClaims>(
+      refreshToken,
+      this.refreshTokenSecret,
+      REFRESH_AUDIENCE,
+    );
+  }
+
+  /**
+   * A session from a refresh token: the user and the roles come from the
+   * database, not from the token, so a role changed an hour ago is already
+   * in force. The token is replaced by a new one (`refreshToken` in the answer).
+   * Null for an invalid, expired or revoked token.
+   *
+   * A token that was already replaced is used again: it is a copy, and the
+   * whole session is deleted, for the thief and for the owner alike. Only the
+   * previous token, for a few seconds, is let through without a new token: two
+   * tabs may refresh at once, and the browser already holds the new cookie.
+   */
+  public async refreshSession(refreshToken: string) {
+    const claims = await this.verifyRefreshToken(refreshToken);
+    if (!claims?.sid || !claims.jti) {
       return null;
+    }
+
+    const current = await this.userModel
+      .findById(uuid(claims._id), 'tokenVersion')
+      .lean()
+      .exec();
+    if (!current || (current.tokenVersion ?? 0) !== claims.tv) {
+      return null;
+    }
+
+    const newJti = randomUUID();
+    const now = new Date();
+    const rotated = await this.sessionModel
+      .findOneAndUpdate(
+        { _id: claims.sid, userId: claims._id, jti: claims.jti },
+        {
+          $set: {
+            jti: newJti,
+            previousJti: claims.jti,
+            rotatedAt: now,
+            expiresAt: this.refreshExpiry(),
+          },
+        },
+      )
+      .lean()
+      .exec();
+
+    let newRefreshToken: string | undefined;
+    if (rotated) {
+      newRefreshToken = await this.generateRefreshToken({
+        ...(await this.claimsOf(claims._id)),
+        sid: claims.sid,
+        jti: newJti,
+      });
+    } else if (!(await this.isJustReplaced(claims))) {
+      await this.sessionModel.deleteOne({ _id: claims.sid }).exec();
+      this.logger.warn(
+        `Refresh token of session ${claims.sid} used twice: the session is deleted`,
+      );
+      return null;
+    }
+
+    return {
+      user: await this.getUser({ _id: claims._id }),
+      accessToken: await this.generateAccessToken(
+        await this.claimsOf(claims._id),
+      ),
+      refreshToken: newRefreshToken,
+    };
+  }
+
+  /** Sign-out: the session of this device is deleted, its refresh token stops working at once. */
+  public async revokeSession(refreshToken: string): Promise<void> {
+    const claims = await this.verifyRefreshToken(refreshToken);
+    if (claims?.sid) {
+      await this.sessionModel
+        .deleteOne({ _id: claims.sid, userId: claims._id })
+        .exec();
     }
   }
 
-  public async getUser({ email }: Pick<IUser, 'email'>) {
+  private async isJustReplaced(claims: RefreshClaims): Promise<boolean> {
+    const session = await this.sessionModel
+      .findOne({ _id: claims.sid, userId: claims._id })
+      .lean()
+      .exec();
+
+    return (
+      !!session &&
+      session.previousJti === claims.jti &&
+      Date.now() - session.rotatedAt.getTime() <= REFRESH_GRACE_SECONDS * 1000
+    );
+  }
+
+  private refreshExpiry(): Date {
+    return new Date(Date.now() + REFRESH_TTL_SECONDS * 1000);
+  }
+
+  public async getUser({ email, _id }: { email?: string; _id?: string }) {
     const user = await this.userModel
-      .findOne({ email })
+      .findOne({
+        ...(email ? { email } : null),
+        ...(_id ? { _id: uuid(_id) } : null),
+      })
       .populate(['roles'])
       .exec();
+
+    if (!user) {
+      return null;
+    }
+
     return {
-      _id: user._id,
+      id: String(user._id),
       email: user.email,
       name: user.name,
       surname: user.surname,
@@ -133,5 +258,36 @@ export class AuthService {
       age: user.age,
       roles: user.roles.map(role => role.name),
     };
+  }
+
+  private async claimsOf(id: string): Promise<TokenClaims> {
+    const user = await this.userModel
+      .findById(uuid(id))
+      .populate(['roles'])
+      .exec();
+
+    return {
+      _id: String(user._id),
+      roles: user.roles.map(role => role.name),
+      tv: user.tokenVersion ?? 0,
+    };
+  }
+
+  /** `algorithms`, issuer and audience are fixed: no `none`, no HS256, no foreign token. */
+  private async verify<T extends object = TokenClaims>(
+    token: string,
+    secret: string,
+    audience: string,
+  ): Promise<T | null> {
+    try {
+      return await this.jwtService.verifyAsync<T>(token, {
+        secret,
+        algorithms: [JWT_ALGORITHM],
+        issuer: JWT_ISSUER,
+        audience,
+      });
+    } catch {
+      return null;
+    }
   }
 }

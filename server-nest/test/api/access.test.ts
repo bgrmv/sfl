@@ -4,6 +4,7 @@ import {
   TestApp,
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
+  TEST_ACCESS_SECRET,
 } from '../helpers/test-app';
 import {
   bearer,
@@ -134,6 +135,7 @@ const CLOSED: Case[] = [
 
 const PUBLIC = [
   'POST /auth/sign-in',
+  'POST /auth/refresh',
   'POST /auth/sign-out',
   'GET /games',
   'GET /games/:id',
@@ -273,6 +275,12 @@ describe('API: access matrix', () => {
         `/rest${path.replace(':id', '64b7f0f0f0f0f0f0f0f0f0f0')}`,
       );
 
+    // The guard lets /auth/refresh in; the route itself needs the cookie and says 401 by design
+    if (route === 'POST /auth/refresh') {
+      expect(res.body.error.code).toBe('UNAUTHORIZED');
+      return;
+    }
+
     expect(res.status).not.toBe(401);
   });
 
@@ -310,7 +318,13 @@ describe('API: access matrix', () => {
     it('rejects an expired token', async () => {
       const expired = await jwt.signAsync(
         { email: ADMIN_EMAIL },
-        { secret: 'test-access-secret', expiresIn: '-10s' },
+        {
+          secret: TEST_ACCESS_SECRET,
+          expiresIn: '-10s',
+          algorithm: 'HS512',
+          issuer: 'sfl-api',
+          audience: 'sfl-access',
+        },
       );
 
       expect((await open({ Authorization: `Bearer ${expired}` })).status).toBe(
@@ -318,7 +332,7 @@ describe('API: access matrix', () => {
       );
     });
 
-    it('lets a valid refresh cookie replace an expired access token', async () => {
+    it('a refresh cookie alone opens no route but /auth/refresh', async () => {
       const signIn = await t
         .api()
         .post('/rest/auth/sign-in')
@@ -326,10 +340,14 @@ describe('API: access matrix', () => {
       const cookie = signIn.headers['set-cookie'];
       expect(String(cookie)).toContain('refreshToken=');
       expect(String(cookie)).toContain('HttpOnly');
+      expect(String(cookie)).toContain('Path=/rest/auth');
 
-      const res = await t.api().get('/rest/auth/whoami').set('Cookie', cookie);
-
-      expect(res.status).toBe(200);
+      expect(
+        (await t.api().get('/rest/auth/whoami').set('Cookie', cookie)).status,
+      ).toBe(401);
+      expect(
+        (await t.api().post('/rest/auth/refresh').set('Cookie', cookie)).status,
+      ).toBe(201);
     });
   });
 

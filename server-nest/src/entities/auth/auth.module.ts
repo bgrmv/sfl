@@ -6,6 +6,7 @@ import { Role, RoleSchema } from '../roles';
 import { User, UserSchema } from '../users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { Session, SessionSchema } from './session.schema';
 
 @Module({
   imports: [
@@ -13,6 +14,10 @@ import { AuthService } from './auth.service';
       {
         name: User.name,
         schema: UserSchema,
+      },
+      {
+        name: Session.name,
+        schema: SessionSchema,
       },
       {
         name: Role.name,

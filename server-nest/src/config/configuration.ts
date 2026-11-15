@@ -1,4 +1,5 @@
 import { cleanEnv, num, str } from 'envalid';
+import { MIN_SECRET_LENGTH } from '../entities/auth/auth.constants';
 
 export default () => {
   const env = cleanEnv(process.env, {
@@ -20,6 +21,19 @@ export default () => {
     API_LIMIT: num({ default: 300 }), // requests per window, per IP
     API_WINDOW_SEC: num({ default: 60 }),
   });
+
+  // A weak or shared secret makes tokens forgeable, so the app does not start (S8.12)
+  const { ACCESS_TOKEN_SECRET: access, REFRESH_TOKEN_SECRET: refresh } = env;
+  if (access.length < MIN_SECRET_LENGTH || refresh.length < MIN_SECRET_LENGTH) {
+    throw new Error(
+      `ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET must be at least ${MIN_SECRET_LENGTH} characters`,
+    );
+  }
+  if (access === refresh) {
+    throw new Error(
+      'ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET must be different',
+    );
+  }
 
   return { ...env };
 };

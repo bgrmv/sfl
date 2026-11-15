@@ -22,6 +22,7 @@ const transform = (_doc, ret: Record<string, any>) => {
   delete ret._id;
   delete ret.password;
   delete ret.roles;
+  delete ret.tokenVersion;
   return ret;
 };
 
@@ -68,6 +69,10 @@ export class User implements IUser {
   @ApiProperty()
   @Prop({ required: true, default: () => hash(randomUUID()) })
   password: string;
+
+  /** Raised on sign-out and on a password change: every refresh token issued before is void (S8.12). */
+  @Prop({ type: Number, default: 0 })
+  tokenVersion: number;
 
   // Assuming you have defined EnumRoleCollection and RoleModel elsewhere
   // Adjust this part based on your actual setup

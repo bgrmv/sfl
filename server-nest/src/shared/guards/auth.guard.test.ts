@@ -20,6 +20,7 @@ type Route = { method: string; path: string };
 // Routes that must be reachable without a token. Everything else must answer 401.
 const PUBLIC_ROUTES = [
   'POST /rest/auth/sign-in',
+  'POST /rest/auth/refresh',
   'POST /rest/auth/sign-out',
   'GET /rest/games',
   'GET /rest/games/:id',
@@ -39,9 +40,8 @@ describe('AuthGuard: access matrix', () => {
 
   const authService = {
     verifyAccessToken: vi.fn(),
-    verifyRefreshToken: vi.fn(),
+    refreshSession: vi.fn(),
     getUser: vi.fn(),
-    generateAccessToken: vi.fn(),
   };
 
   beforeAll(async () => {
@@ -91,7 +91,7 @@ describe('AuthGuard: access matrix', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     authService.verifyAccessToken.mockResolvedValue(null);
-    authService.verifyRefreshToken.mockResolvedValue(null);
+    authService.refreshSession.mockResolvedValue(null);
   });
 
   const send = ({ method, path }: Route) =>
@@ -143,6 +143,8 @@ describe('AuthGuard: access matrix', () => {
     expect(open).toHaveLength(PUBLIC_ROUTES.length);
 
     for (const route of open) {
+      // The guard lets it in; the route itself answers 401 without a cookie, by design
+      if (key(route) === 'POST /rest/auth/refresh') continue;
       const res = await send(route);
       expect({ route: key(route), status: res.status }).not.toEqual({
         route: key(route),
@@ -152,7 +154,11 @@ describe('AuthGuard: access matrix', () => {
   });
 
   it('lets a request with a valid access token through', async () => {
-    authService.verifyAccessToken.mockResolvedValue(ADMIN);
+    authService.verifyAccessToken.mockResolvedValue({
+      _id: 'u1',
+      roles: ['ADMIN'],
+    });
+    authService.getUser.mockResolvedValue(ADMIN);
 
     const res = await request(app.getHttpServer())
       .get('/rest/auth/whoami')
@@ -162,17 +168,17 @@ describe('AuthGuard: access matrix', () => {
     expect(res.body).toEqual(ADMIN);
   });
 
-  it('lets a request with a valid refresh cookie through', async () => {
-    authService.verifyRefreshToken.mockResolvedValue(ADMIN);
-    authService.getUser.mockResolvedValue(ADMIN);
-    authService.generateAccessToken.mockResolvedValue('new-access-token');
+  it('does not let a refresh cookie alone through: it opens only /auth/refresh', async () => {
+    authService.refreshSession.mockResolvedValue({
+      user: ADMIN,
+      accessToken: 'new-access-token',
+    });
 
     const res = await request(app.getHttpServer())
       .get('/rest/auth/whoami')
-      .set('Authorization', 'Bearer expired')
       .set('Cookie', 'refreshToken=valid');
 
-    expect(res.status).toBe(200);
-    expect(authService.generateAccessToken).toHaveBeenCalledWith(ADMIN);
+    expect(res.status).toBe(401);
+    expect(authService.refreshSession).not.toHaveBeenCalled();
   });
 });

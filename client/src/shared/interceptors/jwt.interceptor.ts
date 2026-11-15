@@ -1,14 +1,19 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 
+import { AccessTokenStore } from '../services/access-token.store';
+
+/**
+ * Puts the access token (from memory) into the header and lets the browser
+ * send the HttpOnly refresh cookie (it goes to `/auth/*` only).
+ */
 export const jwtInterceptor: HttpInterceptorFn = (request, next) => {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = inject(AccessTokenStore).get();
 
-  const requestWithAccessToken = request.clone({
-    withCredentials: true,
-    setHeaders: {
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-    },
-  });
-
-  return next(requestWithAccessToken);
+  return next(
+    request.clone({
+      withCredentials: true,
+      setHeaders: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+    }),
+  );
 };

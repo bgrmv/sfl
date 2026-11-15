@@ -5,6 +5,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UsePipes,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -29,8 +30,14 @@ export class AuthController {
 
   @Roles() // any signed-in user
   @Get('whoami')
-  whoami(@Req() req: Request) {
-    return (req as any)?.user;
+  async whoami(@Req() req: Request) {
+    // The token holds only the id and the roles; the rest is read here
+    const user = await this.authService.getUser({ _id: (req as any).user._id });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
   }
 
   @Public()
@@ -44,14 +51,42 @@ export class AuthController {
   async signIn(@Res({ passthrough: true }) res: Response, @Body() auth: Auth) {
     const { accessToken, refreshToken } = await this.authService.signIn(auth);
 
-    // Set cookie refreshToken
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
+      ...this.cookieOptions(),
       expires: addDays(new Date(), 1),
-      sameSite: true,
     });
 
     return { accessToken };
+  }
+
+  /**
+   * A new access token from the refresh cookie. This is the only route that
+   * the cookie opens, with `POST /auth/sign-out`: the cookie is limited to
+   * their path, and the client keeps the access token in memory only.
+   */
+  @Public()
+  @Post('refresh')
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const refreshToken = (req.cookies as any)?.refreshToken;
+    const session = refreshToken
+      ? await this.authService.refreshSession(refreshToken)
+      : null;
+    if (!session?.user) {
+      throw new UnauthorizedException();
+    }
+
+    // Not for a token that was replaced a moment ago: the browser already has the new cookie
+    if (session.refreshToken) {
+      res.cookie('refreshToken', session.refreshToken, {
+        ...this.cookieOptions(),
+        expires: addDays(new Date(), 1),
+      });
+    }
+
+    return { accessToken: session.accessToken, user: session.user };
   }
 
   @Public()
@@ -60,13 +95,34 @@ export class AuthController {
     status: 200,
     description: 'sign out (reset tokens)',
   })
-  signOut(@Res({ passthrough: true }) res: Response) {
+  async signOut(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // Not only the cookie goes: the refresh token itself stops working (S8.12)
+    const refreshToken = (req.cookies as any)?.refreshToken;
+    if (refreshToken) {
+      await this.authService.revokeSession(refreshToken);
+    }
+
     res.cookie('refreshToken', null, {
-      httpOnly: true,
+      ...this.cookieOptions(),
       expires: new Date(),
-      sameSite: true,
     });
 
     return { accessToken: null };
+  }
+
+  /** `Secure` everywhere except the local development and the tests (S8.12). */
+  private cookieOptions() {
+    const stage = this.configService.get<string>('STAGE');
+
+    return {
+      httpOnly: true,
+      sameSite: true,
+      secure: stage !== 'development' && stage !== 'test',
+      // The browser sends the cookie to the auth routes only, not to the whole API
+      path: '/rest/auth',
+    } as const;
   }
 }

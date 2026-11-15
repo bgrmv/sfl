@@ -22,7 +22,6 @@ import { RolesGuard } from './shared/guards/roles.guard';
 import { describeDatabaseTarget } from './shared/utils/database-target';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { AppThrottlerGuard } from './shared/guards/throttler.guard';
-import { ContextInterceptor } from './shared/interceptors/context/context.interceptor';
 import { FileLoggerService } from './shared/services/logger.service';
 
 @Module({
@@ -126,10 +125,6 @@ import { FileLoggerService } from './shared/services/logger.service';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ContextInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,

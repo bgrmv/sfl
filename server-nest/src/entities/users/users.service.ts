@@ -79,6 +79,8 @@ export class UsersService {
     const user = await this.userModel
       .findByIdAndUpdate(new mongoose.Types.UUID(id), {
         $set: { password: hash(password) },
+        // A new password ends every session opened with the old one
+        $inc: { tokenVersion: 1 },
       })
       .exec();
 

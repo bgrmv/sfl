@@ -38,40 +38,25 @@ export class AuthGuard implements CanActivate {
     throw new UnauthorizedException();
   }
 
-  /** Puts the user and a fresh access token into the request; false if there is no valid token. */
+  /**
+   * Puts the claims of a valid access token into the request. Only the
+   * `Authorization: Bearer` header counts: the refresh cookie opens nothing
+   * but `POST /auth/refresh` and `POST /auth/sign-out`, so a foreign site
+   * cannot act with it (CSRF) and a stolen cookie alone is not a session.
+   */
   private async authenticate(req: Request): Promise<boolean> {
     const authHeader = req.headers.authorization;
     const accessToken = authHeader && authHeader.split(' ')[1];
-    const refreshToken = (req.cookies as any)?.refreshToken;
-
-    if (!accessToken && !refreshToken) {
+    if (!accessToken) {
       return false;
     }
 
-    const verifedAccess = await this.authService.verifyAccessToken(accessToken);
-    if (verifedAccess) {
-      (req as any).user = verifedAccess;
-      (req as any).accessToken = accessToken;
-      return true;
+    const claims = await this.authService.verifyAccessToken(accessToken);
+    if (!claims) {
+      return false;
     }
 
-    const verifedRefresh =
-      await this.authService.verifyRefreshToken(refreshToken);
-    if (verifedRefresh) {
-      // Get user by refresh
-      const user = await this.authService.getUser({
-        email: verifedRefresh.email,
-      });
-
-      // Generate new access token
-      const newAccessToken = await this.authService.generateAccessToken(user);
-
-      // Add them to request
-      (req as any).user = verifedRefresh;
-      (req as any).accessToken = newAccessToken;
-      return true;
-    }
-
-    return false;
+    (req as any).user = claims;
+    return true;
   }
 }
