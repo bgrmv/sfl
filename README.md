@@ -49,7 +49,7 @@
 | `docs/`          | проект, бэклог, архитектурные решения (ADR), аудиты                                                              |
 | `.devcontainer/` | окружение разработки: Node 22, pnpm, MongoDB 7, тестовые данные                                                  |
 
-Схема и причины решений: [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md), [docs/PROJECT.md](docs/PROJECT.md), [docs/adr/](docs/adr/README.md).
+Схема и причины решений: [Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md), [docs/PROJECT.md](docs/PROJECT.md), [docs/adr/](docs/adr/README.md).
 
 ## Где что лежит в документации
 
@@ -60,7 +60,7 @@
 | узнать, почему принято решение                  | [docs/adr/](docs/adr/README.md)            |
 | увидеть, что делается и что дальше              | [docs/backlog/](docs/backlog/README.md)    |
 | настроить окружение, данные, хуки, Node         | [docs/development.md](docs/development.md) |
-| перенести приёмы проекта в другой проект        | [EXPERIENCE.md](EXPERIENCE.md)             |
+| перенести приёмы проекта в другой проект        | [EXPERIENCE.md](docs/EXPERIENCE.md)        |
 | работать как ИИ-агент                           | [AGENT.md](AGENT.md)                       |
 | прочитать результаты аудитов                    | [docs/audits/](docs/audits/)               |
 

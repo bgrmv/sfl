@@ -1,6 +1,6 @@
 # server-nest
 
-Main API of SFL: NestJS, Mongoose, MongoDB. Architecture: [Project_Architecture_Blueprint.md](../Project_Architecture_Blueprint.md), stack and rules: [docs/PROJECT.md](../docs/PROJECT.md), agent rules: [AGENT.md](../AGENT.md).
+Main API of SFL: NestJS, Mongoose, MongoDB. Architecture: [Project_Architecture_Blueprint.md](../docs/Project_Architecture_Blueprint.md), stack and rules: [docs/PROJECT.md](../docs/PROJECT.md), agent rules: [AGENT.md](../AGENT.md).
 
 ## Run
 

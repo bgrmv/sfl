@@ -1,6 +1,6 @@
 # SFL — бэклог пользовательских историй
 
-> Основа: [Project_Architecture_Blueprint.md](../../Project_Architecture_Blueprint.md) и код репозитория на 2026-10-25.
+> Основа: [Project_Architecture_Blueprint.md](../Project_Architecture_Blueprint.md) и код репозитория на 2026-10-25.
 > Цели: обновить зависимости, покрыть код тестами, исправить архитектуру, уйти с Azure на MVPS (Docker Compose) сразу с целевым монолитом Nest + Angular SSR, затем перенести MongoDB из Atlas на тот же сервер.
 
 Этот файл — **единственное место, где хранится статус историй**. Каждая история лежит в отдельном файле в папке своего эпика.
