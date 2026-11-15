@@ -112,7 +112,7 @@ docker compose -f .devcontainer/docker-compose.yml stop    # stop; start brings 
 
 ### Working with a copy of prod data
 
-A temporary way to develop on real data until the anonymized set from [S11.2](backlog/E11-dx-docs/S11.2.md) exists. The dump holds real emails and password hashes: keep it in `_dumps/` (ignored by git), never commit or share it, and do not paste its content into chats.
+A way to develop on real data. For everyday work and tests use the anonymized set (next section); this one is for what only real data shows. The dump holds real emails and password hashes: keep it in `_dumps/` (ignored by git), never commit or share it, and do not paste its content into chats.
 
 1. In Atlas create a database user with the role **Read any database** only (Security → Database Access). Use a password of letters and digits, or percent-encode `@ : / ? # %`.
 2. In the container terminal. The connection string goes into a variable without echo, so it stays out of the shell history. It has no path and no `?options`; the database is `prod`:
@@ -127,6 +127,19 @@ A temporary way to develop on real data until the anonymized set from [S11.2](ba
    ```
 
 Repeat both steps to refresh. The dump of 2026-11-12 held 16 games, 232 players, 233 users, 2 teams and 2 roles. To go back to synthetic data: `node .devcontainer/seed.cjs --reset`.
+
+### Anonymized copy of prod data
+
+[S11.2](backlog/E11-dx-docs/S11.2.md). From a dump made as above, a copy without personal data: names, emails, avatars, ages, nicknames, password hashes and the free text of games are replaced, ids, links, scores and statistics stay.
+
+```bash
+node .devcontainer/anonymize-dump.cjs _dumps/prod-<date>     # -> _dumps/prod-<date>-anonymized/
+node .devcontainer/db-restore.cjs _dumps/prod-<date>-anonymized --drop
+```
+
+Sign in as `admin@sfl.local` / `admin` (the first ADMIN of the dump); everybody else has the password `dev`. The script prints counts, never values, and checks that no personal value of the input is left in the output (exit code 2 if one is). The result stays in `_dumps/` (ignored by git): look at it yourself before you decide to share it.
+
+The same set feeds the golden-master test of the statistics ([S2.2](backlog/E02-tests-ci/S2.2.md)): `cd server-nest && pnpm exec vitest run test/golden`. It calculates the metadata of every game and player again with the real code, writes the differences from the stored values to `golden-report.json` and compares the result with `golden-baseline.json` (both next to the dump; the baseline is created on the first run, delete it to accept a deliberate change of the rules). Without the dump the test is skipped. The path is `SFL_GOLDEN_DIR`.
 
 ### Without the dev-container
 
