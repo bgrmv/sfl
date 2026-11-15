@@ -60,6 +60,7 @@
 | узнать, почему принято решение                  | [docs/adr/](docs/adr/README.md)            |
 | увидеть, что делается и что дальше              | [docs/backlog/](docs/backlog/README.md)    |
 | настроить окружение, данные, хуки, Node         | [docs/development.md](docs/development.md) |
+| перенести приёмы проекта в другой проект        | [EXPERIENCE.md](EXPERIENCE.md)             |
 | работать как ИИ-агент                           | [AGENT.md](AGENT.md)                       |
 | прочитать результаты аудитов                    | [docs/audits/](docs/audits/)               |
 
