@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <div style="min-height: 100%%; display: flex; flex-wrap: wrap; flex: 1 1 auto;">
+  <aside style="flex: 0 0 220px; flex-grow: 1; max-width: 100%%; box-sizing: border-box; background: {{t.surface}}; border-right: 1px solid {{t.border}}; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;">Admin</span></div>
+    <nav aria-label="Admin" style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; font-weight: 600;">
+      <sc-for list="{{menu}}" as="m" hint-placeholder-count="8"><a href="#" aria-current="{{m.current}}" style="display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 12px; border-radius: 4px; background: {{m.bg}}; color: {{m.fg}};">{{m.label}}<sc-if value="{{m.count}}" hint-placeholder-val="{{ false }}"><span style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{m.bBg}}; color: {{m.bFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{m.count}}</span></sc-if></a></sc-for>
+    </nav>
+    <div style="margin-top: auto; font-size: 13px; color: {{t.muted}};">Signed in as admin@sfl.local<br><a href="#" style="color: {{t.link}}; font-weight: 700;">Open public site</a></div>
+  </aside>
+  <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; position: relative;">
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 20px; border-bottom: 1px solid {{t.border}};">
+      <sc-if value="{{processing}}" hint-placeholder-val="{{ false }}"><span style="margin-right: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 12px; border-radius: 999px; background: {{t.surface2}};"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}};"></span>Processing: game of 14 Nov 2015 · step 3 of 6</span></sc-if>
+      <a href="#" aria-label="Note of the game being processed" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 14px; font-weight: 600;">Note</a>
+      <a href="#" aria-label="Unprocessed games: 586" style="position: relative; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/></svg><span style="position: absolute; right: -8px; top: -8px; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">586</span></a>
+    </div>
+    <main style="flex: 1 1 auto; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;"><div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Photo and video</h1><div style="font-size: 14px; color: {{t.muted}};">Upload, tag and review. The public page shows only what is published.</div></div><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Upload</a></div>
+      <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px;"><sc-for list="{{kpis}}" as="k" hint-placeholder-count="4"><li style="background: {{k.bg}}; color: {{k.fg}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px 16px;"><div style="font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.85;">{{k.l}}</div><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 31px; line-height: 1.15;">{{k.v}}</div><div style="font-size: 13px; opacity: 0.85;">{{k.s}}</div></li></sc-for></ul>
+      <div role="button" tabindex="0" aria-label="Drop files to upload" style="border: 2px dashed {{t.muted}}; border-radius: 4px; padding: 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; text-align: center;"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg><div><div style="font-weight: 700;">Drop photos and videos here</div><div style="font-size: 13px; color: {{t.muted}};">JPG, PNG, MP4 up to 200 MB. The game is chosen by the date of the file: 14 Nov matches Game 46.</div></div></div>
+      <div role="tablist" aria-label="Queue" style="display: inline-flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{tabs}}" as="c" hint-placeholder-count="4"><a role="tab" href="#" aria-selected="{{c.on}}" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; border: 1px solid {{c.bd}}; font-size: 13px; font-weight: 700;">{{c.t}} <span style="opacity: 0.85;">{{c.n}}</span></a></sc-for></div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <section style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 14px; border: 2px solid {{t.accent}}; border-radius: 4px; background: {{t.surface}};"><span style="font-weight: 700;">6 selected</span><a href="#" style="font-size: 13px; font-weight: 700; color: {{t.link}};">Select all 128 untagged</a><span style="margin-left: auto; display: flex; gap: 6px;"><a href="#" style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 13px; font-weight: 600;">Hide</a><a href="#" style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 2px solid {{t.neg}}; color: {{t.neg}}; font-size: 13px; font-weight: 700;">Delete</a></span></div>
+          <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 8px;"><sc-for list="{{grid}}" as="p" hint-placeholder-count="12"><li style="position: relative; aspect-ratio: 4 / 3; border-radius: 4px; background: {{p.bg}}; border: {{p.bd}}; display: flex; align-items: flex-end; justify-content: space-between; padding: 6px;"><span style="position: absolute; left: 6px; top: 6px; width: 22px; height: 22px; border-radius: 4px; background: {{p.cb}}; color: {{t.onAccent}}; border: {{p.cbd}}; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">{{p.m}}</span><span style="font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: rgba(0,0,0,0.7); color: #F6F1E4;">{{p.s}}</span></li></sc-for></ul>
+        </section>
+        <aside style="flex: 0 1 360px; min-width: 280px; display: flex; flex-direction: column; gap: 12px;">
+          <section style="background: {{t.surface}}; border: 2px solid {{t.accent}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase;">Tag the 6 selected</h2>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Game<span style="display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">Game 46 · 14 Nov 2026 <span aria-hidden="true" style="color: {{t.muted}};">▾</span></span></label>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Tags</span><div style="display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; min-height: 48px;"><sc-for list="{{applied}}" as="g" hint-placeholder-count="4"><span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px 0 10px; border-radius: 999px; background: {{g.bg}}; color: {{g.fg}}; font-size: 13px; font-weight: 700;">{{g.t}}<a href="#" aria-label="Remove {{g.t}}" style="width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.18);">×</a></span></sc-for><span style="color: {{t.muted}}; font-size: 14px; align-self: center;">add…</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Players of the game (one tap)</span><div style="display: flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{roster}}" as="g" hint-placeholder-count="8"><a href="#" aria-pressed="{{g.on}}" style="display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: {{g.bg}}; color: {{g.fg}}; border: 1px solid {{g.bd}}; font-size: 13px; font-weight: 600;">{{g.t}}</a></sc-for></div></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Apply and publish</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">Apply, keep hidden</a></div>
+          </section>
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px;"><h2 style="margin: 0; font-size: 16px; font-weight: 700;">Requests from players <span style="font-size: 12px; color: {{t.muted}};">· 3</span></h2>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px;"><sc-for list="{{reqs}}" as="r" hint-placeholder-count="3"><li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; border-top: {{r.divider}}; padding-top: {{r.pt}}px;"><span style="flex: 1 1 160px;"><strong>{{r.who}}</strong> {{r.what}}<span style="display: block; font-size: 12px; color: {{t.muted}};">{{r.where}}</span></span><a href="#" style="display: inline-flex; align-items: center; height: 32px; padding: 0 10px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 13px; font-weight: 700;">Approve</a><a href="#" style="display: inline-flex; align-items: center; height: 32px; padding: 0 10px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 13px; font-weight: 600;">Decline</a></li></sc-for></ul></section>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+    const items = [['Overview', 0, 'a'], ['Games', 2, 'b'], ['Process games', 586, 'p'], ['Players', 0, 'c'], ['Schedule', 0, 'd'], ['Comments', 3, 'e'], ['Rules and votes', 2, 'f'], ['Photo and video', 128, 'media']];
+    const menu = items.map(([label, count, k]) => { const on = k === 'media'; return { label, count, current: on ? 'page' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, bBg: on ? t.onAccent : t.accent, bFg: on ? t.accent : t.onAccent }; });
+    const kp = (l, v, s, hot) => ({ l, v, s, bg: hot ? '#000000' : t.surface, fg: hot ? '#F6F1E4' : t.text });
+    const kpis = [kp('Untagged', '128', 'need tags', true), kp('Published', '391 + 37', 'photos and videos'), kp('Hidden', '14', 'waiting for review'), kp('Tag requests', '3', 'from players')];
+    const tabs = [['Untagged', 128, 1], ['New uploads', 9, 0], ['Hidden', 14, 0], ['All', 428, 0]].map(([tt, n, on]) => ({ t: tt, n, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, bd: on ? t.accent : t.border }));
+    const grid = Array.from({ length: 12 }, (_, i) => { const sel = i < 6; return { m: sel ? '✓' : '', cb: sel ? t.accent : 'rgba(0,0,0,0.55)', cbd: sel ? 'none' : '1px solid #B3AA94', bg: i % 2 ? '#2A261C' : '#1F1C15', bd: sel ? `2px solid ${t.accent}` : `1px solid ${t.border}`, s: i % 5 === 0 ? 'video 0:31' : '14 Nov' }; });
+    const gt = (n) => ({ t: n, bg: n.startsWith('#') || n.startsWith('Game') || n.startsWith('S2') ? t.chipSolid : t.accent, fg: n.startsWith('#') || n.startsWith('Game') || n.startsWith('S2') ? t.text : t.onAccent });
+    const applied = ['Game 46', 'S26', 'BMW', '#team-photo'].map(gt);
+    const roster = ['Falcon', 'Lynx', 'Bear', 'Otter', 'Heron', 'Mole', 'Crane', 'Fox', 'Stag', 'Raven'].map((n, i) => { const on = i < 2; return { t: n, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, bd: on ? t.accent : t.border }; });
+    const R = [['Lynx', 'asks to remove his tag', 'Game 41, photo 7'], ['Marta', 'suggests tagging “Wolf”', 'Game 46, photo 3'], ['Hawk', 'says “that is me”', 'Game 45, photo 12']];
+    const reqs = R.map(([who, what, where], i) => ({ who, what, where, divider: i ? `1px solid ${t.border}` : 'none', pt: i ? 8 : 0 }));
+    return { t, menu, processing: false, kpis, tabs, grid, applied, roster, reqs };
+  }
+}
+</script>
+</body>
+</html>

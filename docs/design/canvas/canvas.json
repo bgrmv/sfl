@@ -1,0 +1,1189 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Captains.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "title": "Шаг 2 · Капитаны · тёмная",
+      "w": 1280,
+      "x": 0,
+      "y": 91580
+    },
+    "CaptainsList.dc.html": {
+      "expand": "fill",
+      "h": 1261,
+      "title": "Капитаны 1280 · карточки",
+      "w": 1229,
+      "x": 51,
+      "y": 21090
+    },
+    "CaptainsMatrix.dc.html": {
+      "expand": "fill",
+      "h": 1530,
+      "title": "Капитаны 1280 · матрица встреч",
+      "w": 1280,
+      "x": 2720,
+      "y": 21090
+    },
+    "CaptainsPhone.dc.html": {
+      "expand": "fill",
+      "h": 3950,
+      "title": "Капитаны 360 · тёмная · карточки",
+      "w": 360,
+      "x": 880,
+      "y": 22870
+    },
+    "CaptainsTable.dc.html": {
+      "expand": "fill",
+      "h": 1230,
+      "title": "Капитаны 1280 · таблица",
+      "w": 1280,
+      "x": 1360,
+      "y": 21090
+    },
+    "Dashboard-Light.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "title": "Дашборд 1280 · светлая",
+      "w": 1280,
+      "x": 1360,
+      "y": 32220
+    },
+    "Dashboard.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "title": "Дашборд 1280 · тёмная",
+      "w": 1280,
+      "x": 0,
+      "y": 32220
+    },
+    "Draft.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "title": "Шаг 3 · Драфт · тёмная",
+      "w": 1280,
+      "x": 1360,
+      "y": 91580
+    },
+    "Game-Phone-Light.dc.html": {
+      "expand": "fill",
+      "h": 5050,
+      "title": "Матч 360 · светлая",
+      "w": 360,
+      "x": 1360,
+      "y": 7300
+    },
+    "Game.dc.html": {
+      "expand": "fill",
+      "h": 3680,
+      "title": "Матч 1280 · тёмная",
+      "w": 1280,
+      "x": 0,
+      "y": 7300
+    },
+    "Games.dc.html": {
+      "expand": "fill",
+      "h": 2350,
+      "title": "Компонент · Список матчей",
+      "w": 360,
+      "x": 1360,
+      "y": 97680
+    },
+    "History.dc.html": {
+      "expand": "fill",
+      "h": 1880,
+      "title": "История 1280 · тёмная",
+      "w": 1280,
+      "x": 1360,
+      "y": 12650
+    },
+    "Home.dc.html": {
+      "expand": "fill",
+      "h": 3000,
+      "title": "Компонент · Главная",
+      "w": 1280,
+      "x": 0,
+      "y": 97680
+    },
+    "Icons.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "title": "Набор значков (будущий спрайт)",
+      "w": 1280,
+      "x": 0,
+      "y": 94680
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 3000,
+      "title": "Главная 1280 · тёмная",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "Order.dc.html": {
+      "expand": "fill",
+      "h": 2500,
+      "title": "Шаг 5 · Порядок голов · тёмная",
+      "w": 1280,
+      "x": 4080,
+      "y": 91580
+    },
+    "Player.dc.html": {
+      "expand": "fill",
+      "h": 3880,
+      "title": "Игрок 1280 · тёмная · карточки",
+      "w": 1280,
+      "x": 0,
+      "y": 14930
+    },
+    "PlayerCaptain.dc.html": {
+      "expand": "fill",
+      "h": 3680,
+      "title": "Игрок 1280 · вкладка «Капитан»",
+      "w": 1280,
+      "x": 2720,
+      "y": 14930
+    },
+    "PlayerLight.dc.html": {
+      "expand": "fill",
+      "h": 3880,
+      "title": "Игрок 1280 · светлая",
+      "w": 1280,
+      "x": 1360,
+      "y": 22870
+    },
+    "PlayerPhone.dc.html": {
+      "expand": "fill",
+      "h": 7650,
+      "title": "Игрок 360 · тёмная",
+      "w": 360,
+      "x": 0,
+      "y": 22870
+    },
+    "PlayerTable.dc.html": {
+      "expand": "fill",
+      "h": 3280,
+      "title": "Игрок 1280 · тёмная · таблица",
+      "w": 1280,
+      "x": 1360,
+      "y": 14930
+    },
+    "Players.dc.html": {
+      "expand": "fill",
+      "h": 1480,
+      "title": "Игроки 1280 · тёмная · таблица",
+      "w": 1280,
+      "x": 0,
+      "y": 19010
+    },
+    "PlayersCards.dc.html": {
+      "expand": "fill",
+      "h": 1880,
+      "title": "Игроки 1280 · тёмная · карточки",
+      "w": 1280,
+      "x": 1360,
+      "y": 19010
+    },
+    "PlayersLight.dc.html": {
+      "expand": "fill",
+      "h": 1480,
+      "title": "Игроки 1280 · светлая · таблица",
+      "w": 1280,
+      "x": 2720,
+      "y": 19010
+    },
+    "PlayersPhone.dc.html": {
+      "expand": "fill",
+      "h": 5150,
+      "title": "Игроки 360 · тёмная · карточки",
+      "w": 360,
+      "x": 440,
+      "y": 22870
+    },
+    "Positions.dc.html": {
+      "expand": "fill",
+      "h": 1450,
+      "title": "Позиции: значки и выбор",
+      "w": 1280,
+      "x": 2720,
+      "y": 94680
+    },
+    "Review.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "title": "Шаг 6 · Проверка и публикация · тёмная",
+      "w": 1280,
+      "x": 5440,
+      "y": 91580
+    },
+    "Scoreboard-Games-Phone-Dark.dc.html": {
+      "expand": "fill",
+      "h": 2350,
+      "title": "Список матчей 360 · тёмная",
+      "w": 360,
+      "x": 3160,
+      "y": 0
+    },
+    "Scoreboard-Home-Light.dc.html": {
+      "expand": "fill",
+      "h": 3000,
+      "title": "Главная 1280 · светлая",
+      "w": 1280,
+      "x": 1360,
+      "y": 0
+    },
+    "Scoreboard-Home-Phone-Light.dc.html": {
+      "expand": "fill",
+      "h": 7800,
+      "title": "Главная 360 · светлая",
+      "w": 360,
+      "x": 2720,
+      "y": 0
+    },
+    "Scoreboard-SignIn-Phone-Light.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "title": "Вход 360 · светлая",
+      "w": 360,
+      "x": 3600,
+      "y": 0
+    },
+    "SignIn.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "title": "Компонент · Вход",
+      "w": 360,
+      "x": 1800,
+      "y": 97680
+    },
+    "Stats.dc.html": {
+      "expand": "fill",
+      "h": 2500,
+      "title": "Шаг 4 · Статистика · тёмная",
+      "w": 1280,
+      "x": 2720,
+      "y": 91580
+    },
+    "SummaryBar.dc.html": {
+      "expand": "fill",
+      "h": 130,
+      "title": "Компонент · Сводка матча (закреплена сверху)",
+      "w": 1280,
+      "x": 1360,
+      "y": 94680
+    },
+    "States.dc.html": {
+      "x": 0,
+      "y": 30920,
+      "w": 1280,
+      "h": 900,
+      "title": "Состояния: загрузка, пусто, ошибка, 404 · тёмная",
+      "expand": "fill"
+    },
+    "StatesLight.dc.html": {
+      "x": 1360,
+      "y": 30920,
+      "w": 1280,
+      "h": 900,
+      "title": "Состояния · светлая",
+      "expand": "fill"
+    },
+    "AdminPlayers.dc.html": {
+      "x": 0,
+      "y": 33920,
+      "w": 1280,
+      "h": 1000,
+      "title": "Админка · игроки и капитаны · тёмная",
+      "expand": "fill"
+    },
+    "AdminSchedule.dc.html": {
+      "x": 1360,
+      "y": 33920,
+      "w": 1280,
+      "h": 950,
+      "title": "Админка · расписание, пропуск недели, трансфер",
+      "expand": "fill"
+    },
+    "AdminComments.dc.html": {
+      "x": 2720,
+      "y": 33920,
+      "w": 1280,
+      "h": 800,
+      "title": "Админка · модерация комментариев",
+      "expand": "fill"
+    },
+    "AdminPlayersLight.dc.html": {
+      "x": 4080,
+      "y": 33920,
+      "w": 1280,
+      "h": 1000,
+      "title": "Админка · игроки · светлая",
+      "expand": "fill"
+    },
+    "Profile.dc.html": {
+      "x": 0,
+      "y": 39520,
+      "w": 1280,
+      "h": 1880,
+      "title": "Профиль аккаунта 1280 · тёмная",
+      "expand": "fill"
+    },
+    "Season.dc.html": {
+      "x": 1360,
+      "y": 39520,
+      "w": 1280,
+      "h": 2480,
+      "title": "Сезоны и зал славы 1280 · тёмная",
+      "expand": "fill"
+    },
+    "ProfilePhone.dc.html": {
+      "x": 2720,
+      "y": 39520,
+      "w": 360,
+      "h": 3550,
+      "title": "Профиль 360 · светлая",
+      "expand": "fill"
+    },
+    "SeasonPhone.dc.html": {
+      "x": 3160,
+      "y": 39520,
+      "w": 360,
+      "h": 4650,
+      "title": "Сезоны 360 · светлая",
+      "expand": "fill"
+    },
+    "Confirm.dc.html": {
+      "x": 0,
+      "y": 44570,
+      "w": 1280,
+      "h": 1000,
+      "title": "Матч · 1 из 2 подтверждений",
+      "expand": "fill"
+    },
+    "ConfirmPublished.dc.html": {
+      "x": 1360,
+      "y": 44570,
+      "w": 1280,
+      "h": 1000,
+      "title": "Матч · опубликован (2 из 2) и «опасная зона»",
+      "expand": "fill"
+    },
+    "ConfirmRevoke.dc.html": {
+      "x": 2720,
+      "y": 44570,
+      "w": 1280,
+      "h": 1000,
+      "title": "Матч · окно «Отозвать публикацию»",
+      "expand": "fill"
+    },
+    "ConfirmRevokeLight.dc.html": {
+      "x": 4080,
+      "y": 44570,
+      "w": 1280,
+      "h": 1000,
+      "title": "Окно отзыва · светлая",
+      "expand": "fill"
+    },
+    "Process.dc.html": {
+      "x": 0,
+      "y": 46070,
+      "w": 1280,
+      "h": 1400,
+      "title": "Очередь обработки (с 2011 статистика)",
+      "expand": "fill"
+    },
+    "ProcessNote.dc.html": {
+      "x": 1360,
+      "y": 46070,
+      "w": 1280,
+      "h": 1400,
+      "title": "Шаг «Заметка»: вставить текст",
+      "expand": "fill"
+    },
+    "ProcessWork.dc.html": {
+      "x": 2720,
+      "y": 46070,
+      "w": 1280,
+      "h": 1400,
+      "title": "Шаг «Составы» с плавающей заметкой",
+      "expand": "fill"
+    },
+    "Story.dc.html": {
+      "x": 4080,
+      "y": 46070,
+      "w": 1280,
+      "h": 1280,
+      "title": "Описание матча (необязательно) · тёмная",
+      "expand": "fill"
+    },
+    "StoryLight.dc.html": {
+      "x": 5440,
+      "y": 46070,
+      "w": 1280,
+      "h": 1280,
+      "title": "Описание матча · светлая",
+      "expand": "fill"
+    },
+    "Rules.dc.html": {
+      "x": 0,
+      "y": 48350,
+      "w": 1280,
+      "h": 2680,
+      "title": "Свод правил (кодекс)",
+      "expand": "fill"
+    },
+    "Vote.dc.html": {
+      "x": 1360,
+      "y": 48350,
+      "w": 1280,
+      "h": 1880,
+      "title": "Голосование: открытые вопросы",
+      "expand": "fill"
+    },
+    "Suggest.dc.html": {
+      "x": 2720,
+      "y": 48350,
+      "w": 1280,
+      "h": 1580,
+      "title": "Предложение или жалоба (анонимно)",
+      "expand": "fill"
+    },
+    "Scoring.dc.html": {
+      "x": 4080,
+      "y": 48350,
+      "w": 1280,
+      "h": 2080,
+      "title": "Как начисляются очки · старая система",
+      "expand": "fill"
+    },
+    "ScoringPositional.dc.html": {
+      "x": 5440,
+      "y": 48350,
+      "w": 1280,
+      "h": 2080,
+      "title": "Как начисляются очки · новая система",
+      "expand": "fill"
+    },
+    "RulesPhone.dc.html": {
+      "x": 0,
+      "y": 51530,
+      "w": 360,
+      "h": 5050,
+      "title": "Правила 360",
+      "expand": "fill"
+    },
+    "VotePhone.dc.html": {
+      "x": 440,
+      "y": 51530,
+      "w": 360,
+      "h": 4250,
+      "title": "Голосование 360",
+      "expand": "fill"
+    },
+    "SuggestPhone.dc.html": {
+      "x": 880,
+      "y": 51530,
+      "w": 360,
+      "h": 2750,
+      "title": "Предложение 360",
+      "expand": "fill"
+    },
+    "ScoringPhone.dc.html": {
+      "x": 1320,
+      "y": 51530,
+      "w": 360,
+      "h": 4450,
+      "title": "Очки 360 · новая система",
+      "expand": "fill"
+    },
+    "Footer.dc.html": {
+      "x": 0,
+      "y": 96380,
+      "w": 1280,
+      "h": 620,
+      "title": "Футер и переключатель темы · тёмная (меню темы открыто)",
+      "expand": "fill"
+    },
+    "FooterLight.dc.html": {
+      "x": 1360,
+      "y": 96380,
+      "w": 1280,
+      "h": 620,
+      "title": "Футер · светлая",
+      "expand": "fill"
+    },
+    "FooterPhone.dc.html": {
+      "x": 2720,
+      "y": 96380,
+      "w": 360,
+      "h": 1100,
+      "title": "Футер 360 · светлая",
+      "expand": "fill"
+    },
+    "Calendar.dc.html": {
+      "x": 0,
+      "y": 57180,
+      "w": 1280,
+      "h": 1900,
+      "title": "Календарь 1280 · тёмная (месяц)",
+      "expand": "fill"
+    },
+    "CalendarPhone.dc.html": {
+      "x": 1360,
+      "y": 57180,
+      "w": 360,
+      "h": 3500,
+      "title": "Календарь 360 · светлая",
+      "expand": "fill"
+    },
+    "Compare.dc.html": {
+      "x": 0,
+      "y": 61280,
+      "w": 1280,
+      "h": 3000,
+      "title": "Сравнение систем · тёмная (все строки)",
+      "expand": "fill"
+    },
+    "CompareDiff.dc.html": {
+      "x": 1360,
+      "y": 61280,
+      "w": 1280,
+      "h": 2200,
+      "title": "Сравнение систем · только отличия",
+      "expand": "fill"
+    },
+    "CompareLight.dc.html": {
+      "x": 2720,
+      "y": 61280,
+      "w": 1280,
+      "h": 3000,
+      "title": "Сравнение систем · светлая",
+      "expand": "fill"
+    },
+    "ComparePhone.dc.html": {
+      "x": 4080,
+      "y": 61280,
+      "w": 360,
+      "h": 4800,
+      "title": "Сравнение систем 360",
+      "expand": "fill"
+    },
+    "SystemSelect.dc.html": {
+      "x": 4520,
+      "y": 61280,
+      "w": 1280,
+      "h": 700,
+      "title": "Выбор системы счёта в шапке (меню открыто) · тёмная",
+      "expand": "fill"
+    },
+    "SystemSelectLight.dc.html": {
+      "x": 4520,
+      "y": 62080,
+      "w": 1280,
+      "h": 700,
+      "title": "Выбор системы · светлая",
+      "expand": "fill"
+    },
+    "AdminNewPlayer.dc.html": {
+      "x": 0,
+      "y": 35320,
+      "w": 1280,
+      "h": 1700,
+      "title": "Админка · новый игрок (полный профиль) · тёмная",
+      "expand": "fill"
+    },
+    "AdminNewPlayerQuick.dc.html": {
+      "x": 1360,
+      "y": 35320,
+      "w": 1280,
+      "h": 900,
+      "title": "Админка · быстрое добавление",
+      "expand": "fill"
+    },
+    "AdminNewPlayerLight.dc.html": {
+      "x": 2720,
+      "y": 35320,
+      "w": 1280,
+      "h": 1700,
+      "title": "Админка · новый игрок · светлая",
+      "expand": "fill"
+    },
+    "AdminNewPlayerPhone.dc.html": {
+      "x": 4080,
+      "y": 35320,
+      "w": 360,
+      "h": 3600,
+      "title": "Админка · новый игрок 360",
+      "expand": "fill"
+    },
+    "ComparePlayers.dc.html": {
+      "x": 0,
+      "y": 66680,
+      "w": 1280,
+      "h": 3200,
+      "title": "Сравнение игроков · тёмная (выбор второго игрока открыт)",
+      "expand": "fill"
+    },
+    "ComparePlayersLight.dc.html": {
+      "x": 1360,
+      "y": 66680,
+      "w": 1280,
+      "h": 3200,
+      "title": "Сравнение игроков · светлая",
+      "expand": "fill"
+    },
+    "CompareCaptains.dc.html": {
+      "x": 2720,
+      "y": 66680,
+      "w": 1280,
+      "h": 2800,
+      "title": "Сравнение капитанов",
+      "expand": "fill"
+    },
+    "ComparePlayersPhone.dc.html": {
+      "x": 4080,
+      "y": 66680,
+      "w": 360,
+      "h": 5400,
+      "title": "Сравнение игроков 360",
+      "expand": "fill"
+    },
+    "CompareCaptainsPhone.dc.html": {
+      "x": 4520,
+      "y": 66680,
+      "w": 360,
+      "h": 4800,
+      "title": "Сравнение капитанов 360",
+      "expand": "fill"
+    },
+    "AdminConnect.dc.html": {
+      "x": 0,
+      "y": 87080,
+      "w": 1280,
+      "h": 2300,
+      "title": "Админка · подключение аккаунтов (ссылка на 1 день, Google или логин)",
+      "expand": "fill"
+    },
+    "AdminConnectLight.dc.html": {
+      "x": 1360,
+      "y": 87080,
+      "w": 1280,
+      "h": 2300,
+      "title": "Админка · подключение · светлая",
+      "expand": "fill"
+    },
+    "AdminConnectPhone.dc.html": {
+      "x": 2720,
+      "y": 87080,
+      "w": 360,
+      "h": 3800,
+      "title": "Админка · подключение 360",
+      "expand": "fill"
+    },
+    "ConnectLanding.dc.html": {
+      "x": 3160,
+      "y": 87080,
+      "w": 360,
+      "h": 760,
+      "title": "Страница игрока по ссылке: Google",
+      "expand": "fill"
+    },
+    "ConnectExpired.dc.html": {
+      "x": 4040,
+      "y": 87080,
+      "w": 360,
+      "h": 640,
+      "title": "Ссылка истекла, использована или отозвана",
+      "expand": "fill"
+    },
+    "ConnectDone.dc.html": {
+      "x": 4480,
+      "y": 87080,
+      "w": 360,
+      "h": 760,
+      "title": "Аккаунт подключён",
+      "expand": "fill"
+    },
+    "ConnectLandingDesktop.dc.html": {
+      "x": 4960,
+      "y": 87080,
+      "w": 1280,
+      "h": 700,
+      "title": "Страница по ссылке · десктоп",
+      "expand": "fill"
+    },
+    "ConnectLogin.dc.html": {
+      "x": 3600,
+      "y": 87080,
+      "w": 360,
+      "h": 1100,
+      "title": "Логин и пароль + аватар (без Google)",
+      "expand": "fill"
+    },
+    "ConnectDoneLogin.dc.html": {
+      "x": 6320,
+      "y": 87080,
+      "w": 360,
+      "h": 760,
+      "title": "Подключено логином и паролем",
+      "expand": "fill"
+    },
+    "ReleaseNotes.dc.html": {
+      "x": 0,
+      "y": 77880,
+      "w": 1280,
+      "h": 2300,
+      "title": "Release notes · тёмная (основная тема)",
+      "expand": "fill"
+    },
+    "ReleaseNotesPhone.dc.html": {
+      "x": 1360,
+      "y": 77880,
+      "w": 360,
+      "h": 4200,
+      "title": "Release notes 360 · тёмная",
+      "expand": "fill"
+    },
+    "AdminReleases.dc.html": {
+      "x": 0,
+      "y": 82680,
+      "w": 1280,
+      "h": 2200,
+      "title": "Админка · Releases (как GitHub): коммиты, PR, миграции",
+      "expand": "fill"
+    },
+    "AdminReleaseEdit.dc.html": {
+      "x": 1360,
+      "y": 82680,
+      "w": 1280,
+      "h": 2200,
+      "title": "Админка · новый релиз: генерация заметок из коммитов",
+      "expand": "fill"
+    },
+    "AdminReleasesPhone.dc.html": {
+      "x": 2720,
+      "y": 82680,
+      "w": 360,
+      "h": 3800,
+      "title": "Админка · Releases 360",
+      "expand": "fill"
+    },
+    "MediaGallery.dc.html": {
+      "x": 0,
+      "y": 72680,
+      "w": 1280,
+      "h": 2600,
+      "title": "Фото и видео · галерея, быстрый поиск по тегам (список подсказок открыт)",
+      "expand": "fill"
+    },
+    "MediaTagged.dc.html": {
+      "x": 1360,
+      "y": 72680,
+      "w": 1280,
+      "h": 2600,
+      "title": "Фото и видео · фильтр по тегам Falcon + Lynx",
+      "expand": "fill"
+    },
+    "MediaViewer.dc.html": {
+      "x": 2720,
+      "y": 72680,
+      "w": 1280,
+      "h": 1900,
+      "title": "Фото и видео · просмотр, отметки игроков, теги",
+      "expand": "fill"
+    },
+    "MediaGalleryPhone.dc.html": {
+      "x": 4080,
+      "y": 72680,
+      "w": 360,
+      "h": 4600,
+      "title": "Фото и видео 360",
+      "expand": "fill"
+    },
+    "AdminMedia.dc.html": {
+      "x": 4520,
+      "y": 72680,
+      "w": 1280,
+      "h": 2000,
+      "title": "Админка · загрузка, очередь без тегов, массовые теги",
+      "expand": "fill"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-15T18:50:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "n1",
+    "n2",
+    "t3b",
+    "t3c",
+    "t3d",
+    "t3e",
+    "t3f",
+    "t4b",
+    "t4c",
+    "t4d",
+    "t4e",
+    "t3g",
+    "t3h",
+    "t6b",
+    "t3i",
+    "t3k",
+    "t4f",
+    "t3l",
+    "t4g",
+    "t3m",
+    "n3",
+    "t4h",
+    "t3n"
+  ],
+  "notes": {
+    "n1": {
+      "fill": "gray",
+      "text": "Направление «Табло»: жёлто-чёрная тёмная и бежево-чёрная светлая тема. Имена, счета и числа выдуманы; факты истории и фото подставит владелец. Схема функций и истории бэклога — docs/design/reference-analysis.md.",
+      "w": 420,
+      "x": 4200,
+      "y": 0
+    },
+    "n2": {
+      "fill": "gray",
+      "text": "Шанс на победу — предсказание до матча: формула уточняется (рейтинг, голы и передачи в прошлом матче), в макете число условное (S10.25). Шаг «Игра» (дата, номер, сезон) здесь не показан: это три поля. Порядок голов — необязательный шаг: статистика от него не зависит (S10.27).",
+      "w": 420,
+      "x": 6800,
+      "y": 91580
+    },
+    "t1": {
+      "kind": "title1",
+      "maxW": 3960,
+      "text": "1. Публичный сайт: главная, список матчей, вход",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 1720,
+      "text": "2. Страница матча: MVP, события, карта расстановки, составы",
+      "w": 240,
+      "x": 0,
+      "y": 7000
+    },
+    "t3": {
+      "kind": "title1",
+      "maxW": 3960,
+      "text": "3. Игрок, фото и видео, история",
+      "w": 240,
+      "x": 0,
+      "y": 12350
+    },
+    "t3b": {
+      "kind": "title1",
+      "maxW": 4000,
+      "text": "3б. Персональная страница игрока: вкладки «Игрок» и «Капитан», вид «карточки» и «таблица»",
+      "w": 240,
+      "x": 0,
+      "y": 14630
+    },
+    "t3c": {
+      "kind": "title1",
+      "maxW": 4000,
+      "text": "3в. Список игроков и рейтинг: Season/Career, старая и новая система, карточки и таблица",
+      "w": 240,
+      "x": 0,
+      "y": 18810
+    },
+    "t3d": {
+      "kind": "title1",
+      "maxW": 4000,
+      "text": "3г. Капитаны: карточки, таблица и матрица личных встреч",
+      "w": 240,
+      "x": 0,
+      "y": 20890
+    },
+    "t3e": {
+      "kind": "title1",
+      "maxW": 2640,
+      "text": "3д. Телефон 360 и светлая тема: игрок, игроки, капитаны",
+      "w": 240,
+      "x": 0,
+      "y": 22670
+    },
+    "t4": {
+      "kind": "title1",
+      "maxW": 2640,
+      "text": "4. Администратор: дашборд",
+      "w": 240,
+      "x": 0,
+      "y": 31920
+    },
+    "t5": {
+      "kind": "title1",
+      "maxW": 6720,
+      "text": "5. Новый матч: шаги мастера (сводка закреплена сверху на каждом)",
+      "w": 240,
+      "x": 0,
+      "y": 91280
+    },
+    "t6": {
+      "kind": "title1",
+      "maxW": 2640,
+      "text": "6. Значки и общие компоненты",
+      "w": 240,
+      "x": 0,
+      "y": 94380
+    },
+    "t3f": {
+      "x": 0,
+      "y": 30720,
+      "text": "3е. Состояния интерфейса: загрузка, пусто, ошибка, 404 (S10.14)",
+      "kind": "title1",
+      "maxW": 2640,
+      "w": 240
+    },
+    "t4b": {
+      "x": 0,
+      "y": 33620,
+      "text": "4б. Администратор: игроки и капитаны, расписание и пропущенная неделя, трансферы, комментарии",
+      "kind": "title1",
+      "maxW": 5360,
+      "w": 240
+    },
+    "t4c": {
+      "x": 0,
+      "y": 39220,
+      "text": "4в. Профиль аккаунта (привязка к игроку, язык, тема, данные) и сезоны с залом славы",
+      "kind": "title1",
+      "maxW": 3520,
+      "w": 240
+    },
+    "t4d": {
+      "x": 0,
+      "y": 44270,
+      "text": "4г. Матч: два подтверждения для публикации, отзыв публикации (красные кнопки)",
+      "kind": "title1",
+      "maxW": 5360,
+      "w": 240
+    },
+    "t4e": {
+      "x": 0,
+      "y": 45770,
+      "text": "4д. Обработка матчей: очередь с 1980 года, заметка с sport.kornatovski, плавающая заметка, описание матча",
+      "kind": "title1",
+      "maxW": 5360,
+      "w": 240
+    },
+    "t3g": {
+      "x": 0,
+      "y": 48050,
+      "text": "3ж. Свод правил, голосование игроков (предложения и жалобы, анонимно), как начисляются очки",
+      "kind": "title1",
+      "maxW": 6720,
+      "w": 240
+    },
+    "t3h": {
+      "x": 0,
+      "y": 51230,
+      "text": "3з. Те же страницы на телефоне, 360",
+      "kind": "title1",
+      "maxW": 2640,
+      "w": 240
+    },
+    "t6b": {
+      "x": 0,
+      "y": 96180,
+      "text": "6б. Футер (контакты, соцсети, правила, копирайт) и переключатель темы в шапке",
+      "kind": "title1",
+      "maxW": 3520,
+      "w": 240
+    },
+    "t3i": {
+      "x": 0,
+      "y": 56880,
+      "text": "3и. Календарь: игры, дни рождения, «в этот день», сроки голосований",
+      "kind": "title1",
+      "maxW": 2640,
+      "w": 240
+    },
+    "t3k": {
+      "x": 0,
+      "y": 60980,
+      "text": "3к. Сравнение двух систем (что есть, что отличается) и выбор системы в шапке вместо табов",
+      "kind": "title1",
+      "maxW": 6720,
+      "w": 240
+    },
+    "t4f": {
+      "x": 0,
+      "y": 35020,
+      "text": "4в-2. Добавление игрока (новички): почти всё необязательно, предпросмотр, проверка дублей, согласие на публикацию",
+      "kind": "title1",
+      "maxW": 4400,
+      "w": 240
+    },
+    "t3l": {
+      "x": 0,
+      "y": 66380,
+      "text": "3л. Compare side by side: игроки, капитаны, статистика (системы счёта, по умолчанию старая); вкладки в одной странице",
+      "kind": "title1",
+      "maxW": 5360,
+      "w": 240
+    },
+    "t4g": {
+      "x": 0,
+      "y": 86780,
+      "text": "4в-3. Подключение аккаунтов: админ создаёт одноразовую ссылку на 1 день, игрок входит через Google или другого провайдера",
+      "kind": "title1",
+      "maxW": 6000,
+      "w": 240
+    },
+    "t3m": {
+      "x": 0,
+      "y": 77580,
+      "text": "3м. Release notes: страница в шапке («Release notes» с точкой «новое»), в футере строка «Release 2026.11.3 · What’s new»",
+      "kind": "title1",
+      "maxW": 3200,
+      "w": 240
+    },
+    "n3": {
+      "x": 4200,
+      "y": 600,
+      "text": "Решение 2026-11-15: основная тема тёмная. Светлые доски в этом холсте справочные: светлую тему делаем самой последней (S10.50), новые доски рисуем только тёмными.",
+      "w": 420,
+      "fill": "gray"
+    },
+    "t4h": {
+      "x": 0,
+      "y": 82380,
+      "text": "4г-2. Админка: Releases как на GitHub (дата, что сделано и исправлено, коммиты, PR, миграции, публикация на публичную страницу)",
+      "kind": "title1",
+      "maxW": 3400,
+      "w": 240
+    },
+    "t3n": {
+      "x": 0,
+      "y": 72380,
+      "text": "3н. Фото и видео: галерея, теги и быстрый поиск, просмотр, админская загрузка и разметка",
+      "kind": "title1",
+      "maxW": 5360,
+      "w": 240
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Scoreboard-Home-Light.dc.html",
+    "Scoreboard-Home-Phone-Light.dc.html",
+    "Scoreboard-Games-Phone-Dark.dc.html",
+    "Scoreboard-SignIn-Phone-Light.dc.html",
+    "Game.dc.html",
+    "Game-Phone-Light.dc.html",
+    "Player.dc.html",
+    "PlayerCaptain.dc.html",
+    "PlayerTable.dc.html",
+    "Players.dc.html",
+    "PlayersCards.dc.html",
+    "PlayersLight.dc.html",
+    "CaptainsList.dc.html",
+    "CaptainsTable.dc.html",
+    "CaptainsMatrix.dc.html",
+    "PlayerPhone.dc.html",
+    "PlayersPhone.dc.html",
+    "CaptainsPhone.dc.html",
+    "PlayerLight.dc.html",
+    "States.dc.html",
+    "StatesLight.dc.html",
+    "History.dc.html",
+    "Dashboard.dc.html",
+    "Dashboard-Light.dc.html",
+    "AdminPlayers.dc.html",
+    "AdminSchedule.dc.html",
+    "AdminComments.dc.html",
+    "AdminPlayersLight.dc.html",
+    "Profile.dc.html",
+    "Season.dc.html",
+    "ProfilePhone.dc.html",
+    "SeasonPhone.dc.html",
+    "Confirm.dc.html",
+    "ConfirmPublished.dc.html",
+    "ConfirmRevoke.dc.html",
+    "ConfirmRevokeLight.dc.html",
+    "Process.dc.html",
+    "ProcessNote.dc.html",
+    "ProcessWork.dc.html",
+    "Story.dc.html",
+    "StoryLight.dc.html",
+    "Rules.dc.html",
+    "Vote.dc.html",
+    "Suggest.dc.html",
+    "Scoring.dc.html",
+    "ScoringPositional.dc.html",
+    "RulesPhone.dc.html",
+    "VotePhone.dc.html",
+    "SuggestPhone.dc.html",
+    "ScoringPhone.dc.html",
+    "Calendar.dc.html",
+    "CalendarPhone.dc.html",
+    "Compare.dc.html",
+    "CompareDiff.dc.html",
+    "CompareLight.dc.html",
+    "ComparePhone.dc.html",
+    "SystemSelect.dc.html",
+    "SystemSelectLight.dc.html",
+    "AdminNewPlayer.dc.html",
+    "AdminNewPlayerQuick.dc.html",
+    "AdminNewPlayerLight.dc.html",
+    "AdminNewPlayerPhone.dc.html",
+    "ComparePlayers.dc.html",
+    "ComparePlayersLight.dc.html",
+    "CompareCaptains.dc.html",
+    "ComparePlayersPhone.dc.html",
+    "CompareCaptainsPhone.dc.html",
+    "AdminConnect.dc.html",
+    "AdminConnectLight.dc.html",
+    "AdminConnectPhone.dc.html",
+    "ConnectLanding.dc.html",
+    "ConnectLogin.dc.html",
+    "ConnectDoneLogin.dc.html",
+    "ConnectExpired.dc.html",
+    "ConnectDone.dc.html",
+    "ConnectLandingDesktop.dc.html",
+    "ReleaseNotes.dc.html",
+    "ReleaseNotesPhone.dc.html",
+    "AdminReleases.dc.html",
+    "AdminReleaseEdit.dc.html",
+    "AdminReleasesPhone.dc.html",
+    "MediaGallery.dc.html",
+    "MediaTagged.dc.html",
+    "MediaViewer.dc.html",
+    "MediaGalleryPhone.dc.html",
+    "AdminMedia.dc.html",
+    "Captains.dc.html",
+    "Draft.dc.html",
+    "Stats.dc.html",
+    "Order.dc.html",
+    "Review.dc.html",
+    "Icons.dc.html",
+    "Footer.dc.html",
+    "FooterLight.dc.html",
+    "FooterPhone.dc.html",
+    "Positions.dc.html",
+    "SummaryBar.dc.html",
+    "Home.dc.html",
+    "Games.dc.html",
+    "SignIn.dc.html"
+  ],
+  "pages": [],
+  "title": "SFL: дизайн «Табло»"
+}

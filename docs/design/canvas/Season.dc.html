@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL seasons</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;">
+    <a href="#" aria-label="SFL, home" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 20px; flex: 1 1 auto; font-size: 14px; font-weight: 600; overflow-x: auto;">
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Home</a><a href="#" style="color: {{t.muted}}; padding: 8px 0;">Games</a><a href="#" style="color: {{t.muted}}; padding: 8px 0;">Players</a><a href="#" style="color: {{t.muted}}; padding: 8px 0;">Captains</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Compare</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a>
+      <a href="#" aria-current="page" style="color: {{t.text}}; border-bottom: 2px solid {{t.accent}}; padding: 8px 0;">Seasons</a><a href="#" style="color: {{t.muted}}; padding: 8px 0;">History</a>
+    </nav>
+      <a href="#" aria-haspopup="listbox" aria-label="Scoring system: {{sysName}}. Change" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-size: 14px; font-weight: 700; white-space: nowrap;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span style="font-size: 11px; font-weight: 600; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Scoring</span>{{sysName}}<span aria-hidden="true" style="color: {{t.muted}};">▾</span></a>
+      <a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a>
+  </header>
+
+  <main style="width: 100%; max-width: 1080px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+      <div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Seasons</h1><p style="margin: 4px 0 0; font-size: 14px; color: {{t.muted}};">Results, awards and the hall of fame. Only published games count.</p></div>
+      <div role="group" aria-label="Season" style="display: inline-flex; flex-wrap: wrap; gap: 6px;">
+        <sc-for list="{{years}}" as="y" hint-placeholder-count="4"><a href="#" aria-current="{{y.cur}}" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; background: {{y.bg}}; color: {{y.fg}}; border: 1px solid {{y.border}}; font-size: 14px; font-weight: 700;">{{y.t}}</a></sc-for>
+      </div>
+    </div>
+
+    <section aria-label="Season summary" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; background: {{t.scoreBg}}; color: #F6F1E4; border-radius: 4px; padding: 18px 22px;">
+      <div><div style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">Season 2026 · in progress</div><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 34px; line-height: 1.15; letter-spacing: 0.03em; text-transform: uppercase;">12 of 16 Saturdays played</div></div>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 28px; margin-left: auto;">
+        <sc-for list="{{sum}}" as="s" hint-placeholder-count="4"><li style="text-align: center;"><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 34px; line-height: 1; color: #FFD21F; font-variant-numeric: tabular-nums;">{{s.v}}</div><div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">{{s.l}}</div></li></sc-for>
+      </ul>
+    </section>
+
+    <section aria-labelledby="pd" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="pd" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Top three</h2>
+      <ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: end;">
+        <sc-for list="{{podium}}" as="p" hint-placeholder-count="3">
+          <li style="background: {{p.bg}}; color: {{p.fg}}; border: 1px solid {{p.border}}; border-radius: 4px; padding: 16px; min-height: {{p.h}}px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;"><span style="font-family: 'Oswald', sans-serif; font-size: 44px; font-weight: 700; line-height: 1;">{{p.rank}}</span><span style="width: 44px; height: 44px; border-radius: 4px; background: {{p.av}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; color: {{p.avFg}};">{{p.ini}}</span></div>
+            <div><a href="#" style="display: block; font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.2;">{{p.name}}</a><span style="font-size: 13px; opacity: 0.85;">{{p.pts}} points · {{p.days}} days</span></div>
+          </li>
+        </sc-for>
+      </ol>
+    </section>
+
+    <section aria-labelledby="aw" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="aw" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Awards of the season</h2>
+      <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+        <sc-for list="{{awards}}" as="a" hint-placeholder-count="6">
+          <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 14px; display: flex; align-items: center; gap: 12px;">
+            <span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px;">{{a.k}}</span>
+            <div style="min-width: 0;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">{{a.t}}</div><a href="#" style="font-weight: 700;">{{a.name}}</a> <span style="font-size: 13px; color: {{t.muted}};">· {{a.v}}</span></div>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <section aria-labelledby="tm" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="tm" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">BMW against HONDA</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+        <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Wins by team colour</h3>
+          <div role="img" aria-label="BMW 5 wins, draws 2, HONDA 5 wins" style="display: flex; height: 40px; gap: 2px; border-radius: 4px; overflow: hidden; font-weight: 700; font-size: 14px;">
+            <span style="flex: 5 1 0; background: {{t.bmw}}; color: {{t.onBmw}}; display: inline-flex; align-items: center; justify-content: center;">BMW 5</span><span style="flex: 2 1 0; background: {{t.chipSolid}}; display: inline-flex; align-items: center; justify-content: center;">2</span><span style="flex: 5 1 0; background: #FF6A5F; color: #0D0C0A; display: inline-flex; align-items: center; justify-content: center;">HONDA 5</span>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: {{t.muted}};">Goals: BMW 58, HONDA 54. The colour is only a bib: the captains decide who wears which.</p>
+        </div>
+        <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Seasons compared</h3>
+          <div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Seasons compared</caption>
+            <thead><tr style="color: {{t.muted}}; font-size: 12px; text-align: right; text-transform: uppercase; letter-spacing: 0.06em;"><th scope="col" style="padding: 6px 8px; text-align: left;">Season</th><th scope="col" style="padding: 6px 8px;">Games</th><th scope="col" style="padding: 6px 8px;">Goals/game</th><th scope="col" style="padding: 6px 8px; text-align: left;">Winner</th></tr></thead>
+            <tbody><sc-for list="{{cmp}}" as="r" hint-placeholder-count="3"><tr style="border-top: 1px solid {{t.border}}; text-align: right; font-variant-numeric: tabular-nums;"><th scope="row" style="padding: 8px; text-align: left; font-weight: 700;">{{r.y}}</th><td style="padding: 8px;">{{r.g}}</td><td style="padding: 8px;">{{r.gg}}</td><td style="padding: 8px; text-align: left;"><a href="#" style="font-weight: 700;">{{r.w}}</a></td></tr></sc-for></tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="hf" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="hf" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Hall of fame</h2>
+      <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+        <sc-for list="{{fame}}" as="n" hint-placeholder-count="4"><li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 14px;"><div style="font-size: 12px; color: {{t.muted}}; letter-spacing: 0.06em; text-transform: uppercase;">{{n.l}}</div><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.2;">{{n.v}}</div><div style="font-size: 12px; color: {{t.muted}};">{{n.s}}</div></li></sc-for>
+      </ul>
+      <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Records over all seasons since 1980. Facts of the early years are added by the owner; the demo shows made-up numbers.</p>
+    </section>
+  </main>
+  <footer style="margin-top: auto; border-top: 1px solid {{t.border}}; background: {{t.surface}};">
+    <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 28px 20px 20px; display: flex; flex-wrap: wrap; gap: 28px 40px;">
+      <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;">Amateur football league</span></div>
+        <p style="margin: 0; font-size: 14px; color: {{t.muted}}; max-width: 36ch;">A game every Saturday, in any weather. Results, ratings and the history of the league.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" aria-label="Instagram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"/></svg></a><a href="#" aria-label="Telegram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l9-6"/></svg></a><a href="#" aria-label="YouTube" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a><a href="#" aria-label="Facebook" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a></div>
+      </div>
+      <div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">League</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Games</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Players</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Captains</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Seasons</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">History</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Photo and video</a></div><div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Rules</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Codex</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Vote</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">How points work</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Suggest or complain anonymously</a></div>
+      <div style="flex: 1 1 200px; min-width: 180px; display: flex; flex-direction: column; gap: 2px;">
+        <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Contacts</div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: {{t.link}}; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@sfl.example</a>
+        <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>[Pitch address]</span>
+        <span style="min-height: 32px; font-size: 13px; color: {{t.muted}};">Saturdays, [time]. The owner fills in the address, the time and the e-mail.</span>
+      </div>
+    </div>
+    <div style="border-top: 1px solid {{t.border}};">
+      <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; font-size: 13px; color: {{t.muted}};">
+        <span>© 2026 SFL. All rights reserved.</span><a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: {{t.link}}; font-weight: 700;">Release 2026.11.3 · 15 Nov 2026 · What’s new</a>
+        <nav aria-label="Legal" style="display: flex; flex-wrap: wrap; gap: 0 16px;"><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Privacy</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Cookies</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Terms</a></nav>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-weight: 700;">EN ▾</span><div role="radiogroup" aria-label="Theme" style="display: inline-flex; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;"><a href="#" role="radio" aria-checked="{{th.light.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.light.bg}}; color: {{th.light.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Light</a><a href="#" role="radio" aria-checked="{{th.dark.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.dark.bg}}; color: {{th.dark.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z"/></svg>Dark</a><a href="#" role="radio" aria-checked="{{th.system.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.system.bg}}; color: {{th.system.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Auto</a></div></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"system":{"editor":"enum","default":"ancient","options":["ancient","positional"]},"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', bmw: '#F6F1E4', onBmw: '#0D0C0A' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', bmw: '#15130F', onBmw: '#F2EBDC' };
+    const years = ['S26 · now', 'S25', 'S24', 'S23', 'S22 – S11 ▾', 'All time'].map((y, i) => ({ t: y, cur: i === 0 ? 'true' : 'false', bg: i === 0 ? t.accent : t.surface, fg: i === 0 ? t.onAccent : t.text, border: i === 0 ? t.accent : t.border }));
+    const sum = [['12', 'Games'], ['112', 'Goals'], ['9.3', 'Goals per game'], ['38', 'Players']].map(([v, l]) => ({ v, l }));
+    const pd = [['2', 'Lynx', 29, 12, 150], ['1', 'Falcon', 32, 12, 190], ['3', 'Wolf', 27, 11, 120]];
+    const podium = pd.map(([rank, name, pts, days, h], i) => { const first = rank === '1'; return { rank, name, pts, days, h, ini: name.slice(0, 2).toUpperCase(), bg: first ? '#000000' : t.surface, fg: first ? '#F6F1E4' : t.text, border: first ? t.accent : t.border, av: first ? '#1F1C15' : t.surface2, avFg: first ? '#FFD21F' : t.muted }; });
+    const awards = [['MVP', 'MVP of the season', 'Falcon', '6 times'], ['G', 'Top scorer', 'Falcon', '15 goals'], ['P', 'Top passer', 'Lynx', '16 passes'], ['C', 'Best captain', 'Wolf', '67% wins'], ['D', 'Best defender', 'Bear', '+6 by ±'], ['GK', 'Best goalkeeper', 'Heron', '41 saves, entered by hand']].map(([k, t2, name, v]) => ({ k, t: t2, name, v }));
+    const cmp = [['2026', 12, '9.3', 'Falcon'], ['2025', 38, '8.7', 'Wolf'], ['2024', 33, '9.1', 'Lynx']].map(([y, g, gg, w]) => ({ y, g, gg, w }));
+    const fame = [['Most points in a season', '96', 'Falcon, 2025'], ['Most goals in a game', '6', 'Wolf, game 12'], ['Longest win streak', '9', 'BMW, 2024'], ['Biggest win', '12:1', 'game 5, 2023']].map(([l, v, s]) => ({ l, v, s }));
+    t.accent ??= '#FFD21F'; t.onAccent ??= dark ? '#0D0C0A' : '#15130F'; t.link ??= dark ? '#FFD21F' : '#6B5400'; const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+    const sysName = (this.props.system ?? 'ancient') === 'ancient' ? 'Ancient' : 'Positional'; const sysOpts = [['Ancient', 'Points of the player, ±, balance of results. Results do not add points.', true], ['Positional', 'The same points plus a bonus for a win and a penalty for a loss by position.', false]].map(([tt, s, a]) => { const on = ((this.props.system ?? 'ancient') === 'ancient') === a; return { t: tt, s, on: on ? 'true' : 'false', mark: on ? '✓' : '', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text }; }); return { sysName, sysOpts, th, themeName, t, years, sum, podium, awards, cmp, fame };
+  }
+}
+</script>
+</body>
+</html>

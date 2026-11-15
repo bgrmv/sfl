@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin new game goal order</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="background: {{t.surface}}; border-bottom: 1px solid {{t.border}}; padding: 10px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
+    <span style="display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px;">SFL</span>
+    <nav aria-label="Breadcrumb" style="flex: 1 1 auto; font-size: 14px; color: {{t.muted}};"><a href="#">Admin</a> / <a href="#">Games</a> / Game 46</nav>
+    <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-weight: 700; font-size: 13px;">Save draft and close</a>
+  </header>
+
+  <div style="position: sticky; top: 0; z-index: 5;"><dc-import name="SummaryBar" stage="stats" hint-size="100%,120px"></dc-import></div>
+
+  <main style="width: 100%; max-width: 1180px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 18px;">
+
+    <ol aria-label="Steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px;">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="7">
+        <li aria-current="{{s.current}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; border: 1px solid {{s.border}}; font-size: 13px; font-weight: 700;"><span style="font-family: 'Oswald', sans-serif; font-size: 14px;">{{s.n}}</span>{{s.label}}</li>
+      </sc-for>
+    </ol>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 20px;">
+      <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 420px;">
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Goal order</h1>
+        <p style="margin: 0; max-width: 74ch; color: {{t.muted}}; font-size: 14px;">The totals from the previous step say <em>who</em> scored and passed. Here you say <em>in which order</em>. Each goal is three choices in a row: which team scored, who scored (only players who have goals left in the totals), and who passed or that it was an own goal. Statistics and ratings do not depend on the order.</p>
+      </div>
+      <div role="group" aria-label="How to enter" style="display: inline-flex; gap: 6px;">
+        <button type="button" aria-pressed="true" style="height: 44px; padding: 0 16px; border: 0; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 13px; font-weight: 700; cursor: pointer;">From totals</button>
+        <button type="button" aria-pressed="false" style="height: 44px; padding: 0 16px; border: 1px solid {{t.border}}; border-radius: 4px; background: transparent; color: {{t.text}}; font-size: 13px; font-weight: 700; cursor: pointer;">Live scorer</button>
+        <button type="button" aria-pressed="false" style="height: 44px; padding: 0 16px; border: 1px dashed {{t.border}}; border-radius: 4px; background: transparent; color: {{t.muted}}; font-size: 13px; font-weight: 600; cursor: pointer;">Skip, order unknown</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+
+      <section aria-labelledby="seq" style="flex: 3 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+        <h2 id="seq" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;">Sequence · 3 of 4 placed</h2>
+        <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+            <li style="background: {{t.surface}}; border: {{r.border}}; border-left: 6px solid {{r.color}}; border-radius: 4px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
+
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+                <span style="width: 34px; height: 34px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px;">{{r.n}}</span>
+                <div style="display: flex; align-items: center; gap: 6px; background: {{t.scoreBg}}; color: #F6F1E4; border-radius: 4px; padding: 4px 10px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums;" aria-label="Score changes from {{r.before}} to {{r.after}}"><span style="color: #B3AA94;">{{r.before}}</span><span aria-hidden="true">→</span><span style="color: #FFD21F;">{{r.after}}</span></div>
+                <span style="font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: {{r.chipBg}}; color: {{r.chipFg}};">{{r.team}}</span>
+                <span style="margin-left: auto; display: inline-flex; gap: 6px;">
+                  <button type="button" aria-label="Move goal {{r.n}} up" style="width: 44px; height: 36px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; cursor: pointer; font-size: 13px;">▲</button>
+                  <button type="button" aria-label="Move goal {{r.n}} down" style="width: 44px; height: 36px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; cursor: pointer; font-size: 13px;">▼</button>
+                  <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{r.editBg}}; color: {{r.editFg}}; font-size: 13px; font-weight: 700; cursor: pointer;">{{r.editLabel}}</button>
+                </span>
+              </div>
+
+              <sc-if value="{{r.collapsed}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 16px;">
+                    <strong>{{r.author}}</strong>
+                    <span style="font-size: 13px; color: {{r.kindColor}};">{{r.kind}}</span>
+                  </span>
+                  <span style="color: {{t.muted}}; font-size: 13px;">{{r.passesLabel}}</span>
+                  <sc-for list="{{r.passes}}" as="p" hint-placeholder-count="2">
+                    <span style="display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 6px; border: 1px solid {{t.border}}; border-radius: 999px; background: {{t.bg}}; font-size: 13px; font-weight: 600;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{t.link}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h13M12 6l6 6-6 6"/></svg>{{p.name}}</span>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{r.expanded}}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid {{t.border}}; padding-top: 12px;">
+
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;">
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: {{t.muted}};"><span style="width: 20px; height: 20px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 12px;">1</span>Which team scored?</div>
+                      <div role="radiogroup" aria-label="Team that scored" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                        <sc-for list="{{r.ed.teams}}" as="m" hint-placeholder-count="2">
+                          <button type="button" role="radio" aria-checked="{{m.checked}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border: {{m.border}}; border-radius: 4px; background: {{m.bg}}; color: {{m.fg}}; font-size: 14px; font-weight: 700; cursor: pointer;"><svg aria-hidden="true" width="18" height="20" viewBox="0 0 28 32"><path d="M14 1l12 4v10c0 8-5 13-12 16C7 28 2 23 2 15V5z" fill="{{m.crest}}" stroke="{{m.crest}}" stroke-width="2"/></svg>{{m.name}}</button>
+                        </sc-for>
+                      </div>
+                      <div style="font-size: 12px; color: {{t.muted}};">The team whose score goes up.</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: {{t.muted}};"><span style="width: 20px; height: 20px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 12px;">2</span>Who scored?</div>
+                      <label style="display: flex; flex-direction: column;">
+                        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Who scored</span>
+                        <select style="height: 48px; padding: 0 10px; border: 2px solid {{t.accent}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 15px; font-weight: 700;">
+                          <option>{{r.ed.scorer}}</option>
+                          <optgroup label="Players with goals left">
+                            <sc-for list="{{r.ed.options}}" as="o" hint-placeholder-count="3"><option>{{o.label}}</option></sc-for>
+                          </optgroup>
+                          <optgroup label="Own goal by an opponent">
+                            <sc-for list="{{r.ed.ownOptions}}" as="o" hint-placeholder-count="1"><option>{{o.label}}</option></sc-for>
+                          </optgroup>
+                        </select>
+                      </label>
+                      <div style="font-size: 12px; color: {{t.muted}};">{{r.ed.scorerHint}}</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: {{t.muted}};"><span style="width: 20px; height: 20px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 12px;">3</span>{{r.ed.thirdTitle}}</div>
+                      <sc-if value="{{r.ed.own}}" hint-placeholder-val="{{ false }}">
+                        <div style="display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; border: 1px solid {{t.err}}; border-radius: 4px; color: {{t.err}}; font-size: 14px; font-weight: 700;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>Own goal · no pass</div>
+                      </sc-if>
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <sc-for list="{{r.ed.slots}}" as="s" hint-placeholder-count="3">
+                          <div style="display: flex; align-items: center; gap: 6px; border: {{s.border}}; border-radius: 4px; background: {{t.bg}}; padding: 2px 6px 2px 8px;">
+                            <span style="flex: 0 0 22px; height: 22px; border-radius: 50%; background: {{s.numBg}}; color: {{s.numFg}}; border: {{s.numBorder}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 12px; box-sizing: border-box;">{{s.n}}</span>
+                            <select aria-label="{{r.ed.slotLabel}} {{s.n}}" style="flex: 1 1 auto; min-width: 0; height: 44px; border: 0; background: transparent; color: {{s.fg}}; font: inherit; font-size: 14px; font-weight: 600;"><option>{{s.value}}</option><option>Lynx · 1 free</option><option>Falcon · 1 free</option><option>Orion · 1 free</option><option>No one</option></select>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div style="font-size: 12px; color: {{t.muted}};">{{r.ed.thirdHint}}</div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; background: {{t.scoreBg}}; color: #F6F1E4; border-radius: 4px; padding: 10px 14px;">
+                    <span style="font-size: 14px;">{{r.ed.preview}}</span>
+                    <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;"><span style="color: #B3AA94;">{{r.before}}</span> → <span style="color: #FFD21F;">{{r.after}}</span></span>
+                  </div>
+
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end;">
+                    <button type="button" style="height: 44px; padding: 0 18px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font-size: 14px; font-weight: 700; cursor: pointer;">Cancel</button>
+                    <button type="button" style="height: 44px; padding: 0 20px; border: 0; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 14px; font-weight: 700; cursor: pointer;">Save goal {{r.n}}</button>
+                  </div>
+                </div>
+              </sc-if>
+            </li>
+          </sc-for>
+          <li style="border: 2px dashed {{t.accent}}; border-radius: 4px; padding: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;">
+            <span style="width: 34px; height: 34px; border-radius: 50%; border: 2px dashed {{t.accent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px; color: {{t.link}};">4</span>
+            <span style="flex: 1 1 260px; font-size: 14px;"><strong>Next goal.</strong> Tap one of the goals on the right: the team and the scorer are filled in from the totals, then choose the passes.</span>
+          </li>
+        </ol>
+        <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Both goals 2 and 3 are shown open to compare the two forms. In the real flow one goal is open at a time.</p>
+      </section>
+
+      <aside style="flex: 2 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+        <section aria-labelledby="pool" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <h2 id="pool" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase;">Goals to place · 1</h2>
+          <button type="button" style="display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 8px 12px; border: 1px solid {{t.accent}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; text-align: left; cursor: pointer;">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.link}}" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5" fill="{{t.link}}"/></svg>
+            <span style="flex: 1 1 auto;"><strong>Rocket</strong> · penalty<br><span style="font-size: 12px; color: {{t.muted}};">BMW · +1 on the score · no pass</span></span>
+            <span style="font-size: 12px; font-weight: 700; color: {{t.link}};">Place next</span>
+          </button>
+          <p style="margin: 0; font-size: 12px; color: {{t.muted}};">This list is the same as the second choice: players who still have goals in the totals.</p>
+        </section>
+
+        <section aria-labelledby="passes" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <h2 id="passes" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase;">Passes · 6 of 6 used</h2>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+            <sc-for list="{{used}}" as="u" hint-placeholder-count="6">
+              <li style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 50%; background: {{t.ok}}; color: {{t.onOk}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">✓</span><strong>{{u.name}}</strong><span style="color: {{t.muted}};">→ goal {{u.goal}}</span></li>
+            </sc-for>
+          </ul>
+        </section>
+
+        <section aria-labelledby="rules" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <h2 id="rules" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase;">Rules the form checks</h2>
+          <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: {{t.muted}}; display: flex; flex-direction: column; gap: 4px;">
+            <li>The list of scorers is limited to players who have goals left in the totals.</li>
+            <li>Up to 3 passes per goal, all from the scoring team, none of them the scorer (4 people).</li>
+            <li>Own goal: its author is from the other team; up to 4 involved players from the scoring team (5 people).</li>
+            <li>Each pass in the totals belongs to exactly one goal.</li>
+            <li>A header moves the score by 2, an own goal counts for the opponent.</li>
+            <li>A penalty has no passes (the form warns if you add one).</li>
+            <li>Publishing needs all goals placed and all passes used, or no order at all.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center;">
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 1px solid {{t.border}}; border-radius: 4px; font-weight: 700; font-size: 14px;">← Statistics</a>
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-weight: 700; font-size: 14px;">Next: review →</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":2500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', link: '#FFD21F', ok: '#7BE0A4', onOk: '#0D0C0A', err: '#FF8A80', scoreBg: '#000000', teamA: '#F6F1E4', teamAInk: '#0D0C0A', teamB: '#FF6A5F', teamBInk: '#0D0C0A' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', link: '#6B5400', ok: '#1B6B3A', onOk: '#FFFFFF', err: '#B3261E', scoreBg: '#15130F', teamA: '#15130F', teamAInk: '#FFFFFF', teamB: '#B3261E', teamBInk: '#FFFFFF' };
+    const steps = ['Game', 'Captains', 'Draft', 'Statistics', 'Goal order', 'Review', 'Publish'].map((label, i) => ({
+      label, n: i + 1, current: i === 4 ? 'step' : 'false',
+      bg: i === 4 ? t.accent : 'transparent', fg: i === 4 ? t.onAccent : (i < 4 ? t.text : t.muted), border: i === 4 ? t.accent : t.border
+    }));
+    const teams = (on) => ['BMW', 'HONDA'].map((name) => {
+      const sel = name === on;
+      return { name, checked: sel ? 'true' : 'false', border: sel ? '2px solid ' + t.accent : '1px solid ' + t.border, bg: sel ? t.accent : t.bg, fg: sel ? t.onAccent : t.text, crest: name === 'BMW' ? (sel ? t.onAccent : t.text) : t.teamB };
+    });
+    const slot = (n, value, chosen, placeholder) => ({
+      n, value, border: chosen ? '1px solid ' + t.border : '1px dashed ' + t.border,
+      numBg: chosen ? t.accent : 'transparent', numFg: chosen ? t.onAccent : t.muted, numBorder: chosen ? 'none' : '1px dashed ' + t.border,
+      fg: chosen ? t.text : t.muted
+    });
+    const editorRegular = {
+      teams: teams('BMW'), scorer: 'Wolf · header ×2',
+      options: [{ label: 'Falcon · goal · 0 left (placed)' }, { label: 'Wolf · header ×2 · 1 left' }, { label: 'Rocket · penalty · 1 left' }],
+      ownOptions: [{ label: 'Ghost (BMW) · own goal · 1 left' }],
+      scorerHint: 'Only BMW players with goals left. The kind comes from the totals.',
+      thirdTitle: 'Who passed?', slotLabel: 'Pass', own: false,
+      slots: [slot(1, 'Falcon · BMW', true), slot(2, 'Lynx · BMW', true), slot(3, 'Add a pass…', false)],
+      thirdHint: 'Up to 3, teammates with a free pass. Not the scorer.',
+      preview: 'Wolf (BMW) · header ×2 · passes Falcon, Lynx · 3 people'
+    };
+    const editorOwn = {
+      teams: teams('HONDA'), scorer: 'Ghost (BMW) · own goal',
+      options: [{ label: 'Vega · goal · 0 left' }, { label: 'Tank · goal · 0 left' }],
+      ownOptions: [{ label: 'Ghost (BMW) · own goal · 1 left' }],
+      scorerHint: 'The goal counts for HONDA; the author is a BMW player and loses 1 point.',
+      thirdTitle: 'Own goal or pass', slotLabel: 'Involved', own: true,
+      slots: [slot(1, 'Vega · HONDA', true), slot(2, 'Pike · HONDA', true), slot(3, 'Add a player…', false), slot(4, 'Add a player…', false)],
+      thirdHint: 'Own goal: no pass. Up to 4 involved players from HONDA, optional.',
+      preview: 'Own goal by Ghost (BMW) · counts for HONDA · involved Vega, Pike · 3 people'
+    };
+    const base = [
+      { n: 1, before: '0 : 0', after: '1 : 0', team: 'BMW', author: 'Falcon', kind: 'goal', passes: ['Orion', 'Lynx'], ed: null },
+      { n: 2, before: '1 : 0', after: '3 : 0', team: 'BMW', author: 'Wolf', kind: 'header goal ×2', passes: ['Falcon', 'Lynx'], ed: editorRegular },
+      { n: 3, before: '3 : 0', after: '3 : 1', team: 'HONDA', author: 'Ghost (BMW)', kind: 'own goal', passes: ['Vega', 'Pike'], ed: editorOwn, own: true }
+    ];
+    const rows = base.map((r) => ({
+      ...r,
+      passes: r.passes.map((name) => ({ name })),
+      passesLabel: r.own ? 'involved:' : 'passes:',
+      collapsed: !r.ed, expanded: !!r.ed,
+      ed: r.ed || { teams: [], options: [], ownOptions: [], slots: [], own: false },
+      color: r.team === 'BMW' ? t.teamA : t.teamB,
+      chipBg: r.team === 'BMW' ? t.teamA : t.teamB, chipFg: r.team === 'BMW' ? t.teamAInk : t.teamBInk,
+      kindColor: r.own ? t.err : t.text,
+      border: r.ed ? '2px solid ' + t.accent : '1px solid ' + t.border,
+      editLabel: r.ed ? 'Editing' : 'Edit', editBg: r.ed ? t.accent : t.bg, editFg: r.ed ? t.onAccent : t.text
+    }));
+    const used = [['Orion', 1], ['Lynx', 1], ['Falcon', 2], ['Lynx', 2], ['Vega', 3], ['Pike', 3]].map(([name, goal]) => ({ name, goal }));
+    return { t, steps, rows, used };
+  }
+}
+</script>
+</body>
+</html>

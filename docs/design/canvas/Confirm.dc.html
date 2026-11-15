@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <div style="min-height: 100%%; display: flex; flex-wrap: wrap; flex: 1 1 auto;">
+  <aside style="flex: 0 0 220px; flex-grow: 1; max-width: 100%%; box-sizing: border-box; background: {{t.surface}}; border-right: 1px solid {{t.border}}; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;">Admin</span></div>
+    <nav aria-label="Admin" style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; font-weight: 600;">
+      <sc-for list="{{menu}}" as="m" hint-placeholder-count="8"><a href="#" aria-current="{{m.current}}" style="display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 12px; border-radius: 4px; background: {{m.bg}}; color: {{m.fg}};">{{m.label}}<sc-if value="{{m.count}}" hint-placeholder-val="{{ false }}"><span style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{m.bBg}}; color: {{m.bFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{m.count}}</span></sc-if></a></sc-for>
+    </nav>
+    <div style="margin-top: auto; font-size: 13px; color: {{t.muted}};">Signed in as admin@sfl.local<br><a href="#" style="color: {{t.link}}; font-weight: 700;">Open public site</a></div>
+  </aside>
+  <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; position: relative;">
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 20px; border-bottom: 1px solid {{t.border}};">
+      <sc-if value="{{processing}}" hint-placeholder-val="{{ false }}"><span style="margin-right: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 12px; border-radius: 999px; background: {{t.surface2}};"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}};"></span>Processing: game of 14 Nov 2015 · step 3 of 6</span></sc-if>
+      <a href="#" aria-label="Note of the game being processed" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 14px; font-weight: 600;">Note</a>
+      <a href="#" aria-label="Unprocessed games: 586" style="position: relative; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/></svg><span style="position: absolute; right: -8px; top: -8px; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">586</span></a>
+    </div>
+    <main style="flex: 1 1 auto; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+      <nav aria-label="Breadcrumb" style="font-size: 13px; color: {{t.muted}};"><a href="#">Games</a> / Game 47</nav>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Game 47 · 21 Nov 2026</h1><div style="font-size: 14px; color: {{t.muted}};">BMW 6 : 4 HONDA · captains Falcon and Wolf · filled by Anna</div></div>
+        <span style="font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 999px; background: {{st.bg}}; color: {{st.fg}}; border: {{st.border}};">{{st.t}}</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <section aria-labelledby="cf" style="flex: 1 1 420px; min-width: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;"><h2 id="cf" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.03em; text-transform: uppercase;">Confirmations</h2><span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 28px; color: {{t.ok}};">{{have}} of 2</span></div>
+          <p style="margin: 0; font-size: 14px; color: {{t.muted}};">The game is published when two different admins or moderators confirm that it is filled in correctly. Until then it is a draft and counts in no rating.</p>
+          <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{slots}}" as="s" hint-placeholder-count="2">
+              <li style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 4px; border: {{s.border}}; background: {{s.bg}};">
+                <span style="width: 40px; height: 40px; border-radius: 50%; background: {{s.av}}; color: {{s.avFg}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700;">{{s.ini}}</span>
+                <div style="flex: 1 1 auto; min-width: 0;"><div style="font-weight: 700;">{{s.name}}</div><div style="font-size: 13px; color: {{t.muted}};">{{s.sub}}</div></div>
+                <span style="font-size: 12px; font-weight: 700; color: {{s.sc}};">{{s.st}}</span>
+              </li>
+            </sc-for>
+          </ol>
+          <sc-if value="{{isDraft}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;"><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Confirm: the game is correct</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">Open the game</a><span style="font-size: 12px; color: {{t.muted}};">Check teams, score, goals, passes, own goals and the MVP before confirming.</span></div></sc-if>
+          <sc-if value="{{isPub}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;"><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 2px solid {{t.neg}}; color: {{t.neg}};">Withdraw my confirmation</a><span style="font-size: 12px; color: {{t.muted}};">With one confirmation left the game goes back to draft.</span></div></sc-if>
+        </section>
+
+        <aside style="flex: 0 1 340px; min-width: 280px; display: flex; flex-direction: column; gap: 12px;">
+          <section aria-label="Checklist" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Checklist</h2>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px;">
+              <sc-for list="{{checks}}" as="c" hint-placeholder-count="5"><li style="display: flex; gap: 10px; align-items: center;"><span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">✓</span>{{c}}</li></sc-for>
+            </ul>
+          </section>
+          <section aria-label="History" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">History</h2>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+              <sc-for list="{{log}}" as="l" hint-placeholder-count="4"><li style="display: flex; gap: 10px;"><span style="flex: none; width: 78px; color: {{t.muted}};">{{l.when}}</span><span>{{l.what}}</span></li></sc-for>
+            </ol>
+          </section>
+        </aside>
+      </div>
+
+      <sc-if value="{{isPub}}" hint-placeholder-val="{{ false }}">
+      <section aria-labelledby="dz" style="border: 2px solid {{t.neg}}; border-radius: 4px; padding: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
+        <div style="flex: 1 1 360px;"><h2 id="dz" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase; color: {{t.neg}};">Danger zone</h2><p style="margin: 4px 0 0; font-size: 14px; color: {{t.muted}};">Revoking takes the game out of every rating and recalculates the statistics. It returns to draft; the confirmations are cleared. A reason is required and is saved in the log.</p></div>
+        <a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.negFill}}; color: {{t.onNeg}};">Revoke publication…</a>
+      </section>
+      </sc-if>
+
+      <sc-if value="{{isRevoke}}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.62); display: flex; align-items: flex-start; justify-content: center; padding-top: 140px; box-sizing: border-box;">
+        <div role="alertdialog" aria-modal="true" aria-labelledby="rv" style="width: 520px; max-width: calc(100% - 32px); box-sizing: border-box; background: {{t.surface}}; border: 2px solid {{t.neg}}; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.5);">
+          <div style="display: flex; align-items: center; gap: 12px;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="{{t.neg}}" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg><h2 id="rv" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; letter-spacing: 0.03em; text-transform: uppercase;">Revoke game 47?</h2></div>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 4px;"><li>The game leaves both ratings. Points of 21 players are recalculated.</li><li>Seasons, records and the hall of fame are recalculated.</li><li>The comments and photos stay.</li><li>The two confirmations are cleared.</li></ul>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Reason (required)<span style="display: block; min-height: 64px; padding: 10px 12px; border-radius: 4px; border: 2px solid {{t.neg}}; background: {{t.bg}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">Wrong score: HONDA scored 5, not 4.</span></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Type the number of the game to confirm<span style="display: flex; align-items: center; height: 44px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">47</span></label>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.negFill}}; color: {{t.onNeg}};">Revoke publication</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">Keep it published</a></div>
+        </div>
+      </div>
+      </sc-if>
+
+    </main>
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"state":{"editor":"enum","default":"draft","options":["draft","published","revoke"]},"cur":{"editor":"enum","default":"confirm","options":["confirm"]},"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+    const items = [['Overview', 0, 'a'], ['Games', 2, 'b'], ['Process games', 586, 'process'], ['Players', 0, 'c'], ['Schedule', 0, 'd'], ['Comments', 3, 'e'], ['Rules and votes', 2, 'f'], ['Photo and video', 0, 'g']];
+    const menu = items.map(([label, count, k]) => { const cur = k === 'process' && this.props.cur !== 'confirm'; const g = k === 'b' && this.props.cur === 'confirm'; const on = cur || g; return { label, count, current: on ? 'page' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, bBg: on ? t.onAccent : t.accent, bFg: on ? t.accent : t.onAccent }; });
+    const state = this.props.state ?? 'draft';
+    const isDraft = state === 'draft', isPub = state !== 'draft', isRevoke = state === 'revoke';
+    const st = isDraft ? { t: 'Draft · 1 of 2 confirmations', bg: 'transparent', fg: t.text, border: `1px solid ${t.muted}` } : { t: 'Published · 2 of 2 confirmations', bg: t.accent, fg: t.onAccent, border: '1px solid transparent' };
+    const done = (name, sub, ini) => ({ name, sub, ini, st: 'Confirmed', sc: t.ok, bg: 'transparent', border: `1px solid ${t.border}`, av: t.accent, avFg: t.onAccent });
+    const empty = { name: 'Waiting for a second person', sub: 'Any admin or moderator except the one who already confirmed', ini: '?', st: 'Needed', sc: t.muted, bg: 'transparent', border: `1px dashed ${t.muted}`, av: t.surface2, avFg: t.muted };
+    const slots = isDraft ? [done('Anna · admin', '21 Nov, 14:02 · filled the game and confirmed', 'AN'), empty] : [done('Anna · admin', '21 Nov, 14:02 · filled the game and confirmed', 'AN'), done('Pete · moderator', '21 Nov, 15:10', 'PE')];
+    const checks = ['Both teams, one captain each', 'Score equals the sum of goals', 'Every goal has an author', 'Passes belong to the scoring team', 'MVP chosen'];
+    const log = isDraft ? [{ when: '14:02', what: 'Anna filled the game and confirmed' }, { when: '13:40', what: 'Anna processed the note of the game' }] : [{ when: '15:10', what: 'Pete confirmed · game published' }, { when: '14:02', what: 'Anna filled the game and confirmed' }, { when: '13:40', what: 'Anna processed the note of the game' }];
+    return { t, menu, st, have: isDraft ? 1 : 2, slots, checks, log, isDraft, isPub, isRevoke, processing: false };
+
+  }
+}
+</script>
+</body>
+</html>

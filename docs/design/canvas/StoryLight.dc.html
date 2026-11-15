@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL game story</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;">
+    <a href="#" aria-label="SFL, home" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 20px; flex: 1 1 auto; font-size: 14px; font-weight: 600; overflow-x: auto;"><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Home</a><a href="#" aria-current="page" style="color: {{t.text}}; border-bottom: 2px solid {{t.accent}}; padding: 8px 0; white-space: nowrap;">Games</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Players</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Captains</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Seasons</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Rules</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Vote</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">How points work</a></nav>
+  </header>
+
+  <main style="width: 100%; max-width: 1080px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em;">1 · On the game page (public, only when the story is written)</div>
+    <section aria-labelledby="st" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px; max-width: 760px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;"><h2 id="st" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Story of the game</h2><span style="font-size: 12px; color: {{t.muted}};">Written by Anna</span></div>
+      <p style="margin: 0; font-size: 16px; max-width: 70ch;">It rained from the first minute, and the pitch turned into a pond. Falcon scored the first goal with his head, standing in a puddle. Lynx answered twice, and for a moment it seemed that BMW would break away, but Wolf’s team returned in the second half…</p>
+      <a href="#" style="color: {{t.link}}; font-weight: 700; font-size: 14px;">Read the whole story</a>
+    </section>
+    <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em;">2 · In the editor of the game (admin, optional)</div>
+    <section aria-labelledby="ed" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px; max-width: 760px;">
+      <h2 id="ed" style="margin: 0; font-size: 18px; font-weight: 700;">Story (optional)</h2>
+      <p style="margin: 0; font-size: 13px; color: {{t.muted}};">A few words or a long story about the game: weather, turns, jokes. Leave it empty and the block is not shown. The text becomes public together with the game.</p>
+      <span style="display: block; min-height: 140px; padding: 12px 14px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; font-size: 15px;">It rained from the first minute, and the pitch turned into a pond. Falcon scored the first goal with his head…</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; color: {{t.muted}};"><span>Plain text and paragraphs. Links are not active.</span><span>312 of 5000 characters</span></div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"light","options":["dark","light"]},"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+    return { t };
+  }
+}
+</script>
+</body>
+</html>

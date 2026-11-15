@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <div style="min-height: 100%%; display: flex; flex-wrap: wrap; flex: 1 1 auto;">
+  <aside style="flex: 0 0 220px; flex-grow: 1; max-width: 100%%; box-sizing: border-box; background: {{t.surface}}; border-right: 1px solid {{t.border}}; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;">Admin</span></div>
+    <nav aria-label="Admin" style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; font-weight: 600;">
+      <sc-for list="{{menu}}" as="m" hint-placeholder-count="8"><a href="#" aria-current="{{m.current}}" style="display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 12px; border-radius: 4px; background: {{m.bg}}; color: {{m.fg}};">{{m.label}}<sc-if value="{{m.count}}" hint-placeholder-val="{{ false }}"><span style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{m.bBg}}; color: {{m.bFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{m.count}}</span></sc-if></a></sc-for>
+    </nav>
+    <div style="margin-top: auto; font-size: 13px; color: {{t.muted}};">Signed in as admin@sfl.local<br><a href="#" style="color: {{t.link}}; font-weight: 700;">Open public site</a></div>
+  </aside>
+  <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; position: relative;">
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 20px; border-bottom: 1px solid {{t.border}};">
+      <sc-if value="{{processing}}" hint-placeholder-val="{{ false }}"><span style="margin-right: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 12px; border-radius: 999px; background: {{t.surface2}};"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}};"></span>Processing: game of 14 Nov 2015 · step 3 of 6</span></sc-if>
+      <a href="#" aria-label="Note of the game being processed" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 14px; font-weight: 600;">Note</a>
+      <a href="#" aria-label="Unprocessed games: 586" style="position: relative; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/></svg><span style="position: absolute; right: -8px; top: -8px; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">586</span></a>
+    </div>
+    <main style="flex: 1 1 auto; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+      <sc-if value="{{isQueue}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;"><div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Process games</h1><div style="font-size: 14px; color: {{t.muted}};">Turn the notes of old games into filled games. Statistics have been kept since 2011.</div></div><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Process the next one</a></div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
+          <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4"><li style="background: {{k.bg}}; color: {{k.fg}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px 16px;"><div style="font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.85;">{{k.l}}</div><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 31px; line-height: 1.15; font-variant-numeric: tabular-nums;">{{k.v}}</div><div style="font-size: 13px; opacity: 0.85;">{{k.s}}</div></li></sc-for>
+        </ul>
+        <section aria-labelledby="yr" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;"><h2 id="yr" style="margin: 0; font-size: 16px; font-weight: 700;">Saturdays by year</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: {{t.muted}};"><span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.accent}};"></span>Processed</span><span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.text}};"></span>Waiting</span><span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; border: 1px dashed {{t.muted}};"></span>1980–2010: no statistics kept</span></div></div>
+          <div role="img" aria-label="Bars by year: 1980 to 2010 archive without statistics; from 2011 most games are waiting for processing" style="display: flex; align-items: flex-end; gap: 3px; height: 110px;">
+            <sc-for list="{{years}}" as="y" hint-placeholder-count="47"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; border: {{y.border}}; border-radius: 2px; box-sizing: border-box;"><span style="display: block; height: {{y.wait}}%; background: {{t.text}}; opacity: {{y.op}};"></span><span style="display: block; height: {{y.done}}%; background: {{t.accent}};"></span></span></sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: {{t.muted}};"><span>1980</span><span>1995</span><span>2011</span><span>2026</span></div>
+        </section>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center;">
+          <sc-for list="{{filters}}" as="f" hint-placeholder-count="4"><a href="#" style="display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; background: {{f.bg}}; color: {{f.fg}}; border: 1px solid {{f.border}}; font-size: 13px; font-weight: 600;">{{f.t}}</a></sc-for>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;">
+          <sc-for list="{{games}}" as="g" hint-placeholder-count="6">
+            <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 16px; border-top: {{g.divider}};">
+              <div style="flex: 0 0 110px;"><div style="font-weight: 700;">{{g.date}}</div><div style="font-size: 12px; color: {{t.muted}};">Saturday {{g.no}}</div></div>
+              <div style="flex: 1 1 260px; min-width: 0; font-size: 14px; color: {{t.muted}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{g.note}}</div>
+              <span style="font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: {{g.bg}}; color: {{g.fg}}; border: {{g.border}};">{{g.st}}</span>
+              <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 4px; background: {{g.btnBg}}; color: {{g.btnFg}}; border: 1px solid {{g.btnBorder}}; font-size: 14px; font-weight: 700;">{{g.act}}</a>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{isNote}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 16px; max-width: 900px;">
+        <div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">New game · note</h1><div style="font-size: 14px; color: {{t.muted}};">Step 1 of 6. Paste the text of the game from the old site. It stays next to you while you fill the game.</div></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Date<span style="display: flex; align-items: center; height: 44px; width: 180px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">14 Nov 2015</span></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Source<span style="display: flex; align-items: center; height: 44px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">sport.kornatovski · text copied by hand</span></label>
+        </div>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Note<span style="display: block; white-space: pre-line; min-height: 200px; padding: 12px 14px; border-radius: 4px; border: 2px solid {{t.accent}}; background: {{t.surface}}; color: {{t.text}}; font-size: 15px; line-height: 1.6; text-transform: none; letter-spacing: 0;">{{note}}</span><span style="text-transform: none; letter-spacing: 0;">412 characters. The note is private: it is shown only to admins and is not published.</span></label>
+        <section aria-label="Recognised" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">What the system found in the note</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;"><sc-for list="{{found}}" as="f" hint-placeholder-count="5"><span style="font-size: 13px; padding: 4px 12px; border-radius: 999px; background: {{f.bg}}; color: {{f.fg}}; border: {{f.border}}; font-weight: 600;">{{f.t}}</span></sc-for></div>
+          <p style="margin: 0; font-size: 13px; color: {{t.muted}};">Suggestions only. Every name and number is checked by you in the next steps; unknown names are marked.</p>
+        </section>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Save and continue</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">Save as unprocessed</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">No note: mark as skipped week</a></div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{isWork}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Teams and draft</h1><div style="font-size: 14px; color: {{t.muted}};">Step 3 of 6 · game of 14 Nov 2015. The note floats over every step and every page; drag it, minimise it or close it.</div></div>
+        <ol aria-label="Steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; font-weight: 700;">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="6"><li style="padding: 6px 14px; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; border: 1px solid {{s.border}};">{{s.t}}</li></sc-for>
+        </ol>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 640px;">
+          <sc-for list="{{teams}}" as="tm" hint-placeholder-count="2">
+            <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <h2 style="margin: 0; display: flex; align-items: center; gap: 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase;"><span style="width: 14px; height: 14px; border-radius: 3px; background: {{tm.c}};"></span>{{tm.t}}</h2>
+              <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px;">
+                <sc-for list="{{tm.p}}" as="p" hint-placeholder-count="10"><li style="display: flex; align-items: center; gap: 8px; min-height: 28px;"><span style="width: 22px; color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{p.n}}</span><span style="flex: 1 1 auto; font-weight: {{p.w}};">{{p.name}}</span><span style="font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: {{p.bg}}; color: {{p.fg}}; border: {{p.border}};">{{p.tag}}</span></li></sc-for>
+              </ol>
+            </section>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Save and continue</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">Back</a></div>
+      </div>
+
+      <div role="dialog" aria-label="Note of the game, floating" style="position: absolute; right: 24px; top: 120px; width: 380px; max-width: calc(100% - 48px); background: {{t.surface}}; border: 2px solid {{t.accent}}; border-radius: 6px; box-shadow: 0 14px 40px rgba(0,0,0,0.55); z-index: 5; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 3px 3px 0 0; cursor: grab;">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="4" r="1.4"/><circle cx="11" cy="4" r="1.4"/><circle cx="5" cy="8" r="1.4"/><circle cx="11" cy="8" r="1.4"/><circle cx="5" cy="12" r="1.4"/><circle cx="11" cy="12" r="1.4"/></svg>
+          <strong style="flex: 1 1 auto; font-size: 14px;">Note · 14 Nov 2015</strong>
+          <span style="font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: {{t.onAccent}}; color: {{t.accent}};">stays on all pages</span>
+          <a href="#" aria-label="Minimise" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700;">–</a>
+          <a href="#" aria-label="Close" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700;">×</a>
+        </div>
+        <div style="padding: 12px 14px; white-space: pre-line; font-size: 14px; line-height: 1.65; max-height: 330px; overflow: auto;">{{note}}</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-top: 1px solid {{t.border}}; font-size: 12px; color: {{t.muted}};"><span>Select a name to copy it into the field</span><span aria-hidden="true">⌟</span></div>
+      </div>
+      </sc-if>
+
+    </main>
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"view":{"editor":"enum","default":"note","options":["queue","note","work"]},"cur":{"editor":"enum","default":"process","options":["process"]},"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+    const items = [['Overview', 0, 'a'], ['Games', 2, 'b'], ['Process games', 586, 'process'], ['Players', 0, 'c'], ['Schedule', 0, 'd'], ['Comments', 3, 'e'], ['Rules and votes', 2, 'f'], ['Photo and video', 0, 'g']];
+    const menu = items.map(([label, count, k]) => { const cur = k === 'process' && this.props.cur !== 'confirm'; const g = k === 'b' && this.props.cur === 'confirm'; const on = cur || g; return { label, count, current: on ? 'page' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, bBg: on ? t.onAccent : t.accent, bFg: on ? t.accent : t.onAccent }; });
+    const view = this.props.view ?? 'queue';
+    const NOTE = '14.11.2015. BMW – HONDA 6:4. Rain, 22 players came.\nBMW: Falcon (c), Lynx, Bear, Otter, Heron (gk), Mole, Crane, Fox, Stag, Raven.\nHONDA: Wolf (c), Hawk, Kite, Swan, Lark, Pike, Newt, Dove, Hare, Moth.\nGoals BMW: Falcon 3 (one with the head), Lynx 2, Otter 1.\nGoals HONDA: Wolf 2, Hawk 1, Kite 1.\nPasses: Lynx 2, Falcon 1, Otter 1, Hawk 1, Swan 1.\nOwn goal: Moth (HONDA).\nMVP: Falcon. A great game despite the rain!';
+    const kp = (l, v, s, hot) => ({ l, v, s, bg: hot ? '#000000' : t.surface, fg: hot ? '#F6F1E4' : t.text });
+    const kpis = [kp('Waiting since 2011', '586', 'of 832 Saturdays', true), kp('Processed', '246', '30% of the way'), kp('Archive 1980–2010', '1,612', 'no statistics kept'), kp('With a note', '521', '65 without a note')];
+    const years = Array.from({ length: 47 }, (_, i) => { const y = 1980 + i; if (y < 2011) return { wait: 100, done: 0, op: 0.12, border: `1px dashed ${t.muted}` }; const d = Math.min(100, Math.max(0, Math.round(((y - 2010) / 16) * 85))); return { wait: 100 - d, done: d, op: 1, border: '1px solid transparent' }; });
+    const filters = ['Waiting · 586', 'With a note · 521', 'No note · 65', 'Archive 1980–2010'].map((f, i) => ({ t: f, bg: i === 0 ? t.text : 'transparent', fg: i === 0 ? t.bg : t.text, border: i === 0 ? t.text : t.border }));
+    const G = [['14 Nov 2015', 'Sat 46', '14.11.2015. BMW – HONDA 6:4. Rain, 22 players came. BMW: Falcon (c), Lynx, Bear…', true], ['7 Nov 2015', 'Sat 45', '07.11.2015. HONDA – BMW 3:3. Draw. Goals: Wolf 2, Kite 1…', true], ['31 Oct 2015', 'Sat 44', 'No note found for this date', false], ['24 Oct 2015', 'Sat 43', '24.10.2015. BMW – HONDA 9:2. The biggest win of the autumn…', true], ['17 Oct 2015', 'Sat 42', '17.10.2015. Short note: 5:4, goals by Falcon, Wolf…', true], ['10 Oct 2015', 'Sat 41', 'No note found for this date', false]];
+    const games = G.map(([date, no, note, has], i) => ({ date, no, note, divider: i ? `1px solid ${t.border}` : 'none', st: has ? 'Has a note' : 'No note', bg: has ? t.accent : 'transparent', fg: has ? t.onAccent : t.muted, border: has ? '1px solid transparent' : `1px dashed ${t.muted}`, act: has ? 'Process' : 'Mark skipped', btnBg: has ? t.accent : 'transparent', btnFg: has ? t.onAccent : t.text, btnBorder: has ? t.accent : t.border }));
+    const found = [['2 teams: BMW, HONDA', 1], ['Score 6:4', 1], ['20 players', 1], ['9 goals', 1], ['5 passes', 1], ['1 own goal', 1], ['MVP: Falcon', 1], ['2 names not in the list: Kite, Moth', 0]].map(([tt, ok]) => ({ t: tt, bg: ok ? t.surface2 : 'transparent', fg: ok ? t.text : t.neg, border: ok ? '1px solid transparent' : `1px solid ${t.neg}` }));
+    const steps = ['Note', 'Game', 'Teams', 'Statistics', 'Order of goals', 'Review'].map((s, i) => ({ t: s, bg: i === 2 ? t.accent : 'transparent', fg: i === 2 ? t.onAccent : i < 2 ? t.text : t.muted, border: i === 2 ? t.accent : t.border }));
+    const pl = (arr, c) => arr.map(([n, name, tag], i) => ({ n: i + 1, name, tag, w: tag === 'captain' ? 700 : 500, bg: tag === 'new name' ? 'transparent' : tag === 'captain' ? t.accent : t.surface2, fg: tag === 'new name' ? t.neg : tag === 'captain' ? t.onAccent : t.muted, border: tag === 'new name' ? `1px solid ${t.neg}` : '1px solid transparent' }));
+    const teams = [
+      { t: 'BMW', c: dark ? '#F6F1E4' : '#15130F', p: pl([[1, 'Falcon', 'captain'], [2, 'Lynx', 'player'], [3, 'Bear', 'player'], [4, 'Otter', 'player'], [5, 'Heron', 'goalkeeper'], [6, 'Mole', 'player'], [7, 'Crane', 'player'], [8, 'Fox', 'player'], [9, 'Stag', 'player'], [10, 'Raven', 'player']]) },
+      { t: 'HONDA', c: '#FF6A5F', p: pl([[1, 'Wolf', 'captain'], [2, 'Hawk', 'player'], [3, 'Kite', 'new name'], [4, 'Swan', 'player'], [5, 'Lark', 'player'], [6, 'Pike', 'player'], [7, 'Newt', 'player'], [8, 'Dove', 'player'], [9, 'Hare', 'player'], [10, 'Moth', 'new name']]) }
+    ];
+    return { t, menu, view, isQueue: view === 'queue', isNote: view === 'note', isWork: view === 'work', processing: view !== 'queue', note: NOTE, kpis, years, filters, games, found, steps, teams };
+
+  }
+}
+</script>
+</body>
+</html>

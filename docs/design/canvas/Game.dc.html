@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL game page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;">
+    <a href="#" aria-label="SFL, home" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 20px; flex: 1 1 auto; font-size: 14px; font-weight: 600; overflow-x: auto;">
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Home</a>
+      <a href="#" style="color: {{t.text}}; border-bottom: 2px solid {{t.accent}}; padding: 8px 0;">Games</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Players</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Teams</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Compare</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Photo and video</a>
+    </nav>
+      <a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a>
+  </header>
+
+  <main style="width: 100%; max-width: 1080px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 28px;">
+
+    <nav aria-label="Breadcrumb" style="font-size: 13px; color: {{t.muted}};"><a href="#">Games</a> / <a href="#">2026</a> / Game 46</nav>
+
+    <section aria-labelledby="title" style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px;">
+        <h1 id="title" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Game 46</h1>
+        <span style="font-size: 14px; color: {{t.muted}};">Saturday, 14 November 2026 · Season 2026 · <span style="font-weight: 700; padding: 2px 8px; border-radius: 999px; background: {{t.chip}}; color: {{t.text}}; font-size: 12px;">Published</span></span>
+      </div>
+      <div style="background: {{t.scoreBg}}; color: #F6F1E4; border-radius: 4px; padding: 20px; display: flex; align-items: center; justify-content: space-around; gap: 12px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+          <svg aria-hidden="true" width="44" height="50" viewBox="0 0 28 32"><path d="M14 1l12 4v10c0 8-5 13-12 16C7 28 2 23 2 15V5z" fill="#F6F1E4" stroke="#F6F1E4" stroke-width="2"/><text x="14" y="20" text-anchor="middle" font-family="Oswald, sans-serif" font-size="9" font-weight="700" fill="#0D0C0A">BMW</text></svg>
+          <span style="font-family: 'Oswald', sans-serif; font-size: 20px; letter-spacing: 0.04em;">BMW</span>
+          <span style="font-size: 12px; color: #B3AA94;">1st draft · captain Falcon</span>
+        </div>
+        <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: {{t.bigScore}}px; line-height: 1; color: #FFD21F; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">4 : 1</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+          <svg aria-hidden="true" width="44" height="50" viewBox="0 0 28 32"><path d="M14 1l12 4v10c0 8-5 13-12 16C7 28 2 23 2 15V5z" fill="#FF6A5F" stroke="#FF6A5F" stroke-width="2"/><text x="14" y="20" text-anchor="middle" font-family="Oswald, sans-serif" font-size="7" font-weight="700" fill="#0D0C0A">HONDA</text></svg>
+          <span style="font-family: 'Oswald', sans-serif; font-size: 20px; letter-spacing: 0.04em;">HONDA</span>
+          <span style="font-size: 12px; color: #B3AA94;">2nd draft · captain Tank</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mvp" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="mvp" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">MVP · {{mvpCount}}</h2>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
+        <sc-for list="{{mvps}}" as="m" hint-placeholder-count="7">
+          <li style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 999px; font-size: 14px;">
+            <span style="width: 30px; height: 30px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">{{m.initials}}</span>
+            <span><a href="#" style="font-weight: 700;">{{m.name}}</a> <span style="color: {{t.muted}}; font-size: 12px;">{{m.kind}}</span></span>
+          </li>
+        </sc-for>
+      </ul>
+      <p style="margin: 0; font-size: 13px; color: {{t.muted}};">Three kinds: assigned by the organiser, leader by goals (a header counts double), leader by passes. A tie gives the award to every leader.</p>
+    </section>
+
+    <section aria-labelledby="events" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="events" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Goals</h2>
+      <ol style="list-style: none; margin: 0; padding: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;">
+        <sc-for list="{{events}}" as="e" hint-placeholder-count="4">
+          <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 16px; border-top: {{e.divider}};">
+            <span style="flex: 0 0 64px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; font-variant-numeric: tabular-nums; color: {{t.link}};">{{e.score}}</span>
+            <span style="flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: {{e.teamBg}}; color: {{e.teamFg}};">{{e.team}}</span>
+            <span style="flex: 1 1 200px; font-size: 15px;"><a href="#" style="font-weight: 700;">{{e.author}}</a> <span style="color: {{t.muted}}; font-size: 13px;">{{e.kind}}</span></span>
+            <span style="flex: 0 0 auto; font-size: 13px; color: {{t.muted}};">{{e.assist}}</span>
+            <span style="flex: 0 0 auto; font-size: 12px; font-weight: 700; color: {{e.deltaColor}};">{{e.delta}}</span>
+          </li>
+        </sc-for>
+      </ol>
+      <ul aria-label="Legend" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: {{t.muted}};">
+        <li><strong style="color: {{t.text}};">Goal</strong> +1 point and +1 on the score</li>
+        <li><strong style="color: {{t.text}};">Header ×2</strong> counts double everywhere</li>
+        <li><strong style="color: {{t.text}};">Penalty</strong> +1</li>
+        <li><strong style="color: {{t.text}};">Pass</strong> +1 for the passer</li>
+        <li><strong style="color: {{t.text}};">Own goal</strong> counts for the opponent, −1 for the author</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="map" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="map" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Line-up map</h2>
+      <p style="margin: 0; max-width: 72ch; font-size: 13px; color: {{t.muted}};">The beach pitch in Jūrmala: the sea is on the north side, the dunes on the south side. The game is played over the full width of the beach, so every player keeps his own strip.</p>
+      <div role="img" aria-label="Line-up map of the beach pitch. The sea is on the {{seaSide}} side (north), the dunes on the {{duneSide}} side (south). BMW defends the {{mapSide1}} goal, HONDA the {{mapSide2}} goal. Goalkeepers, defenders, midfielders and forwards of both teams." style="position: relative; width: 100%; max-width: {{mapMax}}px; margin: 0 auto; aspect-ratio: {{mapRatio}}; background: {{t.surface2}}; border: 2px solid {{t.accent}}; border-radius: 4px; overflow: hidden;">
+        <svg aria-hidden="true" viewBox="{{box}}" preserveAspectRatio="none" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;">
+          <path d="{{sea1}}" fill="none" stroke="{{t.sea}}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity="1"/>
+          <path d="{{sea2}}" fill="none" stroke="{{t.sea}}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity="0.65"/>
+          <path d="{{sea3}}" fill="none" stroke="{{t.sea}}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity="0.35"/>
+          <path d="{{dune1}}" fill="{{t.dune}}" stroke="{{t.accent}}" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke" opacity="0.95"/>
+          <path d="{{dune2}}" fill="none" stroke="{{t.accent}}" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity="0.55"/>
+          <path d="{{mid}}" fill="none" stroke="{{t.accent}}" stroke-width="1.6" stroke-dasharray="5 5" vector-effect="non-scaling-stroke" opacity="0.5"/>
+          <path d="{{goalA}}" fill="none" stroke="{{t.accent}}" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+          <path d="{{goalB}}" fill="none" stroke="{{t.accent}}" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div style="position: absolute; left: 50%; top: 50%; width: 16%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 2px solid {{t.accent}}; opacity: 0.5; border-radius: 50%;"></div>
+        <span style="position: absolute; {{seaChip}} display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.sea}}; background: {{t.mapLabel}}; padding: 2px 8px; border-radius: 2px;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 9c3-3 5 3 8 0s5 3 8 0 3 0 4 0M2 15c3-3 5 3 8 0s5 3 8 0 3 0 4 0"/></svg>North · sea</span>
+        <span style="position: absolute; {{duneChip}} display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}; background: {{t.mapLabel}}; padding: 2px 8px; border-radius: 2px;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 19c3-8 6-8 9-3 2-5 5-8 11 3"/></svg>South · dunes</span>
+        <span aria-hidden="true" style="position: absolute; {{compass}} display: inline-flex; flex-direction: column; align-items: center; font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; color: {{t.accent}};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate({{compassRotate}}deg);"><path d="M12 20V4M6 10l6-6 6 6"/></svg>N</span>
+        <sc-for list="{{markers}}" as="p" hint-placeholder-count="20">
+          <div style="position: absolute; left: {{p.x}}%; top: {{p.y}}%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; width: 64px;">
+            <span style="position: relative; width: 34px; height: 34px; border-radius: 50%; background: {{p.fill}}; color: {{p.ink}}; border: 2px solid {{p.ring}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; box-sizing: border-box;">{{p.number}}
+              <sc-if value="{{p.mvp}}" hint-placeholder-val="{{ false }}"><svg aria-label="MVP" role="img" width="14" height="14" viewBox="0 0 24 24" style="position: absolute; right: -6px; top: -6px;" fill="{{t.accent}}" stroke="{{t.bg}}" stroke-width="1.5"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg></sc-if>
+              <sc-if value="{{p.captain}}" hint-placeholder-val="{{ false }}"><span aria-label="Captain" role="img" style="position: absolute; left: -6px; bottom: -4px; width: 15px; height: 15px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">C</span></sc-if>
+            </span>
+            <span style="font-size: 11px; font-weight: 600; line-height: 1.2; text-align: center; color: {{t.text}}; background: {{t.mapLabel}}; padding: 0 4px; border-radius: 2px;">{{p.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-labelledby="squads" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="squads" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Draft and squads</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
+        <sc-for list="{{squads}}" as="s" hint-placeholder-count="2">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-top: 4px solid {{s.color}}; border-radius: 4px; padding: 14px 16px;">
+            <h3 style="margin: 0 0 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.04em; text-transform: uppercase;">{{s.title}}</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Squad {{s.title}}</caption>
+              <thead><tr style="color: {{t.muted}}; font-size: 12px; text-align: left; text-transform: uppercase; letter-spacing: 0.06em;"><th scope="col" style="padding: 0 0 6px; width: 30px;">№</th><th scope="col" style="padding: 0 0 6px;">Player</th><th scope="col" style="padding: 0 0 6px;">Pos</th><th scope="col" style="padding: 0 0 6px; text-align: right;">G+P</th></tr></thead>
+              <tbody>
+                <sc-for list="{{s.players}}" as="p" hint-placeholder-count="10">
+                  <tr style="border-top: 1px solid {{t.border}};">
+                    <td style="padding: 6px 0; color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{p.number}}</td>
+                    <td style="padding: 6px 0;"><a href="#" style="font-weight: 600;">{{p.name}}</a> <span style="color: {{t.link}}; font-size: 12px; font-weight: 700;">{{p.tags}}</span></td>
+                    <td style="padding: 6px 0; color: {{t.muted}};"><span style="display: inline-flex; align-items: center; gap: 5px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{p.posIcon}}"/></svg>{{p.pos}}</span></td>
+                    <td style="padding: 6px 0; text-align: right; font-family: 'Oswald', sans-serif; font-weight: 700; font-variant-numeric: tabular-nums;">{{p.gp}}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-labelledby="media" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="media" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Photo and video</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px;">
+        <sc-for list="{{photos}}" as="ph" hint-placeholder-count="6">
+          <div role="img" aria-label="Photo {{ph.n}}, not uploaded yet" style="aspect-ratio: 4 / 3; background: {{t.surface2}}; border: 1px solid {{t.border}}; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: {{t.muted}}; letter-spacing: 0.08em; text-transform: uppercase;">Photo {{ph.n}}</div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-labelledby="comments" style="display: flex; flex-direction: column; gap: 12px;">
+      <h2 id="comments" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Comments · 2</h2>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+        <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 16px;"><div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: {{t.muted}};"><strong style="color: {{t.text}};">Viper</strong><span>15 Nov, 10:12</span></div><p style="margin: 4px 0 0; font-size: 15px;">Great game, the penalty at the end was fair.</p></li>
+        <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 16px;"><div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: {{t.muted}};"><strong style="color: {{t.text}};">Pike</strong><span>15 Nov, 11:40</span></div><p style="margin: 4px 0 0; font-size: 15px;">Rematch on Saturday?</p></li>
+      </ul>
+      <form style="display: flex; flex-direction: column; gap: 10px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px;">
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">Comment
+          <textarea rows="3" style="box-sizing: border-box; padding: 10px 12px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 16px; font-weight: 400;"></textarea>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">Name
+          <input type="text" style="box-sizing: border-box; height: 44px; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 16px; font-weight: 400;">
+        </label>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+          <button type="submit" style="height: 44px; padding: 0 20px; border: 0; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;">Send for review</button>
+          <span style="font-size: 13px; color: {{t.muted}};">Your comment appears after the administrator checks it.</span>
+        </div>
+      </form>
+    </section>
+
+    <nav aria-label="Games" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;">
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.surface}}; font-weight: 700; font-size: 14px;">← Game 45 · HONDA 3:3 BMW</a>
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 1px dashed {{t.border}}; border-radius: 4px; color: {{t.muted}}; font-size: 14px;">Game 47 · next Saturday</a>
+    </nav>
+  </main>
+  <footer style="margin-top: auto; border-top: 1px solid {{t.border}}; background: {{t.surface}};">
+    <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 28px 20px 20px; display: flex; flex-wrap: wrap; gap: 28px 40px;">
+      <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;">Amateur football league</span></div>
+        <p style="margin: 0; font-size: 14px; color: {{t.muted}}; max-width: 36ch;">A game every Saturday, in any weather. Results, ratings and the history of the league.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" aria-label="Instagram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"/></svg></a><a href="#" aria-label="Telegram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l9-6"/></svg></a><a href="#" aria-label="YouTube" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a><a href="#" aria-label="Facebook" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a></div>
+      </div>
+      <div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">League</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Games</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Players</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Captains</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Seasons</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">History</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Photo and video</a></div><div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Rules</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Codex</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Vote</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">How points work</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Suggest or complain anonymously</a></div>
+      <div style="flex: 1 1 200px; min-width: 180px; display: flex; flex-direction: column; gap: 2px;">
+        <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Contacts</div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: {{t.link}}; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@sfl.example</a>
+        <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>[Pitch address]</span>
+        <span style="min-height: 32px; font-size: 13px; color: {{t.muted}};">Saturdays, [time]. The owner fills in the address, the time and the e-mail.</span>
+      </div>
+    </div>
+    <div style="border-top: 1px solid {{t.border}};">
+      <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; font-size: 13px; color: {{t.muted}};">
+        <span>© 2026 SFL. All rights reserved.</span><a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: {{t.link}}; font-weight: 700;">Release 2026.11.3 · 15 Nov 2026 · What’s new</a>
+        <nav aria-label="Legal" style="display: flex; flex-wrap: wrap; gap: 0 16px;"><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Privacy</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Cookies</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Terms</a></nav>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-weight: 700;">EN ▾</span><div role="radiogroup" aria-label="Theme" style="display: inline-flex; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;"><a href="#" role="radio" aria-checked="{{th.light.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.light.bg}}; color: {{th.light.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Light</a><a href="#" role="radio" aria-checked="{{th.dark.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.dark.bg}}; color: {{th.dark.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z"/></svg>Dark</a><a href="#" role="radio" aria-checked="{{th.system.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.system.bg}}; color: {{th.system.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Auto</a></div></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"vertical":{"editor":"boolean","default":false},"$preview":{"width":1280,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const vertical = this.props.vertical === true || this.props.vertical === 'true';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', link: '#FFD21F', scoreBg: '#000000', chip: 'rgba(255,255,255,0.10)', mapLabel: 'rgba(13,12,10,0.7)', err: '#FF8A80', ok: '#7BE0A4', teamA: '#F6F1E4', teamAInk: '#0D0C0A', teamB: '#FF6A5F', teamBInk: '#0D0C0A' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', link: '#6B5400', scoreBg: '#15130F', chip: 'rgba(0,0,0,0.06)', mapLabel: 'rgba(242,235,220,0.85)', err: '#B3261E', ok: '#1B6B3A', teamA: '#FFFFFF', teamAInk: '#15130F', teamB: '#B3261E', teamBInk: '#FFFFFF' };
+    t.bigScore = vertical ? 56 : 88;
+    const ini = (n) => n.slice(0, 2).toUpperCase();
+    const mvps = [
+      { name: 'Wolf', kind: 'goals' }, { name: 'Lynx', kind: 'passes' }, { name: 'Falcon', kind: 'passes' },
+      { name: 'Rocket', kind: 'assigned' }, { name: 'Tank', kind: 'assigned' }, { name: 'Orion', kind: 'assigned' }, { name: 'Sparks', kind: 'assigned' }
+    ].map((m) => ({ ...m, initials: ini(m.name) }));
+    const ev = [
+      { score: '1 : 0', team: 'BMW', author: 'Falcon', kind: 'goal', assist: 'passes Orion, Lynx', delta: '+1' },
+      { score: '3 : 0', team: 'BMW', author: 'Wolf', kind: 'header goal ×2', assist: 'passes Falcon, Lynx', delta: '+2' },
+      { score: '3 : 1', team: 'HONDA', author: 'Ghost (BMW)', kind: 'own goal', assist: 'involved Vega, Pike', delta: '−1 for Ghost' },
+      { score: '4 : 1', team: 'BMW', author: 'Rocket', kind: 'penalty', assist: '', delta: '+1' }
+    ].map((e, i) => ({
+      ...e,
+      divider: i === 0 ? 'none' : '1px solid ' + t.border,
+      teamBg: e.team === 'BMW' ? t.teamA : t.teamB, teamFg: e.team === 'BMW' ? t.teamAInk : t.teamBInk,
+      deltaColor: e.delta.startsWith('−') ? t.err : t.ok
+    }));
+    const bmw = [
+      [1, 'Viper', 'GK', '0+0', ''], [2, 'Ghost', 'DEF', '0+0', 'OG'], [3, 'Orion', 'DEF', '0+1', 'MVP'], [4, 'Bolt', 'DEF', '0+0', ''],
+      [5, 'Lynx', 'MID', '0+2', 'MVP'], [6, 'Rocket', 'MID', '1+0', 'MVP'], [7, 'Sparks', 'MID', '0+0', 'MVP'],
+      [9, 'Falcon', 'FWD', '1+1', 'C MVP'], [10, 'Wolf', 'FWD', '1+0', 'MVP'], [11, 'Nova', 'FWD', '0+0', '']
+    ];
+    const honda = [
+      [21, 'Ibex', 'GK', '0+0', ''], [22, 'Moose', 'DEF', '0+0', ''], [23, 'Dingo', 'DEF', '0+0', ''], [24, 'Hawk', 'DEF', '0+0', ''],
+      [25, 'Tank', 'MID', '0+0', 'C MVP'], [26, 'Pike', 'MID', '0+1', ''], [27, 'Echo', 'MID', '0+0', ''],
+      [29, 'Vega', 'FWD', '0+1', ''], [30, 'Ranger', 'FWD', '0+0', ''], [31, 'Zeta', 'FWD', '0+0', '']
+    ];
+    const mvpSet = new Set(mvps.map((m) => m.name));
+    const POS_ICON = {
+      GK: 'M8 11V6.5M11 11V4.5M14 11V5.5M17 11V8M6 11h11.5v5a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-5-5zM6 13l-2.5-2.5',
+      DEF: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',
+      MID: 'M12 3v18M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
+      FWD: 'M6 17V9h4l1.5 3 5 1.5c1.7.5 2.5 1.5 2.5 3V17zM6 19.5h12M6 11.5L2.5 10M6 14L2 14.5'
+    };
+    const toRow = (r) => ({ number: r[0], name: r[1], pos: r[2], posIcon: POS_ICON[r[2]], gp: r[3], tags: r[4] });
+    const squads = [
+      { title: 'BMW · 1st draft', color: t.teamA === '#FFFFFF' ? '#15130F' : t.teamA, players: bmw.map(toRow) },
+      { title: 'HONDA · 2nd draft', color: t.teamB, players: honda.map(toRow) }
+    ];
+    // Line-up map: lines run from the own goal to the centre
+    const lines = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
+    const depth = [7, 18, 30, 42];
+    const markers = [];
+    const place = (list, team, fill, ink, ring) => {
+      const groups = { GK: [], DEF: [], MID: [], FWD: [] };
+      list.forEach((r) => groups[r[2]].push(r));
+      Object.keys(groups).forEach((pos) => {
+        const arr = groups[pos];
+        arr.forEach((r, i) => {
+          // Players keep a strip between the sea band and the dune band
+          const across = 17 + ((i + 1) / (arr.length + 1)) * 66;
+          const along = team === 0 ? depth[lines[pos]] : 100 - depth[lines[pos]];
+          markers.push({
+            x: vertical ? across : along, y: vertical ? along : across,
+            number: r[0], name: r[1], fill, ink, ring,
+            mvp: mvpSet.has(r[1]), captain: r[4].startsWith('C')
+          });
+        });
+      });
+    };
+    place(bmw, 0, t.teamA, t.teamAInk, t.teamAInk);
+    place(honda, 1, t.teamB, t.teamBInk, t.teamBInk);
+    const photos = [1, 2, 3, 4, 5, 6].map((n) => ({ n }));
+    // Beach pitch drawn with Bezier lines. Wide: north (sea) at the top, south (dunes) at the bottom, goals west and east.
+    // Phone: the pitch is turned a quarter, goals at the top and the bottom, the sea on the right, the dunes on the left; the arrow N shows the sea.
+    const W = vertical ? 100 : 200;
+    const H = vertical ? 133 : 100;
+    // A wavy line along an edge: pos is the distance from the sea edge
+    const wave = (pos, amp) => {
+      if (!vertical) {
+        const y = pos;
+        return `M0,${y} C25,${y - amp} 50,${y + amp} 75,${y} S125,${y + amp} 150,${y} S175,${y - amp} 200,${y}`;
+      }
+      const x = W - pos;
+      return `M${x},0 C${x - amp},33 ${x + amp},66 ${x},100 S${x + amp},125 ${x},133`;
+    };
+    // Dune hill: a filled band at the south edge with two soft ridges
+    const dune = !vertical
+      ? 'M0,100 L0,90 C18,80 38,80 58,88 S100,98 130,86 S178,78 200,88 L200,100 Z'
+      : 'M0,0 L10,0 C20,25 20,45 12,66 S4,100 14,120 S18,128 10,133 L0,133 Z';
+    const dune2 = !vertical
+      ? 'M0,95 C28,88 58,92 92,97 S152,90 200,94'
+      : 'M5,0 C14,28 12,52 6,76 S2,108 8,133';
+    const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+    return { th, themeName, // The sea is the one colour outside the accent, only on this map: blue reads as water at a glance (checked: 8.4:1 dark, 5.3:1 light)
+      t: { ...t, dune: dark ? 'rgba(255,210,31,0.10)' : 'rgba(21,19,15,0.10)', sea: dark ? '#4FB3F0' : '#0F5C9A' },
+      mvps, mvpCount: mvps.length, events: ev, squads, markers, photos,
+      box: `0 0 ${W} ${H}`,
+      sea1: wave(vertical ? 3 : 4, 2.5), sea2: wave(vertical ? 7 : 9, 2.5), sea3: wave(vertical ? 11 : 14, 2.5),
+      dune1: dune, dune2,
+      mid: vertical ? 'M14,66.5 L86,66.5' : 'M100,16 L100,84',
+      goalA: vertical ? 'M40,2 L60,2' : 'M2,40 L2,60', goalB: vertical ? 'M40,131 L60,131' : 'M198,40 L198,60',
+      seaChip: vertical ? 'right: 6px; bottom: 8px;' : 'left: 50%; top: 22px; transform: translateX(-50%);',
+      duneChip: vertical ? 'left: 6px; top: 8px;' : 'left: 50%; bottom: 14px; transform: translateX(-50%);',
+      compass: vertical ? 'right: 8px; top: 8px;' : 'right: 10px; top: 24px;',
+      compassRotate: vertical ? 90 : 0,
+      mapRatio: vertical ? '3 / 4' : '2 / 1', mapMax: vertical ? 340 : 980,
+      mapSide1: vertical ? 'top' : 'west', mapSide2: vertical ? 'bottom' : 'east',
+      seaSide: vertical ? 'right' : 'top', duneSide: vertical ? 'left' : 'bottom'
+    };
+  }
+}
+</script>
+</body>
+</html>

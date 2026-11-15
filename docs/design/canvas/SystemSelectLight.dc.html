@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL scoring selector</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;">
+    <a href="#" aria-label="SFL, home" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 20px; flex: 1 1 auto; font-size: 14px; font-weight: 600;"><a href="#" style="color: {{t.muted}}; padding: 8px 0;">Home</a><a href="#" style="color: {{t.text}}; border-bottom: 2px solid {{t.accent}}; padding: 8px 0;">Players</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Compare</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a><a href="#" style="color: {{t.muted}}; padding: 8px 0;">Seasons</a></nav>
+    <span style="position: relative; display: inline-flex; align-items: center; gap: 12px;"><a href="#" aria-haspopup="listbox" aria-label="Scoring system: {{sysName}}. Change" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-size: 14px; font-weight: 700; white-space: nowrap;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span style="font-size: 11px; font-weight: 600; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Scoring</span>{{sysName}}<span aria-hidden="true" style="color: {{t.muted}};">▾</span></a><div role="listbox" aria-label="Scoring system" style="position: absolute; z-index: 4; right: 0; top: 48px; width: 300px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 2px;">
+        <sc-for list="{{sysOpts}}" as="o" hint-placeholder-count="2"><a href="#" role="option" aria-selected="{{o.on}}" style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 4px; background: {{o.bg}}; color: {{o.fg}};"><span aria-hidden="true" style="flex: none; width: 20px; font-weight: 700;">{{o.mark}}</span><span><strong style="display: block; font-size: 15px;">{{o.t}}</strong><span style="display: block; font-size: 12px; opacity: 0.9;">{{o.s}}</span></span></a></sc-for>
+        <div style="border-top: 1px solid {{t.border}}; margin-top: 4px; padding: 8px 12px 6px; font-size: 12px; color: {{t.muted}};">Changes the rating on every page. Saved in your profile; for guests on this device.<br><a href="#" style="color: {{t.link}}; font-weight: 700;">Compare the systems</a> · <a href="#" style="color: {{t.link}}; font-weight: 700;">How points work</a></div>
+      </div></span>
+    <a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a>
+  </header>
+  <main style="flex: 1 1 auto; max-width: 1080px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <div style="font-size: 13px; color: {{t.muted}};">The selector sits in the header of every page that shows a rating: Home, Players, a player, Seasons. Below: the same top five, switched.</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 60px;">
+      <sc-for list="{{tables}}" as="tb" hint-placeholder-count="2">
+        <div style="background: {{t.surface}}; border: 1px solid {{tb.border}}; border-radius: 4px; padding: 14px;"><div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}; margin-bottom: 6px;">{{tb.t}}</div>
+          <ol style="list-style: none; margin: 0; padding: 0;"><sc-for list="{{tb.rows}}" as="r" hint-placeholder-count="5"><li style="display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; padding: 7px 0; border-top: {{r.divider}}; font-size: 14px;"><span style="font-family: 'Oswald', sans-serif; font-weight: 700;">{{r.rank}}</span><strong>{{r.name}}</strong><span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-variant-numeric: tabular-nums;">{{r.pts}}<span style="font-size: 11px; font-weight: 600; color: {{t.muted}};"> {{r.note}}</span></span></li></sc-for></ol></div>
+      </sc-for>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"light","options":["dark","light"]},"$preview":{"width":1280,"height":700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+    const sysName = 'Ancient'; const sysOpts = [['Ancient', 'Points of the player, ±, balance of results. Results do not add points.', true], ['Positional', 'The same points plus a bonus for a win and a penalty for a loss by position.', false]].map(([tt, s, a]) => ({ t: tt, s, on: a ? 'true' : 'false', mark: a ? '✓' : '', bg: a ? t.accent : 'transparent', fg: a ? t.onAccent : t.text }));
+    const mk = (arr) => arr.map(([name, pts, note], i) => ({ rank: i + 1, name, pts, note, divider: i ? `1px solid ${t.border}` : 'none' }));
+    const tables = [
+      { t: 'Ancient', border: t.accent, rows: mk([['Falcon', 32, ''], ['Lynx', 29, ''], ['Wolf', 27, ''], ['Hawk', 24, ''], ['Otter', 22, '']]) },
+      { t: 'Positional', border: t.border, rows: mk([['Falcon', 33, '+1 fwd'], ['Bear', 31, '+9 def'], ['Lynx', 31, '+2 mid'], ['Heron', 30, '+12 gk'], ['Wolf', 28, '+1 fwd']]) }
+    ];
+    return { t, th, themeName, sysName, sysOpts, tables };
+  }
+}
+</script>
+</body>
+</html>

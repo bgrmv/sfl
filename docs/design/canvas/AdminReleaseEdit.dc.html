@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <div style="min-height: 100%%; display: flex; flex-wrap: wrap; flex: 1 1 auto;">
+  <aside style="flex: 0 0 220px; flex-grow: 1; max-width: 100%%; box-sizing: border-box; background: {{t.surface}}; border-right: 1px solid {{t.border}}; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;">Admin</span></div>
+    <nav aria-label="Admin" style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; font-weight: 600;">
+      <sc-for list="{{menu}}" as="m" hint-placeholder-count="8"><a href="#" aria-current="{{m.current}}" style="display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 12px; border-radius: 4px; background: {{m.bg}}; color: {{m.fg}};">{{m.label}}<sc-if value="{{m.count}}" hint-placeholder-val="{{ false }}"><span style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{m.bBg}}; color: {{m.bFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{m.count}}</span></sc-if></a></sc-for>
+    </nav>
+    <div style="margin-top: auto; font-size: 13px; color: {{t.muted}};">Signed in as admin@sfl.local<br><a href="#" style="color: {{t.link}}; font-weight: 700;">Open public site</a></div>
+  </aside>
+  <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; position: relative;">
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 20px; border-bottom: 1px solid {{t.border}};">
+      <sc-if value="{{processing}}" hint-placeholder-val="{{ false }}"><span style="margin-right: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 12px; border-radius: 999px; background: {{t.surface2}};"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}};"></span>Processing: game of 14 Nov 2015 · step 3 of 6</span></sc-if>
+      <a href="#" aria-label="Note of the game being processed" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 14px; font-weight: 600;">Note</a>
+      <a href="#" aria-label="Unprocessed games: 586" style="position: relative; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/></svg><span style="position: absolute; right: -8px; top: -8px; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">586</span></a>
+    </div>
+    <main style="flex: 1 1 auto; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+      <nav aria-label="Breadcrumb" style="font-size: 13px; color: {{t.muted}};"><a href="#">Releases</a> / New release</nav>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Draft a new release</h1><div style="font-size: 14px; color: {{t.muted}};">The notes are built from the commits and pull requests since the last release. Edit them before publishing.</div></div>
+        <span style="font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; border: 1px dashed {{t.muted}};">Draft · saved 2 min ago</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <form style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
+              <sc-for list="{{fields}}" as="f" hint-placeholder-count="3"><label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">{{f.l}}<span style="display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0; font-family: {{f.ff}};">{{f.v}}<span aria-hidden="true" style="color: {{t.muted}};">{{f.a}}</span></span><span style="text-transform: none; letter-spacing: 0; font-size: 12px;">{{f.h}}</span></label></sc-for>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Title<span style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">Compare players and captains</span></label>
+          </section>
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;"><h2 style="margin: 0; font-size: 16px; font-weight: 700;">Release notes</h2>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;"><a href="#" style="display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 13px; font-weight: 700;">✨ Generate release notes</a><span role="tablist" aria-label="Mode" style="display: inline-flex; gap: 4px;"><a role="tab" href="#" aria-selected="true" style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; background: {{t.chipSolid}}; font-size: 13px; font-weight: 700;">Write</a><a role="tab" href="#" aria-selected="false" style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 13px; font-weight: 600;">Preview</a></span></div></div>
+            <div style="min-height: 300px; padding: 12px 14px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.7; white-space: pre-wrap;">{{body}}</div>
+            <div style="font-size: 12px; color: {{t.muted}};">Markdown. “Generate” groups commits by type (feat, fix, docs, test, chore) and adds the story ids found in the messages. Your edits are kept when you generate again.</div>
+          </section>
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Public page and stories</h2>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Short summary for visitors<span style="display: block; min-height: 60px; padding: 10px 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.text}}; font-size: 15px; text-transform: none; letter-spacing: 0;">Compare two players or two captains side by side. Pick a season and see who leads.</span></label>
+            <sc-for list="{{opts}}" as="o" hint-placeholder-count="4"><div style="display: flex; align-items: flex-start; gap: 10px;"><span role="checkbox" aria-checked="{{o.on}}" style="flex: none; width: 22px; height: 22px; border-radius: 4px; background: {{o.bg}}; color: {{t.onAccent}}; border: {{o.bd}}; display: inline-flex; align-items: center; justify-content: center; font-weight: 700;">{{o.m}}</span><div><div style="font-weight: 600; font-size: 14px;">{{o.t}}</div><div style="font-size: 12px; color: {{t.muted}};">{{o.s}}</div></div></div></sc-for>
+          </section>
+          <div style="position: sticky; bottom: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 14px; background: {{t.surface}}; border: 1px solid {{t.accent}}; border-radius: 4px;">
+            <a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; background: {{t.accent}}; color: {{t.onAccent}};">Publish release</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 1px solid {{t.border}}; font-weight: 600;">Save draft</a><span style="font-size: 12px; color: {{t.muted}};">Publishing creates the tag v2026.11.4 on main and cannot be undone; a mistake is fixed by the next release.</span><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; font-size: 14px; font-weight: 700; border: 2px solid {{t.neg}}; color: {{t.neg}}; margin-left: auto;">Discard draft</a>
+          </div>
+        </form>
+
+        <aside aria-label="Commits" style="flex: 0 1 380px; min-width: 280px; display: flex; flex-direction: column; gap: 12px;">
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;"><h2 style="margin: 0; font-size: 16px; font-weight: 700;">Commits since v2026.11.3</h2><span style="font-size: 13px; color: {{t.muted}};">12 commits</span></div>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+              <sc-for list="{{commits}}" as="c" hint-placeholder-count="8"><li style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-top: {{c.divider}}; font-size: 13px;"><span style="display: flex; align-items: baseline; gap: 8px;"><span style="flex: none; min-width: 48px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: {{c.bg}}; color: {{c.fg}}; border: {{c.bd}};">{{c.type}}</span><span style="flex: 1; min-width: 0;">{{c.msg}}</span></span><span style="font-size: 12px; color: {{t.muted}};"><span style="font-family: ui-monospace, monospace; color: {{t.link}};">{{c.sha}}</span> · {{c.who}} · {{c.when}}</span></li></sc-for>
+            </ol>
+            <a href="#" style="color: {{t.link}}; font-weight: 700; font-size: 13px;">Show all 12 commits</a>
+          </section>
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Before publishing</h2>
+            <sc-for list="{{checks}}" as="c" hint-placeholder-count="4"><div style="display: flex; gap: 8px; align-items: flex-start; color: {{c.fg}};"><span aria-hidden="true" style="width: 16px; font-weight: 700;">{{c.m}}</span><span>{{c.t}}</span></div></sc-for>
+          </section>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"view":{"editor":"enum","default":"edit","options":["list","edit"]},"cur":{"editor":"enum","default":"releases","options":["releases"]},"$preview":{"width":1280,"height":2200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+    const items = [['Overview', 0, 'a'], ['Games', 2, 'b'], ['Process games', 586, 'p'], ['Players', 0, 'c'], ['Connect accounts', 15, 'cn'], ['Schedule', 0, 'd'], ['Comments', 3, 'e'], ['Rules and votes', 2, 'f'], ['Photo and video', 0, 'g'], ['Releases', 1, 'releases']];
+    const menu = items.map(([label, count, k]) => { const on = k === 'releases'; return { label, count, current: on ? 'page' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, bBg: on ? t.onAccent : t.accent, bFg: on ? t.accent : t.onAccent }; });
+    const view = this.props.view ?? 'list';
+    const tabs = [['All', 14, 1], ['Published', 12, 0], ['Drafts', 1, 0], ['Pre-releases', 1, 0]].map(([tt, n, on]) => ({ t: tt, n, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, border: on ? t.accent : t.border }));
+    const C = (type, msg, story, sha, pr, who) => ({ type, msg, story, sha, pr, who });
+    const groups = [
+      { i: '🚀', t: 'Features', items: [C('feat(client)', 'scoring system selector in the header', 'S10.45', 'a3f9c21', '#231', '@anna'), C('feat(client)', 'compare two players and two captains', 'S10.47', '5d02be7', '#229', '@pete'), C('feat(domain)', 'positional scoring: bonus by position', 'S3.1', 'e18c04a', '#226', '@anna')] },
+      { i: '🐛', t: 'Fixes', items: [C('fix(server)', 'skipped weeks no longer leave gaps in the season', 'S10.18', '7be41d0', '#228', '@pete'), C('fix(client)', 'season picker keeps the choice between pages', 'S10.30', '2c9f6b3', '#227', '@anna')] },
+      { i: '🧰', t: 'Tests, docs and chores', items: [C('test(domain)', 'golden master for the positional system', 'S2.2', 'c91a2ef', '#225', '@anna'), C('docs', 'feature review and priorities', 'S10.50', '0f3a88d', '#224', '@owner'), C('chore', 'MongoDB as a replica set in dev-container', 'S3.23', '91d7e5c', '#223', '@pete')] }
+    ].map(g => ({ ...g, n: g.items.length }));
+    const ops = [{ l: 'Deploy', v: 'production · 15 Nov 14:41', s: 'took 3 min, health check passed' }, { l: 'Database migrations', v: '1 applied', s: '2026-11-15-add-game-events · 1 480 games updated' }, { l: 'Breaking changes', v: 'none', s: 'API v1 unchanged; rollback to v2026.11.2 is safe' }];
+    const people = ['AN', 'PE', 'OW', '+2'];
+    const older = [
+      { v: 'v2026.11.4', st: 'Draft', d: 'not published', n: 12, title: 'Compare players and captains', act: 'Continue', border: t.muted, bg: 'transparent', fg: t.text, bd: `1px dashed ${t.muted}` },
+      { v: 'v2026.11.2', st: 'Published', d: '8 Nov 2026', n: 31, title: 'Confirmed games', act: 'Open notes', border: t.border, bg: t.chipSolid, fg: t.text, bd: '1px solid transparent' },
+      { v: 'v2026.11.0-rc1', st: 'Pre-release', d: '31 Oct 2026', n: 18, title: 'Release candidate for moderators', act: 'Open notes', border: t.border, bg: 'transparent', fg: t.link, bd: `1px solid ${t.link}` }
+    ];
+    const fields = [{ l: 'Tag', v: 'v2026.11.4', a: '', h: 'Created on publish', ff: 'ui-monospace, monospace' }, { l: 'Target', v: 'main', a: '▾', h: 'Branch or commit', ff: 'ui-monospace, monospace' }, { l: 'Previous tag', v: 'v2026.11.3', a: '▾', h: 'Notes start here', ff: 'ui-monospace, monospace' }];
+    const body = '## What’s Changed\n\n### 🚀 Features\n- feat(client): compare two players side by side (S10.47) · 5d02be7 · #229 @pete\n- feat(client): compare two captains (S10.47) · 8a1c4f2 · #232 @pete\n\n### 🐛 Fixes\n- fix(server): captain win rate counted draws twice (S10.31) · b6e0d19 · #233 @anna\n\n### 🧰 Tests, docs and chores\n- test(domain): head to head of two players · 3c7d1e0 · #234\n\n**Full Changelog**: v2026.11.3...v2026.11.4';
+    const opts = [['Set as the latest release', 'Shown first and used in the footer of the site', 1], ['Show on the public Release notes page', 'With the short summary above', 1], ['Mark these stories as done: S10.47, S10.31', 'Changes ❌ to ✅ in the backlog index when all ACs are checked', 1], ['This is a pre-release', 'Hidden from the public page', 0]].map(([tt, s, on]) => ({ t: tt, s, on: on ? 'true' : 'false', m: on ? '✓' : '', bg: on ? t.accent : 'transparent', bd: on ? 'none' : `1px solid ${t.muted}` }));
+    const cm = [['feat', 'compare two players side by side', '5d02be7', 'pete', 'today'], ['feat', 'compare two captains', '8a1c4f2', 'pete', 'today'], ['fix', 'captain win rate counted draws twice', 'b6e0d19', 'anna', 'today'], ['test', 'head to head of two players', '3c7d1e0', 'anna', 'yesterday'], ['docs', 'update feature review', '41ab9c6', 'owner', 'yesterday'], ['chore', 'bump Angular patch', 'd5e2f70', 'pete', '2 days ago'], ['feat', 'season picker in compare', '6a0b3d8', 'anna', '2 days ago'], ['docs', 'release notes page', '9e4c1b2', 'owner', '3 days ago']];
+    const TY = { feat: ['New', 0], fix: ['Fix', 0], docs: ['Docs', 1], test: ['Test', 1], chore: ['Chore', 1] };
+    const commits = cm.map(([type, msg, sha, who, when], i) => { const q = type === 'feat' || type === 'fix'; return { type, msg, sha, who, when, divider: i ? `1px solid ${t.border}` : 'none', bg: type === 'feat' ? t.accent : type === 'fix' ? t.chipSolid : 'transparent', fg: type === 'feat' ? t.onAccent : t.text, bd: q ? '1px solid transparent' : `1px solid ${t.border}` }; });
+    const checks = [['✓', 'Tests and `pnpm check` are green on main', 1], ['✓', 'No unprocessed breaking change in the commits', 1], ['✓', '1 migration is reversible and was dry-run on a copy', 1], ['–', 'Backup of the database made today', 0]].map(([m, tt, ok]) => ({ m, t: tt, fg: ok ? t.text : t.muted }));
+    return { t, menu, processing: false, view, isList: view === 'list', tabs, groups, ops, people, older, fields, body, opts, commits, checks };
+
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL connect account</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;"><span style="display: inline-flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;">Amateur football league</span></span><a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a></header>
+  <main style="width: 100%; max-width: 480px; box-sizing: border-box; margin: 0 auto; padding: 24px 20px 40px; display: flex; flex-direction: column; gap: 18px;">
+    <sc-if value="{{isReady}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <div><h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.15; letter-spacing: 0.03em; text-transform: uppercase;">Link your account</h1><p style="margin: 6px 0 0; font-size: 15px; color: {{t.muted}};">{{msg}}</p></div>
+      <div style="background: {{t.scoreBg}}; color: #F6F1E4; border-radius: 4px; padding: 16px; display: flex; align-items: center; gap: 14px;"><span style="width: 64px; height: 64px; border-radius: 4px; background: #1F1C15; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: #B3AA94;">LY</span><div><div style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">This is your player</div><div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 28px; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15;">Lynx</div><div style="font-size: 13px; color: #B3AA94;">№ 7 · Midfielder · 79 days</div></div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a href="#" style="display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 52px; border-radius: 4px; background: #FFFFFF; color: #1F1F1F; border: 1px solid #DADCE0; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><path d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.300 3-7.200z" fill="#4285F4"/><path d="M12 22c2.700 0 5-.9 6.600-2.400l-3.200-2.500c-.9.600-2 1-3.400 1-2.600 0-4.800-1.800-5.600-4.100H3.100v2.600A10 10 0 0 0 12 22z" fill="#34A853"/><path d="M6.400 14c-.2-.6-.3-1.300-.3-2s.1-1.300.3-2V7.400H3.100a10 10 0 0 0 0 9.200z" fill="#FBBC05"/><path d="M12 5.900c1.500 0 2.800.5 3.800 1.500l2.900-2.900A10 10 0 0 0 3.100 7.400L6.400 10c.8-2.300 3-4.100 5.600-4.100z" fill="#EA4335"/></svg>Continue with Google</a><div style="display: flex; align-items: center; gap: 10px; color: {{t.muted}}; font-size: 13px;"><span style="flex: 1; border-top: 1px solid {{t.border}};"></span>or, if you have no Google account<span style="flex: 1; border-top: 1px solid {{t.border}};"></span></div>
+        <a href="#" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 4px; border: 2px solid {{t.accent}}; color: {{t.text}}; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Create a login and password</a>
+      </div>
+      <div role="timer" aria-label="The link works for 23 hours 41 minutes" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: {{t.muted}};"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>The link works for 23 h 41 min and only once.</div>
+      <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: {{t.muted}}; display: flex; flex-direction: column; gap: 4px;"><li>Not you? Do not sign in and tell the admin.</li><li>We keep only your name and an account id; your address is hidden from everyone.</li><li>You can disconnect any time in the profile.</li></ul>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{isLogin}}" hint-placeholder-val="{{ false }}">
+    <form style="display: flex; flex-direction: column; gap: 16px;">
+      <div><a href="#" style="font-size: 13px; color: {{t.link}}; font-weight: 700;">‹ Back</a><h1 style="margin: 6px 0 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.15; letter-spacing: 0.03em; text-transform: uppercase;">Create a login</h1><p style="margin: 6px 0 0; font-size: 15px; color: {{t.muted}};">For the player Lynx (№ 7). No e-mail is needed.</p></div>
+      <div style="display: flex; align-items: center; gap: 14px;"><span style="width: 80px; height: 80px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700;">LY</span><div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Avatar</span><div style="display: flex; gap: 6px; flex-wrap: wrap;"><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 14px; font-weight: 700;">Upload a photo</a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 14px; font-weight: 600;">Initials</a></div></div></div>
+      <div role="radiogroup" aria-label="Preset avatars" style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{avatars}}" as="a" hint-placeholder-count="6"><a href="#" role="radio" aria-checked="{{a.on}}" aria-label="{{a.t}}" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: {{a.bg}}; color: {{a.fg}}; border: {{a.border}}; font-size: 22px;">{{a.g}}</a></sc-for></div>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Login<span style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; border-radius: 4px; border: 2px solid {{t.accent}}; background: {{t.surface}}; color: {{t.text}}; font-size: 16px; text-transform: none; letter-spacing: 0;">lynx7</span><span style="text-transform: none; letter-spacing: 0; font-size: 12px;">Letters, digits and _ . Free ✓</span></label>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Password<span style="display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 16px; text-transform: none; letter-spacing: 0.1em;">••••••••••••<a href="#" style="font-size: 13px; letter-spacing: 0; color: {{t.link}}; font-weight: 700;">Show</a></span>
+        <span role="progressbar" aria-label="Password strength: good" aria-valuenow="3" aria-valuemin="0" aria-valuemax="4" style="display: flex; gap: 4px;"><span style="flex: 1; height: 6px; border-radius: 3px; background: {{t.accent}};"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: {{t.accent}};"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: {{t.accent}};"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: {{t.surface2}};"></span></span>
+        <span style="text-transform: none; letter-spacing: 0; font-size: 12px;">Good. At least 10 characters; a phrase is better than a word.</span></label>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Repeat password<span style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 16px; text-transform: none; letter-spacing: 0.1em;">••••••••••••</span></label>
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid {{t.neg}}; border-radius: 4px; font-size: 13px;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.neg}}" stroke-width="2" style="flex: none;"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg><span><strong>Remember the password.</strong> There is no e-mail to reset it. If you forget it, ask the admin for a new link.</span></div>
+      <a href="#" style="display: inline-flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 16px; font-weight: 700;">Create login and connect</a>
+    </form>
+    </sc-if>
+
+    <sc-if value="{{isExpired}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;">
+      <svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="{{t.neg}}" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.15; letter-spacing: 0.03em; text-transform: uppercase;">This link has expired</h1>
+      <p style="margin: 0; font-size: 15px; color: {{t.muted}};">Links work for one day and only once. Ask the admin to send you a new one. Nothing was connected.</p>
+      <a href="#" style="display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 15px; font-weight: 700;">Go to the site</a>
+      <p style="margin: 0; font-size: 12px; color: {{t.muted}};">The same page is shown for a link that was used or revoked, so nobody can find out which links exist.</p>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;">
+      <span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 50%; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700;">✓</span>
+      <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.15; letter-spacing: 0.03em; text-transform: uppercase;">You are connected, Lynx</h1>
+      <p style="margin: 0; font-size: 15px; color: {{t.muted}};">{{doneText}}</p>
+      <ul style="margin: 0; padding-left: 18px; font-size: 14px; display: flex; flex-direction: column; gap: 4px;"><li>Vote on the new rules and suggest your own.</li><li>Add your birthday, photo and position in the profile.</li><li>Get a reminder before the draft, if you are a captain.</li></ul>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" style="display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 15px; font-weight: 700;">Open my profile</a><a href="#" style="display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border-radius: 4px; border: 1px solid {{t.border}}; font-size: 15px; font-weight: 600;">My player page</a></div>
+    </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"light","options":["dark","light"]},"state":{"editor":"enum","default":"expired","options":["ready","login","expired","done","doneLogin"]},"$preview":{"width":360,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', scoreBg: '#000000', neg: '#FF8A7F', negFill: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F', ok: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', scoreBg: '#15130F', neg: '#A8281E', negFill: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400', ok: '#6B5400' };
+
+const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+    const state = this.props.state ?? 'ready';
+    const doneText = state === 'doneLogin' ? 'Your login lynx7 is tied to the player Lynx. Sign in with the login and the password you just made.' : 'Your Google account is tied to the player Lynx. From now on you can sign in with one tap.';
+    const avatars = [['Boot', '👟', 1], ['Shield', '🛡', 0], ['Glove', '🧤', 0], ['Ball', '⚽', 0], ['Cup', '🏆', 0], ['Star', '★', 0]].map(([t2, g, on]) => ({ t: t2, g, on: on ? 'true' : 'false', bg: on ? t.accent : t.surface2, fg: on ? t.onAccent : t.text, border: on ? `2px solid ${t.text}` : '2px solid transparent' }));
+    const msg = 'The admin invited you to link your account to your player. It takes one tap.';
+    return { t, th, themeName, isReady: state === 'ready', isLogin: state === 'login', isExpired: state === 'expired', isDone: state === 'done' || state === 'doneLogin', doneText, avatars, msg };
+  }
+}
+</script>
+</body>
+</html>

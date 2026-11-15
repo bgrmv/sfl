@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL position icons and picker</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 100%; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; padding: 32px; display: flex; flex-direction: column; gap: 28px;">
+
+  <div>
+    <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Positions</h1>
+    <p style="margin: 6px 0 0; max-width: 74ch; color: {{t.muted}};">Every position has an icon, a short code and a name. The icon helps to find the position at a glance in a list; it never replaces the word, so the list stays readable without colour or icon. The same icons are used in the statistics form, the draft, the squads and the line-up map.</p>
+  </div>
+
+  <section aria-labelledby="set" style="display: flex; flex-direction: column; gap: 12px;">
+    <h2 id="set" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;">The set</h2>
+    <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px;">
+      <sc-for list="{{positions}}" as="p" hint-placeholder-count="5">
+        <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="width: 56px; height: 56px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{p.d}}"/></svg></span>
+            <span style="display: flex; flex-direction: column;"><strong style="font-family: 'Oswald', sans-serif; font-size: 22px; letter-spacing: 0.04em; line-height: 1.1;">{{p.code}}</strong><span style="font-size: 14px;">{{p.name}}</span></span>
+          </div>
+          <div style="font-size: 13px; color: {{t.muted}};">{{p.idea}}</div>
+          <div style="font-size: 12px; font-weight: 700; color: {{p.statusColor}};">{{p.status}}</div>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+
+  <section aria-labelledby="pick" style="display: flex; flex-wrap: wrap; gap: 24px 32px; align-items: flex-start;">
+    <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 10px;">
+      <h2 id="pick" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;">Picker (desktop)</h2>
+      <p style="margin: 0; font-size: 13px; color: {{t.muted}};">A native select cannot show icons inside the list, so the picker is a button with a list. It opens with Enter or arrow down, moves with arrows, picks with Enter, closes with Escape (listbox pattern).</p>
+      <div style="display: flex; flex-direction: column; gap: 4px; max-width: 320px;">
+        <span style="font-size: 12px; font-weight: 600; color: {{t.muted}}; display: inline-flex; align-items: center; gap: 4px;">Position</span>
+        <button type="button" aria-haspopup="listbox" aria-expanded="true" style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 12px; border: 2px solid {{t.accent}}; border-radius: 4px; background: {{t.surface}}; color: {{t.text}}; font-size: 15px; font-weight: 700; cursor: pointer; text-align: left;">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{current.d}}"/></svg>
+          <span style="flex: 1 1 auto;">{{current.code}} <span style="font-weight: 400; color: {{t.muted}};">· {{current.name}}</span></span>
+          <span aria-hidden="true">▴</span>
+        </button>
+        <ul role="listbox" aria-label="Position" style="list-style: none; margin: 0; padding: 4px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{options}}" as="o" hint-placeholder-count="5">
+            <li role="option" aria-selected="{{o.selected}}" style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 4px 10px; border-radius: 4px; background: {{o.bg}}; color: {{o.fg}};">
+              <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="{{o.d}}"/></svg>
+              <span style="flex: 1 1 auto;"><strong>{{o.code}}</strong> <span style="font-size: 14px;">{{o.name}}</span><span style="display: block; font-size: 12px; opacity: 0.8;">{{o.idea}}</span></span>
+              <span aria-hidden="true" style="font-weight: 700;">{{o.mark}}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 10px;">
+      <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;">Picker (phone)</h2>
+      <p style="margin: 0; font-size: 13px; color: {{t.muted}};">On a phone the list is a row of large buttons: icon above, code below. Five buttons in one row, each 56 px or wider.</p>
+      <div role="radiogroup" aria-label="Position" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; max-width: 360px;">
+        <sc-for list="{{options}}" as="o" hint-placeholder-count="5">
+          <button type="button" role="radio" aria-checked="{{o.selected}}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 64px; padding: 6px 2px; border: {{o.border}}; border-radius: 4px; background: {{o.bg}}; color: {{o.fg}}; font-size: 11px; font-weight: 700; cursor: pointer;">
+            <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{o.d}}"/></svg>{{o.code}}
+          </button>
+        </sc-for>
+      </div>
+
+      <h2 style="margin: 12px 0 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;">Error and empty</h2>
+      <div style="display: flex; flex-direction: column; gap: 4px; max-width: 320px;">
+        <span style="font-size: 12px; font-weight: 600; color: {{t.muted}};">Position</span>
+        <button type="button" aria-haspopup="listbox" aria-invalid="true" style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 12px; border: 2px solid {{t.err}}; border-radius: 4px; background: {{t.surface}}; color: {{t.err}}; font-size: 15px; font-weight: 700; cursor: pointer; text-align: left;">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{empty.d}}"/></svg>
+          <span style="flex: 1 1 auto;">Choose a position</span><span aria-hidden="true">▾</span>
+        </button>
+        <span style="font-size: 12px; color: {{t.err}};">A published game needs a position for every player.</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', err: '#FF8A80', ok: '#7BE0A4' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', err: '#B3261E', ok: '#1B6B3A' };
+    const raw = [
+      { code: 'GK', name: 'Goalkeeper', idea: 'Glove: the hand that stops the shot', status: 'In the league now', d: 'M8 11V6.5M11 11V4.5M14 11V5.5M17 11V8M6 11h11.5v5a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-5-5zM6 13l-2.5-2.5' },
+      { code: 'DEF', name: 'Defender', idea: 'Shield: protects the goal', status: 'In the league now', d: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z' },
+      { code: 'MID', name: 'Centre', idea: 'Centre circle on the halfway line: the heart of the pitch', status: 'In the league now (midfielder)', d: 'M12 3v18M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z' },
+      { code: 'WNG', name: 'Winger', idea: 'Wing: runs along the flank', status: 'New position: needs the owner decision (S10.28)', d: 'M4 19c6 0 11-3 14-11M8 19c5 0 9-2 12-6M12 19c3.5 0 6-1 8-3' },
+      { code: 'FWD', name: 'Forward', idea: 'Boot with wings: finishes the attack (value FRWD in the data)', status: 'In the league now', d: 'M6 17V9h4l1.5 3 5 1.5c1.7.5 2.5 1.5 2.5 3V17zM6 19.5h12M6 11.5L2.5 10M6 14L2 14.5' }
+    ];
+    const positions = raw.map((p) => ({ ...p, statusColor: p.code === 'WNG' ? t.err : t.muted }));
+    const sel = 'FWD';
+    const options = raw.map((p) => {
+      const on = p.code === sel;
+      return { ...p, selected: on ? 'true' : 'false', mark: on ? '✓' : '', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, border: on ? '2px solid ' + t.accent : '1px solid ' + t.border };
+    });
+    return { t, positions, options, current: raw.find((p) => p.code === sel), empty: { d: 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM12 5v14M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z' } };
+  }
+}
+</script>
+</body>
+</html>

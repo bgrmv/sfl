@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin new game statistics</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="background: {{t.surface}}; border-bottom: 1px solid {{t.border}}; padding: 10px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
+    <span style="display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px;">SFL</span>
+    <nav aria-label="Breadcrumb" style="flex: 1 1 auto; font-size: 14px; color: {{t.muted}};"><a href="#">Admin</a> / <a href="#">Games</a> / Game 46</nav>
+    <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-weight: 700; font-size: 13px;">Save draft and close</a>
+  </header>
+
+  <div style="position: sticky; top: 0; z-index: 5;"><dc-import name="SummaryBar" stage="stats" hint-size="100%,120px"></dc-import></div>
+
+  <main style="width: 100%; max-width: 1180px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 18px;">
+
+    <ol aria-label="Steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px;">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="6">
+        <li aria-current="{{s.current}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; border: 1px solid {{s.border}}; font-size: 13px; font-weight: 700;"><span style="font-family: 'Oswald', sans-serif; font-size: 14px;">{{s.n}}</span>{{s.label}}</li>
+      </sc-for>
+    </ol>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
+      <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Statistics</h1>
+      <ul aria-label="Legend" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: {{t.muted}};">
+        <li style="display: inline-flex; align-items: center; gap: 5px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5l3.8 2.8-1.4 4.4H9.6L8.2 10.3z"/></svg>goal +1</li>
+        <li style="display: inline-flex; align-items: center; gap: 5px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="14" r="7"/><path d="M12 10.5l2.7 2-1 3.1h-3.4l-1-3.1z"/><path d="M8 4.5l4-2.5 4 2.5"/></svg>header +2</li>
+        <li style="display: inline-flex; align-items: center; gap: 5px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg>penalty +1</li>
+        <li style="display: inline-flex; align-items: center; gap: 5px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>own goal −1</li>
+        <li style="display: inline-flex; align-items: center; gap: 5px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h13M12 6l6 6-6 6"/></svg>pass +1</li>
+      </ul>
+    </div>
+
+    <div role="alert" style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 4px; border: 1px solid {{t.err}}; color: {{t.err}}; font-size: 14px;">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: 0 0 auto; margin-top: 2px;"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>
+      <span><strong>Echo (HONDA) has no position.</strong> Publishing is blocked until every player has one. The row is outlined below.</span>
+    </div>
+
+    <sc-for list="{{teams}}" as="tm" hint-placeholder-count="2">
+      <section style="display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 50%; background: {{tm.color}}; border: 1px solid {{t.border}};"></span>{{tm.title}}</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{tm.players}}" as="p" hint-placeholder-count="10">
+            <li style="background: {{p.bg}}; border: {{p.border}}; border-left: {{p.edge}}; border-radius: 4px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
+              <div style="flex: 1 1 210px; min-width: 0; display: flex; align-items: center; gap: 10px;">
+                <span style="flex: 0 0 auto; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px; color: {{t.muted}}; font-variant-numeric: tabular-nums; min-width: 26px;">{{p.number}}</span>
+                <div style="min-width: 0;">
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+                    <strong style="font-size: 16px;">{{p.name}}</strong>
+                    <sc-if value="{{p.captain}}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 8px 1px 4px; border-radius: 999px;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M14.8 9.2a3.8 3.8 0 1 0 0 5.6" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-linecap="round"/></svg>Captain</span></sc-if>
+                    <sc-if value="{{p.mvp}}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 3px; color: {{t.link}}; font-size: 11px; font-weight: 700;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>MVP</span></sc-if>
+                  </div>
+                  <div style="font-size: 12px; color: {{p.noteColor}};">{{p.note}}</div>
+                </div>
+              </div>
+              <label style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: {{t.muted}};"><span style="display: inline-flex; align-items: center; gap: 4px;"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M12 5v14"/><circle cx="12" cy="12" r="2.5"/></svg>Position</span>
+                <button type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Position of {{p.name}}: {{p.posName}}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; min-width: 124px; padding: 0 10px; border: {{p.selBorder}}; border-radius: 4px; background: {{t.bg}}; color: {{p.posColor}}; font-size: 14px; font-weight: 700; cursor: pointer; text-align: left;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="{{p.posIcon}}"/></svg><span style="flex: 1 1 auto;">{{p.pos}}</span><span aria-hidden="true" style="color: {{t.muted}};">▾</span></button>
+              </label>
+              <div style="flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: flex-end;">
+                <sc-for list="{{p.counters}}" as="c" hint-placeholder-count="5">
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                    <span style="font-size: 11px; color: {{c.labelColor}}; display: inline-flex; align-items: center; gap: 4px;">
+                      <sc-if value="{{c.isGoal}}" hint-placeholder-val="{{ true }}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5l3.8 2.8-1.4 4.4H9.6L8.2 10.3z"/></svg></sc-if>
+                      <sc-if value="{{c.isHead}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="14" r="7"/><path d="M12 10.5l2.7 2-1 3.1h-3.4l-1-3.1z"/><path d="M8 4.5l4-2.5 4 2.5"/></svg></sc-if>
+                      <sc-if value="{{c.isPen}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></sc-if>
+                      <sc-if value="{{c.isOwn}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></sc-if>
+                      <sc-if value="{{c.isPass}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h13M12 6l6 6-6 6"/></svg></sc-if>
+                      {{c.label}}
+                    </span>
+                    <span style="display: inline-flex; align-items: center; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; overflow: hidden;">
+                      <button type="button" aria-label="Remove one {{c.label}} for {{p.name}}" style="width: 40px; height: 40px; border: 0; background: transparent; color: {{t.text}}; font-size: 20px; cursor: pointer;">−</button>
+                      <output aria-label="{{c.label}} of {{p.name}}" style="min-width: 28px; text-align: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px; color: {{c.valueColor}}; font-variant-numeric: tabular-nums;">{{c.value}}</output>
+                      <button type="button" aria-label="Add one {{c.label}} for {{p.name}}" style="width: 40px; height: 40px; border: 0; background: {{c.plusBg}}; color: {{c.plusFg}}; font-size: 20px; cursor: pointer;">+</button>
+                    </span>
+                  </div>
+                </sc-for>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                  <span style="font-size: 11px; color: {{t.muted}}; display: inline-flex; align-items: center; gap: 4px;"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>MVP</span>
+                  <button type="button" aria-pressed="{{p.mvpPressed}}" style="height: 42px; min-width: 56px; border-radius: 4px; border: 1px solid {{p.mvpBorder}}; background: {{p.mvpBg}}; color: {{p.mvpFg}}; font-size: 12px; font-weight: 700; cursor: pointer;">{{p.mvpLabel}}</button>
+                </div>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </sc-for>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center;">
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 1px solid {{t.border}}; border-radius: 4px; font-weight: 700; font-size: 14px;">← Draft</a>
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-weight: 700; font-size: 14px;">Next: goal order →</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', link: '#FFD21F', err: '#FF8A80', teamA: '#F6F1E4', teamB: '#FF6A5F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', link: '#6B5400', err: '#B3261E', teamA: '#15130F', teamB: '#B3261E' };
+    const steps = ['Game', 'Captains', 'Draft', 'Statistics', 'Goal order', 'Review', 'Publish'].map((label, i) => ({
+      label, n: i + 1, current: i === 3 ? 'step' : 'false',
+      bg: i === 3 ? t.accent : 'transparent', fg: i === 3 ? t.onAccent : (i < 3 ? t.text : t.muted), border: i === 3 ? t.accent : t.border
+    }));
+    // number, name, position, captain, mvp, goal, head, penalty, own, pass
+    const bmw = [
+      [9, 'Falcon', 'FWD', true, true, 1, 0, 0, 0, 1], [10, 'Wolf', 'FWD', false, true, 0, 1, 0, 0, 0], [5, 'Lynx', 'MID', false, true, 0, 0, 0, 0, 2],
+      [6, 'Rocket', 'MID', false, true, 0, 0, 1, 0, 0], [7, 'Sparks', 'MID', false, true, 0, 0, 0, 0, 0], [2, 'Ghost', 'DEF', false, false, 0, 0, 0, 1, 0],
+      [3, 'Orion', 'DEF', false, true, 0, 0, 0, 0, 1], [4, 'Bolt', 'DEF', false, false, 0, 0, 0, 0, 0], [11, 'Nova', 'FWD', false, false, 0, 0, 0, 0, 0], [1, 'Viper', 'GK', false, false, 0, 0, 0, 0, 0]
+    ];
+    const honda = [
+      [25, 'Tank', 'MID', true, true, 0, 0, 0, 0, 0], [29, 'Vega', 'FWD', false, false, 0, 0, 0, 0, 1], [30, 'Ranger', 'FWD', false, false, 0, 0, 0, 0, 0],
+      [26, 'Pike', 'MID', false, false, 0, 0, 0, 0, 1], [27, 'Echo', '', false, false, 0, 0, 0, 0, 0], [22, 'Moose', 'DEF', false, false, 0, 0, 0, 0, 0],
+      [23, 'Dingo', 'DEF', false, false, 0, 0, 0, 0, 0], [24, 'Hawk', 'DEF', false, false, 0, 0, 0, 0, 0], [31, 'Zeta', 'FWD', false, false, 0, 0, 0, 0, 0], [21, 'Ibex', 'GK', false, false, 0, 0, 0, 0, 0]
+    ];
+    const POS = {
+      GK: { n: 'Goalkeeper', d: 'M8 11V6.5M11 11V4.5M14 11V5.5M17 11V8M6 11h11.5v5a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-5-5zM6 13l-2.5-2.5' },
+      DEF: { n: 'Defender', d: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z' },
+      MID: { n: 'Centre', d: 'M12 3v18M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z' },
+      FWD: { n: 'Forward', d: 'M6 17V9h4l1.5 3 5 1.5c1.7.5 2.5 1.5 2.5 3V17zM6 19.5h12M6 11.5L2.5 10M6 14L2 14.5' },
+      NONE: { n: 'not chosen', d: 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM12 5v14M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z' }
+    };
+    const build = (rows) => rows.map(([number, name, pos, captain, mvp, goal, head, pen, own, pass]) => {
+      const noPos = !pos;
+      const pi = POS[pos || 'NONE'];
+      const mk = (key, label, value, extra) => ({
+        label, value, ...extra,
+        labelColor: t.muted, valueColor: value > 0 ? (key === 'own' ? t.err : t.text) : t.muted,
+        plusBg: 'transparent', plusFg: t.text
+      });
+      return {
+        number, name, pos: pos || 'Choose', posName: pi.n, posIcon: pi.d, posColor: noPos ? t.err : t.text, captain, mvp,
+        bg: captain ? t.surface2 : t.surface,
+        border: noPos ? '2px solid ' + t.err : '1px solid ' + t.border,
+        edge: captain ? '6px solid ' + t.accent : (noPos ? '2px solid ' + t.err : '1px solid ' + t.border),
+        note: noPos ? 'Position is required' : (captain ? 'Picks first · leads the team' : ''),
+        noteColor: noPos ? t.err : t.muted,
+        selBorder: noPos ? '2px solid ' + t.err : '1px solid ' + t.border,
+        counters: [
+          mk('goal', 'Goal', goal, { isGoal: true, isHead: false, isPen: false, isOwn: false, isPass: false }),
+          mk('head', 'Header', head, { isGoal: false, isHead: true, isPen: false, isOwn: false, isPass: false }),
+          mk('pen', 'Penalty', pen, { isGoal: false, isHead: false, isPen: true, isOwn: false, isPass: false }),
+          mk('own', 'Own goal', own, { isGoal: false, isHead: false, isPen: false, isOwn: true, isPass: false }),
+          mk('pass', 'Pass', pass, { isGoal: false, isHead: false, isPen: false, isOwn: false, isPass: true })
+        ],
+        mvpPressed: mvp ? 'true' : 'false', mvpLabel: mvp ? 'MVP ✓' : 'MVP',
+        mvpBorder: mvp ? t.accent : t.border, mvpBg: mvp ? t.accent : 'transparent', mvpFg: mvp ? t.onAccent : t.muted
+      };
+    });
+    const teams = [
+      { title: 'BMW · 1st draft', color: t.teamA, players: build(bmw) },
+      { title: 'HONDA · 2nd draft', color: t.teamB, players: build(honda) }
+    ];
+    return { t, steps, teams };
+  }
+}
+</script>
+</body>
+</html>

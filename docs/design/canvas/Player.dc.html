@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL player page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;">
+    <a href="#" aria-label="SFL, home" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 20px; flex: 1 1 auto; font-size: 14px; font-weight: 600; overflow-x: auto;">
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Home</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Games</a>
+      <a href="#" style="color: {{t.text}}; border-bottom: 2px solid {{t.accent}}; padding: 8px 0;">Players</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Teams</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Compare</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Photo and video</a>
+    </nav>
+      <a href="#" aria-haspopup="listbox" aria-label="Scoring system: {{sysName}}. Change" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-size: 14px; font-weight: 700; white-space: nowrap;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span style="font-size: 11px; font-weight: 600; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Scoring</span>{{sysName}}<span aria-hidden="true" style="color: {{t.muted}};">▾</span></a>
+      <a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a>
+  </header>
+
+  <main style="width: 100%; max-width: 1080px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 28px;">
+    <nav aria-label="Breadcrumb" style="font-size: 13px; color: {{t.muted}};"><a href="#">Players</a> / Falcon</nav>
+
+    <section aria-labelledby="name" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+      <div role="img" aria-label="Portrait is not uploaded yet" style="width: 112px; height: 112px; border-radius: 4px; background: {{t.surface2}}; border: 1px solid {{t.border}}; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: {{t.muted}};">FA</div>
+      <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px;">
+        <h1 id="name" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Falcon</h1>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px;">
+          <span style="font-weight: 700; padding: 2px 10px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}};">№ 9</span>
+          <span style="padding: 2px 10px; border-radius: 999px; background: {{t.chip}};">Forward</span>
+          <span style="padding: 2px 10px; border-radius: 999px; background: {{t.chip}};">Captain</span>
+          <span style="padding: 2px 10px; border-radius: 999px; background: {{t.chip}};">Active · since 2024</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px; background: {{t.scoreBg}}; border-radius: 4px; padding: 14px 20px;">
+        <div style="text-align: center;"><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 56px; line-height: 1; color: #FFD21F; font-variant-numeric: tabular-nums;">32</div><div style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">Points · season 2026</div></div>
+        <div style="width: 1px; align-self: stretch; background: #2E2A20; margin: 0 16px;"></div>
+        <div style="text-align: center;"><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 56px; line-height: 1; color: #F6F1E4;">#1</div><div style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">Rank</div></div>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-bottom: -12px;"><a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 700;">⇄ Compare with another player</a></div>
+    <div role="tablist" aria-label="Player page" style="display: flex; gap: 6px; border-bottom: 1px solid {{t.border}};">
+      <a role="tab" href="#" aria-selected="{{isPlayer}}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-bottom: 3px solid {{tabA.line}}; margin-bottom: -1px; font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: {{tabA.color}};">Player</a>
+      <a role="tab" href="#" aria-selected="{{isCaptain}}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-bottom: 3px solid {{tabB.line}}; margin-bottom: -1px; font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: {{tabB.color}};">As captain <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: {{t.chip}}; color: {{t.text}}; letter-spacing: 0;">29</span></a>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+      <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Numbers</h2>
+      <div role="group" aria-label="View" style="display: inline-flex; gap: 6px;">
+        <a href="#" aria-pressed="{{showCards}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{vA.border}}; background: {{vA.bg}}; color: {{vA.fg}}; font-size: 14px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Cards</a>
+        <a href="#" aria-pressed="{{showTable}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{vB.border}}; background: {{vB.bg}}; color: {{vB.fg}}; font-size: 14px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg>Table</a>
+      </div>
+    </div>
+
+    <sc-if value="{{showTable}}" hint-placeholder-val="{{ false }}">
+      <section aria-label="Numbers table" style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="overflow-x: auto; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px;">
+          <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px;">
+            <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Season and all-time numbers</caption>
+            <thead><tr style="color: {{t.muted}}; font-size: 12px; text-align: right; text-transform: uppercase; letter-spacing: 0.06em;">
+              <th scope="col" style="padding: 10px 12px; text-align: left;">Metric</th>
+              <th scope="col" style="padding: 10px 12px; color: {{t.text}};">{{tbl.h1}}</th><th scope="col" style="padding: 10px 12px;">per day</th>
+              <th scope="col" style="padding: 10px 12px; color: {{t.text}};">{{tbl.h2}}</th><th scope="col" style="padding: 10px 12px;">per day</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{tbl.rows}}" as="r" hint-placeholder-count="10">
+                <tr style="border-top: 1px solid {{t.border}}; text-align: right; font-variant-numeric: tabular-nums;">
+                  <th scope="row" style="padding: 10px 12px; text-align: left; font-weight: 600;">{{r.label}}</th>
+                  <td style="padding: 10px 12px; font-weight: 700;">{{r.a}}</td><td style="padding: 10px 12px; color: {{t.muted}};">{{r.as}}</td>
+                  <td style="padding: 10px 12px; font-weight: 700;">{{r.b}}</td><td style="padding: 10px 12px; color: {{t.muted}};">{{r.bs}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: {{t.muted}};">+/− is team goals minus rival goals per game, summed. LR is +1 for a win, −1 for a loss, 0 for a draw. A header goal counts double.</p>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showCards}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;"><span style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em;">Season</span><div role="group" aria-label="Season" style="display: inline-flex; flex-wrap: wrap; gap: 6px;"><a href="#" aria-current="true" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 14px; font-weight: 700; white-space: nowrap;">S26 <span style="font-size: 10px; font-weight: 700; padding: 0 6px; border-radius: 999px; background: {{t.onAccent}}; color: {{t.accent}};">NOW</span></a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S25</a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S24</a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S23</a><a href="#" aria-haspopup="listbox" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S22 – S11 <span aria-hidden="true">▾</span></a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; border: 2px solid {{t.text}}; background: transparent; color: {{t.text}}; font-size: 14px; font-weight: 700; white-space: nowrap;">All time</a></div></div>
+
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+      <section aria-label="{{g.title}}" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">{{g.title}}</h2>
+        <ul style="list-style: none; margin: 0 0 {{g.gap}}px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{g.items}}" as="n" hint-placeholder-count="10">
+            <li style="position: relative; background: {{n.bg}}; border: 1px solid {{n.border}}; border-radius: 4px; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; min-height: 24px; font-size: 12px; color: {{n.muted}}; letter-spacing: 0.06em; text-transform: uppercase;">
+                <span>{{n.label}}</span>
+                <sc-if value="{{n.hasTip}}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="What is {{n.label}}?" style="width: 24px; height: 24px; flex: none; padding: 0; border-radius: 50%; border: 1px solid {{n.muted}}; background: transparent; color: {{n.muted}}; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; font-style: italic; cursor: pointer;">i</button></sc-if>
+              </div>
+              <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 30px; line-height: 1.2; font-variant-numeric: tabular-nums; color: {{n.color}};">{{n.value}}</div>
+              <div style="font-size: 12px; color: {{n.muted}};">{{n.sub}}</div>
+              <sc-if value="{{n.open}}" hint-placeholder-val="{{ false }}"><div role="tooltip" style="position: absolute; z-index: 2; left: 0; top: calc(100% + 6px); width: 250px; box-sizing: border-box; padding: 10px 12px; border-radius: 4px; background: {{t.scoreBg}}; color: #F6F1E4; font-size: 13px; line-height: 1.4; text-transform: none; letter-spacing: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.35);">{{n.tip}}<span style="display: block; margin-top: 4px; font-size: 11px; color: #B3AA94;">Hover or focus state</span></div></sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </sc-for>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{isPlayer}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 28px;">
+
+      <section aria-labelledby="form" style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;">
+          <h2 id="form" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Form and trend</h2>
+          
+        </div>
+
+        <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Points per game</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: {{t.muted}};">
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.accent}};"></span>Win</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.loss}};"></span>Draw or loss</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 0; border-top: 3px solid {{t.text}};"></span>Trend, 3 games</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 0; border-top: 2px dashed {{t.muted}};"></span>Season average {{c1.avg}}</span>
+            </div>
+          </div>
+          <div role="img" aria-label="Points in games 35 to 46. The trend line rises from 2.7 to 3.3 points. Season average 2.7">
+            <svg aria-hidden="true" viewBox="0 0 600 170" preserveAspectRatio="none" style="display: block; width: 100%; height: 170px;">
+              <path d="M0 160H600" stroke="{{t.border}}" stroke-width="1" fill="none" vector-effect="non-scaling-stroke"/>
+              <path d="{{c1.win}}" fill="{{t.accent}}"/>
+              <path d="{{c1.lose}}" fill="{{t.loss}}"/>
+              <path d="{{c1.avgLine}}" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-dasharray="6 5" vector-effect="non-scaling-stroke"/>
+              <path d="{{c1.trend}}" fill="none" stroke="{{t.text}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <div style="display: flex;">
+              <sc-for list="{{c1.labels}}" as="l" hint-placeholder-count="12">
+                <div style="flex: 1 1 0; min-width: 0; text-align: center; font-variant-numeric: tabular-nums; line-height: 1.3;"><div style="font-size: 14px; font-weight: 700;">{{l.v}}</div><div style="font-size: 11px; color: {{t.muted}};">№ {{l.n}}</div></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Saturdays of the season</h3>
+            <ul aria-label="26 Saturdays; the number is points in the game" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px;">
+              <sc-for list="{{c2.weeks}}" as="w" hint-placeholder-count="26">
+                <li title="{{w.title}}" style="aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 3px; background: {{w.bg}}; border: {{w.border}}; color: {{w.fg}}; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;">{{w.v}}</li>
+              </sc-for>
+            </ul>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 12px; color: {{t.muted}};">
+              <span style="display: inline-flex; align-items: center; gap: 4px;">Fewer<span style="width: 12px; height: 12px; border-radius: 2px; background: {{c2.s1}};"></span><span style="width: 12px; height: 12px; border-radius: 2px; background: {{c2.s3}};"></span><span style="width: 12px; height: 12px; border-radius: 2px; background: {{c2.s5}};"></span>more points</span>
+              <span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.surface2}}; border: 1px solid {{t.border}};"></span>Did not play</span>
+              <span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; border: 1px dashed {{t.muted}};"></span>Not played yet</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; border-top: 1px solid {{t.border}}; padding-top: 12px;">
+              <span style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px;">Last five</span>
+              <sc-for list="{{c2.form}}" as="f" hint-placeholder-count="5">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 4px; background: {{f.bg}}; color: {{f.fg}}; border: {{f.border}}; font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700;">{{f.l}}</span>
+              </sc-for>
+              <span style="font-size: 13px; color: {{t.muted}};">Streak: 2 wins</span>
+            </div>
+          </div>
+
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Style of play</h3>
+            <div role="img" aria-label="Radar chart against the league average. Falcon is above average in goals, passes, header goals, wins and MVP, and close to average in discipline" style="position: relative; width: 100%; max-width: 280px; aspect-ratio: 1 / 1; margin: 0 auto;">
+              <svg aria-hidden="true" viewBox="0 0 240 240" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+                <path d="{{c3.ring1}}" fill="none" stroke="{{t.border}}" stroke-width="1"/>
+                <path d="{{c3.ring2}}" fill="none" stroke="{{t.border}}" stroke-width="1"/>
+                <path d="{{c3.ring3}}" fill="none" stroke="{{t.border}}" stroke-width="1"/>
+                <path d="{{c3.spokes}}" fill="none" stroke="{{t.border}}" stroke-width="1"/>
+                <path d="{{c3.avg}}" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-dasharray="5 4"/>
+                <path d="{{c3.me}}" fill="{{c3.fill}}" stroke="{{t.accent}}" stroke-width="2.5" stroke-linejoin="round"/>
+              </svg>
+              <sc-for list="{{c3.labels}}" as="a" hint-placeholder-count="6">
+                <span style="position: absolute; left: {{a.x}}%; top: {{a.y}}%; transform: translate(-50%, -50%); font-size: 11px; font-weight: 600; color: {{t.muted}}; white-space: nowrap;">{{a.t}}</span>
+              </sc-for>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 16px; font-size: 12px; color: {{t.muted}};">
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 0; border-top: 3px solid {{t.accent}};"></span>Falcon</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 0; border-top: 2px dashed {{t.muted}};"></span>League average</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="style" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="style" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Where the points come from</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Points by source, season</h3>
+            <div role="img" aria-label="32 points: 14 from passes, 10 from foot goals, 8 from header goals, 1 from a penalty, minus 1 for an own goal" style="display: flex; height: 36px; border-radius: 4px; overflow: hidden; gap: 2px;">
+              <sc-for list="{{c4.parts}}" as="p" hint-placeholder-count="4">
+                <span style="flex: {{p.v}} 1 0; min-width: 0; background: {{p.c}}; color: {{p.fg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">{{p.v}}</span>
+              </sc-for>
+            </div>
+            <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 13px;">
+              <sc-for list="{{c4.parts}}" as="p" hint-placeholder-count="4">
+                <li style="display: flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{p.c}};"></span><span style="flex: 1 1 auto;">{{p.t}}</span><span style="color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{p.pct}}</span></li>
+              </sc-for>
+              <li style="display: flex; align-items: center; gap: 8px; color: {{t.neg}};"><span style="width: 12px; height: 12px; border-radius: 2px; border: 2px solid {{t.neg}}; box-sizing: border-box;"></span><span style="flex: 1 1 auto;">Own goal</span><span style="font-variant-numeric: tabular-nums;">−1</span></li>
+            </ul>
+          </div>
+
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Positions and teams</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{c5.pos}}" as="p" hint-placeholder-count="3">
+                <div style="display: grid; grid-template-columns: 96px 1fr 44px; align-items: center; gap: 10px; font-size: 13px;"><span>{{p.t}}</span><span style="height: 10px; border-radius: 2px; background: {{t.surface2}};"><span style="display: block; width: {{p.w}}%; height: 100%; border-radius: 2px; background: {{t.accent}};"></span></span><span style="text-align: right; color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{p.w}}%</span></div>
+              </sc-for>
+            </div>
+            <div style="border-top: 1px solid {{t.border}}; padding-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Win rate by team colour</span>
+              <sc-for list="{{c5.teams}}" as="p" hint-placeholder-count="2">
+                <div style="display: grid; grid-template-columns: 96px 1fr 44px; align-items: center; gap: 10px; font-size: 13px;"><span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: {{p.c}};"></span>{{p.t}}</span><span style="height: 10px; border-radius: 2px; background: {{t.surface2}};"><span style="display: block; width: {{p.w}}%; height: 100%; border-radius: 2px; background: {{p.c}};"></span></span><span style="text-align: right; color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{p.w}}%</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="rivals" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="rivals" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Opponents and allies</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Toughest opponents</h3>
+            <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Falcon’s win rate in games when this player was in the other team. At least 5 games.</p>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{c6.foes}}" as="r" hint-placeholder-count="5">
+                <li style="display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px;">
+                  <span style="width: 28px; height: 28px; border-radius: 4px; background: {{t.surface2}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; color: {{t.muted}};">{{r.ini}}</span>
+                  <div style="min-width: 0;">
+                    <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px;"><a href="#" style="font-weight: 700;">{{r.name}}</a><span style="color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{r.rec}}</span></div>
+                    <span style="display: block; height: 6px; margin-top: 4px; border-radius: 2px; background: {{t.surface2}};"><span style="display: block; width: {{r.w}}%; height: 100%; border-radius: 2px; background: {{t.neg}};"></span></span>
+                  </div>
+                  <span style="min-width: 44px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: {{t.neg}};">{{r.pct}}</span>
+                </li>
+              </sc-for>
+            </ol>
+          </div>
+
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Best allies</h3>
+            <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Falcon’s win rate in games when this player was in the same team. At least 5 games.</p>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{c6.allies}}" as="r" hint-placeholder-count="5">
+                <li style="display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px;">
+                  <span style="width: 28px; height: 28px; border-radius: 4px; background: {{t.surface2}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; color: {{t.muted}};">{{r.ini}}</span>
+                  <div style="min-width: 0;">
+                    <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px;"><a href="#" style="font-weight: 700;">{{r.name}}</a><span style="color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{r.rec}}</span></div>
+                    <span style="display: block; height: 6px; margin-top: 4px; border-radius: 2px; background: {{t.surface2}};"><span style="display: block; width: {{r.w}}%; height: 100%; border-radius: 2px; background: {{t.accent}};"></span></span>
+                  </div>
+                  <span style="min-width: 44px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: {{t.link}};">{{r.pct}}</span>
+                </li>
+              </sc-for>
+            </ol>
+          </div>
+        </div>
+        <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px 32px; font-size: 14px;">
+          <span><span style="color: {{t.muted}};">Favourite victim:</span> <a href="#" style="font-weight: 700;">Otter</a> · 6 wins in 7</span>
+          <span><span style="color: {{t.muted}};">Best pass partner:</span> <a href="#" style="font-weight: 700;">Lynx</a> · 9 passes to Falcon’s goals</span>
+          <span><span style="color: {{t.muted}};">Most passes given to:</span> <a href="#" style="font-weight: 700;">Hawk</a> · 7</span>
+        </div>
+      </section>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{isCaptain}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 28px;">
+
+      <section aria-labelledby="cres" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="cres" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Results and draft</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Results as captain, by season</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{k1.rows}}" as="r" hint-placeholder-count="3">
+                <div role="img" aria-label="{{r.aria}}" style="display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 10px;">
+                  <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px;">{{r.y}}</span>
+                  <span style="display: flex; height: 32px; gap: 2px; border-radius: 4px; overflow: hidden;">
+                    <span style="flex: {{r.w}} 1 0; min-width: 0; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">{{r.w}} W</span>
+                    <span style="flex: {{r.d}} 1 0; min-width: 0; background: {{t.chipSolid}}; color: {{t.text}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">{{r.d}} D</span>
+                    <span style="flex: {{r.l}} 1 0; min-width: 0; background: {{t.negBg}}; color: {{t.onNeg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">{{r.l}} L</span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+            <p style="margin: 0; font-size: 12px; color: {{t.muted}};">W win, D draw, L loss. Only published games count.</p>
+          </div>
+
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Win rate: where does the edge come from?</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{k2.rows}}" as="p" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: 118px 1fr 44px; align-items: center; gap: 10px; font-size: 13px;"><span>{{p.t}}<span style="display: block; font-size: 11px; color: {{t.muted}};">{{p.s}}</span></span><span style="height: 12px; border-radius: 2px; background: {{t.surface2}};"><span style="display: block; width: {{p.w}}%; height: 100%; border-radius: 2px; background: {{p.c}};"></span></span><span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{p.w}}%</span></div>
+              </sc-for>
+            </div>
+            <p style="margin: 0; font-size: 12px; color: {{t.muted}};">First draft is the team of the captain who picked first. The gap between the two is small, so the pick order does not decide games.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px;">
+              <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Goals for and against</h3>
+              <div style="display: flex; gap: 14px; font-size: 12px; color: {{t.muted}};">
+                <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 0; border-top: 3px solid {{t.accent}};"></span>For</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 0; border-top: 3px dashed {{t.neg}};"></span>Against</span>
+              </div>
+            </div>
+            <div role="img" aria-label="Goals scored and conceded by Falcon’s team in the last ten games as captain. Goals for are above goals against in eight of them">
+              <svg aria-hidden="true" viewBox="0 0 600 170" preserveAspectRatio="none" style="display: block; width: 100%; height: 150px;">
+                <path d="M0 160H600" stroke="{{t.border}}" stroke-width="1" fill="none" vector-effect="non-scaling-stroke"/>
+                <path d="{{k3.against}}" fill="none" stroke="{{t.neg}}" stroke-width="3" stroke-dasharray="7 5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+                <path d="{{k3.forP}}" fill="none" stroke="{{t.accent}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+              </svg>
+              <div style="display: flex;">
+                <sc-for list="{{k3.labels}}" as="l" hint-placeholder-count="10">
+                  <div style="flex: 1 1 0; min-width: 0; text-align: center; font-variant-numeric: tabular-nums; line-height: 1.3;"><div style="font-size: 13px; font-weight: 700;">{{l.v}}</div><div style="font-size: 11px; color: {{t.muted}};">№ {{l.n}}</div></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px;">
+              <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Draft strength gap</h3>
+              <div style="display: flex; gap: 14px; font-size: 12px; color: {{t.muted}};">
+                <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.accent}};"></span>Win</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: {{t.loss}};"></span>Draw or loss</span>
+              </div>
+            </div>
+            <div role="img" aria-label="Rating of Falcon’s team minus the rival team before the game, last ten games. Falcon won seven of the eight games where the team was stronger or equal">
+              <svg aria-hidden="true" viewBox="0 0 600 170" preserveAspectRatio="none" style="display: block; width: 100%; height: 150px;">
+                <path d="{{k4.win}}" fill="{{t.accent}}"/>
+                <path d="{{k4.lose}}" fill="{{t.loss}}"/>
+                <path d="M0 85H600" stroke="{{t.text}}" stroke-width="1" fill="none" vector-effect="non-scaling-stroke"/>
+              </svg>
+              <div style="display: flex;">
+                <sc-for list="{{k4.labels}}" as="l" hint-placeholder-count="10">
+                  <div style="flex: 1 1 0; min-width: 0; text-align: center; font-variant-numeric: tabular-nums; line-height: 1.3;"><div style="font-size: 13px; font-weight: 700;">{{l.v}}</div><div style="font-size: 11px; color: {{t.muted}};">{{l.r}}</div></div>
+                </sc-for>
+              </div>
+            </div>
+            <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Sum of ratings of the picked players, Falcon’s team minus the rival. Above the line: Falcon drafted the stronger team.</p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="cpick" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="cpick" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Rival captains and picks</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Head to head with rival captains</h3>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Record against other captains</caption>
+                <thead><tr style="color: {{t.muted}}; font-size: 12px; text-align: right; text-transform: uppercase; letter-spacing: 0.06em;"><th scope="col" style="padding: 6px 8px; text-align: left;">Captain</th><th scope="col" style="padding: 6px 8px;">Games</th><th scope="col" style="padding: 6px 8px;">W–D–L</th><th scope="col" style="padding: 6px 8px;">+/−</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{k5.rows}}" as="r" hint-placeholder-count="5">
+                    <tr style="border-top: 1px solid {{t.border}}; text-align: right; font-variant-numeric: tabular-nums;"><th scope="row" style="padding: 8px; text-align: left; font-weight: 700;">{{r.name}}</th><td style="padding: 8px;">{{r.g}}</td><td style="padding: 8px;">{{r.rec}}</td><td style="padding: 8px; font-weight: 700; color: {{r.c}};">{{r.pm}}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">First picks in the draft</h3>
+            <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Whom Falcon takes first, and how the team does with that player.</p>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{k6.rows}}" as="r" hint-placeholder-count="5">
+                <li style="display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px;">
+                  <span style="width: 28px; height: 28px; border-radius: 4px; background: {{t.surface2}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; color: {{t.muted}};">{{r.ini}}</span>
+                  <div style="min-width: 0;">
+                    <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px;"><a href="#" style="font-weight: 700;">{{r.name}}</a><span style="color: {{t.muted}};">first pick × {{r.n}}</span></div>
+                    <span style="display: block; height: 6px; margin-top: 4px; border-radius: 2px; background: {{t.surface2}};"><span style="display: block; width: {{r.w}}%; height: 100%; border-radius: 2px; background: {{t.accent}};"></span></span>
+                  </div>
+                  <span style="min-width: 44px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: {{t.link}};">{{r.pct}}</span>
+                </li>
+              </sc-for>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="crec" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="crec" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Captain records</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{recs}}" as="n" hint-placeholder-count="4">
+            <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 14px;">
+              <div style="font-size: 12px; color: {{t.muted}}; letter-spacing: 0.06em; text-transform: uppercase;">{{n.label}}</div>
+              <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 28px; line-height: 1.2; font-variant-numeric: tabular-nums;">{{n.value}}</div>
+              <div style="font-size: 12px; color: {{t.muted}};">{{n.sub}}</div>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{isPlayer}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 28px;">
+      <section aria-labelledby="rec" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="rec" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Records</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{recs}}" as="n" hint-placeholder-count="8">
+            <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 14px;">
+              <div style="font-size: 12px; color: {{t.muted}}; letter-spacing: 0.06em; text-transform: uppercase;">{{n.label}}</div>
+              <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 28px; line-height: 1.2; font-variant-numeric: tabular-nums;">{{n.value}}</div>
+              <div style="font-size: 12px; color: {{t.muted}};">{{n.sub}}</div>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="seasons" style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="seasons" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Seasons</h2>
+        <div style="overflow-x: auto; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px;">
+          <table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px;">
+            <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Statistics by season</caption>
+            <thead><tr style="color: {{t.muted}}; font-size: 12px; text-align: right; text-transform: uppercase; letter-spacing: 0.06em;">
+              <th scope="col" style="padding: 10px 12px; text-align: left;">Season</th><th scope="col" style="padding: 10px 12px;">Days</th><th scope="col" style="padding: 10px 12px;">Goals</th><th scope="col" style="padding: 10px 12px;">Passes</th><th scope="col" style="padding: 10px 12px;">Points</th><th scope="col" style="padding: 10px 12px;">+/−</th><th scope="col" style="padding: 10px 12px;">MVP</th><th scope="col" style="padding: 10px 12px;">LR</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{seasons}}" as="s" hint-placeholder-count="3">
+                <tr style="border-top: 1px solid {{t.border}}; text-align: right; font-variant-numeric: tabular-nums;">
+                  <th scope="row" style="padding: 10px 12px; text-align: left; font-weight: 700;">{{s.season}}</th><td style="padding: 10px 12px;">{{s.games}}</td><td style="padding: 10px 12px;">{{s.goals}}</td><td style="padding: 10px 12px;">{{s.passes}}</td><td style="padding: 10px 12px; font-weight: 700;">{{s.points}}</td><td style="padding: 10px 12px;">{{s.pm}}</td><td style="padding: 10px 12px;">{{s.mvp}}</td><td style="padding: 10px 12px;">{{s.lr}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Days are the Saturdays the player took part in. Only published games count.</p>
+      </section>
+    </div>
+    </sc-if>
+  </main>
+  <footer style="margin-top: auto; border-top: 1px solid {{t.border}}; background: {{t.surface}};">
+    <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 28px 20px 20px; display: flex; flex-wrap: wrap; gap: 28px 40px;">
+      <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;">Amateur football league</span></div>
+        <p style="margin: 0; font-size: 14px; color: {{t.muted}}; max-width: 36ch;">A game every Saturday, in any weather. Results, ratings and the history of the league.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" aria-label="Instagram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"/></svg></a><a href="#" aria-label="Telegram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l9-6"/></svg></a><a href="#" aria-label="YouTube" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a><a href="#" aria-label="Facebook" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a></div>
+      </div>
+      <div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">League</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Games</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Players</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Captains</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Seasons</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">History</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Photo and video</a></div><div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Rules</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Codex</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Vote</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">How points work</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Suggest or complain anonymously</a></div>
+      <div style="flex: 1 1 200px; min-width: 180px; display: flex; flex-direction: column; gap: 2px;">
+        <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Contacts</div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: {{t.link}}; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@sfl.example</a>
+        <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>[Pitch address]</span>
+        <span style="min-height: 32px; font-size: 13px; color: {{t.muted}};">Saturdays, [time]. The owner fills in the address, the time and the e-mail.</span>
+      </div>
+    </div>
+    <div style="border-top: 1px solid {{t.border}};">
+      <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; font-size: 13px; color: {{t.muted}};">
+        <span>© 2026 SFL. All rights reserved.</span><a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: {{t.link}}; font-weight: 700;">Release 2026.11.3 · 15 Nov 2026 · What’s new</a>
+        <nav aria-label="Legal" style="display: flex; flex-wrap: wrap; gap: 0 16px;"><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Privacy</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Cookies</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Terms</a></nav>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-weight: 700;">EN ▾</span><div role="radiogroup" aria-label="Theme" style="display: inline-flex; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;"><a href="#" role="radio" aria-checked="{{th.light.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.light.bg}}; color: {{th.light.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Light</a><a href="#" role="radio" aria-checked="{{th.dark.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.dark.bg}}; color: {{th.dark.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z"/></svg>Dark</a><a href="#" role="radio" aria-checked="{{th.system.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.system.bg}}; color: {{th.system.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Auto</a></div></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"system":{"editor":"enum","default":"ancient","options":["ancient","positional"]},"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"tab":{"editor":"enum","default":"player","options":["player","captain"]},"view":{"editor":"enum","default":"cards","options":["cards","table"]},"$preview":{"width":1280,"height":3600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const tab = this.props.tab ?? 'player';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chip: 'rgba(255,255,255,0.10)', chipSolid: '#3A3629', scoreBg: '#000000', loss: '#4A4536', neg: '#FF8A7F', negBg: '#FF8A7F', onNeg: '#0D0C0A', link: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chip: 'rgba(0,0,0,0.06)', chipSolid: '#D9CFB8', scoreBg: '#15130F', loss: '#B9AD92', neg: '#A8281E', negBg: '#A8281E', onNeg: '#FBF8F0', link: '#6B5400' };
+
+    const isPlayer = tab === 'player';
+    const tabA = { line: isPlayer ? t.accent : 'transparent', color: isPlayer ? t.text : t.muted };
+    const tabB = { line: !isPlayer ? t.accent : 'transparent', color: !isPlayer ? t.text : t.muted };
+
+    const card = (label, value, sub, o = {}) => ({
+      label, value, sub: sub ?? '', hasTip: !!o.tip, tip: o.tip ?? '', open: !!o.open,
+      bg: o.hot ? t.scoreBg : t.surface, border: o.hot ? t.scoreBg : t.border,
+      muted: o.hot ? '#B3AA94' : t.muted, color: o.hot ? '#FFD21F' : t.text
+    });
+    const PM = 'Team goals minus rival goals in each game, summed. Time on the pitch is not counted.';
+    const LR = 'Balance of results: +1 for a win, −1 for a loss, 0 for a draw.';
+    const TP = 'Goals, passes and own goals. A header counts double, an own goal is −1.';
+    const TOP = 'Place among all players of the season by total points.';
+
+    const playerGroups = [
+      { title: 'Season 2026', gap: 64, items: [
+        card('Days', 12, 'of 16 Saturdays'), card('Goals', 15, '1.25 per day'), card('Passes', 14, '1.17 per day'), card('Own goals', 1, 'costs −1 point'), card('Header goals', 4, 'worth ×2'),
+        card('Place in top', '#1', 'of 38 players', { tip: TOP, hot: true }), card('+/−', '+18', '+1.5 per day', { tip: PM, open: true }), card('LR', '+5', '8 W · 1 D · 3 L', { tip: LR }), card('MVP', 6, 'of 12 games'), card('Total points', 32, '2.7 per day', { tip: TP, hot: true })
+      ] },
+      { title: 'All time', gap: 0, items: [
+        card('Days', 83, 'since 2024'), card('Goals', 53, '0.64 per day'), card('Passes', 62, '0.75 per day'), card('Own goals', 3, 'costs −3 points'), card('Header goals', 11, 'worth ×2'),
+        card('+/−', '+69', '+0.8 per day', { tip: PM }), card('LR', '+22', '47 W · 12 D · 24 L', { tip: LR }), card('MVP', 29, 'every 3rd day'), card('Win rate', '57%', '47 of 83'), card('Total points', 208, '2.5 per day', { tip: TP, hot: true })
+      ] }
+    ];
+    const captainGroups = [
+      { title: 'As captain · season 2026', gap: 64, items: [
+        card('Days', 6, 'of 12'), card('Wins', 4, ''), card('Draws', 1, ''), card('Losses', 1, ''), card('Win rate', '67%', 'player: 67%'),
+        card('Goals for', '5.0', 'per game'), card('Goals against', '3.2', 'per game'), card('+/−', '+11', 'as captain', { tip: PM, open: true }), card('LR', '+3', '4 W · 1 D · 1 L', { tip: LR }), card('Team points', 118, 'sum of the team', { tip: 'Total points of all players of Falcon’s team, summed over games as captain.', hot: true })
+      ] },
+      { title: 'As captain · all time', gap: 0, items: [
+        card('Days', 29, 'since 2024'), card('Wins', 17, ''), card('Draws', 5, ''), card('Losses', 7, ''), card('Win rate', '59%', 'as player: 56%'),
+        card('Goals for', '4.6', 'per game'), card('Goals against', '3.5', 'per game'), card('+/−', '+32', 'as captain', { tip: PM }), card('LR', '+10', '17 W · 5 D · 7 L', { tip: LR }), card('Team points', 402, 'sum of the team', { tip: 'Total points of all players of Falcon’s team, summed over games as captain.', hot: true })
+      ] }
+    ];
+    const groups = isPlayer ? playerGroups : captainGroups;
+
+    const view = this.props.view ?? 'cards';
+    const on = { bg: t.accent, fg: t.onAccent, border: t.accent }, off = { bg: t.surface, fg: t.text, border: t.border };
+    const vA = view === 'cards' ? on : off, vB = view === 'table' ? on : off;
+    const [gA, gB] = groups;
+    const find = (g, l) => g.items.find(i => i.label === l);
+    const labels = [...gA.items.map(i => i.label), ...gB.items.map(i => i.label).filter(l => !find(gA, l))];
+    const tbl = {
+      h1: gA.title.replace('As captain · ', ''), h2: gB.title.replace('As captain · ', ''),
+      rows: labels.map(l => { const a = find(gA, l), b = find(gB, l); return { label: l, a: a ? a.value : '—', as: a ? a.sub : '', b: b ? b.value : '—', bs: b ? b.sub : '' }; })
+    };
+
+    // chart 1: points per game, trend line, average
+    const pts = [3, 1, 4, 0, 2, 5, 3, 1, 4, 3, 2, 4];
+    const win = [1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1];
+    const sc = 28;
+    let w1 = '', l1 = '';
+    pts.forEach((v, i) => {
+      const x = i * 50 + 10, h = Math.max(v * sc, 3);
+      const r = `M${x} 160v${-h}h30v${h}z`;
+      if (win[i]) w1 += r; else l1 += r;
+    });
+    const ma = pts.map((_, i) => { const s = pts.slice(Math.max(0, i - 2), i + 1); return s.reduce((a, b) => a + b, 0) / s.length; });
+    const trend = ma.map((v, i) => `${i ? 'L' : 'M'}${i * 50 + 25} ${(160 - v * sc).toFixed(1)}`).join('');
+    const avgV = pts.reduce((a, b) => a + b, 0) / pts.length;
+    const c1 = {
+      win: w1, lose: l1, trend, avg: avgV.toFixed(1),
+      avgLine: `M0 ${(160 - avgV * sc).toFixed(1)}H600`,
+      labels: pts.map((v, i) => ({ v, n: 35 + i }))
+    };
+
+    // chart 2: Saturdays heat map
+    const weekState = Array.from({ length: 26 }, (_, i) => (i >= 16 ? 'future' : [3, 7, 11, 14].includes(i) ? 'absent' : 'played'));
+    let pi = 0;
+    const alpha = [0, 0.22, 0.32, 0.62, 0.85, 1];
+    const weeks = weekState.map((s, i) => {
+      if (s === 'future') return { v: '', bg: 'transparent', border: `1px dashed ${t.muted}`, fg: t.text, title: `Saturday ${i + 1}: not played yet` };
+      if (s === 'absent') return { v: '', bg: t.surface2, border: `1px solid ${t.border}`, fg: t.text, title: `Saturday ${i + 1}: did not play` };
+      const v = pts[pi++];
+      const dk = !dark || v >= 3;
+      return { v, bg: v === 0 ? t.surface2 : `rgba(255,210,31,${alpha[v]})`, border: v === 0 ? `1px solid ${t.border}` : '1px solid transparent', fg: dk && v > 0 ? '#15130F' : t.text, title: `Saturday ${i + 1}: ${v} points` };
+    });
+    const res = ['W', 'W', 'L', 'W', 'D'].reverse();
+    const c2 = {
+      weeks, s1: `rgba(255,210,31,${alpha[1]})`, s3: `rgba(255,210,31,${alpha[3]})`, s5: '#FFD21F',
+      form: ['L', 'W', 'D', 'W', 'W'].map(l => l === 'W' ? { l, bg: t.accent, fg: t.onAccent, border: '1px solid transparent' } : l === 'D' ? { l, bg: t.chipSolid, fg: t.text, border: '1px solid transparent' } : { l, bg: 'transparent', fg: t.neg, border: `2px solid ${t.neg}` })
+    };
+
+    // chart 3: radar
+    const cx = 120, cy = 120, R = 82;
+    const ang = i => -Math.PI / 2 + i * Math.PI / 3;
+    const P = (i, k) => [cx + Math.cos(ang(i)) * R * k, cy + Math.sin(ang(i)) * R * k];
+    const poly = ks => ks.map((k, i) => { const [x, y] = P(i, k); return `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`; }).join('') + 'Z';
+    const ring = k => poly([k, k, k, k, k, k]);
+    const spokes = [0, 1, 2, 3, 4, 5].map(i => { const [x, y] = P(i, 1); return `M${cx} ${cy}L${x.toFixed(1)} ${y.toFixed(1)}`; }).join('');
+    const names = ['Goals', 'Passes', 'Header goals', 'Wins', 'MVP', 'Discipline'];
+    const c3 = {
+      ring1: ring(0.33), ring2: ring(0.66), ring3: ring(1), spokes,
+      me: poly([0.86, 0.72, 0.9, 0.8, 0.78, 0.6]), avg: poly([0.5, 0.5, 0.5, 0.5, 0.5, 0.5]),
+      fill: 'rgba(255,210,31,0.25)',
+      labels: names.map((tt, i) => ({ t: tt, x: ((cx + Math.cos(ang(i)) * 108) / 240 * 100).toFixed(1), y: ((cy + Math.sin(ang(i)) * 108) / 240 * 100).toFixed(1) }))
+    };
+
+    // chart 4: points by source
+    const total = 33;
+    const c4 = { parts: [
+      { t: 'Passes', v: 14, c: '#FFD21F', fg: '#15130F' },
+      { t: 'Foot goals', v: 10, c: dark ? '#F6F1E4' : '#15130F', fg: dark ? '#0D0C0A' : '#F2EBDC' },
+      { t: 'Header goals ×2', v: 8, c: dark ? '#B3AA94' : '#5A5246', fg: dark ? '#0D0C0A' : '#FBF8F0' },
+      { t: 'Penalty', v: 1, c: dark ? '#6F6850' : '#8C8164', fg: '#F6F1E4' }
+    ].map(p => ({ ...p, pct: Math.round(p.v / total * 100) + '%' })) };
+
+    // chart 5: positions and team colours
+    const c5 = {
+      pos: [{ t: 'Forward', w: 68 }, { t: 'Winger', w: 22 }, { t: 'Midfielder', w: 10 }],
+      teams: [{ t: 'BMW', w: 61, c: dark ? '#F6F1E4' : '#15130F' }, { t: 'HONDA', w: 52, c: '#FF6A5F' }]
+    };
+
+    // chart 6: foes and allies
+    const mk = (name, g, wn, d, l, good) => {
+      const pct = Math.round(wn / g * 100);
+      return { name, ini: name.slice(0, 2).toUpperCase(), rec: `${g} games · ${wn}–${d}–${l}`, w: pct, pct: pct + '%' };
+    };
+    const c6 = {
+      foes: [mk('Wolf', 9, 2, 1, 6), mk('Bear', 7, 3, 0, 4), mk('Heron', 8, 3, 1, 4), mk('Fox', 6, 3, 1, 2), mk('Crane', 6, 4, 0, 2)],
+      allies: [mk('Lynx', 14, 11, 2, 1), mk('Otter', 12, 9, 1, 2), mk('Hawk', 11, 8, 2, 1), mk('Raven', 9, 6, 1, 2), mk('Stag', 7, 5, 0, 2)]
+    };
+
+    // captain charts
+    const k1 = { rows: [['2026', 4, 1, 1], ['2025', 9, 2, 3], ['2024', 4, 2, 3]].map(([y, w, d, l]) => ({ y, w, d, l, aria: `${y}: ${w} wins, ${d} draws, ${l} losses` })) };
+    const k2 = { rows: [
+      { t: 'First draft', s: '13 games', w: 62, c: t.accent },
+      { t: 'Second draft', s: '16 games', w: 56, c: t.accent },
+      { t: 'As captain', s: '29 games', w: 59, c: t.accent },
+      { t: 'As player', s: '54 games', w: 56, c: t.muted }
+    ] };
+    const gf = [5, 3, 6, 4, 7, 4, 5, 6, 3, 5], ga = [3, 4, 2, 4, 3, 5, 2, 3, 4, 2];
+    const line = arr => arr.map((v, i) => `${i ? 'L' : 'M'}${i * 60 + 30} ${160 - v * 17}`).join('');
+    const k3 = { forP: line(gf), against: line(ga), labels: gf.map((v, i) => ({ v: `${v}:${ga[i]}`, n: 37 + i })) };
+    const gap = [4, -2, 6, 1, -3, 2, 5, -1, 3, 0];
+    const won = [1, 0, 1, 1, 1, 0, 1, 0, 1, 0];
+    let kw = '', kl = '';
+    gap.forEach((v, i) => {
+      const x = i * 60 + 15, h = Math.max(Math.abs(v) * 11, 3);
+      const r = v >= 0 ? `M${x} 85v${-h}h30v${h}z` : `M${x} 85v${h}h30v${-h}z`;
+      if (won[i]) kw += r; else kl += r;
+    });
+    const k4 = { win: kw, lose: kl, labels: gap.map((v, i) => ({ v: (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), r: won[i] ? 'W' : 'D/L' })) };
+    const h2h = (name, g, w, d, l, pm) => ({ name, g, rec: `${w}–${d}–${l}`, pm: (pm > 0 ? '+' : pm < 0 ? '−' : '') + Math.abs(pm), c: pm > 0 ? t.link : pm < 0 ? t.neg : t.text });
+    const k5 = { rows: [h2h('Wolf', 8, 4, 1, 3, 2), h2h('Bear', 7, 3, 2, 2, 1), h2h('Lynx', 6, 4, 0, 2, 5), h2h('Otter', 5, 3, 1, 1, 4), h2h('Hawk', 3, 3, 0, 0, 6)] };
+    const fp = (name, n, wp) => ({ name, ini: name.slice(0, 2).toUpperCase(), n, w: wp, pct: wp + '%' });
+    const k6 = { rows: [fp('Wolf', 11, 64), fp('Lynx', 7, 71), fp('Otter', 5, 60), fp('Hawk', 3, 67), fp('Raven', 3, 33)] };
+
+    const recs = isPlayer ? [
+      { label: 'Best game', value: '9 pts', sub: 'game № 41 vs BMW' },
+      { label: 'Goals in a game', value: 4, sub: 'game № 40' },
+      { label: 'Hat-tricks', value: 2, sub: 'goals 3 or more' },
+      { label: 'Passes in a game', value: 4, sub: 'game № 38' },
+      { label: 'Win streak', value: 5, sub: 'games 41–45' },
+      { label: 'Scoring streak', value: 7, sub: 'games in a row with a goal' },
+      { label: 'MVP streak', value: 3, sub: 'games 42–44' },
+      { label: 'Without own goal', value: 71, sub: 'games since 2024' }
+    ] : [
+      { label: 'Win streak', value: 4, sub: 'as captain, 2025' },
+      { label: 'Biggest win', value: '9:2', sub: 'game № 44' },
+      { label: 'Comeback', value: '0:3 → 4:3', sub: 'game № 37' },
+      { label: 'Best draft', value: '+6', sub: 'gap, won 7:1' }
+    ];
+
+    const seasons = [
+      ['2026', 12, 15, 14, 32, '+18', 6, '+5'], ['2025', 38, 21, 26, 96, '+31', 14, '+11'], ['2024', 33, 17, 22, 80, '+20', 9, '+6']
+    ].map(([season, games, goals, passes, points, pm, mvp, lr]) => ({ season, games, goals, passes, points, pm, mvp, lr }));
+    const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+
+    const sysName = (this.props.system ?? 'ancient') === 'ancient' ? 'Ancient' : 'Positional'; const sysOpts = [['Ancient', 'Points of the player, ±, balance of results. Results do not add points.', true], ['Positional', 'The same points plus a bonus for a win and a penalty for a loss by position.', false]].map(([tt, s, a]) => { const on = ((this.props.system ?? 'ancient') === 'ancient') === a; return { t: tt, s, on: on ? 'true' : 'false', mark: on ? '✓' : '', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text }; }); return { sysName, sysOpts, th, themeName, t, vA, vB, tbl, showCards: view === 'cards', showTable: view === 'table', isPlayer, isCaptain: !isPlayer, tabA, tabB, groups, c1, c2, c3, c4, c5, c6, k1, k2, k3, k4, k5, k6, recs, seasons };
+  }
+}
+</script>
+</body>
+</html>

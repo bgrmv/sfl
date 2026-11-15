@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+@keyframes sh{0%{opacity:.55}50%{opacity:1}100%{opacity:.55}}
+@media (prefers-reduced-motion: reduce){.sk{animation:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; padding: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-content: start;">
+
+  <section aria-label="Loading" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em;">1 · Loading (skeleton keeps the layout, no jumping)</div>
+    <div role="status" aria-live="polite" aria-label="Loading player" style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <span class="sk" style="width: 88px; height: 88px; border-radius: 4px; background: {{t.surface2}}; animation: sh 1.4s ease-in-out infinite;"></span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><span class="sk" style="height: 28px; width: 50%; border-radius: 3px; background: {{t.surface2}}; animation: sh 1.4s ease-in-out infinite;"></span><span class="sk" style="height: 16px; width: 70%; border-radius: 3px; background: {{t.surface2}}; animation: sh 1.4s ease-in-out infinite;"></span></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;">
+        <sc-for list="{{ten}}" as="i" hint-placeholder-count="10"><span class="sk" style="height: 72px; border-radius: 4px; background: {{t.surface2}}; animation: sh 1.4s ease-in-out infinite;"></span></sc-for>
+      </div>
+      <span class="sk" style="height: 120px; border-radius: 4px; background: {{t.surface2}}; animation: sh 1.4s ease-in-out infinite;"></span>
+      <span style="font-size: 13px; color: {{t.muted}};">Loading player… <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">please wait</span></span>
+    </div>
+  </section>
+
+  <section aria-label="Empty" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em;">2 · Empty (new player, no published games)</div>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <div role="img" aria-label="Portrait is not uploaded yet" style="width: 88px; height: 88px; border-radius: 4px; background: {{t.surface2}}; border: 1px solid {{t.border}}; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 30px; color: {{t.muted}};">NE</div>
+      <div><div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 28px; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.1;">Newcomer</div><div style="font-size: 13px; color: {{t.muted}};">Joined this week · № 21</div></div>
+    </div>
+    <div style="border: 1px dashed {{t.muted}}; border-radius: 4px; padding: 22px 18px; text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center;">
+      <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase;">No games yet</div>
+      <p style="margin: 0; font-size: 14px; color: {{t.muted}}; max-width: 340px;">Numbers and charts appear after the first published game. The next Saturday is 21 Nov.</p>
+      <a href="#" style="margin-top: 6px; display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 14px; font-weight: 700;">See the schedule</a>
+    </div>
+    <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Same pattern for a season with no games: “Season 2027 has not started”, with a link to the previous season.</p>
+  </section>
+
+  <section aria-label="Error" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em;">3 · Error (the block fails, the page stays)</div>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; opacity: 0.9;">
+      <sc-for list="{{five}}" as="i" hint-placeholder-count="5"><div style="background: {{t.bg}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 10px 12px;"><div style="font-size: 11px; color: {{t.muted}}; text-transform: uppercase;">{{i.l}}</div><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 24px;">{{i.v}}</div></div></sc-for>
+    </div>
+    <div role="alert" style="display: flex; gap: 12px; align-items: flex-start; border: 2px solid {{t.neg}}; border-radius: 4px; padding: 14px 16px;">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.neg}}" stroke-width="2" style="flex: none;"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>
+      <div style="flex: 1;">
+        <div style="font-weight: 700;">Could not load the charts</div>
+        <p style="margin: 2px 0 10px; font-size: 14px; color: {{t.muted}};">The server did not answer. The numbers above are fine. Your connection is working.</p>
+        <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.text}}; font-size: 14px; font-weight: 700;">Try again</a>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Message names the failed block and what still works. No technical codes for visitors; the trace id goes to the log.</p>
+  </section>
+
+  <section aria-label="Not found" style="background: {{t.scoreBg}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 14px; color: #F6F1E4;">
+    <div style="font-size: 12px; color: #B3AA94; text-transform: uppercase; letter-spacing: 0.08em;">4 · Page not found (404)</div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 18px; padding: 10px 0;">
+      <div style="text-align: center;"><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 72px; line-height: 1; color: #FFD21F;">4</div></div>
+      <div style="text-align: center;"><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 72px; line-height: 1; color: #F6F1E4;">0</div></div>
+      <div style="text-align: center;"><div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 72px; line-height: 1; color: #FFD21F;">4</div></div>
+    </div>
+    <div style="text-align: center;">
+      <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; letter-spacing: 0.03em; text-transform: uppercase;">Offside. No such page.</h2>
+      <p style="margin: 6px auto 12px; max-width: 360px; font-size: 14px; color: #B3AA94;">The link is old or the player was removed. Try the list.</p>
+      <div style="display: inline-flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+        <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; background: #FFD21F; color: #0D0C0A; font-size: 14px; font-weight: 700;">Home</a>
+        <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid #F6F1E4; font-size: 14px; font-weight: 700;">All players</a>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"light","options":["dark","light"]},"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#2A261C', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', scoreBg: '#000000', neg: '#FF8A7F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', scoreBg: '#15130F', neg: '#A8281E' };
+    return { t, ten: Array.from({ length: 10 }, (_, i) => i), five: [['Days', 12], ['Goals', 15], ['Passes', 14], ['LR', '+5'], ['Points', 32]].map(([l, v]) => ({ l, v })) };
+  }
+}
+</script>
+</body>
+</html>

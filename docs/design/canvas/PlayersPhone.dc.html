@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL players list</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;">
+    <a href="#" aria-label="SFL, home" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 20px; flex: 1 1 auto; font-size: 14px; font-weight: 600; overflow-x: auto;">
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Home</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Games</a>
+      <a href="#" aria-current="page" style="color: {{t.text}}; border-bottom: 2px solid {{t.accent}}; padding: 8px 0;">Players</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Teams</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Compare</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Photo and video</a>
+    </nav>
+      <a href="#" aria-haspopup="listbox" aria-label="Scoring system: {{sysName}}. Change" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-size: 14px; font-weight: 700; white-space: nowrap;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span style="font-size: 11px; font-weight: 600; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.06em;">Scoring</span>{{sysName}}<span aria-hidden="true" style="color: {{t.muted}};">▾</span></a>
+      <a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a>
+  </header>
+
+  <main style="width: 100%; max-width: 1080px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px;">
+      <div>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Players</h1>
+        <p style="margin: 4px 0 0; font-size: 14px; color: {{t.muted}};">38 players · 12 games in season 2026 · only published games count</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px 16px;">
+        <div role="group" aria-label="Season" style="display: inline-flex; flex-wrap: wrap; gap: 6px;"><a href="#" aria-current="true" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 14px; font-weight: 700; white-space: nowrap;">S26 <span style="font-size: 10px; font-weight: 700; padding: 0 6px; border-radius: 999px; background: {{t.onAccent}}; color: {{t.accent}};">NOW</span></a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S25</a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S24</a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S23</a><a href="#" aria-haspopup="listbox" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 600; white-space: nowrap;">S22 – S11 <span aria-hidden="true">▾</span></a><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; border: 2px solid {{t.text}}; background: transparent; color: {{t.text}}; font-size: 14px; font-weight: 700; white-space: nowrap;">All time</a></div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-size: 14px; font-weight: 700;">⇄ Compare</a>
+          <div role="group" aria-label="View" style="display: inline-flex; gap: 6px;">
+          <a href="#" aria-pressed="{{showCards}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{vA.border}}; background: {{vA.bg}}; color: {{vA.fg}}; font-size: 14px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Cards</a>
+          <a href="#" aria-pressed="{{showTable}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{vB.border}}; background: {{vB.bg}}; color: {{vB.fg}}; font-size: 14px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg>Table</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 12px 14px;">
+      <span style="font-size: 13px; color: {{t.muted}};">Scoring: <strong style="color: {{t.text}};">{{sysName}}</strong> · set in the header · <a href="#" style="color: {{t.link}}; font-weight: 700;">compare the systems</a></span>
+      <div role="group" aria-label="Position" style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <sc-for list="{{posChips}}" as="p" hint-placeholder-count="6">
+          <a href="#" aria-pressed="{{p.on}}" style="display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: {{p.bg}}; color: {{p.fg}}; border: 1px solid {{p.border}}; font-size: 13px; font-weight: 600;">{{p.t}}</a>
+        </sc-for>
+      </div>
+      <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px;"><span style="width: 18px; height: 18px; border-radius: 3px; background: {{t.accent}}; color: {{t.onAccent}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">✓</span>Active only</label>
+      <div style="flex: 1 1 180px; min-width: 160px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.muted}}; font-size: 14px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>Search by name or number</div>
+    </div>
+
+    <sc-if value="{{showTable}}" hint-placeholder-val="{{ true }}">
+      <section aria-label="Rating table" style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="overflow-x: auto; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px;">
+          <table style="width: 100%; min-width: 880px; border-collapse: collapse; font-size: 14px;">
+            <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Player ranking, ancient rating system, season 2026</caption>
+            <thead><tr style="color: {{t.muted}}; font-size: 12px; text-align: right; text-transform: uppercase; letter-spacing: 0.06em;">
+              <th scope="col" style="padding: 10px 12px; text-align: left; width: 52px;">#</th>
+              <th scope="col" style="padding: 10px 12px; text-align: left;">Player</th>
+              <th scope="col" style="padding: 10px 12px; text-align: left;">Form</th>
+              <th scope="col" style="padding: 10px 12px;">Days</th><th scope="col" style="padding: 10px 12px;">Goals</th><th scope="col" style="padding: 10px 12px;">Passes</th><th scope="col" style="padding: 10px 12px;">OG</th><th scope="col" style="padding: 10px 12px;">+/−</th><th scope="col" style="padding: 10px 12px;">LR</th><th scope="col" style="padding: 10px 12px;">MVP</th>
+              <th scope="col" aria-sort="descending" style="padding: 10px 12px; color: {{t.text}};"><a href="#" style="display: inline-flex; align-items: center; gap: 4px;">Points<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 8L1 3h8z"/></svg></a></th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="12">
+                <tr style="border-top: 1px solid {{t.border}}; text-align: right; font-variant-numeric: tabular-nums; background: {{r.rowBg}};">
+                  <td style="padding: 8px 12px; text-align: left;"><span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700;">{{r.rank}}<span style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: {{r.mc}};">{{r.move}}</span></span></td>
+                  <th scope="row" style="padding: 8px 12px; text-align: left; font-weight: 600;">
+                    <a href="#" style="display: inline-flex; align-items: center; gap: 10px;"><span style="width: 32px; height: 32px; border-radius: 4px; background: {{t.surface2}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700; color: {{t.muted}};">{{r.ini}}</span><span><span style="display: block; line-height: 1.2;">{{r.name}}</span><span style="display: block; font-size: 12px; font-weight: 400; color: {{t.muted}};">№ {{r.no}} · {{r.pos}}</span></span></a>
+                  </th>
+                  <td style="padding: 8px 12px; text-align: left;"><span style="display: inline-flex; gap: 3px;"><sc-for list="{{r.form}}" as="f" hint-placeholder-count="5"><span style="width: 18px; height: 18px; border-radius: 3px; background: {{f.bg}}; color: {{f.fg}}; border: {{f.border}}; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;">{{f.l}}</span></sc-for></span></td>
+                  <td style="padding: 8px 12px;">{{r.days}}</td><td style="padding: 8px 12px;">{{r.goals}}</td><td style="padding: 8px 12px;">{{r.passes}}</td><td style="padding: 8px 12px; color: {{r.ogc}};">{{r.og}}</td><td style="padding: 8px 12px;">{{r.pm}}</td><td style="padding: 8px 12px;">{{r.lr}}</td><td style="padding: 8px 12px;">{{r.mvp}}</td>
+                  <td style="padding: 8px 12px; font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: {{r.ptc}};">{{r.pts}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: {{t.muted}};">Arrow next to the place: change since the previous game. OG is own goals. LR is the balance of results: +1 for a win, −1 for a loss. Form: last five games, W win, D draw, L loss.</p>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showCards}}" hint-placeholder-val="{{ false }}">
+      <ul aria-label="Player cards" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="12">
+          <li style="background: {{r.cardBg}}; border: 1px solid {{r.cardBorder}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 10px; color: {{r.cardFg}};">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
+              <span style="font-family: 'Oswald', sans-serif; font-size: 30px; font-weight: 700; line-height: 1;">{{r.rank}}<span style="margin-left: 6px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: {{r.mcCard}};">{{r.move}}</span></span>
+              <span style="width: 40px; height: 40px; border-radius: 4px; background: {{r.avBg}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; color: {{r.avFg}};">{{r.ini}}</span>
+            </div>
+            <div>
+              <a href="#" style="display: block; font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.2;">{{r.name}}</a>
+              <span style="font-size: 12px; color: {{r.cardMuted}};">№ {{r.no}} · {{r.pos}}</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 6px;"><span style="font-family: 'Oswald', sans-serif; font-size: 38px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; color: {{r.ptCard}};">{{r.pts}}</span><span style="font-size: 12px; color: {{r.cardMuted}}; text-transform: uppercase; letter-spacing: 0.06em;">points</span></div>
+            <dl style="margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-variant-numeric: tabular-nums;">
+              <div><dt style="font-size: 10px; color: {{r.cardMuted}}; text-transform: uppercase; letter-spacing: 0.06em;">Goals</dt><dd style="margin: 0; font-weight: 700;">{{r.goals}}</dd></div>
+              <div><dt style="font-size: 10px; color: {{r.cardMuted}}; text-transform: uppercase; letter-spacing: 0.06em;">Pass</dt><dd style="margin: 0; font-weight: 700;">{{r.passes}}</dd></div>
+              <div><dt style="font-size: 10px; color: {{r.cardMuted}}; text-transform: uppercase; letter-spacing: 0.06em;">+/−</dt><dd style="margin: 0; font-weight: 700;">{{r.pm}}</dd></div>
+              <div><dt style="font-size: 10px; color: {{r.cardMuted}}; text-transform: uppercase; letter-spacing: 0.06em;">LR</dt><dd style="margin: 0; font-weight: 700;">{{r.lr}}</dd></div>
+            </dl>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid {{r.cardLine}}; padding-top: 8px;">
+              <span style="display: inline-flex; gap: 3px;"><sc-for list="{{r.form}}" as="f" hint-placeholder-count="5"><span style="width: 18px; height: 18px; border-radius: 3px; background: {{f.bg}}; color: {{f.fg}}; border: {{f.border}}; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;">{{f.l}}</span></sc-for></span>
+              <span style="font-size: 12px; color: {{r.cardMuted}};">{{r.days}} days · MVP {{r.mvp}}</span>
+            </div>
+          </li>
+        </sc-for>
+      </ul>
+    </sc-if>
+
+    <nav aria-label="Pages" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; color: {{t.muted}};">
+      <span>Showing 12 of 38</span>
+      <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.text}}; font-weight: 600;">Show more</a>
+    </nav>
+  </main>
+  <footer style="margin-top: auto; border-top: 1px solid {{t.border}}; background: {{t.surface}};">
+    <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 28px 20px 20px; display: flex; flex-wrap: wrap; gap: 28px 40px;">
+      <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;">Amateur football league</span></div>
+        <p style="margin: 0; font-size: 14px; color: {{t.muted}}; max-width: 36ch;">A game every Saturday, in any weather. Results, ratings and the history of the league.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" aria-label="Instagram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"/></svg></a><a href="#" aria-label="Telegram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l9-6"/></svg></a><a href="#" aria-label="YouTube" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a><a href="#" aria-label="Facebook" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a></div>
+      </div>
+      <div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">League</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Games</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Players</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Captains</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Seasons</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">History</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Photo and video</a></div><div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Rules</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Codex</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Vote</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">How points work</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Suggest or complain anonymously</a></div>
+      <div style="flex: 1 1 200px; min-width: 180px; display: flex; flex-direction: column; gap: 2px;">
+        <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Contacts</div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: {{t.link}}; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@sfl.example</a>
+        <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>[Pitch address]</span>
+        <span style="min-height: 32px; font-size: 13px; color: {{t.muted}};">Saturdays, [time]. The owner fills in the address, the time and the e-mail.</span>
+      </div>
+    </div>
+    <div style="border-top: 1px solid {{t.border}};">
+      <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; font-size: 13px; color: {{t.muted}};">
+        <span>© 2026 SFL. All rights reserved.</span><a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: {{t.link}}; font-weight: 700;">Release 2026.11.3 · 15 Nov 2026 · What’s new</a>
+        <nav aria-label="Legal" style="display: flex; flex-wrap: wrap; gap: 0 16px;"><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Privacy</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Cookies</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Terms</a></nav>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-weight: 700;">EN ▾</span><div role="radiogroup" aria-label="Theme" style="display: inline-flex; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;"><a href="#" role="radio" aria-checked="{{th.light.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.light.bg}}; color: {{th.light.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Light</a><a href="#" role="radio" aria-checked="{{th.dark.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.dark.bg}}; color: {{th.dark.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z"/></svg>Dark</a><a href="#" role="radio" aria-checked="{{th.system.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.system.bg}}; color: {{th.system.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Auto</a></div></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"system":{"editor":"enum","default":"ancient","options":["ancient","positional"]},"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"view":{"editor":"enum","default":"cards","options":["cards","table"]},"$preview":{"width":360,"height":4000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const view = this.props.view ?? 'table';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', chipSolid: '#3A3629', neg: '#FF8A7F', link: '#FFD21F', pos: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', chipSolid: '#D9CFB8', neg: '#A8281E', link: '#6B5400', pos: '#6B5400' };
+    const on = { bg: t.accent, fg: t.onAccent, border: t.accent }, off = { bg: t.surface, fg: t.text, border: t.border };
+    const vA = view === 'cards' ? on : off, vB = view === 'table' ? on : off;
+    const posChips = ['All', 'Goalkeeper', 'Defender', 'Midfielder', 'Winger', 'Forward'].map((p, i) => i === 0
+      ? { t: p, on: true, bg: t.text, fg: t.bg, border: t.text } : { t: p, on: false, bg: 'transparent', fg: t.text, border: t.border });
+    const fm = s => s.split('').map(l => l === 'W' ? { l, bg: t.accent, fg: t.onAccent, border: '1px solid transparent' } : l === 'D' ? { l, bg: t.chipSolid, fg: t.text, border: '1px solid transparent' } : { l, bg: 'transparent', fg: t.neg, border: `1px solid ${t.neg}` });
+    const src = [
+      ['Falcon', 9, 'Forward', 'WWLWD'.split('').reverse().join(''), 12, 15, 14, 1, '+18', '+5', 6, 32, 0],
+      ['Lynx', 7, 'Midfielder', 'WWDWL', 12, 8, 16, 0, '+14', '+4', 3, 29, 1],
+      ['Wolf', 10, 'Forward', 'LWWWW', 11, 13, 9, 2, '+9', '+3', 4, 27, -1],
+      ['Hawk', 4, 'Winger', 'WLWWD', 12, 9, 12, 0, '+10', '+4', 2, 24, 2],
+      ['Otter', 5, 'Midfielder', 'DWWLW', 10, 6, 13, 1, '+7', '+2', 1, 22, 0],
+      ['Bear', 3, 'Defender', 'WWLLW', 12, 3, 8, 0, '+6', '+2', 2, 18, 1],
+      ['Raven', 11, 'Forward', 'LLWDW', 9, 9, 5, 1, '+2', '0', 0, 17, -2],
+      ['Heron', 1, 'Goalkeeper', 'WDLWW', 12, 0, 4, 0, '+8', '+3', 3, 15, 0],
+      ['Fox', 8, 'Winger', 'LWLDW', 11, 5, 7, 0, '−1', '−1', 0, 14, 0],
+      ['Stag', 6, 'Defender', 'WLLWL', 10, 2, 6, 1, '−3', '−2', 1, 11, -1],
+      ['Crane', 15, 'Midfielder', 'LLDWL', 8, 3, 4, 0, '−5', '−3', 0, 9, 0],
+      ['Mole', 17, 'Defender', 'LLLWL', 7, 1, 3, 2, '−8', '−4', 0, 4, -3]
+    ];
+    const rows = src.map(([name, no, pos, form, days, goals, passes, og, pm, lr, mvp, pts, mv], i) => {
+      const top = i < 3;
+      const move = mv > 0 ? `▲${mv}` : mv < 0 ? `▼${-mv}` : '–';
+      const mc = mv > 0 ? t.link : mv < 0 ? t.neg : t.muted;
+      const cardBg = i === 0 ? '#000000' : t.surface;
+      const lt = i === 0;
+      return {
+        rank: i + 1, name, no, pos, ini: name.slice(0, 2).toUpperCase(), form: fm(form), days, goals, passes, og, pm, lr, mvp, pts, move, mc,
+        ogc: og > 0 ? t.neg : t.text, ptc: top ? t.pos : t.text,
+        rowBg: i === 0 ? (dark ? 'rgba(255,210,31,0.08)' : 'rgba(255,210,31,0.22)') : 'transparent',
+        cardBg, cardBorder: top ? t.accent : t.border, cardFg: lt ? '#F6F1E4' : t.text, cardMuted: lt ? '#B3AA94' : t.muted, cardLine: lt ? '#2E2A20' : t.border,
+        avBg: lt ? '#1F1C15' : t.surface2, avFg: lt ? '#B3AA94' : t.muted, ptCard: lt ? '#FFD21F' : top ? t.pos : t.text,
+        mcCard: lt ? (mv > 0 ? '#FFD21F' : '#B3AA94') : mc
+      };
+    });
+    const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+    const sysName = (this.props.system ?? 'ancient') === 'ancient' ? 'Ancient' : 'Positional'; const sysOpts = [['Ancient', 'Points of the player, ±, balance of results. Results do not add points.', true], ['Positional', 'The same points plus a bonus for a win and a penalty for a loss by position.', false]].map(([tt, s, a]) => { const on = ((this.props.system ?? 'ancient') === 'ancient') === a; return { t: tt, s, on: on ? 'true' : 'false', mark: on ? '✓' : '', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text }; }); return { sysName, sysOpts, th, themeName, t, vA, vB, showCards: view === 'cards', showTable: view === 'table', posChips, rows };
+  }
+}
+</script>
+</body>
+</html>

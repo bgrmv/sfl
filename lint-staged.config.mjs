@@ -7,8 +7,8 @@ const quote = files => files.map(f => `'${f}'`).join(' ');
 // lint-staged runs commands without a shell, and ESLint finds its config from the cwd
 const inPackage = (dir, cmd) => `sh -c "cd ${dir} && ${cmd}"`;
 
-// Not ours to format: skills, dumps and backups, certificates, generated files
-const IGNORED = /^(\.claude|_dumps|_backups|ssl)\/|\.generated\.ts$|(^|\/)(dist|node_modules)\//;
+// Not ours to format: skills, dumps and backups, certificates, generated files, design canvas sources
+const IGNORED = /^(\.claude|_dumps|_backups|ssl|docs\/design\/canvas)\/|\.generated\.ts$|(^|\/)(dist|node_modules)\//;
 
 const scoped = (dir, tool, args) => staged => {
   const files = staged.filter(f => !IGNORED.test(rel(f)) && rel(f).startsWith(`${dir}/`));

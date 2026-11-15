@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL games list</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; font-size: 16px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="background: {{t.headerBg}}; border-bottom: 1px solid {{t.border}}; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px;">
+    <a href="#" aria-label="SFL, home" style="display: flex; align-items: center;">
+      <span style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: {{t.markBg}}; color: {{t.markFg}}; border-radius: {{t.radiusSm}}px; font-family: {{t.head}}; font-weight: {{t.headW}}; font-size: 16px; letter-spacing: {{t.headLs}};">SFL</span>
+    </a>
+    <nav aria-label="Main" style="display: flex; gap: 4px 18px; flex: 1 1 auto; font-size: 14px; font-weight: 600; overflow-x: auto;">
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Home</a>
+      <a href="#" style="color: {{t.text}}; border-bottom: 2px solid {{t.accentLine}}; padding: 8px 0;">Games</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Players</a>
+      <a href="#" style="color: {{t.muted}}; padding: 8px 0;">Teams</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Compare</a><a href="#" style="color: {{t.muted}}; padding: 8px 0; white-space: nowrap;">Release notes<span aria-label="new release" role="img" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: {{t.accent}}; margin-left: 6px;"></span></a>
+    </nav>
+      <a href="#" aria-label="Theme: {{themeName}}. Change" aria-haspopup="true" style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg></a>
+  </header>
+
+  <main style="padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 880px; width: 100%; box-sizing: border-box; margin: 0 auto;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+      <h1 style="margin: 0; font-family: {{t.head}}; font-weight: {{t.headW}}; font-size: 31px; line-height: 1.2; letter-spacing: {{t.headLs}}; text-transform: {{t.headCase}};">Games</h1>
+      <a href="#" style="display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 18px; border-radius: {{t.radiusSm}}px; background: {{t.btnBg}}; color: {{t.btnFg}}; font-weight: 700; font-size: 14px;">Create game</a>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+      <label style="font-size: 14px; color: {{t.muted}}; display: inline-flex; align-items: center; gap: 8px;">Season
+        <select style="height: 44px; padding: 0 10px; border: 1px solid {{t.border}}; border-radius: {{t.radiusSm}}px; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: 14px;"><option>2026</option><option>2025</option></select>
+      </label>
+      <div role="group" aria-label="Status" style="display: inline-flex; gap: 6px;">
+        <a href="#" aria-current="true" style="display: inline-flex; align-items: center; height: 44px; padding: 0 14px; border-radius: 999px; background: {{t.chipOnBg}}; color: {{t.chipOnFg}}; font-size: 14px; font-weight: 700;">All</a>
+        <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; font-size: 14px; font-weight: 600;">Published</a>
+        <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; font-size: 14px; font-weight: 600;">Draft</a>
+      </div>
+    </div>
+
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+        <li style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-left: {{t.cardTop}}px solid {{t.accentLine}}; border-radius: {{t.radius}}px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <a href="#" style="font-weight: 700; font-size: 16px;">Game {{r.number}}</a>
+            <span style="font-size: 13px; color: {{t.muted}};">{{r.date}}</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: {{t.scoreBg}}; color: {{t.scoreFg}}; border-radius: {{t.radiusSm}}px; padding: {{t.scorePad}};">
+            <span style="font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: {{t.teamA}}; border: 1px solid {{t.teamAEdge}};"></span>BMW</span>
+            <span style="font-family: {{t.num}}; font-weight: 700; font-size: {{t.scoreSize}}px; line-height: 1; font-variant-numeric: tabular-nums;">{{r.score}}</span>
+            <span style="font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">HONDA<span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: {{t.teamB}};"></span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px;">
+            <span style="color: {{t.muted}};">MVP <strong style="color: {{t.text}};">{{r.mvp}}</strong></span>
+            <span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: {{r.badgeBg}}; color: {{r.badgeFg}};">{{r.status}}</span>
+          </div>
+        </li>
+      </sc-for>
+    </ul>
+
+    <nav aria-label="Pages" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 14px;">
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 1px solid {{t.border}}; border-radius: {{t.radiusSm}}px; background: {{t.surface}}; font-weight: 700;">Older games</a>
+      <span style="color: {{t.muted}};">Page 1 of 8</span>
+    </nav>
+  </main>
+  <footer style="margin-top: auto; border-top: 1px solid {{t.border}}; background: {{t.surface}};">
+    <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 28px 20px 20px; display: flex; flex-wrap: wrap; gap: 28px 40px;">
+      <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;">Amateur football league</span></div>
+        <p style="margin: 0; font-size: 14px; color: {{t.muted}}; max-width: 36ch;">A game every Saturday, in any weather. Results, ratings and the history of the league.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;"><a href="#" aria-label="Instagram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"/></svg></a><a href="#" aria-label="Telegram" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l9-6"/></svg></a><a href="#" aria-label="YouTube" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a><a href="#" aria-label="Facebook" style="display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}};"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a></div>
+      </div>
+      <div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">League</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Games</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Players</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Captains</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Seasons</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">History</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Photo and video</a></div><div style="flex: 1 1 140px; min-width: 130px; display: flex; flex-direction: column; gap: 2px;"><div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Rules</div><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Codex</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Vote</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">How points work</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px; color: {{t.text}}; font-size: 14px;">Suggest or complain anonymously</a></div>
+      <div style="flex: 1 1 200px; min-width: 180px; display: flex; flex-direction: column; gap: 2px;">
+        <div style="font-size: 12px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Contacts</div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: {{t.link}}; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@sfl.example</a>
+        <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>[Pitch address]</span>
+        <span style="min-height: 32px; font-size: 13px; color: {{t.muted}};">Saturdays, [time]. The owner fills in the address, the time and the e-mail.</span>
+      </div>
+    </div>
+    <div style="border-top: 1px solid {{t.border}};">
+      <div style="max-width: 1080px; margin: 0 auto; box-sizing: border-box; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; font-size: 13px; color: {{t.muted}};">
+        <span>© 2026 SFL. All rights reserved.</span><a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: {{t.link}}; font-weight: 700;">Release 2026.11.3 · 15 Nov 2026 · What’s new</a>
+        <nav aria-label="Legal" style="display: flex; flex-wrap: wrap; gap: 0 16px;"><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Privacy</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Cookies</a><a href="#" style="display: inline-flex; align-items: center; min-height: 32px;">Terms</a></nav>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid {{t.border}}; color: {{t.text}}; font-weight: 700;">EN ▾</span><div role="radiogroup" aria-label="Theme" style="display: inline-flex; border: 1px solid {{t.border}}; border-radius: 4px; overflow: hidden;"><a href="#" role="radio" aria-checked="{{th.light.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.light.bg}}; color: {{th.light.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Light</a><a href="#" role="radio" aria-checked="{{th.dark.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.dark.bg}}; color: {{th.dark.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z"/></svg>Dark</a><a href="#" role="radio" aria-checked="{{th.system.on}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: {{th.system.bg}}; color: {{th.system.fg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Auto</a></div></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"direction":{"editor":"enum","default":"scoreboard","options":["scoreboard","pitch","clean"]},"mode":{"editor":"enum","default":"light","options":["light","dark"]},"$preview":{"width":360,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dir = this.props.direction ?? 'scoreboard';
+    const dark = (this.props.mode ?? 'light') === 'dark';
+    const base = {
+      scoreboard: {
+        body: "'Inter', sans-serif", head: "'Oswald', 'Arial Narrow', sans-serif", num: "'Oswald', 'Arial Narrow', sans-serif",
+        headW: 600, headLs: '0.03em', headCase: 'uppercase', radius: 4, radiusSm: 4, cardTop: 4, scoreSize: 32,
+        scoreBg: '#000000', scoreFg: '#FFD21F', scorePad: '8px 12px',
+        light: { bg: '#F2EBDC', surface: '#FBF8F0', headerBg: '#F2EBDC', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accentLine: '#FFD21F', btnBg: '#FFD21F', btnFg: '#15130F', markBg: '#FFD21F', markFg: '#15130F', chipOnBg: '#FFD21F', chipOnFg: '#15130F', teamA: '#FFFFFF', teamAEdge: '#15130F', teamB: '#B3261E' },
+        dark: { bg: '#0D0C0A', surface: '#16140F', headerBg: '#0D0C0A', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accentLine: '#FFD21F', btnBg: '#FFD21F', btnFg: '#0D0C0A', markBg: '#FFD21F', markFg: '#0D0C0A', chipOnBg: '#FFD21F', chipOnFg: '#0D0C0A', teamA: '#F6F1E4', teamAEdge: '#F6F1E4', teamB: '#FF6A5F' }
+      },
+      pitch: {
+        body: "'Manrope', 'Inter', sans-serif", head: "'Manrope', 'Inter', sans-serif", num: "'Manrope', 'Inter', sans-serif",
+        headW: 800, headLs: '-0.01em', headCase: 'none', radius: 16, radiusSm: 10, cardTop: 0, scoreSize: 36,
+        scoreBg: 'transparent', scoreFg: 'inherit', scorePad: '2px 0',
+        light: { bg: '#F6F3EA', surface: '#FFFFFF', headerBg: '#F6F3EA', border: '#E0DACB', text: '#14241B', muted: '#55635A', accentLine: '#0F7B45', btnBg: '#0F7B45', btnFg: '#FFFFFF', markBg: '#0F7B45', markFg: '#FFFFFF', chipOnBg: '#0F7B45', chipOnFg: '#FFFFFF', teamA: '#FFFFFF', teamAEdge: '#14241B', teamB: '#C62F26' },
+        dark: { bg: '#0F1A14', surface: '#17261D', headerBg: '#0F1A14', border: '#263A2E', text: '#EAF2EC', muted: '#A3B8AA', accentLine: '#4ADE80', btnBg: '#4ADE80', btnFg: '#0F1A14', markBg: '#4ADE80', markFg: '#0F1A14', chipOnBg: '#4ADE80', chipOnFg: '#0F1A14', teamA: '#EAF2EC', teamAEdge: '#EAF2EC', teamB: '#FF6A5F' }
+      },
+      clean: {
+        body: "'Inter', sans-serif", head: "'Inter', sans-serif", num: "'Inter', sans-serif",
+        headW: 700, headLs: '-0.02em', headCase: 'none', radius: 8, radiusSm: 6, cardTop: 1, scoreSize: 26,
+        scoreBg: 'transparent', scoreFg: 'inherit', scorePad: '2px 0',
+        light: { bg: '#FAFAFA', surface: '#FFFFFF', headerBg: '#FFFFFF', border: '#E5E7EB', text: '#111827', muted: '#4B5563', accentLine: '#0E7C86', btnBg: '#111827', btnFg: '#FFFFFF', markBg: '#111827', markFg: '#FFFFFF', chipOnBg: '#111827', chipOnFg: '#FFFFFF', teamA: '#FFFFFF', teamAEdge: '#111827', teamB: '#C62F26' },
+        dark: { bg: '#0B0F14', surface: '#12181F', headerBg: '#0B0F14', border: '#212A33', text: '#E6EAF0', muted: '#9AA5B4', accentLine: '#2DD4BF', btnBg: '#E6EAF0', btnFg: '#0B0F14', markBg: '#E6EAF0', markFg: '#0B0F14', chipOnBg: '#E6EAF0', chipOnFg: '#0B0F14', teamA: '#E6EAF0', teamAEdge: '#E6EAF0', teamB: '#FF6A5F' }
+      }
+    }[dir];
+    const t = { ...base, ...(dark ? base.dark : base.light) };
+    const badge = (s) => s === 'Published'
+      ? { badgeBg: dark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)', badgeFg: t.text }
+      : { badgeBg: 'transparent', badgeFg: t.muted };
+    const rows = [
+      [46, '4 : 1', '14 Nov', 'Falcon', 'Published'], [45, '3 : 3', '07 Nov', 'Lynx', 'Published'], [44, '2 : 5', '31 Oct', 'Rocket', 'Published'],
+      [43, '6 : 4', '24 Oct', 'Wolf', 'Published'], [42, '1 : 0', '17 Oct', 'Tank', 'Published'], [41, '5 : 5', '10 Oct', 'Ghost', 'Draft'], [40, '2 : 2', '03 Oct', 'Falcon', 'Published']
+    ].map(([number, score, date, mvp, status]) => ({ number, score, date, mvp, status, ...badge(status) }));
+    t.accent ??= '#FFD21F'; t.onAccent ??= dark ? '#0D0C0A' : '#15130F'; t.link ??= dark ? '#FFD21F' : '#6B5400'; const th = { light: { on: !dark ? 'true' : 'false', bg: !dark ? t.accent : 'transparent', fg: !dark ? t.onAccent : t.text }, dark: { on: dark ? 'true' : 'false', bg: dark ? t.accent : 'transparent', fg: dark ? t.onAccent : t.text }, system: { on: 'false', bg: 'transparent', fg: t.text } }; const themeName = dark ? 'dark' : 'light'; 
+    return { th, themeName, t, rows };
+  }
+}
+</script>
+</body>
+</html>

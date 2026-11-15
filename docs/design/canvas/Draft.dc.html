@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SFL admin new game draft</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; display: flex; flex-direction: column;">
+
+  <header style="background: {{t.surface}}; border-bottom: 1px solid {{t.border}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
+    <span style="display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px;">SFL</span>
+    <nav aria-label="Breadcrumb" style="flex: 1 1 auto; font-size: 14px; color: {{t.muted}};"><a href="#">Admin</a> / <a href="#">Games</a> / New game</nav>
+    <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid {{t.border}}; font-weight: 700; font-size: 13px;">Save draft and close</a>
+  </header>
+
+  <div style="position: sticky; top: 0; z-index: 5;"><dc-import name="SummaryBar" stage="draft" hint-size="100%,120px"></dc-import></div>
+
+  <main style="width: 100%; max-width: 1180px; box-sizing: border-box; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+    <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 31px; line-height: 1.2; letter-spacing: 0.03em; text-transform: uppercase;">Draft · Game 47 · Saturday, 21 Nov</h1>
+
+    <ol aria-label="Steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px;">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="6">
+        <li aria-current="{{s.current}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; border: 1px solid {{s.border}}; font-size: 13px; font-weight: 700;"><span style="font-family: 'Oswald', sans-serif; font-size: 14px;">{{s.n}}</span>{{s.label}}</li>
+      </sc-for>
+    </ol>
+
+    <div role="status" style="display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 14px;">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M4 12h13M12 6l6 6-6 6"/></svg>
+      <span><strong>Pick 11 of 20.</strong> HONDA picks next. Captains were chosen on the previous step and picked first.</span>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+
+      <section aria-labelledby="pool" style="flex: 1 1 300px; min-width: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+        <h2 id="pool" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase;">Available players · 24</h2>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Search
+          <input type="search" placeholder="Nickname or number" style="box-sizing: border-box; height: 44px; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 15px; font-weight: 400;">
+        </label>
+        <ul style="list-style: none; margin: 0; padding: 0;">
+          <sc-for list="{{pool}}" as="p" hint-placeholder-count="8">
+            <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid {{t.border}};">
+              <span style="flex: 0 0 28px; color: {{t.muted}}; font-variant-numeric: tabular-nums;">{{p.number}}</span>
+              <span style="flex: 1 1 auto; font-weight: 600;">{{p.name}} <span style="display: inline-flex; align-items: center; gap: 4px; color: {{t.muted}}; font-size: 12px; font-weight: 400;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{p.posIcon}}"/></svg>{{p.pos}}</span></span>
+              <button type="button" style="height: 36px; padding: 0 10px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;">+ BMW</button>
+              <button type="button" style="height: 36px; padding: 0 10px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;">+ HONDA</button>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <sc-for list="{{teams}}" as="tm" hint-placeholder-count="2">
+        <section style="flex: 1 1 280px; min-width: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-top: 4px solid {{tm.color}}; border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase;">{{tm.title}}</h2>
+          <div style="display: flex; align-items: center; gap: 12px; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 4px; padding: 10px 12px;">
+            <span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 50%; background: {{t.onAccent}}; color: {{t.accent}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 17px;">{{tm.captainInitials}}</span>
+            <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M14.8 9.2a3.8 3.8 0 1 0 0 5.6" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-linecap="round"/></svg>Captain · {{tm.firstPick}}</div>
+              <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; line-height: 1.15; letter-spacing: 0.03em;">{{tm.captain}}</div>
+            </div>
+          </div>
+          <ol style="list-style: none; margin: 0; padding: 0;">
+            <sc-for list="{{tm.picks}}" as="k" hint-placeholder-count="6">
+              <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid {{t.border}};">
+                <span style="flex: 0 0 26px; height: 26px; border-radius: 50%; background: {{t.chip}}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px;">{{k.order}}</span>
+                <span style="flex: 1 1 auto; font-weight: 600;">{{k.name}}</span>
+                <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 3px; background: {{k.posBg}}; color: {{k.posFg}};"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{k.posIcon}}"/></svg>{{k.pos}}</span>
+                <button type="button" aria-label="Remove {{k.name}}" style="width: 36px; height: 36px; border: 1px solid {{t.border}}; border-radius: 4px; background: {{t.bg}}; color: {{t.muted}}; font: inherit; cursor: pointer;">×</button>
+              </li>
+            </sc-for>
+          </ol>
+        </section>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center;">
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 1px solid {{t.border}}; border-radius: 4px; font-weight: 700; font-size: 14px;">← Captains</a>
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-weight: 700; font-size: 14px;">Next: statistics →</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', err: '#FF8A80', chip: 'rgba(255,255,255,0.10)', teamA: '#F6F1E4', teamB: '#FF6A5F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', err: '#B3261E', chip: 'rgba(0,0,0,0.06)', teamA: '#15130F', teamB: '#B3261E' };
+    const steps = ['Game', 'Captains', 'Draft', 'Statistics', 'Goal order', 'Review', 'Publish'].map((label, i) => ({
+      label, n: i + 1, current: i === 2 ? 'step' : 'false',
+      bg: i === 2 ? t.accent : 'transparent', fg: i === 2 ? t.onAccent : (i < 2 ? t.text : t.muted), border: i === 2 ? t.accent : t.border
+    }));
+    const ICON = {
+      GK: 'M8 11V6.5M11 11V4.5M14 11V5.5M17 11V8M6 11h11.5v5a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-5-5zM6 13l-2.5-2.5',
+      DEF: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',
+      MID: 'M12 3v18M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
+      FWD: 'M6 17V9h4l1.5 3 5 1.5c1.7.5 2.5 1.5 2.5 3V17zM6 19.5h12M6 11.5L2.5 10M6 14L2 14.5',
+      NONE: 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM12 5v14M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'
+    };
+    const pool = [[12, 'Bolt', 'DEF'], [13, 'Dingo', 'DEF'], [14, 'Hawk', 'DEF'], [15, 'Echo', ''], [16, 'Nova', 'FWD'], [17, 'Ranger', 'FWD'], [18, 'Zeta', 'FWD'], [19, 'Sparks', 'MID']]
+      .map(([number, name, pos]) => ({ number, name, pos: pos || 'no position', posIcon: ICON[pos || 'NONE'] }));
+    const pick = (order, name, pos) => ({
+      order, name, pos: pos || 'no position', posIcon: ICON[pos || 'NONE'],
+      posBg: pos ? t.chip : 'transparent', posFg: pos ? t.text : t.err
+    });
+    const teams = [
+      { title: 'BMW · 1st draft', color: t.teamA, captain: 'Falcon', captainInitials: 'FA', firstPick: 'picked 1st', picks: [pick(1, 'Wolf', 'FWD'), pick(3, 'Lynx', 'MID'), pick(5, 'Rocket', 'MID'), pick(7, 'Ghost', 'DEF'), pick(9, 'Viper', 'GK')] },
+      { title: 'HONDA · 2nd draft', color: t.teamB, captain: 'Tank', captainInitials: 'TA', firstPick: 'picked 2nd', picks: [pick(2, 'Vega', 'FWD'), pick(4, 'Pike', 'MID'), pick(6, 'Echo', ''), pick(8, 'Moose', 'DEF'), pick(10, 'Ibex', 'GK')] }
+    ];
+    return { t, steps, pool, teams };
+  }
+}
+</script>
+</body>
+</html>

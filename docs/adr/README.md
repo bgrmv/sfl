@@ -41,3 +41,5 @@
 | [0010](0010-zod-mini-in-shared-schemas.md)           | Схемы API на zod, в общем пакете `zod/mini`                             | принято |
 | [0011](0011-result-response-format.md)               | Единый ответ API: `Result<T, E>`                                        | принято |
 | [0012](0012-tokens-in-memory-and-httponly-cookie.md) | Токены: access в памяти, refresh в HttpOnly-cookie                      | принято |
+| [0013](0013-tests-first-then-domain-then-local.md)   | Порядок разработки: тесты, домен, локальное; DDD в мере лиги            | принято |
+| [0014](0014-mongodb-replica-set.md)                  | MongoDB как replica set ради транзакций                                 | принято |
