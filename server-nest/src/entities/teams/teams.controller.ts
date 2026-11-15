@@ -4,7 +4,6 @@ import {
   Get,
   HttpStatus,
   Post,
-  Put,
   UsePipes,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -12,7 +11,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { TeamSaveDTO } from './team.dto';
-import { ITeam, Team, UpdateTeam } from './team.schema';
+import { ITeam, Team } from './team.schema';
 import { TeamsService } from './teams.service';
 
 @ApiTags('teams')
@@ -41,16 +40,5 @@ export class TeamsController {
     await this.teamsService.save(team);
 
     return { success: 'OK' };
-  }
-
-  // PUT /games/:id
-  @Put(':id')
-  @ApiBody({ type: UpdateTeam })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'The record has been successfully updated.',
-  })
-  update() {
-    // Update logic
   }
 }

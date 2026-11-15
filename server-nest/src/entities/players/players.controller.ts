@@ -64,7 +64,7 @@ function assertObjectId(id: string, name = 'id'): void {
   }
 }
 
-@ApiTags('player')
+@ApiTags('players')
 @Controller('players')
 export class PlayersController {
   constructor(
@@ -161,7 +161,7 @@ export class PlayersController {
     required: true,
     isArray: true,
   })
-  @ApiResponse({ type: Player, isArray: true, status: 200 })
+  @ApiResponse({ type: Player, isArray: true, status: 201 })
   @ApiBadRequestResponse({ description: 'Invalid body' })
   @ApiConflictResponse({ description: 'The email is already taken' })
   async create(

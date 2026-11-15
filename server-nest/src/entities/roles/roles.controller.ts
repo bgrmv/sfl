@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from './roles.schema';
 import { RolesService } from './roles.service';
@@ -14,10 +14,7 @@ export class RolesController {
     status: HttpStatus.CREATED,
     description: 'Create a role',
   })
-  async createRole(
-    @Body() body: { name: string; description?: string },
-    @Res() res,
-  ) {
-    res.json(await this.rolesService.create(body));
+  async createRole(@Body() body: { name: string; description?: string }) {
+    return await this.rolesService.create(body);
   }
 }

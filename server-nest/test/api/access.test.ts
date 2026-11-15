@@ -96,12 +96,6 @@ const CLOSED: Case[] = [
     }),
   },
   {
-    name: 'PUT /teams/:id',
-    method: 'put',
-    path: () => '/teams/some-id',
-    body: () => ({}),
-  },
-  {
     name: 'POST /roles',
     method: 'post',
     path: () => '/roles',

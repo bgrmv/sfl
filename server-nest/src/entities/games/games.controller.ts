@@ -35,7 +35,7 @@ export class GamesController {
   @Get()
   @ApiQuery({
     name: 'number',
-    type: String,
+    type: Number,
     required: false,
   })
   @ApiQuery({
@@ -59,17 +59,12 @@ export class GamesController {
     });
   }
 
-  // Get /games/:id
   @Public()
   @Get(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: false,
-  })
+  @ApiParam({ name: 'id', type: String })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all games records',
+    description: 'Get one game by id',
   })
   async findById(
     @Param('id')
@@ -81,7 +76,7 @@ export class GamesController {
   @Post()
   @ApiBody({ type: Game })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The record has been successfully created.',
   })
   @UsePipes(new ZodValidationPipe(SaveGameDTO))
@@ -89,12 +84,11 @@ export class GamesController {
     return await this.gamesService.create(game);
   }
 
-  // PUT /games/:id
   @Patch(':id')
   @ApiBody({ type: UpdateGame })
   @ApiResponse({
-    status: 200,
-    description: 'The record has been successfully updated',
+    status: HttpStatus.OK,
+    description: 'The record has been partially updated',
   })
   async update(
     @Param('id') id: string,
@@ -103,9 +97,8 @@ export class GamesController {
     return await this.gamesService.update(id, game);
   }
 
-  // PUT /games/:id
   @Put(':id')
-  @ApiBody({ type: UpdateGame })
+  @ApiBody({ type: Game })
   @ApiResponse({
     status: 200,
     description: 'The record has been successfully replaced',
@@ -119,7 +112,7 @@ export class GamesController {
 
   @Delete(':id')
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.OK,
     description: 'The record has been successfully deleted',
   })
   async delete(@Param('id') id: string) {
