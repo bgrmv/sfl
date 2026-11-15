@@ -1,11 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import cookieParser from 'cookie-parser';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Model } from 'mongoose';
 import request from 'supertest';
 
+import { configureApp } from '../../src/app.setup';
 import { hash } from '../../src/shared/utils/string';
 
 export const ADMIN_EMAIL = 'admin@sfl.test';
@@ -28,9 +28,11 @@ export interface TestApp {
 
 /**
  * The real AppModule on an in-memory MongoDB: nothing external is needed.
- * Mirrors main.ts (prefix, cookies) but skips HTTPS, Swagger and CORS.
+ * Shares `configureApp` with main.ts but skips HTTPS, Swagger and CORS.
  */
-export async function createTestApp(): Promise<TestApp> {
+export async function createTestApp(
+  env: Record<string, string> = {},
+): Promise<TestApp> {
   const mongo = await MongoMemoryServer.create();
 
   Object.assign(process.env, {
@@ -42,6 +44,10 @@ export async function createTestApp(): Promise<TestApp> {
     CLIENT_PORT: '4200',
     ACCESS_TOKEN_SECRET: 'test-access-secret',
     REFRESH_TOKEN_SECRET: 'test-refresh-secret',
+    // The limits stay out of the way of the tests; a test of the limit lowers them
+    SIGN_IN_LIMIT: '1000',
+    API_LIMIT: '100000',
+    ...env,
   });
 
   // Config is read from process.env at import time of the module graph
@@ -52,8 +58,7 @@ export async function createTestApp(): Promise<TestApp> {
   }).compile();
   const app = moduleRef.createNestApplication();
   app.useLogger(false);
-  app.setGlobalPrefix('rest');
-  app.use(cookieParser());
+  configureApp(app, { production: true }); // no Swagger: faster, and what runs in prod
   await app.init();
 
   const model = <T = any>(name: string) =>

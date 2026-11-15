@@ -93,6 +93,8 @@ SFL — приложение для любительской футбольно�
 
 Без токена изменяющий маршрут отвечает 401, с токеном без нужной роли — 403. Роли берутся из токена (до 15 минут после смены, проверка по базе — [S8.12](backlog/E08-security-privacy/S8.12.md)). `PATCH /players/:id` меняет только поля из белого списка (`UpdatePlayerDTO`), пользователя берёт из игрока, а не из тела; пароль меняется только через `POST /users/:id/password`. Матрица «роль × маршрут» проверяется в `server-nest/test/api/access.test.ts`, и тест полноты не даёт добавить закрытый маршрут без строки в ней.
 
+Вход защищён от перебора ([S8.11](backlog/E08-security-privacy/S8.11.md)): не больше 5 попыток в минуту по IP и по e-mail на `POST /auth/sign-in` и мягкий общий лимит 300 запросов в минуту по IP; превышение даёт `429` с `Retry-After`. Лимиты задаются окружением (`SIGN_IN_LIMIT`, `API_LIMIT` и др.). Заголовки безопасности ставит `helmet` (HSTS и CSP — прокси), Swagger доступен только вне production.
+
 ### 5.2 Ответы и ошибки API
 
 Каждый ответ — `Result<T, ApiError>` ([ADR 0011](adr/0011-result-response-format.md)): успех `{ ok: true, data }`, ошибка `{ ok: false, error: { status, code, message, issues? } }`. Статус HTTP осмысленный (2xx или 4xx/5xx). `code` — стабильная строка (`NOT_FOUND`, `VALIDATION_FAILED`, `UNAUTHORIZED`, ...), клиент ветвится по ней; `issues: [{ path, message }]` только у валидации. Типы и `Ok`/`Err` — в `@sfl/schemas`. Ответ формируют [глобальный перехватчик](../server-nest/src/shared/interceptors/response.interceptor.ts) и [фильтр](../server-nest/src/shared/filters/all-exceptions.filter.ts); контроллеры возвращают обычные значения и не используют `@Res()` (для cookie — `@Res({ passthrough: true })`).

@@ -2,13 +2,12 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import cookieParser from 'cookie-parser';
 import express from 'express';
 import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
 import { AppModule } from './app.module';
+import { configureApp } from './app.setup';
 
 let httpsOptions;
 if (process.env.NODE_ENV === 'production') {
@@ -34,24 +33,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
   const configService = app.get(ConfigService);
 
-  // Prefix for endpoonts
-  app.setGlobalPrefix('rest');
+  const production = configService.getOrThrow('NODE_ENV') === 'production';
 
-  // Open API
-  const config = new DocumentBuilder()
-    .setTitle('SFL docs')
-    .setDescription('The SFL API docs')
-    .setVersion('1.0')
-    // TODO: enable when it will be ready for http / https
-    // .setSchemes('https')
-    .addBearerAuth()
-    .addSecurityRequirements('bearer')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('rest', app, document);
+  // Behind the reverse proxy (one hop) the client IP comes from X-Forwarded-For;
+  // the rate limit counts the real address (S8.11)
+  if (production) {
+    server.set('trust proxy', 1);
+  }
 
-  // Cookies
-  app.use(cookieParser());
+  configureApp(app, { production });
 
   const [CLIENT_HOSTNAME, CLIENT_PORT] = [
     configService.getOrThrow('CLIENT_HOSTNAME'),
@@ -69,7 +59,7 @@ async function bootstrap() {
 
   const PORT = configService.getOrThrow('PORT') || 3001;
 
-  if (configService.getOrThrow('NODE_ENV') === 'production') {
+  if (production) {
     app.listen(PORT, () => {
       new Logger('Bootstrap').log(`Server is running [http][${PORT}]`);
     });
