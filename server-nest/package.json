@@ -11,7 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prestart": "pnpm --dir .. build:packages",
     "start": "nest start",
-    "prestart:dev": "pnpm --dir .. build:packages",
+    "prestart:dev": "pnpm --dir .. build:packages && pnpm --dir .. backup:status",
     "start:dev": "NODE_ENV=development nest start --watch",
     "prestart:debug": "pnpm --dir .. build:packages",
     "start:debug": "NODE_ENV=development nest start --debug --watch",

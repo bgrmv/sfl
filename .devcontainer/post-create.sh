@@ -58,6 +58,9 @@ pnpm build:packages
 echo "==> gitleaks (secret scanner for pnpm check)"
 bash .devcontainer/install-gitleaks.sh
 
+echo "==> mongodump and age (MongoDB backups, S6.1)"
+bash .devcontainer/install-backup-tools.sh
+
 echo "==> server-nest/.env"
 if [ ! -f server-nest/.env ]; then
   cp .devcontainer/server-nest.env server-nest/.env

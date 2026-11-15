@@ -9,6 +9,9 @@
   "scripts": {
     "prepare": "husky",
     "check": "node scripts/check.mjs",
+    "backup:prod": "node scripts/mongo-backup.mjs dump",
+    "backup:verify": "node scripts/mongo-backup.mjs verify",
+    "backup:status": "node scripts/mongo-backup.mjs status",
     "build:packages": "pnpm --filter \"./packages/*\" run build"
   },
   "devDependencies": {
