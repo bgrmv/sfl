@@ -1,4 +1,5 @@
 import { computed, effect, inject } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { PlayersService } from '@entities/players/services/players.service';
 import { TeamsService } from '@entities/teams';
@@ -11,6 +12,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { apiErrorMessage } from '@shared/api/api-error-message';
 import { TeamEnum } from '@shared/constants/team';
 import { isDate } from 'date-fns';
 import { cloneDeep, isEqual, omit } from 'lodash-es';
@@ -422,189 +424,212 @@ export const NewGameStore = signalStore(
   withMethods(
     (
       store,
-      { router, activatedRoute, gameService, playersService, teamsService } = {
+      {
+        router,
+        snackBar,
+        activatedRoute,
+        gameService,
+        playersService,
+        teamsService,
+      } = {
         router: inject(Router),
+        snackBar: inject(MatSnackBar),
         activatedRoute: inject(ActivatedRoute),
         gameService: inject(GameService),
         playersService: inject(PlayersService),
         teamsService: inject(TeamsService),
       },
-    ) => ({
-      // Game
-      updateStatus: (status: EnumGameStatus): void => {
-        patchState(store, state => ({
-          game: { ...state.game, status },
-        }));
-      },
-      updateGameFields(game: Partial<TGameFinal>): void {
-        patchState(store, state => ({
-          game: { ...state.game, ...game },
-        }));
-      },
-      saveGame() {
-        const {
-          id,
-          status,
-          number,
-          season,
-          playedAt,
-          link,
-          description,
-          notes,
-        } = store.game() as IGameDTO;
-
-        const gameDTO = <IGameDTO>{
-          id,
-          status,
-          number,
-          season,
-          playedAt,
-          link,
-          description,
-          notes,
-          teams: store.teamsEntities(),
-          statistics: store.getStatististicsDTOs(),
-        };
-
-        // TODO
-        gameService.create(gameDTO).subscribe(game => {
-          const { season, number } = game;
-          if (!game) {
-            console.error('GAME IS NOT CREATED');
-            return;
-          }
-
-          router.navigate(['games', 'edit', season, number]);
+    ) => {
+      const showSaveError = (error: unknown, fallback: string) => {
+        console.error(error);
+        snackBar.open(apiErrorMessage(error, fallback), 'Close', {
+          duration: 10000,
         });
-      },
+      };
 
-      updateGame() {
-        const {
-          id,
-          status,
-          number,
-          season,
-          playedAt,
-          link,
-          description,
-          notes,
-        } = store.game() as IGameDTO;
+      return {
+        // Game
+        updateStatus: (status: EnumGameStatus): void => {
+          patchState(store, state => ({
+            game: { ...state.game, status },
+          }));
+        },
+        updateGameFields(game: Partial<TGameFinal>): void {
+          patchState(store, state => ({
+            game: { ...state.game, ...game },
+          }));
+        },
+        saveGame() {
+          const {
+            id,
+            status,
+            number,
+            season,
+            playedAt,
+            link,
+            description,
+            notes,
+          } = store.game() as IGameDTO;
 
-        const gameDTO = <IGameDTO>{
-          id,
-          status,
-          number,
-          season,
-          playedAt,
-          link,
-          description,
-          notes,
-          teams: store.teamsEntities(),
-          statistics: store.getStatististicsDTOs(),
-        };
+          const gameDTO = <IGameDTO>{
+            id,
+            status,
+            number,
+            season,
+            playedAt,
+            link,
+            description,
+            notes,
+            teams: store.teamsEntities(),
+            statistics: store.getStatististicsDTOs(),
+          };
 
-        gameService.update(id, gameDTO).subscribe(game => {
-          if (!game) {
-            console.error('GAME IS NOT UPDATED');
-            return;
-          }
+          // TODO
+          gameService.create(gameDTO).subscribe({
+            next: game => {
+              const { season, number } = game;
+              if (!game) {
+                console.error('GAME IS NOT CREATED');
+                return;
+              }
 
-          patchState(store, { initialValue: game });
-          this.initGame();
-        });
-      },
-      initGame: rxMethod<void>(
-        pipe(
-          tap(() => patchState(store, { loading: true, initLoading: true })),
-          delay(500),
-          switchMap(() =>
-            forkJoin({
-              paramMap: activatedRoute.paramMap.pipe(first()),
-              queryParamMap: activatedRoute.queryParamMap.pipe(first()),
-              teams: teamsService.find(),
-              players: playersService.find(),
+              router.navigate(['games', 'edit', season, number]);
+            },
+            error: error => showSaveError(error, 'The game is not created.'),
+          });
+        },
+
+        updateGame() {
+          const {
+            id,
+            status,
+            number,
+            season,
+            playedAt,
+            link,
+            description,
+            notes,
+          } = store.game() as IGameDTO;
+
+          const gameDTO = <IGameDTO>{
+            id,
+            status,
+            number,
+            season,
+            playedAt,
+            link,
+            description,
+            notes,
+            teams: store.teamsEntities(),
+            statistics: store.getStatististicsDTOs(),
+          };
+
+          gameService.update(id, gameDTO).subscribe({
+            next: game => {
+              if (!game) {
+                console.error('GAME IS NOT UPDATED');
+                return;
+              }
+
+              patchState(store, { initialValue: game });
+              this.initGame();
+            },
+            error: error => showSaveError(error, 'The game is not updated.'),
+          });
+        },
+        initGame: rxMethod<void>(
+          pipe(
+            tap(() => patchState(store, { loading: true, initLoading: true })),
+            delay(500),
+            switchMap(() =>
+              forkJoin({
+                paramMap: activatedRoute.paramMap.pipe(first()),
+                queryParamMap: activatedRoute.queryParamMap.pipe(first()),
+                teams: teamsService.find(),
+                players: playersService.find(),
+              }),
+            ),
+            switchMap<
+              {
+                paramMap: ParamMap;
+                queryParamMap: ParamMap;
+                teams: [ITeamDTO, ITeamDTO];
+                players: TPlayerFinal[];
+              },
+              Observable<TGameFinal>
+            >(({ paramMap, queryParamMap, teams, players }) => {
+              const season = paramMap.get('season');
+              const number = paramMap.get('number');
+              const mode =
+                season && number ? EnumGameMode.Edit : EnumGameMode.Create;
+
+              // Switch mode + cases
+              const gameObservable: Observable<TGameFinal> =
+                !season || !number
+                  ? // Inititialize and prepared data for creation mode
+                    initGameCreation(queryParamMap, { teams })
+                  : // Load & prepared data for editing game
+                    gameService
+                      .find({
+                        season: Number(season),
+                        number: Number(number),
+                      })
+                      .pipe(
+                        map(games => games.at(0)),
+
+                        switchMap(game => {
+                          if (!game) {
+                            throw new Error('Game not found');
+                          }
+
+                          return initGameEdition(game);
+                        }),
+                      );
+
+              // Update state
+              return gameObservable.pipe(
+                tap((game: TGameFinal) => {
+                  patchState(store, () => ({
+                    mode,
+                    game,
+                    // players: cloneDeep(players),
+                    initialValue: cloneDeep(game),
+                    loading: false,
+                    initLoading: true,
+                  }));
+
+                  const stats = matchStatisticsPlayerData({
+                    players,
+                    statistics: game.statistics as TPlayerStatisticFinal[],
+                  });
+
+                  store.initTeamsEntity(game.teams ?? teams);
+                  store.initEntityPlayers(players);
+                  store.initEntityStatistics(stats);
+                }),
+                finalize(() => {
+                  console.info('FINALIZE: INIT GAME', {
+                    loading: false,
+                    initLoading: false,
+                  });
+                  patchState(store, { loading: false, initLoading: false });
+                }),
+              );
+            }),
+            catchError((error: any, caught) => {
+              console.error('GameStore Crashed with error:', error, caught);
+
+              patchState(store, {
+                loading: false,
+                mode: EnumGameMode.Unknown,
+              });
+
+              return NEVER;
             }),
           ),
-          switchMap<
-            {
-              paramMap: ParamMap;
-              queryParamMap: ParamMap;
-              teams: [ITeamDTO, ITeamDTO];
-              players: TPlayerFinal[];
-            },
-            Observable<TGameFinal>
-          >(({ paramMap, queryParamMap, teams, players }) => {
-            const season = paramMap.get('season');
-            const number = paramMap.get('number');
-            const mode =
-              season && number ? EnumGameMode.Edit : EnumGameMode.Create;
-
-            // Switch mode + cases
-            const gameObservable: Observable<TGameFinal> =
-              !season || !number
-                ? // Inititialize and prepared data for creation mode
-                  initGameCreation(queryParamMap, { teams })
-                : // Load & prepared data for editing game
-                  gameService
-                    .find({
-                      season: Number(season),
-                      number: Number(number),
-                    })
-                    .pipe(
-                      map(games => games.at(0)),
-
-                      switchMap(game => {
-                        if (!game) {
-                          throw new Error('Game not found');
-                        }
-
-                        return initGameEdition(game);
-                      }),
-                    );
-
-            // Update state
-            return gameObservable.pipe(
-              tap((game: TGameFinal) => {
-                patchState(store, () => ({
-                  mode,
-                  game,
-                  // players: cloneDeep(players),
-                  initialValue: cloneDeep(game),
-                  loading: false,
-                  initLoading: true,
-                }));
-
-                const stats = matchStatisticsPlayerData({
-                  players,
-                  statistics: game.statistics as TPlayerStatisticFinal[],
-                });
-
-                store.initTeamsEntity(game.teams ?? teams);
-                store.initEntityPlayers(players);
-                store.initEntityStatistics(stats);
-              }),
-              finalize(() => {
-                console.info('FINALIZE: INIT GAME', {
-                  loading: false,
-                  initLoading: false,
-                });
-                patchState(store, { loading: false, initLoading: false });
-              }),
-            );
-          }),
-          catchError((error: any, caught) => {
-            console.error('GameStore Crashed with error:', error, caught);
-
-            patchState(store, {
-              loading: false,
-              mode: EnumGameMode.Unknown,
-            });
-
-            return NEVER;
-          }),
         ),
-      ),
-    }),
+      };
+    },
   ),
   // Should be latest to read methods
   withHooks({
