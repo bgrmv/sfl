@@ -3,12 +3,7 @@ import { IPlayerDTO, TPlayerFinal } from '@entities/games/types';
 import { playerSchema, playersSchema } from '@sfl/schemas';
 import { checkedResponse } from '@shared/api/checked-response';
 import { HttpService } from '@shared/services/http.service';
-import { Observable, firstValueFrom, map } from 'rxjs';
-
-type ResponseCaptains = {
-  players: IPlayerDTO[];
-  page: number;
-};
+import { Observable, map } from 'rxjs';
 
 export type PlayersResponse = {
   players: IPlayerDTO[];
@@ -54,17 +49,6 @@ export class PlayersService {
       checkedResponse(playersSchema, 'GET players/captains'),
       map(players => players as IPlayerDTO[]),
     );
-  }
-
-  async getList(page: number = 0): Promise<ResponseCaptains> {
-    const data = await firstValueFrom(
-      this.#httpService.post<ResponseCaptains>('players/list', { page }),
-    );
-
-    return {
-      players: data?.players ?? [],
-      page: data.page ?? 0,
-    };
   }
 
   patch(

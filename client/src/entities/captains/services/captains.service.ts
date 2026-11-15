@@ -3,26 +3,16 @@ import { HttpService } from '@shared/services/http.service';
 import { firstValueFrom } from 'rxjs';
 import { TCaptain } from '../types';
 
-type ResponseCaptains = {
-  captains: TCaptain[];
-  page: number;
-};
-
 @Service({ autoProvided: false })
 export class CaptainsService {
-  private readonly useMock = true;
-
   #httpService = inject(HttpService);
 
-  async getCaptains(page: number = 0): Promise<ResponseCaptains> {
-    const data = await firstValueFrom(
-      this.#httpService.post<ResponseCaptains>('players/captains', { page }),
+  async getCaptains(): Promise<TCaptain[]> {
+    const captains = await firstValueFrom(
+      this.#httpService.get<TCaptain[]>('players/captains'),
     );
 
-    return {
-      captains: data?.captains ?? [],
-      page: data.page ?? 0,
-    };
+    return captains ?? [];
   }
 
   async promoteToCaptain() {}

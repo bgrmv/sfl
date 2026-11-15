@@ -33,7 +33,7 @@ export class CaptainsStore
   }
 
   async ngrxOnStoreInit(): Promise<void> {
-    const captains = (await this.captainsService.getCaptains()).captains ?? [];
+    const captains = await this.captainsService.getCaptains();
     this.setState(state => ({ ...state, captains }));
   }
 
