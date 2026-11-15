@@ -116,7 +116,7 @@ flowchart LR
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
 | Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        9         |
-| Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        10        |
+| Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        13        |
 | Эпик 9 — Наблюдаемость                          | [E09-observability/](E09-observability/)             |        2         |
 | Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        53        |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
