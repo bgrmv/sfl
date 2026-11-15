@@ -35,7 +35,10 @@ export interface TestApp {
 export async function createTestApp(
   env: Record<string, string> = {},
 ): Promise<TestApp> {
-  const mongo = await MongoMemoryServer.create();
+  // A small cache: the default one is half of the memory of the machine, per mongod
+  const mongo = await MongoMemoryServer.create({
+    instance: { args: ['--wiredTigerCacheSizeGB', '0.25'] },
+  });
 
   Object.assign(process.env, {
     STAGE: 'test',

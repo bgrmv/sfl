@@ -16,6 +16,9 @@ export default defineConfig({
     environment: 'node',
     silent: 'passed-only', // logs of passed tests (Nest, winston) only add noise
     hookTimeout: 120_000, // the first run downloads the mongod binary
+    // Every API test file starts its own mongod and a whole Nest app: 16 files at once
+    // took 3.4 GB. Three at a time keep the peak low, and the run only a little slower.
+    maxWorkers: 3,
 
     exclude: [...configDefaults.exclude, 'e2e/**/*'], // Exclude e2e tests from this config
     coverage: {
