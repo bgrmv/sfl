@@ -21,6 +21,11 @@
       margin-bottom: 1.5rem;
     }
 
+    & .sign-in__error {
+      margin: 0 0 1rem;
+      color: #b3261e;
+    }
+
     & mat-progress-bar {
       position: absolute;
       left: 0;

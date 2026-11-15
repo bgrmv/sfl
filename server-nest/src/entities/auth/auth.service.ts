@@ -89,7 +89,10 @@ export class AuthService {
         refreshToken: await this.generateRefreshToken({ ...claims, sid, jti }),
       };
     } catch (error: any) {
-      this.logger.error(error);
+      // A wrong password is an everyday answer, not an error of the server
+      if (error.status !== HttpStatus.UNAUTHORIZED) {
+        this.logger.error(error);
+      }
       switch (error.status) {
         case HttpStatus.UNAUTHORIZED:
           throw new UnauthorizedException();
