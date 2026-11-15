@@ -6,6 +6,7 @@ import { Role, RoleSchema } from '../roles';
 import { User, UserSchema } from '../users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { DevAdminSeeder } from './dev-admin.seeder';
 import { Session, SessionSchema } from './session.schema';
 
 @Module({
@@ -27,7 +28,7 @@ import { Session, SessionSchema } from './session.schema';
   ],
 
   controllers: [AuthController],
-  providers: [ConfigService, AuthService],
+  providers: [ConfigService, AuthService, DevAdminSeeder],
   exports: [AuthService],
 })
 export class AuthModule {}

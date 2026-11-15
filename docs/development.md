@@ -21,7 +21,7 @@ Local development without installing Node.js or MongoDB on your machine. Config:
 
 1. Open the repository in VS Code → **Dev Containers: Reopen in Container**. The first build installs dependencies, creates the certificate, `.env` and the seed (see `.devcontainer/post-create.sh`).
 2. Server: `cd server-nest && pnpm start:dev`
-3. Client: `cd client && pnpm dev --host 0.0.0.0` (Docker publishes the port, so `ng serve` must listen on all interfaces, not only on localhost)
+3. Client: `cd client && pnpm dev` (`angular.json` sets `host: 0.0.0.0`: Docker publishes the port, so `ng serve` must listen on all interfaces, not only on localhost)
 4. Open `https://sfl.com:3001/rest` (Swagger) and accept the self-signed certificate. Then open `https://sfl.com:4200` and accept it again.
 5. Sign in as `admin@sfl.local` / `admin`.
 
@@ -81,7 +81,7 @@ docker compose -f .devcontainer/docker-compose.yml up -d
 docker exec -u node -w /workspaces/sfl sfl-dev-workspace-1 bash .devcontainer/post-create.sh   # first time only
 
 docker exec -it -u node -w /workspaces/sfl/server-nest sfl-dev-workspace-1 pnpm start:dev
-docker exec -it -u node -w /workspaces/sfl/client      sfl-dev-workspace-1 pnpm dev --host 0.0.0.0
+docker exec -it -u node -w /workspaces/sfl/client      sfl-dev-workspace-1 pnpm dev
 
 docker compose -f .devcontainer/docker-compose.yml stop    # stop; start brings it back
 ```
@@ -106,7 +106,7 @@ docker compose -f .devcontainer/docker-compose.yml stop    # stop; start brings 
 - Reset the database and seed again: `node .devcontainer/seed.cjs --reset`
 - Dump all collections to `_dumps/<db>-<date>-<time>/` (ignored by git): `node .devcontainer/db-dump.cjs`. Pass a directory to dump somewhere else.
 - Restore a dump: `node .devcontainer/db-restore.cjs _dumps/<dir>`. It only fills empty collections; add `--drop` to replace existing ones. Compass exports (`<db>.<collection>.json`) restore the same way.
-- After you load a prod dump the seed users are gone (`users` is replaced), so sign in with your own prod account.
+- In local development the server makes sure that `admin@sfl.local` / `admin` exists and is an ADMIN: it is created at every start if it is missing, also on a copy of prod data (`STAGE=development`, never in production; an existing user and its password are not touched, see `DevAdminSeeder`). So after a prod dump you can sign in as `admin@sfl.local` too, or with your own prod account.
 - MongoDB data lives in the `mongodb-data` volume and survives container rebuilds. To delete everything, run on the host: `docker compose -p sfl-dev down -v`
 
 ### Working with a copy of prod data
@@ -136,7 +136,7 @@ pnpm install                                   # once, from the root: installs t
 cp server-nest/.env.example server-nest/.env   # fill in the values (the dev ones are in .devcontainer/server-nest.env)
 node .devcontainer/seed.cjs                    # synthetic data, optional
 cd server-nest && pnpm start:dev               # API, port 3001
-cd client && pnpm dev --host 0.0.0.0           # client, https, port 4200
+cd client && pnpm dev                          # client, https, port 4200
 ```
 
 Client variables (`APP_ENV`, `API_URL`) are listed in [client/.env.example](../client/.env.example) and described in «Окружения клиента» below. Per-package notes: [server-nest/README.md](../server-nest/README.md).

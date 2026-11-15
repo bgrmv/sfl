@@ -21,9 +21,9 @@
 1. В hosts добавьте строку `127.0.0.1 sfl.com` (на Windows: `C:\Windows\System32\drivers\etc\hosts`). Это адрес для локальной разработки, не продакшен.
 2. Откройте репозиторий в VS Code и выполните **Dev Containers: Reopen in Container**. Первая сборка сама поставит зависимости, сертификат, `.env` и тестовые данные.
 3. Сервер: `cd server-nest && pnpm start:dev`
-4. Клиент: `cd client && pnpm dev --host 0.0.0.0`
+4. Клиент: `cd client && pnpm dev` (хост `0.0.0.0` задан в `angular.json`, иначе Docker не пробросит порт)
 5. Откройте `https://sfl.com:4200` и один раз примите самоподписанный сертификат. То же для `https://sfl.com:3001/rest` (Swagger). Порт обязателен.
-6. Войдите как `admin@sfl.local` / `admin`. Все данные синтетические.
+6. Войдите как `admin@sfl.local` / `admin`. Этот администратор создаётся при каждом запуске сервера в локальной разработке, даже если в базе копия прода. Данные seed синтетические.
 
 Не получилось: [Troubleshooting](docs/development.md#troubleshooting). Без контейнера: [docs/development.md](docs/development.md#without-the-dev-container).
 

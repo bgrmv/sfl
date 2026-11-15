@@ -67,10 +67,17 @@ export async function createTestApp(
     app.get<Model<T>>(getModelToken(name), { strict: false });
 
   // An admin and a plain user, so that sign-in goes through the real code path
-  const roles = await model('Role').create([
-    { name: 'ADMIN' },
-    { name: 'USER' },
-  ]);
+  // The development admin seeder may have created ADMIN already: upsert
+  const roles = [];
+  for (const name of ['ADMIN', 'USER']) {
+    roles.push(
+      await model('Role').findOneAndUpdate(
+        { name },
+        { name },
+        { upsert: true, returnDocument: 'after' },
+      ),
+    );
+  }
   await model('User').create([
     {
       email: ADMIN_EMAIL,
