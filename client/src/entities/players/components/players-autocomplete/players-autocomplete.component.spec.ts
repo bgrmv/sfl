@@ -30,6 +30,12 @@ describe('PlayersAutocompleteComponent', () => {
       ],
     }).compileComponents();
 
+    // The component reads the first team of the store to pick its side
+    TestBed.inject(NewGameStore).initTeamsEntity([
+      { id: 'team-1', name: 'BMW', color: 'blue' },
+      { id: 'team-2', name: 'HONDA', color: 'red' },
+    ] as never);
+
     fixture = TestBed.createComponent(PlayersAutocompleteComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('mode', EnumGameMode.Create);
@@ -37,8 +43,7 @@ describe('PlayersAutocompleteComponent', () => {
     fixture.detectChanges();
   });
 
-  // TODO(S2.5): компоненту нужен NewGameStore с двумя командами (teamsEntities().at(0)!.id)
-  it.skip('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
