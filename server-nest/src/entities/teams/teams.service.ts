@@ -15,8 +15,6 @@ export class TeamsService {
   }
 
   async save(team: ITeam) {
-    console.log('BEFORE SAVE TEAM', JSON.stringify(team, null, 2));
-
     await this.teamModel.create(team);
   }
 }

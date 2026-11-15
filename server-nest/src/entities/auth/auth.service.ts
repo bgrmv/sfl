@@ -1,4 +1,5 @@
 import {
+  Logger,
   HttpStatus,
   Injectable,
   InternalServerErrorException,
@@ -14,6 +15,8 @@ import { AuthRequiredOutput } from './auth.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   private readonly accessTokenSecret = this.configService.getOrThrow(
     'ACCESS_TOKEN_SECRET',
   );
@@ -44,7 +47,7 @@ export class AuthService {
         refreshToken: await this.generateRefreshToken(payload),
       };
     } catch (error: any) {
-      console.log(error);
+      this.logger.error(error);
       switch (error.status) {
         case HttpStatus.UNAUTHORIZED:
           throw new UnauthorizedException();

@@ -96,3 +96,7 @@ sfl-ssr-keep/
 
 # client generated environment
 /client/src/environments/api-url.generated.ts
+
+# Nx cache
+.nx/
+!.env.example

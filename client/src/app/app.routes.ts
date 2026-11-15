@@ -23,22 +23,6 @@ export const routes: Routes = [
         c => c.SignInPageComponent,
       ),
   },
-  // {
-  //   path: 'new-match',
-  //   title: 'New Match',
-  //   loadComponent: () =>
-  //     import('../pages/new-match/new-match.component').then(
-  //       c => c.NewMatchComponent,
-  //     ),
-  // },
-  // {
-  //   path: 'captains',
-  //   title: 'Captains',
-  //   loadComponent: () =>
-  //     import('../pages/captains-page/captains-page.component').then(
-  //       c => c.CaptainsPageComponent,
-  //     ),
-  // },
   ...PLAYERS_ROUTES,
   ...GAMES_ROUTES,
 ];

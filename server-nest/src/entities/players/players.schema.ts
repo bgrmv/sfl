@@ -101,21 +101,6 @@ export class Player implements ServerPlayer {
   @Prop({ type: Number, isInteger: true })
   number?: number;
 
-  // TODO PROBLEM does not resolve user by ref
-  // @ApiProperty()
-  // @Prop({
-  //   type: [
-  //     {
-  //       type: mongoose.Schema.Types.UUID,
-  //       ref: User.name,
-  //       required: true,
-  //       unique: true,
-  //     },
-  //   ],
-  //   transform: (docs) => docs.at(0),
-  // })
-  // user: mongoose.Schema.Types.UUID;
-
   @ApiProperty()
   @Prop({
     type: mongoose.Types.UUID,
@@ -124,18 +109,6 @@ export class Player implements ServerPlayer {
     unique: true,
   })
   user: mongoose.Types.UUID;
-
-  // Problem
-  // @ApiProperty()
-  // @Prop({
-  //   type: {
-  //     type: UUID,
-  //     ref: User.name,
-  //     required: true,
-  //     unique: true,
-  //   },
-  // })
-  // user: typeof UUID;
 
   @Prop({ type: Object, required: false, default: {} })
   metadata: TPlayerMetadata;

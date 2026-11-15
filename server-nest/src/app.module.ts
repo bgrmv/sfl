@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -38,9 +38,8 @@ import { FileLoggerService } from './shared/services/logger.service';
         const mongodb = `${url}/${dbName}`;
 
         // Host only: the URL itself may contain the user name and password
-        console.log(
-          'Connecting to the database:',
-          describeDatabaseTarget(url, dbName),
+        new Logger('Database').log(
+          `Connecting to the database: ${describeDatabaseTarget(url, dbName)}`,
         );
 
         return {

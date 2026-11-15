@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
@@ -70,13 +71,13 @@ async function bootstrap() {
 
   if (configService.getOrThrow('NODE_ENV') === 'production') {
     app.listen(PORT, () => {
-      console.log(`Server is running [http][${PORT}]`);
+      new Logger('Bootstrap').log(`Server is running [http][${PORT}]`);
     });
   } else {
     await app.init();
 
     https.createServer(httpsOptions, server).listen(PORT, () => {
-      console.log(`Server is running [https][${PORT}]`);
+      new Logger('Bootstrap').log(`Server is running [https][${PORT}]`);
     });
   }
 }
