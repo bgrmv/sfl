@@ -16,10 +16,17 @@ describe('PlayerCreateButtonComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PlayerCreateButtonComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNoopAnimations(), PlayersStore, PlayersService, HttpService],
-    })
-    .compileComponents();
-    
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+        PlayersStore,
+        PlayersService,
+        HttpService,
+      ],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(PlayerCreateButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

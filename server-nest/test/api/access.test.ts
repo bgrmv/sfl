@@ -174,10 +174,10 @@ describe('API: access matrix', () => {
       );
     const player = (
       await t.api().get(`/rest/players/${a.id}`).set('Authorization', bearer(t))
-    ).body;
+    ).body.data;
 
     return {
-      gameId: game.body.id,
+      gameId: game.body.data.id,
       playerId: a.id,
       freePlayerId: free.id,
       userId: player.user.id,
@@ -238,8 +238,8 @@ describe('API: access matrix', () => {
 
     const player = await t.api().get(`/rest/players/${tg.playerId}`);
     const game = await t.api().get(`/rest/games/${tg.gameId}`);
-    expect(player.body.nickname).not.toBe('hacked');
-    expect(game.body).toMatchObject({ id: tg.gameId });
+    expect(player.body.data.nickname).not.toBe('hacked');
+    expect(game.body.data).toMatchObject({ id: tg.gameId });
   });
 
   it('the matrix covers every route that is not public', () => {
@@ -284,7 +284,10 @@ describe('API: access matrix', () => {
       const res = await open({ Authorization: bearer(t) });
 
       expect(res.status).toBe(200);
-      expect(res.body).toMatchObject({ email: ADMIN_EMAIL, roles: ['ADMIN'] });
+      expect(res.body.data).toMatchObject({
+        email: ADMIN_EMAIL,
+        roles: ['ADMIN'],
+      });
     });
 
     it('rejects a garbage token', async () => {
@@ -362,7 +365,7 @@ describe('API: access matrix', () => {
       const res = await t.api().post('/rest/auth/sign-out');
 
       expect(isSuccess(res.status)).toBe(true);
-      expect(res.body).toEqual({ accessToken: null });
+      expect(res.body.data).toEqual({ accessToken: null });
       const cookie = String(res.headers['set-cookie']);
       const expires = new Date(/Expires=([^;]+)/.exec(cookie)![1]);
       expect(expires.getTime()).toBeLessThanOrEqual(Date.now() + 1000);

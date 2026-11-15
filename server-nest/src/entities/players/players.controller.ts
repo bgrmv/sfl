@@ -11,7 +11,6 @@ import {
   Post,
   Query,
   Req,
-  Res,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -25,7 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Request, Response } from 'express';
+import type { Request } from 'express';
 import { Types } from 'mongoose';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import {
@@ -86,7 +85,6 @@ export class PlayersController {
   @ApiBadRequestResponse({ description: 'Invalid ids' })
   async find(
     @Req() req: Request,
-    @Res() res,
     @Query('ids') ids?: string | string[],
     @Query('includeMetadata', new ParseBoolPipe({ optional: true }))
     includeMetadata = false,
@@ -110,16 +108,16 @@ export class PlayersController {
       includeMetadata,
     );
 
-    return res.json(players.map(player => presentPlayer(player, admin)));
+    return players.map(player => presentPlayer(player, admin));
   }
 
   // Declared before ':id', otherwise 'captains' is taken for an id
   @Public()
   @Get('captains')
-  async findCaptains(@Req() req: Request, @Res() res: Response) {
+  async findCaptains(@Req() req: Request) {
     const admin = isAdmin(req);
     const captains = await this.playersService.findCaptains();
-    return res.json(captains.map(captain => presentPlayer(captain, admin)));
+    return captains.map(captain => presentPlayer(captain, admin));
   }
 
   @ApiOkResponse({ type: Player })
@@ -137,7 +135,6 @@ export class PlayersController {
   @ApiBadRequestResponse({ description: 'Invalid body or id' })
   @ApiNotFoundResponse({ description: 'Player is not found' })
   async update(
-    @Res() res: Response,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdatePlayerDTO))
     { user: userBody, ...playerBody }: UpdatePlayerDTOOutput,
@@ -155,7 +152,7 @@ export class PlayersController {
     }
     const updatedPlayer = await this.playersService.patch(id, playerBody);
 
-    return res.json(updatedPlayer);
+    return updatedPlayer;
   }
 
   @Post()
@@ -170,14 +167,13 @@ export class PlayersController {
   async create(
     @Body(new ZodValidationPipe(CreatePlayersDTO))
     players: CreatePlayersDTOOutput,
-    @Res() res: Response,
   ) {
     // All or nothing: a failure rolls back and answers with an error status
     const created = await this.playersService.createWithUsers(players, [
       USER_ROLE_ID,
     ]);
 
-    return res.json(created);
+    return created;
   }
 
   @Delete(':id')
@@ -185,10 +181,10 @@ export class PlayersController {
   @ApiBadRequestResponse({ description: 'Invalid id' })
   @ApiNotFoundResponse({ description: 'Player is not found' })
   @ApiConflictResponse({ description: 'The player has games' })
-  async delete(@Res() res: Response, @Param('id') id: string) {
+  async delete(@Param('id') id: string) {
     assertObjectId(id);
 
-    return res.json(await this.playersService.delete(id));
+    return await this.playersService.delete(id);
   }
 
   // Not public: the global AuthGuard requires a token (S0.1)

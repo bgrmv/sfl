@@ -56,7 +56,7 @@ export class UsersController {
   }
 
   @Get()
-  async getUsers(): Promise<TResponse<IUser[]>> {
-    return { data: await this.usersService.getsUsers() };
+  async getUsers(): Promise<IUser[]> {
+    return await this.usersService.getsUsers();
   }
 }

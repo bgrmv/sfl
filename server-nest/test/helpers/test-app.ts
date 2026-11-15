@@ -84,7 +84,7 @@ export async function createTestApp(): Promise<TestApp> {
       await request(app.getHttpServer())
         .post('/rest/auth/sign-in')
         .send({ email, password })
-    ).body.accessToken as string;
+    ).body.data.accessToken as string;
 
   return {
     app,

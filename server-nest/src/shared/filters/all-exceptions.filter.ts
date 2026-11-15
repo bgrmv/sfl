@@ -6,18 +6,17 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import {
+  apiErrorCodeFor,
+  err,
+  type ApiError,
+  type ApiIssue,
+} from '@sfl/schemas';
 import type { Response } from 'express';
 
-interface ErrorBody {
-  statusCode: number;
-  message: string | string[];
-  error?: string;
-  [extra: string]: unknown;
-}
-
 /**
- * One error format for the whole API: `{ statusCode, message, error? }`, plus
- * `issues` for validation errors. Database errors get a proper status instead
+ * One error format for the whole API: `{ ok: false, error: { status, code, message, issues? } }`
+ * (`Result` of `@sfl/schemas`, serialized). Database errors get a proper status instead
  * of a 500, and a real 500 never shows its internals to the client.
  */
 @Catch()
@@ -26,29 +25,35 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const res = host.switchToHttp().getResponse<Response>();
-    const body = this.toBody(exception);
+    const error = this.toError(exception);
 
-    if (body.statusCode >= 500) {
+    if (error.status >= 500) {
       this.logger.error(
         exception instanceof Error ? exception.message : String(exception),
         exception instanceof Error ? exception.stack : undefined,
       );
     }
 
-    res.status(body.statusCode).json(body);
+    res.status(error.status).json(err(error).toJSON());
   }
 
-  private toBody(exception: unknown): ErrorBody {
+  private toError(exception: unknown): ApiError {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const response = exception.getResponse();
+      const { message, issues } =
+        typeof response === 'string'
+          ? { message: response, issues: undefined }
+          : (response as { message?: string | string[]; issues?: ApiIssue[] });
 
       return {
-        ...(typeof response === 'string'
-          ? { message: response }
-          : (response as object)),
-        statusCode: status,
-      } as ErrorBody;
+        status,
+        code: issues?.length ? 'VALIDATION_FAILED' : apiErrorCodeFor(status),
+        message: Array.isArray(message)
+          ? message.join('; ')
+          : (message ?? exception.message),
+        ...(issues?.length ? { issues } : null),
+      };
     }
 
     const error = exception as {
@@ -60,7 +65,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     // Mongoose: a value that cannot be cast, for example a broken ObjectId
     if (error?.name === 'CastError') {
-      return this.body(
+      return this.error(
         HttpStatus.BAD_REQUEST,
         `Invalid ${error.path ?? 'value'}`,
       );
@@ -68,7 +73,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (error?.name === 'ValidationError' && error.errors) {
       return {
-        ...this.body(HttpStatus.BAD_REQUEST, 'Validation failed'),
+        ...this.error(HttpStatus.BAD_REQUEST, 'Validation failed'),
+        code: 'VALIDATION_FAILED',
         issues: Object.values(error.errors).map(({ path, message }) => ({
           path,
           message,
@@ -78,21 +84,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     // MongoDB: unique index violation
     if (error?.code === 11000) {
-      return this.body(HttpStatus.CONFLICT, 'The record already exists');
+      return this.error(HttpStatus.CONFLICT, 'The record already exists');
     }
 
-    return this.body(HttpStatus.INTERNAL_SERVER_ERROR, 'Internal server error');
+    return this.error(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      'Internal server error',
+    );
   }
 
-  private body(status: HttpStatus, message: string): ErrorBody {
-    return {
-      statusCode: status,
-      message,
-      error: HttpStatus[status]
-        .toLowerCase()
-        .split('_')
-        .map(word => word[0].toUpperCase() + word.slice(1))
-        .join(' '),
-    };
+  private error(status: HttpStatus, message: string): ApiError {
+    return { status, code: apiErrorCodeFor(status), message };
   }
 }

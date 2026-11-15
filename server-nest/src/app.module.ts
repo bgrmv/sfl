@@ -19,6 +19,7 @@ import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { describeDatabaseTarget } from './shared/utils/database-target';
+import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { ContextInterceptor } from './shared/interceptors/context/context.interceptor';
 import { FileLoggerService } from './shared/services/logger.service';
 
@@ -89,6 +90,10 @@ import { FileLoggerService } from './shared/services/logger.service';
     {
       provide: APP_INTERCEPTOR,
       useClass: ContextInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
     },
     UsersService,
     FileLoggerService,

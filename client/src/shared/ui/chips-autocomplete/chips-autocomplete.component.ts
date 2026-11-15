@@ -43,8 +43,8 @@ export class ChipsAutocompleteComponent {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
       map((fruit: string | null) =>
-        fruit ? this._filter(fruit) : this.allFruits.slice()
-      )
+        fruit ? this._filter(fruit) : this.allFruits.slice(),
+      ),
     );
   }
 
@@ -81,8 +81,8 @@ export class ChipsAutocompleteComponent {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allFruits.filter((fruit) =>
-      fruit.toLowerCase().includes(filterValue)
+    return this.allFruits.filter(fruit =>
+      fruit.toLowerCase().includes(filterValue),
     );
   }
 }

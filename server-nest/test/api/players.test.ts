@@ -32,9 +32,9 @@ describe('API: players', () => {
       ]);
 
     expect(isSuccess(res.status)).toBe(true);
-    expect(res.body).toHaveLength(2);
-    expect(res.body[0]).toMatchObject({ nickname: 'Bomber', number: 9 });
-    expect(res.body[0].user).toMatchObject({ email: 'bomber@sfl.test' });
+    expect(res.body.data).toHaveLength(2);
+    expect(res.body.data[0]).toMatchObject({ nickname: 'Bomber', number: 9 });
+    expect(res.body.data[0].user).toMatchObject({ email: 'bomber@sfl.test' });
   });
 
   it('returns a player by id and the list without metadata by default', async () => {
@@ -42,7 +42,7 @@ describe('API: players', () => {
 
     const byId = await t.api().get(`/rest/players/${player.id}`);
     expect(byId.status).toBe(200);
-    expect(byId.body).toMatchObject({
+    expect(byId.body.data).toMatchObject({
       id: player.id,
       nickname: player.nickname,
     });
@@ -52,8 +52,8 @@ describe('API: players', () => {
       .get('/rest/players')
       .query({ includeMetadata: false });
     expect(list.status).toBe(200);
-    expect(list.body.length).toBeGreaterThan(0);
-    expect(list.body[0]).not.toHaveProperty('metadata');
+    expect(list.body.data.length).toBeGreaterThan(0);
+    expect(list.body.data[0]).not.toHaveProperty('metadata');
   });
 
   it('filters the list by ids', async () => {
@@ -64,7 +64,7 @@ describe('API: players', () => {
       .get('/rest/players')
       .query({ ids: `${a.id},${b.id}`, includeMetadata: false });
 
-    expect(res.body.map((p: { id: string }) => p.id).sort()).toEqual(
+    expect(res.body.data.map((p: { id: string }) => p.id).sort()).toEqual(
       [a.id, b.id].sort(),
     );
   });
@@ -73,7 +73,7 @@ describe('API: players', () => {
     const [player] = await createPlayers(t, 1);
     const current = (
       await t.api().get(`/rest/players/${player.id}`).set(auth())
-    ).body;
+    ).body.data;
 
     const res = await t
       .api()
@@ -84,7 +84,7 @@ describe('API: players', () => {
     expect(isSuccess(res.status)).toBe(true);
 
     const after = await t.api().get(`/rest/players/${player.id}`);
-    expect(after.body.nickname).toBe('Renamed');
+    expect(after.body.data.nickname).toBe('Renamed');
   });
 
   it('deletes a player together with the user', async () => {
@@ -97,7 +97,7 @@ describe('API: players', () => {
       .api()
       .get('/rest/players')
       .query({ ids: player.id, includeMetadata: false });
-    expect(list.body).toHaveLength(0);
+    expect(list.body.data).toHaveLength(0);
   });
 
   it('recalculates the season for the given players', async () => {
@@ -110,7 +110,7 @@ describe('API: players', () => {
       .send({ seasonId: 2024, playerIds: [player.id] });
 
     expect(isSuccess(res.status)).toBe(true);
-    expect(res.body).toMatchObject({ success: 'OK', seasonId: 2024 });
+    expect(res.body.data).toMatchObject({ success: 'OK', seasonId: 2024 });
   });
 
   describe('PATCH /players/:id: only whitelisted fields (S8.9)', () => {
@@ -124,7 +124,7 @@ describe('API: players', () => {
       const [player] = await createPlayers(t, 1);
       const current = (
         await t.api().get(`/rest/players/${player.id}`).set(auth())
-      ).body;
+      ).body.data;
       const before = await storedUser(current.user.email);
 
       const res = await patch(player.id, {
@@ -154,12 +154,12 @@ describe('API: players', () => {
     it('takes the user from the player, not from the body', async () => {
       const [a, b] = await createPlayers(t, 2);
       const userB = (await t.api().get(`/rest/players/${b.id}`).set(auth()))
-        .body.user;
+        .body.data.user;
 
       await patch(a.id, { user: { id: userB.id, name: 'Intruder' } });
 
       const after = await t.api().get(`/rest/players/${b.id}`).set(auth());
-      expect(after.body.user.name).not.toBe('Intruder');
+      expect(after.body.data.user.name).not.toBe('Intruder');
     });
 
     it('answers 404 for a missing player and 400 for a broken id', async () => {
@@ -194,7 +194,7 @@ describe('API: players', () => {
         .send(body);
 
       expect(res.status).toBe(400);
-      expect(res.body.message).toBe('Validation failed');
+      expect(res.body.error.message).toBe('Validation failed');
     });
 
     it('GET /players: includeMetadata is required to be a boolean', async () => {
@@ -246,7 +246,7 @@ describe('API: players', () => {
         const res = await t.api().get(publicRoutes()[i]);
 
         expect(res.status).toBe(200);
-        expectNoPersonalData(res.body);
+        expectNoPersonalData(res.body.data);
       },
     );
 
@@ -263,7 +263,9 @@ describe('API: players', () => {
     });
 
     it('a public player keeps the nickname, number and the first name', async () => {
-      const { body } = await t.api().get(`/rest/players/${playerId}`);
+      const {
+        body: { data: body },
+      } = await t.api().get(`/rest/players/${playerId}`);
 
       expect(body).toMatchObject({ id: playerId, user: { name: 'Test' } });
       expect(body.user).not.toHaveProperty('email');
@@ -277,7 +279,7 @@ describe('API: players', () => {
         .set('Authorization', 'Bearer garbage');
 
       expect(res.status).toBe(200);
-      expectNoPersonalData(res.body);
+      expectNoPersonalData(res.body.data);
     });
 
     it('a plain USER gets no personal data either', async () => {
@@ -286,25 +288,25 @@ describe('API: players', () => {
         .get(`/rest/players/${playerId}`)
         .set('Authorization', `Bearer ${t.userToken}`);
 
-      expectNoPersonalData(res.body);
+      expectNoPersonalData(res.body.data);
     });
 
     it('an ADMIN gets the full user, without the password and roles', async () => {
       const res = await t.api().get(`/rest/players/${playerId}`).set(auth());
 
-      expect(res.body.user).toMatchObject({
+      expect(res.body.data.user).toMatchObject({
         email: expect.stringContaining('@sfl.test'),
         surname: 'Secret',
         id: expect.any(String),
       });
-      expect(res.body.user).not.toHaveProperty('password');
-      expect(res.body.user).not.toHaveProperty('roles');
+      expect(res.body.data.user).not.toHaveProperty('password');
+      expect(res.body.data.user).not.toHaveProperty('roles');
 
       const list = await t
         .api()
         .get('/rest/players?includeMetadata=false')
         .set(auth());
-      expect(JSON.stringify(list.body)).toContain('@sfl.test');
+      expect(JSON.stringify(list.body.data)).toContain('@sfl.test');
     });
 
     it('an ADMIN with only the refresh cookie gets the full user too', async () => {
@@ -318,7 +320,7 @@ describe('API: players', () => {
         .get(`/rest/players/${playerId}`)
         .set('Cookie', signIn.headers['set-cookie']);
 
-      expect(res.body.user.email).toContain('@sfl.test');
+      expect(res.body.data.user.email).toContain('@sfl.test');
     });
   });
 
@@ -345,7 +347,7 @@ describe('API: players', () => {
       const res = await t.api().get('/rest/players/captains');
 
       expect(res.status).toBe(200);
-      const ids = res.body.map((p: { id: string }) => p.id);
+      const ids = res.body.data.map((p: { id: string }) => p.id);
       expect(ids).toContain(a.id);
       expect(ids).not.toContain(b.id);
     });
@@ -401,7 +403,7 @@ describe('API: players', () => {
       const res = await create(body);
 
       expect(res.status).toBe(400);
-      expect(res.body.message).toBe('Validation failed');
+      expect(res.body.error.message).toBe('Validation failed');
     });
 
     it('GET /players?ids=bad answers 400', async () => {
@@ -433,7 +435,7 @@ describe('API: players', () => {
     it('PATCH of a taken email answers 409', async () => {
       const [a, b] = await createPlayers(t, 2);
       const other = (await t.api().get(`/rest/players/${b.id}`).set(auth()))
-        .body.user.email;
+        .body.data.user.email;
 
       const res = await t
         .api()
@@ -444,7 +446,7 @@ describe('API: players', () => {
       expect(res.status).toBe(409);
     });
 
-    it('every error has the same shape: statusCode and message', async () => {
+    it('every error has the same shape: { ok: false, error: { status, code, message } }', async () => {
       const responses = await Promise.all([
         t.api().get('/rest/players/not-an-id'),
         t.api().get(`/rest/players/${MISSING}`),
@@ -461,8 +463,10 @@ describe('API: players', () => {
         400, 404, 400, 401, 403, 409,
       ]);
       for (const { status, body } of responses) {
-        expect(body).toMatchObject({
-          statusCode: status,
+        expect(body.ok).toBe(false);
+        expect(body.error).toMatchObject({
+          status,
+          code: expect.any(String),
           message: expect.anything(),
         });
       }

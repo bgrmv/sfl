@@ -18,18 +18,18 @@ export const GAMES_ROUTES: Routes = [
         path: 'create',
         title: 'Create game',
         loadComponent: () =>
-          import(
-            './widgets/game-creation-widget/game-creation-widget.component'
-          ).then(c => c.GameCreationWidgetComponent),
+          import('./widgets/game-creation-widget/game-creation-widget.component').then(
+            c => c.GameCreationWidgetComponent,
+          ),
       },
       {
         path: 'edit/:season/:number',
         title: 'Edit game',
         canActivate: [authGuard],
         loadComponent: () =>
-          import(
-            './widgets/game-creation-widget/game-creation-widget.component'
-          ).then(c => c.GameCreationWidgetComponent),
+          import('./widgets/game-creation-widget/game-creation-widget.component').then(
+            c => c.GameCreationWidgetComponent,
+          ),
       },
       {
         path: 'details/:season/:number',

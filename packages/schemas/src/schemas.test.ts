@@ -52,7 +52,10 @@ const game = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
-const messagesOf = (schema: { safeParse: (v: unknown) => any }, value: unknown) => {
+const messagesOf = (
+  schema: { safeParse: (v: unknown) => any },
+  value: unknown,
+) => {
   const result = schema.safeParse(value);
   return result.success
     ? []
@@ -84,12 +87,19 @@ describe('playerStatisticSchema', () => {
     ['unknown position', { position: 'LW' }],
     ['no player', { playerId: undefined }],
   ])('rejects %s', (_name, overrides) => {
-    expect(playerStatisticSchema.safeParse(stat(overrides)).success).toBe(false);
+    expect(playerStatisticSchema.safeParse(stat(overrides)).success).toBe(
+      false,
+    );
   });
 });
 
 describe('teamInputSchema', () => {
-  const input = { name: 'Red team', color: 'RED', description: null, logo: null };
+  const input = {
+    name: 'Red team',
+    color: 'RED',
+    description: null,
+    logo: null,
+  };
 
   it('null description and logo become an empty string', () => {
     expect(teamInputSchema.parse(input)).toMatchObject({
@@ -139,7 +149,10 @@ describe('gameInputSchema', () => {
 
   it('rules: exactly one captain per team', () => {
     const noCaptain = game({
-      statistics: [stat({ isCaptain: true }), stat({ playerId: 'p2', teamId: 'team2' })],
+      statistics: [
+        stat({ isCaptain: true }),
+        stat({ playerId: 'p2', teamId: 'team2' }),
+      ],
     });
 
     expect(messagesOf(gameInputSchema, noCaptain)).toContain(
@@ -149,23 +162,34 @@ describe('gameInputSchema', () => {
 
   it('rules: a statistic of a team that is not in the game', () => {
     const ghost = game({
-      statistics: [...game().statistics, stat({ playerId: 'p3', teamId: 'team9' })],
+      statistics: [
+        ...game().statistics,
+        stat({ playerId: 'p3', teamId: 'team9' }),
+      ],
     });
 
-    expect(messagesOf(gameInputSchema, ghost)).toContain(GAME_RULE_MESSAGES.team);
+    expect(messagesOf(gameInputSchema, ghost)).toContain(
+      GAME_RULE_MESSAGES.team,
+    );
   });
 
   it('rules: a published game needs a position for every player, a draft does not', () => {
     const rows = [
       stat({ isCaptain: true }),
-      stat({ playerId: 'p2', teamId: 'team2', isCaptain: true, position: null }),
+      stat({
+        playerId: 'p2',
+        teamId: 'team2',
+        isCaptain: true,
+        position: null,
+      }),
     ];
 
     expect(messagesOf(gameInputSchema, game({ statistics: rows }))).toEqual([
       GAME_RULE_MESSAGES.position,
     ]);
     expect(
-      gameInputSchema.safeParse(game({ statistics: rows, status: 'draft' })).success,
+      gameInputSchema.safeParse(game({ statistics: rows, status: 'draft' }))
+        .success,
     ).toBe(true);
   });
 });
@@ -173,7 +197,9 @@ describe('gameInputSchema', () => {
 describe('gameUpdateInputSchema', () => {
   it('needs the id of the game and applies the same rules', () => {
     expect(gameUpdateInputSchema.safeParse(game()).success).toBe(false);
-    expect(gameUpdateInputSchema.safeParse(game({ id: 'g1' })).success).toBe(true);
+    expect(gameUpdateInputSchema.safeParse(game({ id: 'g1' })).success).toBe(
+      true,
+    );
     expect(
       messagesOf(gameUpdateInputSchema, game({ id: 'g1', statistics: [] })),
     ).toContain(GAME_RULE_MESSAGES.captain);
@@ -205,8 +231,12 @@ describe('gameSchema (what the server sends)', () => {
   });
 
   it('rejects an unknown status and a missing id', () => {
-    expect(gameSchema.safeParse({ ...sent, status: 'furture' }).success).toBe(false);
-    expect(gameSchema.safeParse({ ...sent, id: undefined }).success).toBe(false);
+    expect(gameSchema.safeParse({ ...sent, status: 'furture' }).success).toBe(
+      false,
+    );
+    expect(gameSchema.safeParse({ ...sent, id: undefined }).success).toBe(
+      false,
+    );
   });
 });
 
@@ -226,7 +256,8 @@ describe('playerSchema (what the server sends)', () => {
     const user = { id: 'u1', email: 'a@sfl.test', name: 'A', surname: 'B' };
 
     expect(
-      playerSchema.parse({ id: 'p1', nickname: 'x', isCaptain: true, user }).user,
+      playerSchema.parse({ id: 'p1', nickname: 'x', isCaptain: true, user })
+        .user,
     ).toEqual(user);
   });
 
@@ -237,9 +268,9 @@ describe('playerSchema (what the server sends)', () => {
 
 describe('signInSchema', () => {
   it('accepts email and password, rejects a missing password', () => {
-    expect(signInSchema.safeParse({ email: 'a@b.c', password: 'x' }).success).toBe(
-      true,
-    );
+    expect(
+      signInSchema.safeParse({ email: 'a@b.c', password: 'x' }).success,
+    ).toBe(true);
     expect(signInSchema.safeParse({ email: 'a@b.c' }).success).toBe(false);
   });
 });
@@ -247,7 +278,9 @@ describe('signInSchema', () => {
 describe('gameRuleViolations (the rules the client form uses too)', () => {
   const rows = (overrides: Record<string, unknown> = {}) => game(overrides);
   const check = (g: ReturnType<typeof game>) =>
-    gameRuleViolations(g as unknown as Parameters<typeof gameRuleViolations>[0]);
+    gameRuleViolations(
+      g as unknown as Parameters<typeof gameRuleViolations>[0],
+    );
 
   it('a good game has no violations', () => {
     expect(check(rows())).toEqual([]);
@@ -288,7 +321,12 @@ describe('gameRuleViolations (the rules the client form uses too)', () => {
       status: 'draft',
       statistics: [
         stat({ playerId: 'p1', isCaptain: true, position: null }),
-        stat({ playerId: 'p2', teamId: 'team2', isCaptain: true, position: null }),
+        stat({
+          playerId: 'p2',
+          teamId: 'team2',
+          isCaptain: true,
+          position: null,
+        }),
       ],
     });
 
@@ -297,7 +335,10 @@ describe('gameRuleViolations (the rules the client form uses too)', () => {
 
   it('names a player of a team that is not in the game', () => {
     const g = rows({
-      statistics: [...rows().statistics, stat({ playerId: 'p9', teamId: 'team9' })],
+      statistics: [
+        ...rows().statistics,
+        stat({ playerId: 'p9', teamId: 'team9' }),
+      ],
     });
 
     expect(check(g)).toContainEqual({ rule: 'team', playerId: 'p9' });
@@ -320,5 +361,92 @@ describe('gameSchema is loose: an unknown field of the server is kept', () => {
     expect(parsed.extraGame).toBe(3);
     expect(parsed.teams[0].extraTeam).toBe(1);
     expect(parsed.statistics[0].extraStat).toBe(2);
+  });
+});
+
+describe('API response', () => {
+  it('maps statuses to stable codes', async () => {
+    const { apiErrorCodeFor } = await import('./api-response.js');
+    expect(
+      [400, 401, 403, 404, 409, 429, 500, 503, 418].map(apiErrorCodeFor),
+    ).toEqual([
+      'BAD_REQUEST',
+      'UNAUTHORIZED',
+      'FORBIDDEN',
+      'NOT_FOUND',
+      'CONFLICT',
+      'TOO_MANY_REQUESTS',
+      'INTERNAL_ERROR',
+      'INTERNAL_ERROR',
+      'BAD_REQUEST',
+    ]);
+  });
+
+  it('accepts the error body of the API', async () => {
+    const { apiErrorSchema } = await import('./api-response.js');
+    const error = { status: 404, code: 'NOT_FOUND', message: 'No game' };
+    expect(apiErrorSchema.safeParse(error).success).toBe(true);
+    expect(apiErrorSchema.safeParse({ ...error, code: 'NOPE' }).success).toBe(
+      false,
+    );
+  });
+});
+
+describe('Result', async () => {
+  const { ok, err, fromSerialized, fromPromise } = await import('./result.js');
+  type E = { code: string };
+  const parse = (s: string) =>
+    /^\d+$/.test(s)
+      ? ok<number, E>(Number(s))
+      : err<number, E>({ code: 'NaN' });
+
+  it('maps a success and skips a failure (short-circuit)', () => {
+    expect(
+      parse('2')
+        .map(n => n * 2)
+        .unwrapOr(0),
+    ).toBe(4);
+    const failed = parse('x').map(n => n * 2);
+    expect(failed.ok).toBe(false);
+    expect(failed.unwrapOr(-1)).toBe(-1);
+  });
+
+  it('chains with andThen and stops at the first error', () => {
+    const calls: string[] = [];
+    const result = parse('x')
+      .andThen(n => {
+        calls.push('second');
+        return ok<number, E>(n + 1);
+      })
+      .mapErr(e => `error ${e.code}`);
+
+    expect(calls).toEqual([]);
+    expect(result.match({ ok: String, err: e => e })).toBe('error NaN');
+  });
+
+  it('narrows by the discriminator ok', () => {
+    const result = parse('7');
+    if (result.ok) {
+      expect(result.value).toBe(7);
+    } else {
+      throw new Error('expected a success');
+    }
+  });
+
+  it('survives the JSON round trip', () => {
+    const wire = JSON.parse(JSON.stringify(parse('5')));
+    expect(wire).toEqual({ ok: true, data: 5 });
+    expect(fromSerialized<number, E>(wire).unwrapOr(0)).toBe(5);
+
+    const failed = JSON.parse(JSON.stringify(parse('x')));
+    expect(failed).toEqual({ ok: false, error: { code: 'NaN' } });
+    expect(fromSerialized<number, E>(failed).ok).toBe(false);
+  });
+
+  it('turns a rejected promise into an Err', async () => {
+    const result = await fromPromise(Promise.reject(new Error('boom')), e => ({
+      code: (e as Error).message,
+    }));
+    expect(result.match({ ok: () => 'ok', err: e => e.code })).toBe('boom');
   });
 });

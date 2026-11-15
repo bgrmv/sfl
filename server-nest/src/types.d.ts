@@ -13,16 +13,3 @@ declare global {
 }
 
 type WithId<T> = T & { id: string };
-
-type TResponse<T> = {
-  data: T;
-  error?: {
-    code: number;
-    message: string;
-  };
-  meta?: {
-    total: number;
-    page: number;
-    pageSize: number;
-  };
-};

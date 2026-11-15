@@ -13,7 +13,12 @@ describe('SignInComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SignInComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNoopAnimations()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+      ],
     });
     fixture = TestBed.createComponent(SignInComponent);
     component = fixture.componentInstance;

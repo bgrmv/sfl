@@ -80,7 +80,8 @@
     */
 
     background: rgb(249, 255, 3);
-    background: linear-gradient(
+    background:
+      linear-gradient(
         45deg,
         color-mix(in srgb, gold 50%, transparent 60%) 0%,
         color-mix(in srgb, tomato 50%, transparent 60%) 100%

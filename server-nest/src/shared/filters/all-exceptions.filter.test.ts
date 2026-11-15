@@ -28,9 +28,12 @@ describe('AllExceptionsFilter', () => {
     expect(run(new NotFoundException('Player is not found'))).toEqual({
       status: 404,
       body: {
-        statusCode: 404,
-        message: 'Player is not found',
-        error: 'Not Found',
+        ok: false,
+        error: {
+          status: 404,
+          code: 'NOT_FOUND',
+          message: 'Player is not found',
+        },
       },
     });
   });
@@ -41,14 +44,18 @@ describe('AllExceptionsFilter', () => {
       new ConflictException({ message: 'Validation failed', issues }),
     );
 
-    expect(body).toMatchObject({ statusCode: 409, issues });
+    expect(body.error).toMatchObject({
+      status: 409,
+      code: 'VALIDATION_FAILED',
+      issues,
+    });
   });
 
   it('maps a broken ObjectId (Mongoose CastError) to 400', () => {
     const { status, body } = run({ name: 'CastError', path: '_id' });
 
     expect(status).toBe(400);
-    expect(body.message).toBe('Invalid _id');
+    expect(body.error.message).toBe('Invalid _id');
   });
 
   it('maps a Mongoose ValidationError to 400 with issues', () => {
@@ -58,7 +65,9 @@ describe('AllExceptionsFilter', () => {
     });
 
     expect(status).toBe(400);
-    expect(body.issues).toEqual([{ path: 'email', message: 'Invalid email' }]);
+    expect(body.error.issues).toEqual([
+      { path: 'email', message: 'Invalid email' },
+    ]);
   });
 
   it('maps a duplicate key error (11000) to 409', () => {
@@ -72,6 +81,9 @@ describe('AllExceptionsFilter', () => {
 
     expect(status).toBe(500);
     expect(JSON.stringify(body)).not.toContain('secret');
-    expect(body.message).toBe('Internal server error');
+    expect(body.error).toMatchObject({
+      code: 'INTERNAL_ERROR',
+      message: 'Internal server error',
+    });
   });
 });

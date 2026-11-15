@@ -10,7 +10,6 @@ import {
   Post,
   Put,
   Query,
-  Res,
   UsePipes,
 } from '@nestjs/common';
 import {
@@ -20,7 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Response } from 'express';
+
 import { Public } from 'src/shared/decorators/public.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
@@ -49,18 +48,15 @@ export class GamesController {
     description: 'Get all games records',
   })
   async find(
-    @Res() res: Response,
     @Query('number', new ParseIntPipe({ optional: true }))
     number?: number | undefined,
     @Query('season', new ParseIntPipe({ optional: true }))
     season?: number | undefined,
   ) {
-    return res.json(
-      await this.gamesService.find({
-        ...(number ? { number } : null),
-        ...(season ? { season } : null),
-      }),
-    );
+    return await this.gamesService.find({
+      ...(number ? { number } : null),
+      ...(season ? { season } : null),
+    });
   }
 
   // Get /games/:id
@@ -76,11 +72,10 @@ export class GamesController {
     description: 'Get all games records',
   })
   async findById(
-    @Res() res: Response,
     @Param('id')
     id: string,
   ) {
-    return res.json(await this.gamesService.findById(id));
+    return await this.gamesService.findById(id);
   }
 
   @Post()
@@ -90,8 +85,8 @@ export class GamesController {
     description: 'The record has been successfully created.',
   })
   @UsePipes(new ZodValidationPipe(SaveGameDTO))
-  async save(@Res() res: Response, @Body() game: IGame) {
-    return res.json(await this.gamesService.create(game));
+  async save(@Body() game: IGame) {
+    return await this.gamesService.create(game);
   }
 
   // PUT /games/:id
@@ -105,11 +100,7 @@ export class GamesController {
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateGameDTO)) game: IGame,
   ) {
-    const updatedGame = await this.gamesService.update(id, game);
-
-    return {
-      data: updatedGame,
-    };
+    return await this.gamesService.update(id, game);
   }
 
   // PUT /games/:id
@@ -120,11 +111,10 @@ export class GamesController {
     description: 'The record has been successfully replaced',
   })
   async replace(
-    @Res() res: Response,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(SaveGameDTO)) game: IGame,
   ) {
-    return res.json(await this.gamesService.replace(id, game));
+    return await this.gamesService.replace(id, game);
   }
 
   @Delete(':id')
@@ -132,7 +122,7 @@ export class GamesController {
     status: 201,
     description: 'The record has been successfully deleted',
   })
-  async delete(@Res() res: Response, @Param('id') id: string) {
-    return res.json(await this.gamesService.delete(id));
+  async delete(@Param('id') id: string) {
+    return await this.gamesService.delete(id);
   }
 }

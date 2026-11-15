@@ -41,7 +41,7 @@ export class AuthController {
     required: true,
   })
   @UsePipes(new ZodValidationPipe(AuthRequiredSchema))
-  async signIn(@Res() res: Response, @Body() auth: Auth) {
+  async signIn(@Res({ passthrough: true }) res: Response, @Body() auth: Auth) {
     const { accessToken, refreshToken } = await this.authService.signIn(auth);
 
     // Set cookie refreshToken
@@ -51,8 +51,7 @@ export class AuthController {
       sameSite: true,
     });
 
-    // It makes header Content-Type: application/json
-    return res.json({ accessToken });
+    return { accessToken };
   }
 
   @Public()
@@ -61,14 +60,13 @@ export class AuthController {
     status: 200,
     description: 'sign out (reset tokens)',
   })
-  signOut(@Res() res: Response) {
+  signOut(@Res({ passthrough: true }) res: Response) {
     res.cookie('refreshToken', null, {
       httpOnly: true,
       expires: new Date(),
       sameSite: true,
     });
 
-    // It makes header Content-Type: application/json
-    return res.json({ accessToken: null });
+    return { accessToken: null };
   }
 }

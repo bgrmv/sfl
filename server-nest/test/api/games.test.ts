@@ -29,20 +29,25 @@ describe('API: games', () => {
     const created = await post(gameBody(playerIds, { number: 1 }));
 
     expect(isSuccess(created.status)).toBe(true);
-    expect(created.body).toMatchObject({ number: 1, season: 2024 });
+    expect(created.body.ok).toBe(true);
+    expect(created.body.data).toMatchObject({ number: 1, season: 2024 });
 
-    const byId = await t.api().get(`/rest/games/${created.body.id}`);
+    const byId = await t.api().get(`/rest/games/${created.body.data.id}`);
     expect(byId.status).toBe(200);
-    expect(byId.body.statistics).toHaveLength(2);
+    expect(byId.body.data.statistics).toHaveLength(2);
 
     const list = await t.api().get('/rest/games').query({ season: 2024 });
     expect(list.status).toBe(200);
-    expect(list.body.map((g: { number: number }) => g.number)).toContain(1);
+    expect(list.body.data.map((g: { number: number }) => g.number)).toContain(
+      1,
+    );
   });
 
   it('calculates the score metadata, readable with GET', async () => {
     const created = await post(gameBody(playerIds, { number: 2 }));
-    const { body } = await t.api().get(`/rest/games/${created.body.id}`);
+    const {
+      body: { data: body },
+    } = await t.api().get(`/rest/games/${created.body.data.id}`);
 
     expect(body.metadata).toMatchObject({
       score: [2, 1],
@@ -61,18 +66,18 @@ describe('API: games', () => {
     await post(gameBody(playerIds, { number: 3, season: 2023 }));
 
     const bySeason = await t.api().get('/rest/games').query({ season: 2023 });
-    expect(bySeason.body).toHaveLength(1);
+    expect(bySeason.body.data).toHaveLength(1);
 
     const byNumber = await t
       .api()
       .get('/rest/games')
       .query({ season: 2023, number: 3 });
-    expect(byNumber.body).toHaveLength(1);
+    expect(byNumber.body.data).toHaveLength(1);
   });
 
   it('updates a game with PATCH', async () => {
     const created = await post(gameBody(playerIds, { number: 4 }));
-    const id = created.body.id;
+    const id = created.body.data.id;
 
     const res = await t
       .api()
@@ -86,13 +91,15 @@ describe('API: games', () => {
 
     expect(isSuccess(res.status)).toBe(true);
 
-    const { body } = await t.api().get(`/rest/games/${id}`);
+    const {
+      body: { data: body },
+    } = await t.api().get(`/rest/games/${id}`);
     expect(body.description).toBe('edited');
   });
 
   it('replaces a game with PUT', async () => {
     const created = await post(gameBody(playerIds, { number: 5 }));
-    const id = created.body.id;
+    const id = created.body.data.id;
 
     const res = await t
       .api()
@@ -102,13 +109,15 @@ describe('API: games', () => {
 
     expect(isSuccess(res.status)).toBe(true);
 
-    const { body } = await t.api().get(`/rest/games/${id}`);
+    const {
+      body: { data: body },
+    } = await t.api().get(`/rest/games/${id}`);
     expect(body.description).toBe('replaced');
   });
 
   it('deletes a game', async () => {
     const created = await post(gameBody(playerIds, { number: 6 }));
-    const id = created.body.id;
+    const id = created.body.data.id;
 
     const res = await t
       .api()
@@ -120,7 +129,7 @@ describe('API: games', () => {
       .api()
       .get('/rest/games')
       .query({ season: 2024, number: 6 });
-    expect(after.body).toHaveLength(0);
+    expect(after.body.data).toHaveLength(0);
   });
 
   describe('invalid body: 400 with the list of issues', () => {
@@ -148,8 +157,8 @@ describe('API: games', () => {
       const res = await post(body);
 
       expect(res.status).toBe(400);
-      expect(res.body.message).toBe('Validation failed');
-      expect(res.body.issues.length).toBeGreaterThan(0);
+      expect(res.body.error.message).toBe('Validation failed');
+      expect(res.body.error.issues.length).toBeGreaterThan(0);
     });
 
     it('PATCH: without id in the body', async () => {
@@ -206,12 +215,16 @@ describe('API: games', () => {
       expect(res.status).toBe(400);
     });
 
-    it('the error body is { statusCode, message }', async () => {
+    it('the error body is { ok: false, error: { status, code, message } }', async () => {
       const res = await t.api().delete(`/rest/games/${MISSING}`).set(auth());
 
-      expect(res.body).toMatchObject({
-        statusCode: 404,
-        message: 'Game is not found',
+      expect(res.body).toEqual({
+        ok: false,
+        error: {
+          status: 404,
+          code: 'NOT_FOUND',
+          message: 'Game is not found',
+        },
       });
     });
   });
@@ -228,10 +241,10 @@ describe('API: games', () => {
         .query({ season: 2024, number: 21 });
 
       expect(res.status).toBe(400);
-      expect(res.body.issues[0].message).toBe(
+      expect(res.body.error.issues[0].message).toBe(
         'Each team needs exactly one captain',
       );
-      expect(stored.body).toHaveLength(0);
+      expect(stored.body.data).toHaveLength(0);
     });
 
     it('a published game with a player without a position answers 400', async () => {
@@ -241,7 +254,7 @@ describe('API: games', () => {
       const res = await post(body);
 
       expect(res.status).toBe(400);
-      expect(res.body.issues[0].message).toBe(
+      expect(res.body.error.issues[0].message).toBe(
         'A published game needs a position for every player',
       );
     });
@@ -258,15 +271,15 @@ describe('API: games', () => {
     it('the create response already contains the calculated metadata', async () => {
       const res = await post(gameBody(playerIds, { number: 22 }));
 
-      expect(res.body.metadata.score).toEqual([2, 1]);
-      expect(res.body.metadata.players[playerIds[0]]).toMatchObject({
+      expect(res.body.data.metadata.score).toEqual([2, 1]);
+      expect(res.body.data.metadata.players[playerIds[0]]).toMatchObject({
         hasWon: true,
       });
     });
 
     it('the PATCH response contains the metadata of the stored game', async () => {
       const created = await post(gameBody(playerIds, { number: 25 }));
-      const id = created.body.id;
+      const id = created.body.data.id;
       const stats = gameBody(playerIds).statistics;
       stats[1] = { ...stats[1], goalsByLeg: 5 };
 
@@ -287,7 +300,9 @@ describe('API: games', () => {
   describe('only a published game counts for the players', () => {
     const season = 2019;
     const totalGames = async (playerId: string) => {
-      const { body } = await t
+      const {
+        body: { data: body },
+      } = await t
         .api()
         .get(`/rest/players/${playerId}`)
         .query({ includeMetadata: true });
@@ -299,7 +314,7 @@ describe('API: games', () => {
       const ids: [string, string] = [a.id, b.id];
       const draft = gameBody(ids, { number: 40, season, status: 'draft' });
       const created = await post(draft);
-      const id = created.body.id;
+      const id = created.body.data.id;
       expect(await totalGames(a.id)).toBe(0);
 
       const setStatus = (status: string) =>

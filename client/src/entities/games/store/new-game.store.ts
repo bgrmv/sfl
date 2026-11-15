@@ -2,6 +2,7 @@ import { computed, effect, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { PlayersService } from '@entities/players/services/players.service';
+import type { ApiError } from '@sfl/schemas';
 import { TeamsService } from '@entities/teams';
 import {
   patchState,
@@ -13,6 +14,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { apiErrorMessage } from '@shared/api/api-error-message';
+import { toResult } from '@shared/api/to-result';
 import { TeamEnum } from '@shared/constants/team';
 import { isDate } from 'date-fns';
 import { cloneDeep, isEqual, omit } from 'lodash-es';
@@ -440,11 +442,9 @@ export const NewGameStore = signalStore(
         teamsService: inject(TeamsService),
       },
     ) => {
-      const showSaveError = (error: unknown, fallback: string) => {
+      const showSaveError = (error: ApiError) => {
         console.error(error);
-        snackBar.open(apiErrorMessage(error, fallback), 'Close', {
-          duration: 10000,
-        });
+        snackBar.open(apiErrorMessage(error), 'Close', { duration: 10000 });
       };
 
       return {
@@ -484,19 +484,18 @@ export const NewGameStore = signalStore(
             statistics: store.getStatististicsDTOs(),
           };
 
-          // TODO
-          gameService.create(gameDTO).subscribe({
-            next: game => {
-              const { season, number } = game;
-              if (!game) {
-                console.error('GAME IS NOT CREATED');
-                return;
-              }
-
-              router.navigate(['games', 'edit', season, number]);
-            },
-            error: error => showSaveError(error, 'The game is not created.'),
-          });
+          gameService
+            .create(gameDTO)
+            .pipe(toResult())
+            .subscribe(result =>
+              result.match({
+                ok: game => {
+                  const { season, number } = game;
+                  router.navigate(['games', 'edit', season, number]);
+                },
+                err: showSaveError,
+              }),
+            );
         },
 
         updateGame() {
@@ -524,18 +523,18 @@ export const NewGameStore = signalStore(
             statistics: store.getStatististicsDTOs(),
           };
 
-          gameService.update(id, gameDTO).subscribe({
-            next: game => {
-              if (!game) {
-                console.error('GAME IS NOT UPDATED');
-                return;
-              }
-
-              patchState(store, { initialValue: game });
-              this.initGame();
-            },
-            error: error => showSaveError(error, 'The game is not updated.'),
-          });
+          gameService
+            .update(id, gameDTO)
+            .pipe(toResult())
+            .subscribe(result =>
+              result.match({
+                ok: game => {
+                  patchState(store, { initialValue: game });
+                  this.initGame();
+                },
+                err: showSaveError,
+              }),
+            );
         },
         initGame: rxMethod<void>(
           pipe(

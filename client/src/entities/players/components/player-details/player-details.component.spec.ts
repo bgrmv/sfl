@@ -13,10 +13,14 @@ describe('PlayerDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PlayerDetailsComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNoopAnimations()],
-    })
-    .compileComponents();
-    
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+      ],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(PlayerDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

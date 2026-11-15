@@ -40,10 +40,8 @@ export class ChartsController {
   async topTotalPointsPlayers(
     @Query('season', ParseIntPipe) season: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<TResponse<any>> {
-    return {
-      data: await this.chartsService.topTotalPointsPlayers({ season, limit }),
-    };
+  ) {
+    return await this.chartsService.topTotalPointsPlayers({ season, limit });
   }
 
   @ApiQuery({ name: 'season', required: true, type: Number })
@@ -57,12 +55,10 @@ export class ChartsController {
   async topAncientRatingSystemPlayers(
     @Query('season', new ParseIntPipe()) season: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<TResponse<any>> {
-    return {
-      data: await this.chartsService.topAncientRatingSystemPlayers({
-        season,
-        limit,
-      }),
-    };
+  ) {
+    return await this.chartsService.topAncientRatingSystemPlayers({
+      season,
+      limit,
+    });
   }
 }

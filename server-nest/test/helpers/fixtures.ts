@@ -27,7 +27,7 @@ export async function createPlayers(t: TestApp, count: number) {
     .set('Authorization', bearer(t))
     .send(body);
 
-  return res.body as { id: string; nickname: string }[];
+  return res.body.data as { id: string; nickname: string }[];
 }
 
 const team = (id: string, name: string, color: 'WHITE' | 'RED') => ({

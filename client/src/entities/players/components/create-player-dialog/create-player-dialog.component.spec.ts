@@ -16,10 +16,17 @@ describe('CreatePlayerDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreatePlayerDialogComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNoopAnimations(), PlayersService, HttpService, { provide: MatDialogRef, useValue: { close: () => undefined } }],
-    })
-    .compileComponents();
-    
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+        PlayersService,
+        HttpService,
+        { provide: MatDialogRef, useValue: { close: () => undefined } },
+      ],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(CreatePlayerDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -37,9 +37,10 @@ export class ChartsService {
     limit?: number;
   }): Observable<TTopTotalPoints[]> {
     return this.httpService
-      .get<
-        TResponse<TTopTotalPoints[]>
-      >(`charts/top-total-points-players`, filter)
+      .get<TResponse<TTopTotalPoints[]>>(
+        `charts/top-total-points-players`,
+        filter,
+      )
       .pipe(map(({ data }) => data));
   }
 
@@ -48,9 +49,10 @@ export class ChartsService {
     limit?: number;
   }): Observable<TTopAncientRatingSystem[]> {
     return this.httpService
-      .get<
-        TResponse<TTopAncientRatingSystem[]>
-      >(`charts/top-ancient-rating-system-players`, filter)
+      .get<TResponse<TTopAncientRatingSystem[]>>(
+        `charts/top-ancient-rating-system-players`,
+        filter,
+      )
       .pipe(map(({ data }) => data));
   }
 }

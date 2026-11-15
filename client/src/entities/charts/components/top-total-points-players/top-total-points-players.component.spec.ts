@@ -11,8 +11,7 @@ describe('TopTotalPointsPlayersComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TopTotalPointsPlayersComponent],
       providers: [provideHighcharts({ instance: () => import('highcharts') })],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TopTotalPointsPlayersComponent);
     component = fixture.componentInstance;

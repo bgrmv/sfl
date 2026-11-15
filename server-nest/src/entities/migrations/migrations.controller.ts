@@ -34,9 +34,7 @@ export class MigrationsController {
   })
   // Changes data, so it is a POST (ADMIN only by default)
   @Post('convert-players-user-to-uuid')
-  async getPlayersSeasonsTotalPoints(): Promise<TResponse<Player[]>> {
-    return {
-      data: await this.migrationsService.convertPlayerUserToUUID(),
-    };
+  async getPlayersSeasonsTotalPoints(): Promise<Player[]> {
+    return await this.migrationsService.convertPlayerUserToUUID();
   }
 }

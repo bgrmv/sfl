@@ -6,7 +6,7 @@ import {
   effect,
   inject,
   OnDestroy,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -83,10 +83,7 @@ export class PlayersTableComponent implements OnDestroy, AfterViewInit {
 
   readonly dataSource = new MatTableDataSource<TPlayerFinal>([]);
   readonly displayedColumns: (
-    | keyof TPlayerFinal
-    | 'actions'
-    | 'name'
-    | 'surname'
+    keyof TPlayerFinal | 'actions' | 'name' | 'surname'
   )[] = [
     'avatar',
     'number',

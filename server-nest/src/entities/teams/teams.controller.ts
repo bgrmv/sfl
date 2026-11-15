@@ -5,11 +5,10 @@ import {
   HttpStatus,
   Post,
   Put,
-  Res,
   UsePipes,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import type { Response } from 'express';
+
 import { Public } from 'src/shared/decorators/public.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { TeamSaveDTO } from './team.dto';
@@ -27,8 +26,8 @@ export class TeamsController {
     status: HttpStatus.OK,
     description: 'Get all teams records',
   })
-  async find(@Res() res: Response) {
-    return res.json(await this.teamsService.find());
+  async find() {
+    return await this.teamsService.find();
   }
 
   @Post()

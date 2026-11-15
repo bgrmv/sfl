@@ -18,10 +18,18 @@ describe('PlayersAutocompleteComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PlayersAutocompleteComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNoopAnimations(), NewGameStore, PlayersService, GameService, HttpService],
-    })
-    .compileComponents();
-    
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+        NewGameStore,
+        PlayersService,
+        GameService,
+        HttpService,
+      ],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(PlayersAutocompleteComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('mode', EnumGameMode.Create);

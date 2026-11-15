@@ -24,10 +24,7 @@ import { GameService } from '../services/game.service';
 import { IGameDTO } from '../types';
 
 export type RequestStatus =
-  | 'idle'
-  | 'pending'
-  | 'fulfilled'
-  | { error: string };
+  'idle' | 'pending' | 'fulfilled' | { error: string };
 export type RequestStatusState = { requestStatus: RequestStatus };
 
 export interface TGamesStore {

@@ -6,11 +6,7 @@
 // would add about 90 kB (gzip) to the client bundle, mini about 7 kB.
 import * as z from 'zod/mini';
 
-import {
-  EnumGameStatus,
-  EnumPlayerPosition,
-  EnumTeamColor,
-} from './enums.js';
+import { EnumGameStatus, EnumPlayerPosition, EnumTeamColor } from './enums.js';
 
 const text = z.string().check(z.trim());
 /** `null` and a missing value become an empty string (the API never stores null text). */
