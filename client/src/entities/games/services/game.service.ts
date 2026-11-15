@@ -31,9 +31,7 @@ export class GameService {
   }
 
   public update(id: string, game: IGameDTO): Observable<IGameDTO> {
-    return this.httpService
-      .patch<IGameDTO, TResponse<IGameDTO>>(`games/${id}`, game)
-      .pipe(map(({ data }) => data));
+    return this.httpService.patch<IGameDTO, IGameDTO>(`games/${id}`, game);
   }
 
   public replace(id: string, game: IGameDTO) {

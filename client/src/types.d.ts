@@ -11,17 +11,3 @@ type SetOptional<T, Keys extends keyof T> = Omit<T, Keys> &
 
 type SetRequired<T, Keys extends keyof T> = Omit<T, Keys> &
   Required<Pick<T, Keys>>;
-
-// From server
-type TResponse<T> = {
-  data: T;
-  error?: {
-    code: number;
-    message: string;
-  };
-  meta?: {
-    total: number;
-    page: number;
-    pageSize: number;
-  };
-};

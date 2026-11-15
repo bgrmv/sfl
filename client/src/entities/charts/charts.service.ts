@@ -1,6 +1,6 @@
 import { inject, Service } from '@angular/core';
 import { HttpService } from '@shared/services/http.service';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export type TTopTotalPoints = {
   id: string;
@@ -36,23 +36,19 @@ export class ChartsService {
     season: number;
     limit?: number;
   }): Observable<TTopTotalPoints[]> {
-    return this.httpService
-      .get<TResponse<TTopTotalPoints[]>>(
-        `charts/top-total-points-players`,
-        filter,
-      )
-      .pipe(map(({ data }) => data));
+    return this.httpService.get<TTopTotalPoints[]>(
+      `charts/top-total-points-players`,
+      filter,
+    );
   }
 
   public getTopAncientRatingSystemPlayers(filter: {
     season: number;
     limit?: number;
   }): Observable<TTopAncientRatingSystem[]> {
-    return this.httpService
-      .get<TResponse<TTopAncientRatingSystem[]>>(
-        `charts/top-ancient-rating-system-players`,
-        filter,
-      )
-      .pipe(map(({ data }) => data));
+    return this.httpService.get<TTopAncientRatingSystem[]>(
+      `charts/top-ancient-rating-system-players`,
+      filter,
+    );
   }
 }
