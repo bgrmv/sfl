@@ -111,7 +111,7 @@ flowchart LR
 | Эпик 0 — Hotfix безопасности текущего прода     | [E00-security-hotfix/](E00-security-hotfix/)         |  7 (1 отменена)  |
 | Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 13 (2 отменены)  |
 | Эпик 2 — Тесты и CI                             | [E02-tests-ci/](E02-tests-ci/)                       |        8         |
-| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        26        |
+| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        27        |
 | Эпик 4 — Spike и проектирование переезда        | [E04-migration-design/](E04-migration-design/)       |  4 (1 отменена)  |
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
@@ -197,8 +197,9 @@ flowchart LR
 |   ✅   | [S3.22](E03-architecture/S3.22.md) | Исправить ошибки и гонки в сторах клиента                       |    P1     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S2.5](E02-tests-ci/S2.5.md)       |
 |   ❌   | [S3.23](E03-architecture/S3.23.md) | MongoDB как replica set (транзакции)                            |    P2     |   M    | —                                                                           |
 |   ✅   | [S3.24](E03-architecture/S3.24.md) | Исправить правила и сторы формы матча по ревью                  |    P1     |   M    | [S3.22](E03-architecture/S3.22.md)                                          |
-|   ❌   | [S3.25](E03-architecture/S3.25.md) | Стор капитанов без дубля списка игроков                         |    P2     |   S    | [S3.22](E03-architecture/S3.22.md), [S3.7](E03-architecture/S3.7.md)        |
+|   ✅   | [S3.25](E03-architecture/S3.25.md) | Стор капитанов без дубля списка игроков                         |    P2     |   S    | [S3.22](E03-architecture/S3.22.md), [S3.7](E03-architecture/S3.7.md)        |
 |   ❌   | [S3.26](E03-architecture/S3.26.md) | Steiger как проверка структуры FSD                              |    P3     |   S    | [S3.8](E03-architecture/S3.8.md)                                            |
+|   ❌   | [S3.27](E03-architecture/S3.27.md) | Полный пересчёт сезона: подготовка вне транзакции               |    P3     |   S    | [S3.5](E03-architecture/S3.5.md)                                            |
 
 ## Эпик 4 — Spike и проектирование переезда
 

@@ -9,7 +9,7 @@ export function hasSuggestedFilter(
   suggestedString: string,
 ): boolean {
   return (
-    captain.number.toString().includes(suggestedString) ||
+    String(captain.number ?? '').includes(suggestedString) ||
     // captain.name.toLowerCase().includes(suggestedString) ||
     // captain.surname.toLowerCase().includes(suggestedString) ||
     captain.nickname.toLowerCase().includes(suggestedString)

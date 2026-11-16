@@ -27,11 +27,7 @@ import {
   tap,
 } from 'rxjs';
 
-import {
-  CaptainsCardsComponent,
-  CaptainsStore,
-  TCaptain,
-} from '@entities/captain';
+import { CaptainsCardsComponent, TCaptain } from '@entities/captain';
 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CardVariantEnum } from '@shared/constants/card';
@@ -65,14 +61,13 @@ export class CaptainToAddComponent
   extends BaseUnsubscribeComponent
   implements OnInit
 {
-  private captainsStore = inject(CaptainsStore);
-
   readonly playersStore = inject(PlayersStore);
 
   readonly displayFn = displayFn;
   readonly variantEnum = CardVariantEnum;
   readonly players$ = toObservable(this.playersStore.playersEntities);
-  readonly captains = this.captainsStore.captains;
+  readonly captains = this.playersStore.captains;
+  readonly captains$ = toObservable(this.captains);
   readonly captainFormControl = new FormControl<TCaptain | string | null>('');
 
   readonly #filteredPlayers = new BehaviorSubject<PlayerClient[]>([]);
@@ -87,13 +82,13 @@ export class CaptainToAddComponent
       return;
     }
     const id = captainEl.getAttribute('data-captain-id');
-    id && this.captainsStore.delete(id);
+    id && this.playersStore.toggleCaptain(id);
   }
 
   ngOnInit() {
     combineLatest([
       this.players$,
-      toObservable(this.captainsStore.captains),
+      this.captains$,
       this.captainFormControl.valueChanges.pipe(startWith(null)),
     ])
       .pipe(

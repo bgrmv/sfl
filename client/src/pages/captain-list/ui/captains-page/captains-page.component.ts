@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 
-import { CaptainsService, CaptainsStore } from '@entities/captain';
+import { PlayersService, PlayersStore } from '@entities/player';
 import { CaptainsTableComponent } from '@features/captain-table';
 import { CaptainsToggleComponent } from '@features/captain-toggle';
 import { CaptainsAdminWidgetComponent } from '../captains-admin-widget/captains-admin-widget.component';
@@ -26,13 +26,7 @@ import { CaptainsAdminWidgetComponent } from '../captains-admin-widget/captains-
   templateUrl: './captains-page.component.html',
   styleUrls: ['./captains-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
-    // https://angular.io/api/core/FactoryProvider
-    CaptainsService,
-
-    CaptainsStore,
-  ],
+  providers: [PlayersService, PlayersStore],
 })
 export class CaptainsPageComponent {
   // @temporary

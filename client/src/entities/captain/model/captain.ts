@@ -1,22 +1,26 @@
 import { TeamEnum } from '@shared/constants/team';
 
+/**
+ * What the captain cards and tables need. A captain is a player with
+ * `isCaptain`, so a player from `PlayersStore` fits this type as it is;
+ * the stats come only when the server sends them.
+ */
 export type TCaptain = {
   id: string;
-  avatar: number;
+  avatar?: number | string;
 
-  number: number;
+  number?: number;
   nickname: string;
-  // name: string;
-  // surname: string;
 
   isCaptain: boolean;
-  totalGames: number;
-  draws: number;
-  lostGames: number;
-  wonGames: number;
-  maxWinStreak: number;
-  maxLostStreak: number;
+  totalGames?: number;
+  draws?: number;
+  lostGames?: number;
+  wonGames?: number;
+  maxWinStreak?: number;
+  maxLostStreak?: number;
   team?: TeamEnum;
 };
 
-export type TCaptainSelected = Required<TCaptain>;
+/** The captain chosen for a team of the game being created. */
+export type TCaptainSelection = { id: string; team: TeamEnum };

@@ -4,7 +4,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 
-import { CaptainsService } from '@entities/captain';
 import { PlayersStore } from '@entities/player';
 import { PlayerCreateButtonComponent } from '@features/player-create';
 import { PlayersTableComponent } from './players-table/players-table.component';
@@ -55,12 +54,8 @@ import { PageComponent } from '@shared/ui/core/page/page.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
-    // https://angular.io/api/core/FactoryProvider
-    CaptainsService,
     PlayersService,
     // Move to the widget
-    // // To use CaptainsService - useEffects
     PlayersStore,
     AuthService,
   ],

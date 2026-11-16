@@ -12,7 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
-import { CaptainsStore, TCaptain } from '@entities/captain';
+import { TCaptain } from '@entities/captain';
+import { PlayersStore } from '@entities/player';
 
 @Component({
   selector: 'sfl-captains-table',
@@ -28,13 +29,13 @@ import { CaptainsStore, TCaptain } from '@entities/captain';
   ],
 })
 export class CaptainsTableComponent implements AfterViewInit {
-  private captainsStore = inject(CaptainsStore);
+  private playersStore = inject(PlayersStore);
 
   readonly sort = viewChild.required(MatSort);
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.captainsStore.captains();
+      this.dataSource.data = this.playersStore.captains();
     });
   }
 

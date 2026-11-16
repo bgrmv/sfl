@@ -1,74 +1,36 @@
 import { TestBed } from '@angular/core/testing';
 import { TeamEnum } from '@shared/constants/team';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { CaptainsService } from '../api/captains.service';
-import { TCaptain } from './captain';
 import { CaptainsStore } from './captains-store';
 
-const captain = (id: string, isCaptain = true) =>
-  ({ id, nickname: id, isCaptain }) as TCaptain;
-
 describe('CaptainsStore', () => {
-  const getCaptains = vi.fn();
+  let store: InstanceType<typeof CaptainsStore>;
 
   beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-    getCaptains.mockReset().mockResolvedValue([captain('a'), captain('b')]);
-    TestBed.configureTestingModule({
-      providers: [
-        CaptainsStore,
-        { provide: CaptainsService, useValue: { getCaptains } },
-      ],
-    });
+    TestBed.configureTestingModule({ providers: [CaptainsStore] });
+    store = TestBed.inject(CaptainsStore);
   });
 
-  afterEach(() => vi.restoreAllMocks());
-
-  it('loads the captains', async () => {
-    const store = TestBed.inject(CaptainsStore);
-    await vi.waitFor(() => expect(store.isFulfilled()).toBe(true));
-
-    expect(store.captains().map(c => c.id)).toEqual(['a', 'b']);
+  it('starts without a selection', () => {
+    expect(store.selected()).toEqual([]);
   });
 
-  it('a failed load is an error, not an empty list (10)', async () => {
-    getCaptains.mockRejectedValueOnce(new Error('down'));
-    const store = TestBed.inject(CaptainsStore);
-    // The user sees the text of the API error, not the raw exception
-    await vi.waitFor(() => expect(store.error()).toBeTruthy());
-    expect(store.error()).not.toBe('down');
-
-    expect(store.captains()).toEqual([]);
-
-    store.load();
-    await vi.waitFor(() => expect(store.isFulfilled()).toBe(true));
-    expect(store.error()).toBeNull();
-  });
-
-  it('keeps one selected captain per team and lists the others', async () => {
-    const store = TestBed.inject(CaptainsStore);
-    await vi.waitFor(() => expect(store.isFulfilled()).toBe(true));
-
+  it('keeps one selected captain per team', () => {
     store.addSelected({ id: 'a', team: TeamEnum.teamA });
     store.addSelected({ id: 'b', team: TeamEnum.teamA });
+    store.addSelected({ id: 'c', team: TeamEnum.teamB });
 
-    expect(store.selected().map(c => c.id)).toEqual(['b']);
-    expect(store.captainsWithoutTeam().map(c => c.id)).toEqual(['a']);
-
-    store.deleteSelected('b');
-    expect(store.captainsWithoutTeam()).toHaveLength(2);
+    expect(store.selected()).toEqual([
+      { id: 'b', team: TeamEnum.teamA },
+      { id: 'c', team: TeamEnum.teamB },
+    ]);
   });
 
-  it('toggleCaptain, add and delete change the list', async () => {
-    const store = TestBed.inject(CaptainsStore);
-    await vi.waitFor(() => expect(store.isFulfilled()).toBe(true));
+  it('deleteSelected frees the captain', () => {
+    store.addSelected({ id: 'a', team: TeamEnum.teamA });
+    store.deleteSelected('a');
 
-    store.toggleCaptain({ id: 'a', isCaptain: false });
-    expect(store.captains()[0].isCaptain).toBe(false);
-
-    store.add(captain('c'));
-    store.delete('a');
-    expect(store.captains().map(c => c.id)).toEqual(['b', 'c']);
+    expect(store.selected()).toEqual([]);
   });
 });

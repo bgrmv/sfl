@@ -9,14 +9,12 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  MatSlideToggleChange,
-  MatSlideToggleModule,
-} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
-import { CaptainsStore, TCaptain } from '@entities/captain';
+import { TCaptain } from '@entities/captain';
+import { PlayersStore } from '@entities/player';
 
 @Component({
   selector: 'sfl-captains-toggle',
@@ -33,13 +31,13 @@ import { CaptainsStore, TCaptain } from '@entities/captain';
   ],
 })
 export class CaptainsToggleComponent implements AfterViewInit {
-  private captainsStore = inject(CaptainsStore);
+  private playersStore = inject(PlayersStore);
 
   readonly sort = viewChild.required(MatSort);
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.captainsStore.captains();
+      this.dataSource.data = this.playersStore.captains();
     });
   }
 
@@ -56,7 +54,8 @@ export class CaptainsToggleComponent implements AfterViewInit {
     'actions',
   ];
 
-  onToggle(id: string, event: MatSlideToggleChange) {
-    this.captainsStore.toggleCaptain({ id, isCaptain: event.checked });
+  /** The flag is flipped from the value in the store, not from the event. */
+  onToggle(id: string) {
+    this.playersStore.toggleCaptain(id);
   }
 }

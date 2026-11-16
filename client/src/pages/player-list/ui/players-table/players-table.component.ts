@@ -20,7 +20,6 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 
-import { CaptainsService } from '@entities/captain';
 import { TPlayerFinal } from '@entities/player';
 import { PlayersStore } from '@entities/player';
 import { PlayerDeleteDialogComponent } from '@features/player-delete';
@@ -45,13 +44,6 @@ import { AuthService } from '@shared/auth/auth.service';
     MatButtonModule,
     MatProgressBarModule,
     NilToDashPipe,
-  ],
-  providers: [
-    // Fixme: CaptainsStore uses CaptainsService, idk how to fix this
-    // https://angular.io/api/core/FactoryProvider
-    CaptainsService,
-    // To use CaptainsService - useEffects
-    // provideComponentStore(PlayersStore),
   ],
 })
 export class PlayersTableComponent implements OnDestroy, AfterViewInit {
