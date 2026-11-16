@@ -386,7 +386,7 @@ export const CreateTeamSchema = v.object({
 11. **Контроллеры отдают ответ через `@Res()`.** Обходит глобальные интерцепторы и сериализацию Nest, усложняет тестирование.
 12. **Имя поля `API_KEY`** в клиентском [environment.ts](../client/src/environments/environment.ts) содержит URL, а сам адрес `https://sfl.com:3001/rest` захардкожен в коде. Прод-адрес `https://sfl-backend.azurewebsites.net/rest` тоже захардкожен в `environment.prod.ts`.
 13. **Тесты не запускаются в CI.** Регрессии в API не ловятся.
-14. **Транзакции отключены.** В [players.transactions.ts](../server-nest/src/entities/player/players.transactions.ts) код `withTransaction` закомментирован. Обновление нескольких документов при сбое может оставить данные в несогласованном состоянии.
+14. ~~Транзакции отключены~~ — устранено в S3.5: сохранение матча и пересчёт метаданных игроков идут в одной транзакции (`TransactionService` в `entities/statistics`). Нужен replica set (ADR 0014); на базе без него сервер пишет ошибку при старте, а сохранение матча отвечает 500.
 15. **Много `console.log`** в `server-nest/src` (около 10), в том числе отладочные.
 
 ### Низкие

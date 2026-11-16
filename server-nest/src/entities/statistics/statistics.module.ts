@@ -4,6 +4,7 @@ import { FileLoggerService } from 'src/shared/services/logger.service';
 import { Game, GameSchema } from '../games/game.schema';
 import { Player, PlayerSchema } from '../players/players.schema';
 import { PlayerMetadataService } from './player-metadata.service';
+import { TransactionService } from './transaction.service';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { PlayerMetadataService } from './player-metadata.service';
       { name: Game.name, schema: GameSchema },
     ]),
   ],
-  providers: [PlayerMetadataService, FileLoggerService],
-  exports: [PlayerMetadataService],
+  providers: [PlayerMetadataService, TransactionService, FileLoggerService],
+  exports: [PlayerMetadataService, TransactionService],
 })
 export class StatisticsModule {}

@@ -30,6 +30,8 @@ import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.p
 import {
   CreatePlayersDTO,
   CreatePlayersDTOOutput,
+  RecalculateFullSeasonDTO,
+  RecalculateFullSeasonDTOOutput,
   RecalculateSeasonDTO,
   RecalculateSeasonDTOOutput,
   UpdatePlayerDTO,
@@ -40,7 +42,7 @@ import { FileLoggerService } from '../../shared/services/logger.service';
 import { UsersService } from '../users/users.service';
 import { isAdmin, presentPlayer } from './utils/present-player';
 import { Player } from './players.schema';
-import { PlayerMetadataService } from '../statistics';
+import { PlayerMetadataService, TransactionService } from '../statistics';
 import { PlayersService } from './players.service';
 
 export class PlayerCreationDTO {
@@ -72,6 +74,7 @@ export class PlayersController {
     private readonly usersService: UsersService,
     private readonly playersService: PlayersService,
     private readonly playerMetadata: PlayerMetadataService,
+    private readonly transactions: TransactionService,
     private readonly logger: FileLoggerService,
   ) {}
 
@@ -217,11 +220,54 @@ export class PlayersController {
       playerIds,
     });
 
-    await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
-      seasonId,
-      playerIds,
+    // All or nothing: a failure for one player rolls back the others (S3.5)
+    await this.transactions.run(session =>
+      this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
+        seasonId,
+        playerIds,
+        session,
+      ),
     );
 
     return { success: 'OK', seasonId, playerIds };
+  }
+
+  // Manual full recalculation of a season: admin only by default (S3.5).
+  // Idempotent: the metadata is rebuilt from the published games each time.
+  @Post('recalculate/season/full')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['seasonId'],
+      properties: { seasonId: { type: 'integer' } },
+    },
+  })
+  @ApiOkResponse({
+    description: 'Recalculation of the whole season is finished',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid body' })
+  @ApiInternalServerErrorResponse({
+    description: 'Recalculation failed, nothing was changed',
+  })
+  async recalculateFullSeason(
+    @Body(new ZodValidationPipe(RecalculateFullSeasonDTO))
+    { seasonId }: RecalculateFullSeasonDTOOutput,
+  ) {
+    this.logger.info('Recalculate the whole season', { seasonId });
+
+    const playerIds = await this.transactions.run(async session => {
+      const ids = await this.playerMetadata.findSeasonPlayerIds(
+        seasonId,
+        session,
+      );
+      await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
+        seasonId,
+        ids,
+        session,
+      );
+      return ids;
+    });
+
+    return { success: 'OK', seasonId, playersCount: playerIds.length };
   }
 }

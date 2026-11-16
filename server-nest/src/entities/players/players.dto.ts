@@ -6,6 +6,14 @@ export const RecalculateSeasonDTO = z.object({
   playerIds: z.array(z.string().trim().min(1)).min(1),
 });
 
+export const RecalculateFullSeasonDTO = z.object({
+  seasonId: z.number().int().min(2010),
+});
+
+export type RecalculateFullSeasonDTOOutput = z.output<
+  typeof RecalculateFullSeasonDTO
+>;
+
 export type RecalculateSeasonDTOInput = z.input<typeof RecalculateSeasonDTO>;
 export type RecalculateSeasonDTOOutput = z.output<typeof RecalculateSeasonDTO>;
 

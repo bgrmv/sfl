@@ -12,9 +12,9 @@ import {
   calculatePlayerGameResultMetadata,
   GameMetadataError,
 } from '@sfl/domain';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
-import { PlayerMetadataService } from '../statistics';
+import { PlayerMetadataService, TransactionService } from '../statistics';
 import {
   Game,
   IGame,
@@ -29,6 +29,8 @@ export class GamesService {
     private readonly gameModel: Model<IGame>,
 
     private readonly playerMetadata: PlayerMetadataService,
+
+    private readonly transactions: TransactionService,
 
     private readonly logger: FileLoggerService,
   ) {}
@@ -57,23 +59,28 @@ export class GamesService {
     }
 
     try {
-      await this.gameModel.create(game);
-      const createdGame = await this.gameModel
-        .findOne({
-          number: game.number,
-          season: game.season,
-        })
-        .exec();
+      // The game and the metadata of its players are saved together (S3.5)
+      return await this.transactions.run(async session => {
+        await this.gameModel.create([game], { session });
+        const createdGame = await this.gameModel
+          .findOne({
+            number: game.number,
+            season: game.season,
+          })
+          .session(session)
+          .exec();
 
-      if (!createdGame) {
-        throw new InternalServerErrorException('Created game is not found');
-      }
+        if (!createdGame) {
+          throw new InternalServerErrorException('Created game is not found');
+        }
 
-      return await this.runMetadataFlow(
-        createdGame.toJSON({
-          flattenObjectIds: false,
-        }) as unknown as WithId<IGame>,
-      );
+        return await this.runMetadataFlow(
+          createdGame.toJSON({
+            flattenObjectIds: false,
+          }) as unknown as WithId<IGame>,
+          session,
+        );
+      });
     } catch (error) {
       this.logger.error('Failed to create game', {
         season: game.season,
@@ -95,9 +102,14 @@ export class GamesService {
     }
 
     try {
-      await this.gameModel.findOneAndUpdate({ _id }, game).exec();
+      return await this.transactions.run(async session => {
+        await this.gameModel
+          .findOneAndUpdate({ _id }, game)
+          .session(session)
+          .exec();
 
-      return await this.runMetadataFlow(game);
+        return await this.runMetadataFlow(game, session);
+      });
     } catch (error) {
       this.logger.error('Failed to update game', { _id, error });
       if (error instanceof HttpException) {
@@ -109,19 +121,23 @@ export class GamesService {
 
   async replace(_id: string, game: IGame) {
     try {
-      const updatedGame = await this.gameModel
-        .findOneAndReplace({ _id }, game)
-        .exec();
+      return await this.transactions.run(async session => {
+        const updatedGame = await this.gameModel
+          .findOneAndReplace({ _id }, game)
+          .session(session)
+          .exec();
 
-      if (!updatedGame) {
-        throw new NotFoundException('Game is not found');
-      }
+        if (!updatedGame) {
+          throw new NotFoundException('Game is not found');
+        }
 
-      return await this.runMetadataFlow(
-        updatedGame.toJSON({
-          flattenObjectIds: false,
-        }) as unknown as WithId<IGame>,
-      );
+        return await this.runMetadataFlow(
+          updatedGame.toJSON({
+            flattenObjectIds: false,
+          }) as unknown as WithId<IGame>,
+          session,
+        );
+      });
     } catch (error) {
       this.logger.error('Failed to replace game', { _id, error });
       if (error instanceof HttpException) {
@@ -134,21 +150,30 @@ export class GamesService {
   async delete(_id: string): Promise<boolean> {
     this.logger.info('Delete game', { _id });
 
-    const game = await this.gameModel.findOneAndDelete({ _id }).exec();
+    return await this.transactions.run(async session => {
+      const game = await this.gameModel
+        .findOneAndDelete({ _id })
+        .session(session)
+        .exec();
 
-    if (!game) {
-      throw new NotFoundException('Game is not found');
-    }
+      if (!game) {
+        throw new NotFoundException('Game is not found');
+      }
 
-    await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
-      game.season,
-      game.statistics.map(s => s.playerId.toString()),
-    );
+      await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
+        game.season,
+        game.statistics.map(s => s.playerId.toString()),
+        session,
+      );
 
-    return !!game;
+      return true;
+    });
   }
 
-  private async runMetadataFlow(game: WithId<IGame>): Promise<WithId<IGame>> {
+  private async runMetadataFlow(
+    game: WithId<IGame>,
+    session: ClientSession,
+  ): Promise<WithId<IGame>> {
     const metadata = this.calculateGameMetadata(game);
 
     const playersMetadata = this.recalculateGamePlayersMetadata({
@@ -167,11 +192,13 @@ export class GamesService {
         },
         { new: true },
       )
+      .session(session)
       .exec();
 
     await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
       game.season,
       game.statistics.map(s => s.playerId.toString()),
+      session,
     );
 
     return gameWithMetadata.toJSON();

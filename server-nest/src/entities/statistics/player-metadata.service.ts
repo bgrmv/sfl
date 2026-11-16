@@ -6,7 +6,7 @@ import {
   IPlayerMetadata,
   METADATA_DEFAULT,
 } from '@sfl/domain';
-import { FlattenMaps, Model, Types } from 'mongoose';
+import { ClientSession, FlattenMaps, Model, Types } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import { EnumGameStatus, Game, IGame } from '../games/game.schema';
 import { Player } from '../players/players.schema';
@@ -31,14 +31,18 @@ export class PlayerMetadataService {
   async recalculatePlayersSeasonAndCareerMetadata(
     season: number,
     playerIds: string[],
+    session?: ClientSession,
   ): Promise<void> {
     const failed: { playerId: string; error: string }[] = [];
 
     // Sequentially and awaited: the caller gets the response only when done.
     for (const playerId of playerIds) {
       try {
-        await this.recalculateSeasonMetadata(playerId, season);
+        await this.recalculateSeasonMetadata(playerId, season, session);
       } catch (error) {
+        // Inside a transaction: fail fast and keep the original error, so withTransaction
+        // can see TransientTransactionError and retry; the transaction is dead anyway
+        if (session) throw error;
         failed.push({
           playerId,
           error: error instanceof Error ? error.message : String(error),
@@ -60,9 +64,36 @@ export class PlayerMetadataService {
     }
   }
 
+  /**
+   * Everybody who has a game or stored metadata in the season, so a full
+   * recalculation also clears the players whose games were removed.
+   */
+  async findSeasonPlayerIds(
+    season: number,
+    session?: ClientSession,
+  ): Promise<string[]> {
+    const fromGames = await this.gameModel
+      .distinct('statistics.playerId', { season })
+      .session(session ?? null)
+      .exec();
+    const withMetadata = await this.playerModel
+      .find({ [`metadata.bySeason.${season}`]: { $exists: true } }, { _id: 1 })
+      .session(session ?? null)
+      .lean()
+      .exec();
+
+    return [
+      ...new Set([
+        ...fromGames.map(id => String(id)),
+        ...withMetadata.map(({ _id }) => String(_id)),
+      ]),
+    ];
+  }
+
   private async recalculateSeasonMetadata(
     playerId: string,
     season: number,
+    session?: ClientSession,
   ): Promise<void> {
     this.logger.info('Recalculate season metadata for player', {
       _id: playerId,
@@ -87,7 +118,7 @@ export class PlayerMetadataService {
           },
         },
       ],
-      { maxTimeMS: 60000, allowDiskUse: true },
+      { maxTimeMS: 60000, allowDiskUse: true, session },
     )) as (IGame & { _id: Types.ObjectId })[];
 
     try {
@@ -104,9 +135,10 @@ export class PlayerMetadataService {
       await this.playerModel.updateOne(
         { _id: playerId },
         { $set: { [`metadata.bySeason.${season}`]: seasonMetadata } },
+        { session },
       );
 
-      await this.recalculateCareerMetadata(playerId);
+      await this.recalculateCareerMetadata(playerId, session);
     } catch (error) {
       this.logger.error('Failed to recalculate season metadata for player', {
         _id: playerId,
@@ -118,10 +150,17 @@ export class PlayerMetadataService {
     }
   }
 
-  protected async recalculateCareerMetadata(playerId: string): Promise<void> {
+  protected async recalculateCareerMetadata(
+    playerId: string,
+    session?: ClientSession,
+  ): Promise<void> {
     const seasonsMetadata: FlattenMaps<Record<number, IPlayerMetadata>> =
-      (await this.playerModel.findById({ _id: playerId }).exec()).toJSON()
-        .metadata?.bySeason ?? {};
+      (
+        await this.playerModel
+          .findById({ _id: playerId })
+          .session(session ?? null)
+          .exec()
+      ).toJSON().metadata?.bySeason ?? {};
 
     try {
       const accumulatedPlayerCareerMetadata = Object.values(seasonsMetadata)
@@ -135,13 +174,15 @@ export class PlayerMetadataService {
       await this.playerModel.updateOne(
         { _id: playerId },
         { $set: { 'metadata.byCareer': accumulatedPlayerCareerMetadata } },
+        { session },
       );
     } catch (error) {
-      console.error(error);
       this.logger.error('Failed to recalculate career metadata for player', {
         _id: playerId,
         error,
       });
+
+      throw error;
     }
   }
 }

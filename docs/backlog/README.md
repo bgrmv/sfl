@@ -177,7 +177,7 @@ flowchart LR
 |   ✅   | [S3.2](E03-architecture/S3.2.md)   | pnpm workspace и общие схемы и типы                             |    P1     |   M    | [S1.2](E01-dependency-upgrades/S1.2.md)                                     |
 |   ✅   | [S3.3](E03-architecture/S3.3.md)   | Разорвать цикл games ↔ players                                  |    P2     |   M    | [S3.1](E03-architecture/S3.1.md)                                            |
 |   ✅   | [S3.4](E03-architecture/S3.4.md)   | Единый формат ответов API                                       |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                |
-|   ❌   | [S3.5](E03-architecture/S3.5.md)   | Атомарное сохранение матча и пересчёта                          |    P2     |   M    | [S3.3](E03-architecture/S3.3.md)                                            |
+|   ✅   | [S3.5](E03-architecture/S3.5.md)   | Атомарное сохранение матча и пересчёта                          |    P2     |   M    | [S3.3](E03-architecture/S3.3.md)                                            |
 |   ✅   | [S3.6](E03-architecture/S3.6.md)   | Конфигурация окружений клиента                                  |    P1     |   S    | —                                                                           |
 |   ✅   | [S3.7](E03-architecture/S3.7.md)   | Привести состояние клиента к одному подходу                     |    P2     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
 |   ✅   | [S3.8](E03-architecture/S3.8.md)   | Границы слоёв клиента проверяются линтером                      |    P2     |   S    | [S1.6](E01-dependency-upgrades/S1.6.md)                                     |
