@@ -193,7 +193,7 @@ flowchart TB
 - Метаданные игрока за сезон и карьеру: пакет `@sfl/domain`: [player-season-metadata.ts](../packages/domain/src/player-season-metadata.ts), [player-career-metadata.ts](../packages/domain/src/player-career-metadata.ts), [player-common-metadata.ts](../packages/domain/src/player-common-metadata.ts), метаданные матча — [game-metadata.ts](../packages/domain/src/game-metadata.ts). Сервер (`GamesService`, `PlayersService`) лишь читает и пишет документы Mongoose и вызывает эти чистые функции.
 - Метаданные матча: `IGameMetadata` и `IPlayerGameResultMetadata` в `game.schema.ts`.
 - Рейтинговая система (`ancientRatingSystem`: `plusMinus`, `lastResult`, `totalPoints`) считается в `players` и используется в `charts`.
-- Пересчёт запускается вручную через `GET /players/recalculate/season`. Это не фоновая задача.
+- Статистика игрока меняется вкладом матча при его сохранении и удалении ([ADR 0017](adr/0017-incremental-player-statistics.md), S3.27); `POST /players/recalculate/season/full` проверяет её полным пересчётом и по флагу `apply` исправляет. Фоновых задач нет.
 
 **Агрегации** для графиков: [charts.service.ts](../server-nest/src/entities/charts/charts.service.ts), используется `aggregate` с `$unset` для скрытия `user.password` и `user.roles`.
 
@@ -276,6 +276,8 @@ sequenceDiagram
 ```
 
 ### 7.3. Пересчёт статистики сезона
+
+Сохранение, обновление и удаление матча (одна транзакция, S3.5) вычитают вклад старой версии матча и прибавляют вклад новой только у затронутых игроков: суммы и рейтинги через `applyGame`/`revertGame` из `@sfl/domain`, списки матчей и серии пересобираются по лёгкой выборке матчей игрока, карьера — из сезонов (`PlayerMetadataService.applyGameChange`, [ADR 0017](adr/0017-incremental-player-statistics.md)). `POST /rest/players/recalculate/season/full` с `{ seasonId, apply }` считает сезон заново без сессии, сравнивает с хранимым и возвращает отчёт о расхождениях; запись только при `apply: true`, одним `bulkWrite` в короткой транзакции (карьера пересчитывается внутри неё из актуальных сезонов). **Runbook:** без `apply` эндпоинт только отчёт, раньше он писал; чтобы исправить хранимое, повторите вызов с `apply: true`. Ниже описан прежний ручной пересчёт `recalculate/season` (по списку игроков), он остаётся.
 
 Запускается вручную: `GET /rest/players/recalculate/season?seasonId=...&playerIds=...`. Сервис обходит игроков через `forEach(async ...)` без ожидания промисов (см. раздел 12).
 

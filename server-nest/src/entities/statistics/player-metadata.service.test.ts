@@ -9,6 +9,7 @@ const makeService = (impl: (id: string) => Promise<void>) => {
     null as any,
     null as any,
     logger as any,
+    null as any,
   );
   const calls: string[] = [];
   (service as any).recalculateSeasonMetadata = async (id: string) => {

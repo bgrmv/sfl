@@ -17,6 +17,7 @@ import mongoose from 'mongoose';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { GamesService } from '../../src/entities/games/games.service';
+import { PlayerMetadataService } from '../../src/entities/statistics';
 import { createTestApp, TestApp } from '../helpers/test-app';
 
 const { EJSON } = mongoose.mongo.BSON;
@@ -175,5 +176,18 @@ describe.skipIf(
       }
     }
     expect(changed).toEqual({});
+  });
+
+  // S3.27 (ADR 0017): the game-by-game result above is what a calculation from
+  // scratch gives, season by season
+  it('the incremental statistics equal the calculation from scratch', async () => {
+    const seasons: number[] = await t.model('Game').distinct('season');
+    const service = t.app.get(PlayerMetadataService);
+    const found: Record<number, unknown> = {};
+    for (const season of seasons) {
+      const { differences } = await service.verifySeason(season);
+      if (differences.length) found[season] = differences.slice(0, 3);
+    }
+    expect(found).toEqual({});
   });
 });

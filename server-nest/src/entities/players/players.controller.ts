@@ -232,42 +232,34 @@ export class PlayersController {
     return { success: 'OK', seasonId, playerIds };
   }
 
-  // Manual full recalculation of a season: admin only by default (S3.5).
-  // Idempotent: the metadata is rebuilt from the published games each time.
+  // Verification and repair of the statistics of a season: admin only by default.
+  // The incremental statistics (ADR 0017) are compared with a calculation from
+  // scratch; the values are written only with `apply: true` (S3.27).
   @Post('recalculate/season/full')
   @ApiBody({
     schema: {
       type: 'object',
       required: ['seasonId'],
-      properties: { seasonId: { type: 'integer' } },
+      properties: {
+        seasonId: { type: 'integer' },
+        apply: { type: 'boolean', default: false },
+      },
     },
   })
   @ApiOkResponse({
-    description: 'Recalculation of the whole season is finished',
+    description:
+      'The report: the players and fields where the stored statistics differ from the calculated ones',
   })
   @ApiBadRequestResponse({ description: 'Invalid body' })
-  @ApiInternalServerErrorResponse({
-    description: 'Recalculation failed, nothing was changed',
+  @ApiConflictResponse({
+    description: 'The games of the season kept changing, nothing was written',
   })
   async recalculateFullSeason(
     @Body(new ZodValidationPipe(RecalculateFullSeasonDTO))
-    { seasonId }: RecalculateFullSeasonDTOOutput,
+    { seasonId, apply }: RecalculateFullSeasonDTOOutput,
   ) {
-    this.logger.info('Recalculate the whole season', { seasonId });
+    this.logger.info('Verify the whole season', { seasonId, apply });
 
-    const playerIds = await this.transactions.run(async session => {
-      const ids = await this.playerMetadata.findSeasonPlayerIds(
-        seasonId,
-        session,
-      );
-      await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
-        seasonId,
-        ids,
-        session,
-      );
-      return ids;
-    });
-
-    return { success: 'OK', seasonId, playersCount: playerIds.length };
+    return await this.playerMetadata.verifySeason(seasonId, apply);
   }
 }

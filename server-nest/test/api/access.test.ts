@@ -88,7 +88,7 @@ const CLOSED: Case[] = [
     name: 'POST /players/recalculate/season/full',
     method: 'post',
     path: () => '/players/recalculate/season/full',
-    body: () => ({ seasonId: 2024 }),
+    body: () => ({ seasonId: 2024, apply: false }),
   },
   {
     name: 'POST /teams',

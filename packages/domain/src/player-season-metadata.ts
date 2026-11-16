@@ -4,7 +4,7 @@ import {
   IPlayerMetadata,
   IPlayerMetadataByGame,
 } from './metadata.js';
-import { getMaxRepeatedCountHelper, sum } from './player-common-metadata.js';
+import { getMaxRepeatedCountHelper } from './player-common-metadata.js';
 
 export function getPointsByPosition({
   hasPosition,
@@ -45,71 +45,211 @@ export interface SeasonGameInput {
   >;
 }
 
-export function accumulatePlayerSeasonMetadata(
-  original: IPlayerMetadata,
-  input: IPlayerMetadataByGame & IPlayerCommonTotalsMetadata,
-  game: SeasonGameInput,
-): IPlayerMetadata {
-  // Helpers
-  const gameId = game.id.toString();
-  const gameMetadata = game.metadata;
-  const gameCaptainFirstDraft = gameMetadata.captainFirstDraft;
-  const gameCaptainSecondDraft = gameMetadata.captainSecondDraft;
+type GameInput = IPlayerMetadataByGame & IPlayerCommonTotalsMetadata;
 
+/** What one game adds to the additive fields of a season (ADR 0017, group a). */
+function contributionOf(input: GameInput, game: SeasonGameInput) {
+  const gameMetadata = game.metadata;
   const plusMinus = input.asFirstDraft
     ? gameMetadata.scoreFirstDraft - gameMetadata.scoreSecondDraft
     : gameMetadata.scoreSecondDraft - gameMetadata.scoreFirstDraft;
 
   // A draw and a transfer (no result) give 0
-  const lr = input.hasWon ? 1 : input.hasLose ? -1 : 0;
-  const gamesResults: (1 | 0 | -1)[] = [...original.gamesResults, lr];
+  const lastResult = input.hasWon ? 1 : input.hasLose ? -1 : 0;
 
   // Old rating system: a pass 1, a leg goal 1, a penalty 1, a head goal 2,
   // an own goal -1
-  const inputAncientTotalPoints =
+  const ancientTotalPoints =
     input.totalPasses +
     input.totalGoalsByLeg +
     input.totalGoalsByPenalty +
     input.totalGoalsByHead * 2 -
     input.totalGoalsByAuto;
 
-  // New rating system: the same points plus the bonus of the position
-  const positionalTotalPoints =
-    inputAncientTotalPoints + getPointsByPosition(input);
+  return {
+    totalPasses: input.totalPasses,
+    totalGoalsByLeg: input.totalGoalsByLeg,
+    totalGoalsByHead: input.totalGoalsByHead,
+    totalGoalsByPenalty: input.totalGoalsByPenalty,
+    totalGoalsByAuto: input.totalGoalsByAuto,
+    totalGoals: input.totalGoals,
+
+    totalGames: 1,
+    totalWonGames: +input.hasWon,
+    totalDraws: +input.hasDraw,
+    totalLostGames: +input.hasLose,
+
+    totalMvp: +input.isMvp,
+    totalMvpByGoals: +input.isMvpByGoals,
+    totalMvpByPasses: +input.isMvpByPasses,
+
+    totalPlayedAsTransfer: +input.asTransfer,
+    totalPlayedAsCaptain: +input.asCaptain,
+    totalPlayedAsFirstDraft: +input.asFirstDraft,
+    totalPlayedAsSecondDraft: +input.asSecondDraft,
+
+    plusMinus,
+    lastResult,
+    ancientTotalPoints,
+    // New rating system: the same points plus the bonus of the position
+    positionalTotalPoints: ancientTotalPoints + getPointsByPosition(input),
+  };
+}
+
+function shiftGame(
+  original: IPlayerMetadata,
+  input: GameInput,
+  game: SeasonGameInput,
+  sign: 1 | -1,
+): IPlayerMetadata {
+  const c = contributionOf(input, game);
+  // The default metadata has `totalPoints`, a season with games never had it:
+  // keep the shape of the stored seasons (the golden master compares it)
+  const rest: IPlayerMetadata & { totalPoints?: number } = { ...original };
+  delete rest.totalPoints;
+  const add = (value: number, delta: number) => value + sign * delta;
 
   return {
-    totalPasses: sum(original.totalPasses, input.totalPasses),
-    totalGoalsByLeg: sum(original.totalGoalsByLeg, input.totalGoalsByLeg),
-    totalGoalsByHead: sum(original.totalGoalsByHead, input.totalGoalsByHead),
-    totalGoalsByPenalty: sum(
+    ...rest,
+
+    totalPasses: add(original.totalPasses, c.totalPasses),
+    totalGoalsByLeg: add(original.totalGoalsByLeg, c.totalGoalsByLeg),
+    totalGoalsByHead: add(original.totalGoalsByHead, c.totalGoalsByHead),
+    totalGoalsByPenalty: add(
       original.totalGoalsByPenalty,
-      input.totalGoalsByPenalty,
+      c.totalGoalsByPenalty,
     ),
-    totalGoalsByAuto: sum(original.totalGoalsByAuto, input.totalGoalsByAuto),
-    totalGoals: sum(original.totalGoals, input.totalGoals),
+    totalGoalsByAuto: add(original.totalGoalsByAuto, c.totalGoalsByAuto),
+    totalGoals: add(original.totalGoals, c.totalGoals),
 
-    totalGames: sum(original.totalGames, 1),
-    totalWonGames: sum(original.totalWonGames, +input.hasWon),
-    totalDraws: sum(original.totalDraws, +input.hasDraw),
-    totalLostGames: sum(original.totalLostGames, +input.hasLose),
+    totalGames: add(original.totalGames, c.totalGames),
+    totalWonGames: add(original.totalWonGames, c.totalWonGames),
+    totalDraws: add(original.totalDraws, c.totalDraws),
+    totalLostGames: add(original.totalLostGames, c.totalLostGames),
 
-    totalMvp: sum(original.totalMvp, +input.isMvp),
-    totalMvpByGoals: sum(original.totalMvpByGoals, +input.isMvpByGoals),
-    totalMvpByPasses: sum(original.totalMvpByPasses, +input.isMvpByPasses),
+    totalMvp: add(original.totalMvp, c.totalMvp),
+    totalMvpByGoals: add(original.totalMvpByGoals, c.totalMvpByGoals),
+    totalMvpByPasses: add(original.totalMvpByPasses, c.totalMvpByPasses),
 
-    totalPlayedAsTransfer: sum(
+    totalPlayedAsTransfer: add(
       original.totalPlayedAsTransfer,
-      +input.asTransfer,
+      c.totalPlayedAsTransfer,
     ),
-    totalPlayedAsCaptain: sum(original.totalPlayedAsCaptain, +input.asCaptain),
-    totalPlayedAsFirstDraft: sum(
+    totalPlayedAsCaptain: add(
+      original.totalPlayedAsCaptain,
+      c.totalPlayedAsCaptain,
+    ),
+    totalPlayedAsFirstDraft: add(
       original.totalPlayedAsFirstDraft,
-      +input.asFirstDraft,
+      c.totalPlayedAsFirstDraft,
     ),
-    totalPlayedAsSecondDraft: sum(
+    totalPlayedAsSecondDraft: add(
       original.totalPlayedAsSecondDraft,
-      +input.asSecondDraft,
+      c.totalPlayedAsSecondDraft,
     ),
+
+    ancientRatingSystem: {
+      plusMinus: add(original.ancientRatingSystem.plusMinus, c.plusMinus),
+      lastResult: add(original.ancientRatingSystem.lastResult, c.lastResult),
+      totalPoints: add(
+        original.ancientRatingSystem.totalPoints,
+        c.ancientTotalPoints,
+      ),
+    },
+    positionalRatingSystem: {
+      plusMinus: add(original.positionalRatingSystem.plusMinus, c.plusMinus),
+      lastResult: add(
+        original.positionalRatingSystem.lastResult,
+        c.lastResult,
+      ),
+      totalPoints: add(
+        original.positionalRatingSystem.totalPoints,
+        c.positionalTotalPoints,
+      ),
+    },
+  };
+}
+
+/**
+ * Adds the contribution of one game to the additive fields of a season
+ * (ADR 0017, group a: counters and rating sums). The lists and streaks are
+ * not touched: they depend on the order of the games, see `rebuildGameSequence`.
+ */
+export function applyGame(
+  original: IPlayerMetadata,
+  input: GameInput,
+  game: SeasonGameInput,
+): IPlayerMetadata {
+  return shiftGame(original, input, game, 1);
+}
+
+/** Subtracts what `applyGame` added for the same game. */
+export function revertGame(
+  original: IPlayerMetadata,
+  input: GameInput,
+  game: SeasonGameInput,
+): IPlayerMetadata {
+  return shiftGame(original, input, game, -1);
+}
+
+/** A game of the player, as the lists and streaks of a season need it. */
+export interface SeasonSequenceGameInput {
+  id: string | { toString(): string };
+  metadata: Pick<IGameMetadata, 'captainFirstDraft' | 'captainSecondDraft'>;
+  player: Pick<
+    IPlayerMetadataByGame,
+    'hasWon' | 'hasLose' | 'asCaptain' | 'asFirstDraft'
+  >;
+}
+
+/**
+ * Rebuilds the order-dependent fields of a season (ADR 0017, group c): the
+ * lists of games and results, the captains and the streaks. `games` are all
+ * published games of the player in the season, ordered by game number.
+ */
+export function rebuildGameSequence(
+  original: IPlayerMetadata,
+  games: SeasonSequenceGameInput[],
+): IPlayerMetadata {
+  const gamesResults: (1 | 0 | -1)[] = games.map(({ player }) =>
+    player.hasWon ? 1 : player.hasLose ? -1 : 0,
+  );
+
+  return {
+    ...original,
+
+    gamesResults,
+    gamesIds: games.map(({ id }) => id.toString()),
+
+    gamesMaxWinStreak: getMaxRepeatedCountHelper(gamesResults, 1),
+    gamesMaxDraftStreak: getMaxRepeatedCountHelper(gamesResults, 0),
+    gamesMaxLostStreak: getMaxRepeatedCountHelper(gamesResults, -1),
+
+    captainedGamesIds: games
+      .filter(({ player }) => player.asCaptain)
+      .map(({ id }) => id.toString()),
+    captainedByPlayersIds: games
+      .filter(({ player }) => !player.asCaptain)
+      .map(({ player, metadata }) =>
+        player.asFirstDraft
+          ? metadata.captainFirstDraft
+          : metadata.captainSecondDraft,
+      ),
+  };
+}
+
+export function accumulatePlayerSeasonMetadata(
+  original: IPlayerMetadata,
+  input: GameInput,
+  game: SeasonGameInput,
+): IPlayerMetadata {
+  const added = applyGame(original, input, game);
+  const lr = input.hasWon ? 1 : input.hasLose ? -1 : 0;
+  const gamesResults: (1 | 0 | -1)[] = [...original.gamesResults, lr];
+  const gameId = game.id.toString();
+
+  return {
+    ...added,
 
     gamesResults,
     gamesIds: original.gamesIds.concat([gameId]),
@@ -124,22 +264,9 @@ export function accumulatePlayerSeasonMetadata(
     captainedByPlayersIds: input.asCaptain
       ? original.captainedByPlayersIds
       : original.captainedByPlayersIds.concat([
-          input.asFirstDraft ? gameCaptainFirstDraft : gameCaptainSecondDraft,
+          input.asFirstDraft
+            ? game.metadata.captainFirstDraft
+            : game.metadata.captainSecondDraft,
         ]),
-
-    // Rating System
-    ancientRatingSystem: {
-      plusMinus: original.ancientRatingSystem.plusMinus + plusMinus,
-      lastResult: original.ancientRatingSystem.lastResult + lr,
-      totalPoints:
-        original.ancientRatingSystem.totalPoints + inputAncientTotalPoints,
-    },
-    // Positional Rating System
-    positionalRatingSystem: {
-      plusMinus: original.positionalRatingSystem.plusMinus + plusMinus,
-      lastResult: original.positionalRatingSystem.lastResult + lr,
-      totalPoints:
-        original.positionalRatingSystem.totalPoints + positionalTotalPoints,
-    },
   };
 }

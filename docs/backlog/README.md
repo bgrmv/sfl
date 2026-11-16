@@ -171,35 +171,35 @@ flowchart LR
 
 ## Эпик 3 — Улучшение архитектуры
 
-| Статус | ID                                 | История                                                         | Приоритет | Размер | Зависит от                                                                  |
-| :----: | ---------------------------------- | --------------------------------------------------------------- | :-------: | :----: | --------------------------------------------------------------------------- |
-|   ✅   | [S3.1](E03-architecture/S3.1.md)   | Вынести доменную логику в независимый модуль                    |    P1     |   L    | [S2.2](E02-tests-ci/S2.2.md), [S2.3](E02-tests-ci/S2.3.md)                  |
-|   ✅   | [S3.2](E03-architecture/S3.2.md)   | pnpm workspace и общие схемы и типы                             |    P1     |   M    | [S1.2](E01-dependency-upgrades/S1.2.md)                                     |
-|   ✅   | [S3.3](E03-architecture/S3.3.md)   | Разорвать цикл games ↔ players                                  |    P2     |   M    | [S3.1](E03-architecture/S3.1.md)                                            |
-|   ✅   | [S3.4](E03-architecture/S3.4.md)   | Единый формат ответов API                                       |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                |
-|   ✅   | [S3.5](E03-architecture/S3.5.md)   | Атомарное сохранение матча и пересчёта                          |    P2     |   M    | [S3.3](E03-architecture/S3.3.md)                                            |
-|   ✅   | [S3.6](E03-architecture/S3.6.md)   | Конфигурация окружений клиента                                  |    P1     |   S    | —                                                                           |
-|   ✅   | [S3.7](E03-architecture/S3.7.md)   | Привести состояние клиента к одному подходу                     |    P2     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
-|   ✅   | [S3.8](E03-architecture/S3.8.md)   | Границы слоёв клиента проверяются линтером                      |    P2     |   S    | [S1.6](E01-dependency-upgrades/S1.6.md)                                     |
-|   ✅   | [S3.9](E03-architecture/S3.9.md)   | Вести ADR                                                       |    P1     |   S    | —                                                                           |
-|   ❌   | [S3.10](E03-architecture/S3.10.md) | Обработка ошибок и сессии на клиенте                            |    P2     |   M    | [S3.6](E03-architecture/S3.6.md)                                            |
-|   ✅   | [S3.11](E03-architecture/S3.11.md) | Исправить расчёт метаданных матча и игрока                      |    P1     |   L    | [S2.3](E02-tests-ci/S2.3.md)                                                |
-|   ✅   | [S3.12](E03-architecture/S3.12.md) | Корректные HTTP-ошибки и обработка исключений                   |    P1     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                |
-|   ✅   | [S3.13](E03-architecture/S3.13.md) | Клиент: позиция и один капитан обязательны для публикации матча |    P1     |   S    | [S3.11](E03-architecture/S3.11.md)                                          |
-|   ❌   | [S3.14](E03-architecture/S3.14.md) | Пересчёт метаданных всех матчей после исправления расчёта       |    P2     |   S    | [S3.11](E03-architecture/S3.11.md)                                          |
-|   ❌   | [S3.15](E03-architecture/S3.15.md) | Перейти на zoneless и убрать zone.js                            |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
-|   ❌   | [S3.16](E03-architecture/S3.16.md) | Signal forms: пилот на одной форме                              |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
-|   ✅   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                            |
-|   ❌   | [S3.18](E03-architecture/S3.18.md) | Реактивность клиента по практикам Angular 22                    |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
-|   ❌   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
-|   ✅   | [S3.20](E03-architecture/S3.20.md) | Убрать вызовы клиента к несуществующим маршрутам API            |    P1     |   S    | —                                                                           |
-|   ❌   | [S3.21](E03-architecture/S3.21.md) | Выровнять REST API: лексика, семантика, топология               |    P2     |   M    | [S3.20](E03-architecture/S3.20.md)                                          |
-|   ✅   | [S3.22](E03-architecture/S3.22.md) | Исправить ошибки и гонки в сторах клиента                       |    P1     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S2.5](E02-tests-ci/S2.5.md)       |
-|   ❌   | [S3.23](E03-architecture/S3.23.md) | MongoDB как replica set (транзакции)                            |    P2     |   M    | —                                                                           |
-|   ✅   | [S3.24](E03-architecture/S3.24.md) | Исправить правила и сторы формы матча по ревью                  |    P1     |   M    | [S3.22](E03-architecture/S3.22.md)                                          |
-|   ✅   | [S3.25](E03-architecture/S3.25.md) | Стор капитанов без дубля списка игроков                         |    P2     |   S    | [S3.22](E03-architecture/S3.22.md), [S3.7](E03-architecture/S3.7.md)        |
-|   ❌   | [S3.26](E03-architecture/S3.26.md) | Steiger как проверка структуры FSD                              |    P3     |   S    | [S3.8](E03-architecture/S3.8.md)                                            |
-|   ❌   | [S3.27](E03-architecture/S3.27.md) | Полный пересчёт сезона: подготовка вне транзакции               |    P3     |   S    | [S3.5](E03-architecture/S3.5.md)                                            |
+| Статус | ID                                 | История                                                           | Приоритет | Размер | Зависит от                                                                  |
+| :----: | ---------------------------------- | ----------------------------------------------------------------- | :-------: | :----: | --------------------------------------------------------------------------- |
+|   ✅   | [S3.1](E03-architecture/S3.1.md)   | Вынести доменную логику в независимый модуль                      |    P1     |   L    | [S2.2](E02-tests-ci/S2.2.md), [S2.3](E02-tests-ci/S2.3.md)                  |
+|   ✅   | [S3.2](E03-architecture/S3.2.md)   | pnpm workspace и общие схемы и типы                               |    P1     |   M    | [S1.2](E01-dependency-upgrades/S1.2.md)                                     |
+|   ✅   | [S3.3](E03-architecture/S3.3.md)   | Разорвать цикл games ↔ players                                    |    P2     |   M    | [S3.1](E03-architecture/S3.1.md)                                            |
+|   ✅   | [S3.4](E03-architecture/S3.4.md)   | Единый формат ответов API                                         |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                |
+|   ✅   | [S3.5](E03-architecture/S3.5.md)   | Атомарное сохранение матча и пересчёта                            |    P2     |   M    | [S3.3](E03-architecture/S3.3.md)                                            |
+|   ✅   | [S3.6](E03-architecture/S3.6.md)   | Конфигурация окружений клиента                                    |    P1     |   S    | —                                                                           |
+|   ✅   | [S3.7](E03-architecture/S3.7.md)   | Привести состояние клиента к одному подходу                       |    P2     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
+|   ✅   | [S3.8](E03-architecture/S3.8.md)   | Границы слоёв клиента проверяются линтером                        |    P2     |   S    | [S1.6](E01-dependency-upgrades/S1.6.md)                                     |
+|   ✅   | [S3.9](E03-architecture/S3.9.md)   | Вести ADR                                                         |    P1     |   S    | —                                                                           |
+|   ❌   | [S3.10](E03-architecture/S3.10.md) | Обработка ошибок и сессии на клиенте                              |    P2     |   M    | [S3.6](E03-architecture/S3.6.md)                                            |
+|   ✅   | [S3.11](E03-architecture/S3.11.md) | Исправить расчёт метаданных матча и игрока                        |    P1     |   L    | [S2.3](E02-tests-ci/S2.3.md)                                                |
+|   ✅   | [S3.12](E03-architecture/S3.12.md) | Корректные HTTP-ошибки и обработка исключений                     |    P1     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                |
+|   ✅   | [S3.13](E03-architecture/S3.13.md) | Клиент: позиция и один капитан обязательны для публикации матча   |    P1     |   S    | [S3.11](E03-architecture/S3.11.md)                                          |
+|   ❌   | [S3.14](E03-architecture/S3.14.md) | Пересчёт метаданных всех матчей после исправления расчёта         |    P2     |   S    | [S3.11](E03-architecture/S3.11.md)                                          |
+|   ❌   | [S3.15](E03-architecture/S3.15.md) | Перейти на zoneless и убрать zone.js                              |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
+|   ❌   | [S3.16](E03-architecture/S3.16.md) | Signal forms: пилот на одной форме                                |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
+|   ✅   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                  |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                            |
+|   ❌   | [S3.18](E03-architecture/S3.18.md) | Реактивность клиента по практикам Angular 22                      |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
+|   ❌   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI   |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
+|   ✅   | [S3.20](E03-architecture/S3.20.md) | Убрать вызовы клиента к несуществующим маршрутам API              |    P1     |   S    | —                                                                           |
+|   ❌   | [S3.21](E03-architecture/S3.21.md) | Выровнять REST API: лексика, семантика, топология                 |    P2     |   M    | [S3.20](E03-architecture/S3.20.md)                                          |
+|   ✅   | [S3.22](E03-architecture/S3.22.md) | Исправить ошибки и гонки в сторах клиента                         |    P1     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S2.5](E02-tests-ci/S2.5.md)       |
+|   ❌   | [S3.23](E03-architecture/S3.23.md) | MongoDB как replica set (транзакции)                              |    P2     |   M    | —                                                                           |
+|   ✅   | [S3.24](E03-architecture/S3.24.md) | Исправить правила и сторы формы матча по ревью                    |    P1     |   M    | [S3.22](E03-architecture/S3.22.md)                                          |
+|   ✅   | [S3.25](E03-architecture/S3.25.md) | Стор капитанов без дубля списка игроков                           |    P2     |   S    | [S3.22](E03-architecture/S3.22.md), [S3.7](E03-architecture/S3.7.md)        |
+|   ❌   | [S3.26](E03-architecture/S3.26.md) | Steiger как проверка структуры FSD                                |    P3     |   S    | [S3.8](E03-architecture/S3.8.md)                                            |
+|   ✅   | [S3.27](E03-architecture/S3.27.md) | Инкрементальный пересчёт статистики и проверочный полный пересчёт |    P2     |   L    | [S3.1](E03-architecture/S3.1.md), [S3.5](E03-architecture/S3.5.md)          |
 
 ## Эпик 4 — Spike и проектирование переезда
 

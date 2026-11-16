@@ -14,13 +14,35 @@ import {
 } from '@sfl/domain';
 import { ClientSession, Model } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
-import { PlayerMetadataService, TransactionService } from '../statistics';
+import {
+  GameSnapshot,
+  PlayerMetadataService,
+  TransactionService,
+} from '../statistics';
 import {
   Game,
   IGame,
   IGameMetadata,
   IPlayerGameResultMetadata,
 } from './game.schema';
+
+const toSnapshot = (
+  game: {
+    id?: string;
+    _id?: unknown;
+    season: number;
+    status: IGame['status'];
+    metadata?: IGameMetadata;
+  } | null,
+): GameSnapshot | null =>
+  game
+    ? {
+        id: String(game._id ?? game.id),
+        season: game.season,
+        status: game.status,
+        metadata: game.metadata,
+      }
+    : null;
 
 @Injectable()
 export class GamesService {
@@ -103,12 +125,26 @@ export class GamesService {
 
     try {
       return await this.transactions.run(async session => {
-        await this.gameModel
+        const before = await this.gameModel
           .findOneAndUpdate({ _id }, game)
           .session(session)
           .exec();
 
-        return await this.runMetadataFlow(game, session);
+        // Deleted by someone else since the check above
+        if (!before) throw new NotFoundException('Game is not found');
+
+        const updated = await this.gameModel
+          .findById(_id)
+          .session(session)
+          .exec();
+
+        return await this.runMetadataFlow(
+          updated.toJSON({
+            flattenObjectIds: false,
+          }) as unknown as WithId<IGame>,
+          session,
+          toSnapshot(before),
+        );
       });
     } catch (error) {
       this.logger.error('Failed to update game', { _id, error });
@@ -131,11 +167,18 @@ export class GamesService {
           throw new NotFoundException('Game is not found');
         }
 
+        // Without `new: true` Mongoose returns the previous version of the game
+        const replaced = await this.gameModel
+          .findById(_id)
+          .session(session)
+          .exec();
+
         return await this.runMetadataFlow(
-          updatedGame.toJSON({
+          replaced.toJSON({
             flattenObjectIds: false,
           }) as unknown as WithId<IGame>,
           session,
+          toSnapshot(updatedGame),
         );
       });
     } catch (error) {
@@ -160,9 +203,8 @@ export class GamesService {
         throw new NotFoundException('Game is not found');
       }
 
-      await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
-        game.season,
-        game.statistics.map(s => s.playerId.toString()),
+      await this.playerMetadata.applyGameChange(
+        { before: toSnapshot(game), after: null },
         session,
       );
 
@@ -172,7 +214,8 @@ export class GamesService {
 
   private async runMetadataFlow(
     game: WithId<IGame>,
-    session: ClientSession,
+    session?: ClientSession,
+    before: GameSnapshot | null = null,
   ): Promise<WithId<IGame>> {
     const metadata = this.calculateGameMetadata(game);
 
@@ -192,12 +235,12 @@ export class GamesService {
         },
         { new: true },
       )
-      .session(session)
+      .session(session ?? null)
       .exec();
 
-    await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
-      game.season,
-      game.statistics.map(s => s.playerId.toString()),
+    // The contribution of the old version is subtracted, of the new one added (ADR 0017)
+    await this.playerMetadata.applyGameChange(
+      { before, after: toSnapshot(gameWithMetadata) },
       session,
     );
 

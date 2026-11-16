@@ -6,8 +6,11 @@ export const RecalculateSeasonDTO = z.object({
   playerIds: z.array(z.string().trim().min(1)).min(1),
 });
 
+// `apply` is the explicit flag to write the calculated values (S3.27);
+// without it the endpoint only reports the differences.
 export const RecalculateFullSeasonDTO = z.object({
   seasonId: z.number().int().min(2010),
+  apply: z.boolean().default(false),
 });
 
 export type RecalculateFullSeasonDTOOutput = z.output<

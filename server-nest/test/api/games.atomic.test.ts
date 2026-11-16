@@ -31,22 +31,19 @@ describe('API: a game and its recalculation are atomic', () => {
 
   const failRecalculation = () =>
     vi
-      .spyOn(
-        t.app.get(PlayerMetadataService),
-        'recalculatePlayersSeasonAndCareerMetadata',
-      )
+      .spyOn(t.app.get(PlayerMetadataService), 'applyGameChange')
       .mockRejectedValue(new Error('recalculation failed'));
 
-  // Lets the first player be recalculated and fails on the second one:
-  // season of #1, career of #1, season of #2 (the third write)
-  const failOnThirdPlayerWrite = () => {
+  // Lets the first player be written and fails on the second one
+  // (one write per player: the season and the career together)
+  const failOnSecondPlayerWrite = () => {
     const original = t.model('Player').updateOne.bind(t.model('Player'));
     let calls = 0;
     return vi.spyOn(t.model('Player'), 'updateOne').mockImplementation(((
       ...args: Parameters<typeof original>
     ) => {
       calls += 1;
-      if (calls === 3) throw new Error('write failed');
+      if (calls === 2) throw new Error('write failed');
       return original(...args);
     }) as never);
   };
@@ -65,7 +62,7 @@ describe('API: a game and its recalculation are atomic', () => {
   });
 
   it('leaves nothing half-updated when the recalculation fails midway', async () => {
-    failOnThirdPlayerWrite();
+    failOnSecondPlayerWrite();
 
     const res = await t
       .api()
@@ -115,6 +112,26 @@ describe('API: a game and its recalculation are atomic', () => {
     expect(await games(44)).toHaveLength(1);
   });
 
+  it('answers 404, not 500, when the game is deleted during an update', async () => {
+    const created = await t
+      .api()
+      .post('/rest/games')
+      .set(auth())
+      .send(gameBody(playerIds, { number: 47 }));
+    const id = created.body.data.id;
+    vi.spyOn(t.model('Game'), 'findOneAndUpdate').mockReturnValue({
+      session: () => ({ exec: async () => null }),
+    } as never);
+
+    const res = await t
+      .api()
+      .patch(`/rest/games/${id}`)
+      .set(auth())
+      .send({ ...gameBody(playerIds, { number: 47 }), id });
+
+    expect(res.status).toBe(404);
+  });
+
   it('commits both when everything succeeds', async () => {
     const res = await t
       .api()
@@ -130,54 +147,72 @@ describe('API: a game and its recalculation are atomic', () => {
   });
 
   describe('POST /players/recalculate/season/full', () => {
-    const full = () =>
+    const full = (apply = true) =>
       t
         .api()
         .post('/rest/players/recalculate/season/full')
         .set(auth())
-        .send({ seasonId: 2024 });
+        .send({ seasonId: 2024, apply });
+    const tamper = () =>
+      t
+        .model('Player')
+        .updateOne(
+          { _id: playerIds[0] },
+          { $set: { 'metadata.bySeason.2024.totalGames': 999 } },
+        );
 
-    it('rebuilds the metadata of the season and is idempotent', async () => {
+    it('repairs the metadata of the season and is idempotent', async () => {
       await t
         .api()
         .post('/rest/games')
         .set(auth())
         .send(gameBody(playerIds, { number: 46 }));
-      await t
-        .model('Player')
-        .updateOne(
-          { _id: playerIds[0] },
-          { $set: { 'metadata.bySeason.2024.games': 999 } },
-        );
+      await tamper();
 
       const first = await full();
       const stored = (await player(playerIds[0])).metadata.bySeason['2024'];
       const second = await full();
 
       expect(first.status).toBe(201);
-      expect(first.body.data).toMatchObject({ seasonId: 2024 });
-      expect(stored.games).not.toBe(999);
+      expect(first.body.data).toMatchObject({ seasonId: 2024, applied: true });
+      expect(stored.totalGames).not.toBe(999);
       expect((await player(playerIds[0])).metadata.bySeason['2024']).toEqual(
         stored,
       );
-      expect(second.status).toBe(201);
+      expect(second.body.data).toMatchObject({
+        applied: false,
+        differences: [],
+      });
     });
 
-    it('changes nothing when the recalculation fails midway', async () => {
-      await t
-        .model('Player')
-        .updateOne(
-          { _id: playerIds[0] },
-          { $set: { 'metadata.bySeason.2024.games': 999 } },
-        );
-      failOnThirdPlayerWrite();
+    it('changes nothing when the write fails', async () => {
+      await tamper();
+      vi.spyOn(t.model('Player'), 'bulkWrite').mockRejectedValue(
+        new Error('write failed'),
+      );
 
       const res = await full();
 
       expect(res.status).toBe(500);
-      expect((await player(playerIds[0])).metadata.bySeason['2024'].games).toBe(
-        999,
-      );
+      expect(
+        (await player(playerIds[0])).metadata.bySeason['2024'].totalGames,
+      ).toBe(999);
+    });
+
+    it('does not write when the games of the season keep changing', async () => {
+      await tamper();
+      let calls = 0;
+      vi.spyOn(
+        t.app.get(PlayerMetadataService) as any,
+        'seasonFingerprint',
+      ).mockImplementation(async () => `changed-${calls++}`);
+
+      const res = await full();
+
+      expect(res.status).toBe(409);
+      expect(
+        (await player(playerIds[0])).metadata.bySeason['2024'].totalGames,
+      ).toBe(999);
     });
   });
 });
