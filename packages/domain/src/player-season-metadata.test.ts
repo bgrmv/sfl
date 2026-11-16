@@ -5,11 +5,11 @@ import {
   METADATA_BY_GAME_DEFAULT,
   METADATA_COMMON_TOTALS_GAME_DEFAULT,
   METADATA_DEFAULT,
-} from '../constants/player-career-metadata';
+} from './metadata.js';
 import {
   accumulatePlayerSeasonMetadata,
   getPointsByPosition,
-} from './player-season-metadata';
+} from './player-season-metadata.js';
 
 const { Goalkeeper, Defender, Midfielder, ForwardStriker } = EnumPlayerPosition;
 

@@ -31,7 +31,7 @@ export COREPACK_ENABLE_AUTO_PIN=0
 corepack prepare "pnpm@$PNPM_VERSION" --activate
 
 echo "==> Volumes belong to the node user"
-sudo chown node:node client/node_modules server-nest/node_modules packages/schemas/node_modules /home/node/.pnpm-store /home/node/.claude
+sudo chown node:node client/node_modules server-nest/node_modules packages/schemas/node_modules packages/domain/node_modules /home/node/.pnpm-store /home/node/.claude
 
 echo "==> git for a repository checked out on Windows"
 # The bind mount has a foreign owner: without this git refuses the repo

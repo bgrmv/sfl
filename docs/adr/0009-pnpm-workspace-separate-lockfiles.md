@@ -15,4 +15,4 @@
 
 ## Последствия
 
-Каждый новый пакет в `packages/` нужно добавить в `docker-compose.yml` как том для его `node_modules` и пересобрать контейнер. Пока `dist/` пакетов не собран, клиент и сервер не стартуют: этим занимаются `pre`-скрипты и `pnpm check`. Пакет `packages/domain` ([S3.1](../backlog/E03-architecture/S3.1.md)) появится по тому же образцу. В [S1.12](../backlog/E01-dependency-upgrades/S1.12.md) в `@sfl/schemas` переедут схемы zod, а типы будут выводиться из них.
+Каждый новый пакет в `packages/` нужно добавить в `docker-compose.yml` как том для его `node_modules` и пересобрать контейнер. Пока `dist/` пакетов не собран, клиент и сервер не стартуют: этим занимаются `pre`-скрипты и `pnpm check`. Пакет `packages/domain` ([S3.1](../backlog/E03-architecture/S3.1.md)) сделан по тому же образцу: свой lock-файл, том `domain-node-modules`, зависит от `@sfl/schemas` (`workspace:*`). В [S1.12](../backlog/E01-dependency-upgrades/S1.12.md) в `@sfl/schemas` переедут схемы zod, а типы будут выводиться из них.

@@ -1,23 +1,18 @@
 // League rules for a Game: score, result, captains, MVP and what a player gets
 // out of it. The vocabulary is GLOSSARY.md; a test is named after the rule.
-import { EnumPlayerPosition } from '../players/constants/player-career-metadata';
-import { GamesService } from './games.service';
+import {
+  calculateGameMetadata,
+  calculatePlayerGameResultMetadata,
+  GameMetadataError,
+} from './game-metadata.js';
+import { EnumPlayerPosition } from './metadata.js';
 
 const WHITE = 'team-white'; // first draft
 const RED = 'team-red'; // second draft
 
-const service = new GamesService(
-  {} as never,
-  {} as never,
-  {
-    info: vi.fn(),
-    error: vi.fn(),
-  } as never,
-);
-
-const calcGame = (game: any) => (service as any).calculateGameMetadata(game);
+const calcGame = (game: any) => calculateGameMetadata(game);
 const calcPlayer = (playerId: string, game: any) =>
-  (service as any).calculatePlayerGameResultMetadata(playerId, game);
+  calculatePlayerGameResultMetadata(playerId, game);
 
 const stat = (
   playerId: string,
@@ -58,27 +53,27 @@ const withCaptains = (white: object, red: object, ...extra: any[]) => {
 };
 
 /** The player's result in a game: first game metadata, then the player's. */
-const resultOf = async (playerId: string, g: ReturnType<typeof game>) =>
-  calcPlayer(playerId, { ...g, metadata: await calcGame(g) });
+const resultOf = (playerId: string, g: ReturnType<typeof game>) =>
+  calcPlayer(playerId, { ...g, metadata: calcGame(g) });
 
 describe('Game: score', () => {
-  it('a leg goal and a penalty count 1 each', async () => {
-    const m = await calcGame(
+  it('a leg goal and a penalty count 1 each', () => {
+    const m = calcGame(
       withCaptains({ goalsByLeg: 2, goalsByPenalty: 1 }, { goalsByLeg: 1 }),
     );
 
     expect(m.score).toEqual([3, 1]);
   });
 
-  it('a head goal counts 2', async () => {
-    const m = await calcGame(withCaptains({ goalsByHead: 2 }, {}));
+  it('a head goal counts 2', () => {
+    const m = calcGame(withCaptains({ goalsByHead: 2 }, {}));
 
     expect(m.score).toEqual([4, 0]);
     expect(m.totalGoals).toBe(4);
   });
 
-  it('the goals of all players of a team add up', async () => {
-    const m = await calcGame(
+  it('the goals of all players of a team add up', () => {
+    const m = calcGame(
       game(
         stat('white-2', WHITE, { goalsByLeg: 1 }),
         stat('red-2', RED, { goalsByLeg: 2 }),
@@ -90,8 +85,8 @@ describe('Game: score', () => {
     expect(m.scoreSecondDraft).toBe(2);
   });
 
-  it('a game without goals is a 0:0 draw', async () => {
-    const m = await calcGame(game());
+  it('a game without goals is a 0:0 draw', () => {
+    const m = calcGame(game());
 
     expect(m).toMatchObject({
       score: [0, 0],
@@ -103,30 +98,28 @@ describe('Game: score', () => {
     });
   });
 
-  it('a pass is a point but not a goal', async () => {
-    const m = await calcGame(withCaptains({ passes: 3 }, {}));
+  it('a pass is a point but not a goal', () => {
+    const m = calcGame(withCaptains({ passes: 3 }, {}));
 
     expect(m).toMatchObject({ totalPasses: 3, totalGoals: 0, totalPoints: 3 });
   });
 
-  it('a statistic of a team that is not in the game is an error', async () => {
-    await expect(
+  it('a statistic of a team that is not in the game is an error', () => {
+    expect(() =>
       calcGame(game(stat('ghost', 'team-blue', { goalsByLeg: 1 }))),
-    ).rejects.toThrow();
+    ).toThrow(GameMetadataError);
   });
 
-  it('an own goal counts for the opponent team', async () => {
-    const m = await calcGame(withCaptains({ goalsByAuto: 1 }, {}));
+  it('an own goal counts for the opponent team', () => {
+    const m = calcGame(withCaptains({ goalsByAuto: 1 }, {}));
 
     expect(m.score).toEqual([0, 1]);
   });
 });
 
 describe('Game: result of the teams', () => {
-  it('the team with the bigger score wins, the other loses', async () => {
-    const m = await calcGame(
-      withCaptains({ goalsByLeg: 2 }, { goalsByLeg: 1 }),
-    );
+  it('the team with the bigger score wins, the other loses', () => {
+    const m = calcGame(withCaptains({ goalsByLeg: 2 }, { goalsByLeg: 1 }));
 
     expect(m).toMatchObject({
       teamWon: WHITE,
@@ -138,8 +131,8 @@ describe('Game: result of the teams', () => {
     });
   });
 
-  it('the second draft can win too', async () => {
-    const m = await calcGame(withCaptains({}, { goalsByLeg: 1 }));
+  it('the second draft can win too', () => {
+    const m = calcGame(withCaptains({}, { goalsByLeg: 1 }));
 
     expect(m).toMatchObject({
       teamWon: RED,
@@ -148,10 +141,8 @@ describe('Game: result of the teams', () => {
     });
   });
 
-  it('a draw has neither a winner nor a loser', async () => {
-    const m = await calcGame(
-      withCaptains({ goalsByLeg: 1 }, { goalsByLeg: 1 }),
-    );
+  it('a draw has neither a winner nor a loser', () => {
+    const m = calcGame(withCaptains({ goalsByLeg: 1 }, { goalsByLeg: 1 }));
 
     expect(m).toMatchObject({
       scoreIsDraw: true,
@@ -164,8 +155,8 @@ describe('Game: result of the teams', () => {
 });
 
 describe('Game: captains', () => {
-  it('each draft has its captain; the winning captain is the winner', async () => {
-    const m = await calcGame(withCaptains({ goalsByLeg: 1 }, {}));
+  it('each draft has its captain; the winning captain is the winner', () => {
+    const m = calcGame(withCaptains({ goalsByLeg: 1 }, {}));
 
     expect(m).toMatchObject({
       captainFirstDraft: 'white-cap',
@@ -177,8 +168,8 @@ describe('Game: captains', () => {
     });
   });
 
-  it('in a draw both captains have a draw', async () => {
-    const m = await calcGame(game());
+  it('in a draw both captains have a draw', () => {
+    const m = calcGame(game());
 
     expect(m).toMatchObject({
       isCaptainFirstDraftDraw: true,
@@ -188,30 +179,32 @@ describe('Game: captains', () => {
     });
   });
 
-  it('in a draw there is no winning and no losing captain', async () => {
-    const m = await calcGame(game());
+  it('in a draw there is no winning and no losing captain', () => {
+    const m = calcGame(game());
 
     expect(m.captainWon).toBeNull();
     expect(m.captainLost).toBeNull();
   });
 
-  it('a game without a captain in a draft is rejected', async () => {
+  it('a game without a captain in a draft is rejected', () => {
     const g = game();
     g.statistics[1].isCaptain = false;
 
-    await expect(calcGame(g)).rejects.toMatchObject({ status: 400 });
+    expect(() => calcGame(g)).toThrow(
+      expect.objectContaining({ code: 'CAPTAINS_COUNT' }),
+    );
   });
 });
 
 describe('Game: MVP', () => {
-  it('the player named by the organizer is MVP', async () => {
-    const m = await calcGame(game(stat('star', WHITE, { isMVP: true })));
+  it('the player named by the organizer is MVP', () => {
+    const m = calcGame(game(stat('star', WHITE, { isMVP: true })));
 
     expect(m.mvpListIds).toEqual(['star']);
   });
 
-  it('the pass leader is MVP by passes; leaders in a tie all are', async () => {
-    const m = await calcGame(
+  it('the pass leader is MVP by passes; leaders in a tie all are', () => {
+    const m = calcGame(
       withCaptains(
         { passes: 2 },
         { passes: 2 },
@@ -222,40 +215,36 @@ describe('Game: MVP', () => {
     expect(m.mvpByPassesIds.sort()).toEqual(['red-cap', 'white-cap']);
   });
 
-  it('without passes there is no MVP by passes', async () => {
-    const m = await calcGame(game());
+  it('without passes there is no MVP by passes', () => {
+    const m = calcGame(game());
 
     expect(m.mvpByPassesIds).toEqual([]);
   });
 
-  it('without goals there is no MVP by goals', async () => {
-    const m = await calcGame(game());
+  it('without goals there is no MVP by goals', () => {
+    const m = calcGame(game());
 
     expect(m.mvpByGoalsIds).toEqual([]);
   });
 
-  it('the goal leader is MVP by goals, whatever the kind of goals', async () => {
-    const m = await calcGame(
-      withCaptains({ goalsByLeg: 3 }, { goalsByLeg: 1 }),
-    );
+  it('the goal leader is MVP by goals, whatever the kind of goals', () => {
+    const m = calcGame(withCaptains({ goalsByLeg: 3 }, { goalsByLeg: 1 }));
 
     expect(m.mvpByGoalsIds).toEqual(['white-cap']);
   });
 
-  it('a head goal is worth two leg goals for the MVP by goals', async () => {
-    const m = await calcGame(
-      withCaptains({ goalsByLeg: 2 }, { goalsByHead: 1 }),
-    );
+  it('a head goal is worth two leg goals for the MVP by goals', () => {
+    const m = calcGame(withCaptains({ goalsByLeg: 2 }, { goalsByHead: 1 }));
 
     expect(m.mvpByGoalsIds.sort()).toEqual(['red-cap', 'white-cap']);
   });
 });
 
 describe('Player in a Game: result', () => {
-  it('a player of the winning first draft wins, of the losing second draft loses', async () => {
+  it('a player of the winning first draft wins, of the losing second draft loses', () => {
     const g = withCaptains({ goalsByLeg: 1 }, {}, stat('white-2', WHITE));
 
-    expect(await resultOf('white-2', g)).toMatchObject({
+    expect(resultOf('white-2', g)).toMatchObject({
       hasWon: true,
       hasLose: false,
       hasDraw: false,
@@ -264,58 +253,58 @@ describe('Player in a Game: result', () => {
     });
   });
 
-  it('everybody has a draw when the score is a draw', async () => {
-    const r = await resultOf('white-cap', game());
+  it('everybody has a draw when the score is a draw', () => {
+    const r = resultOf('white-cap', game());
 
     expect(r).toMatchObject({ hasDraw: true, hasWon: false, hasLose: false });
   });
 
-  it('a player of the winning second draft wins', async () => {
+  it('a player of the winning second draft wins', () => {
     const g = withCaptains({}, { goalsByLeg: 3 }, stat('red-2', RED));
 
-    expect(await resultOf('red-2', g)).toMatchObject({
+    expect(resultOf('red-2', g)).toMatchObject({
       hasWon: true,
       hasLose: false,
       asSecondDraft: true,
     });
   });
 
-  it('a player of the losing second draft loses', async () => {
+  it('a player of the losing second draft loses', () => {
     const g = withCaptains({ goalsByLeg: 3 }, {}, stat('red-2', RED));
 
-    expect(await resultOf('red-2', g)).toMatchObject({
+    expect(resultOf('red-2', g)).toMatchObject({
       hasLose: true,
       hasWon: false,
     });
   });
 
-  it('a captain is marked as captain, a player with a position keeps it', async () => {
+  it('a captain is marked as captain, a player with a position keeps it', () => {
     const g = game(
       stat('keeper', WHITE, { position: EnumPlayerPosition.Goalkeeper }),
     );
 
-    expect(await resultOf('white-cap', g)).toMatchObject({
+    expect(resultOf('white-cap', g)).toMatchObject({
       asCaptain: true,
       hasPosition: null,
     });
-    expect(await resultOf('keeper', g)).toMatchObject({
+    expect(resultOf('keeper', g)).toMatchObject({
       asCaptain: false,
       hasPosition: EnumPlayerPosition.Goalkeeper,
     });
   });
 
-  it('the MVP flags of the game reach the player', async () => {
+  it('the MVP flags of the game reach the player', () => {
     const g = withCaptains(
       { passes: 1 },
       {},
       stat('star', RED, { isMVP: true }),
     );
 
-    expect(await resultOf('star', g)).toMatchObject({
+    expect(resultOf('star', g)).toMatchObject({
       isMvp: true,
       isMvpByPasses: false,
     });
-    expect(await resultOf('white-cap', g)).toMatchObject({
+    expect(resultOf('white-cap', g)).toMatchObject({
       isMvp: false,
       isMvpByPasses: true,
     });
@@ -323,10 +312,10 @@ describe('Player in a Game: result', () => {
 });
 
 describe('Player in a Game: goals and points', () => {
-  it('passes and leg goals add up to the points', async () => {
+  it('passes and leg goals add up to the points', () => {
     const g = withCaptains({ goalsByLeg: 2, passes: 3 }, {});
 
-    expect(await resultOf('white-cap', g)).toMatchObject({
+    expect(resultOf('white-cap', g)).toMatchObject({
       totalGoalsByLeg: 2,
       totalPasses: 3,
       totalGoals: 2,
@@ -334,31 +323,31 @@ describe('Player in a Game: goals and points', () => {
     });
   });
 
-  it('a penalty is counted as a penalty goal', async () => {
+  it('a penalty is counted as a penalty goal', () => {
     const g = withCaptains({ goalsByPenalty: 2 }, {});
 
-    expect(await resultOf('white-cap', g)).toMatchObject({
+    expect(resultOf('white-cap', g)).toMatchObject({
       totalGoalsByPenalty: 2,
       totalGoals: 2,
     });
   });
 
-  it('a head goal weighs 2, a leg goal and a penalty 1, for the player', async () => {
+  it('a head goal weighs 2, a leg goal and a penalty 1, for the player', () => {
     const g = withCaptains(
       { goalsByLeg: 1, goalsByHead: 1, goalsByPenalty: 1, passes: 1 },
       {},
     );
 
-    expect(await resultOf('white-cap', g)).toMatchObject({
+    expect(resultOf('white-cap', g)).toMatchObject({
       totalGoals: 4,
       totalPoints: 5,
     });
   });
 
-  it('an own goal costs the author a point', async () => {
+  it('an own goal costs the author a point', () => {
     const g = withCaptains({ goalsByAuto: 1, passes: 1 }, {});
 
-    expect(await resultOf('white-cap', g)).toMatchObject({
+    expect(resultOf('white-cap', g)).toMatchObject({
       totalGoalsByAuto: 1,
       totalPoints: 0,
     });
@@ -374,8 +363,8 @@ describe('Player in a Game: transfer (plays for both teams)', () => {
       stat('guest', RED, { goalsByLeg: 1 }),
     );
 
-  it('neither wins, loses nor draws, and plays for both drafts', async () => {
-    expect(await resultOf('guest', transferGame())).toMatchObject({
+  it('neither wins, loses nor draws, and plays for both drafts', () => {
+    expect(resultOf('guest', transferGame())).toMatchObject({
       hasWon: false,
       hasLose: false,
       hasDraw: false,
@@ -384,32 +373,32 @@ describe('Player in a Game: transfer (plays for both teams)', () => {
     });
   });
 
-  it('goals and passes of both teams count for the transfer', async () => {
-    expect(await resultOf('guest', transferGame())).toMatchObject({
+  it('goals and passes of both teams count for the transfer', () => {
+    expect(resultOf('guest', transferGame())).toMatchObject({
       totalGoalsByLeg: 2,
       totalPasses: 1,
       totalPoints: 3,
     });
   });
 
-  it('the goals of a transfer go to the team they were scored for', async () => {
-    const m = await calcGame(transferGame());
+  it('the goals of a transfer go to the team they were scored for', () => {
+    const m = calcGame(transferGame());
 
     expect(m.score).toEqual([3, 1]);
   });
 });
 
 describe('Game: statistics of one player on both sides', () => {
-  it('the players of each draft are listed by draft', async () => {
-    const m = await calcGame(game(stat('white-2', WHITE), stat('red-2', RED)));
+  it('the players of each draft are listed by draft', () => {
+    const m = calcGame(game(stat('white-2', WHITE), stat('red-2', RED)));
 
     expect(m.playerIdsOfFirstDraft).toEqual(['white-cap', 'white-2']);
     expect(m.playerIdsOfSecondDraft).toEqual(['red-cap', 'red-2']);
     expect(m.totalPlayers).toBe(4);
   });
 
-  it('a transfer is one player, listed in both drafts', async () => {
-    const m = await calcGame(game(stat('guest', WHITE), stat('guest', RED)));
+  it('a transfer is one player, listed in both drafts', () => {
+    const m = calcGame(game(stat('guest', WHITE), stat('guest', RED)));
 
     expect(m.totalPlayers).toBe(3);
     expect(m.playerIdsOfFirstDraft).toContain('guest');

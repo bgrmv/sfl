@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { ObjectId } from 'src/constants';
+import type { IGameMetadata, IPlayerGameResultMetadata } from '@sfl/domain';
 import {
   EnumGameStatus,
   EnumPlayerPosition,
@@ -16,83 +17,7 @@ export type IPlayerStatistic = Omit<PlayerStatisticDTO, 'goalsByAuto'> & {
 
 export { EnumGameStatus };
 
-export interface IPlayerGameResultMetadata {
-  isMvp: boolean;
-  isMvpByGoals: boolean;
-  isMvpByPasses: boolean;
-
-  asCaptain: boolean;
-  asTransfer: boolean;
-  asFirstDraft: boolean;
-  asSecondDraft: boolean;
-
-  hasWon: boolean;
-  hasDraw: boolean;
-  hasLose: boolean;
-  hasPosition: EnumPlayerPosition | null;
-
-  totalGoalsByLeg: number;
-  totalGoalsByHead: number;
-  totalGoalsByPenalty: number;
-  totalGoalsByAuto: number;
-  totalGoals: number;
-  totalPasses: number;
-  totalPoints: number;
-
-  errors: { name: string; message: string; date: Date }[];
-}
-
-export interface IGameMetadata {
-  // Common
-  totalPlayers: number;
-  totalGoals: number;
-  totalGoalsByLeg: number;
-  totalGoalsByHead: number;
-  totalGoalsByPenalty: number;
-  totalGoalsByAuto: number;
-  totalPasses: number;
-  totalPoints: number;
-
-  // Team
-  teamWon: string | null; // null if scoreIsDraw
-  teamLost: string | null; // null if scoreIsDraw
-  isTeamFromFirstDraftWon: boolean;
-  isTeamFromFirstDraftLost: boolean;
-  isTeamFromSecondDraftWon: boolean;
-  isTeamFromSecondDraftLost: boolean;
-
-  // Score
-  score: [number, number];
-  scoreIsDraw: boolean;
-  scoreFirstDraft: number;
-  scoreSecondDraft: number;
-
-  // Captains
-  captainFirstDraft: string;
-  captainSecondDraft: string;
-  captainWon: string | null; // null if scoreIsDraw
-  captainLost: string | null; // null if scoreIsDraw
-  isCaptainFirstDraftWon: boolean;
-  isCaptainFirstDraftDraw: boolean;
-  isCaptainFirstDraftLost: boolean;
-  isCaptainSecondDraftWon: boolean;
-  isCaptainSecondDraftDraw: boolean;
-  isCaptainSecondDraftLost: boolean;
-
-  // Players
-  playerIdsOfFirstDraft: string[];
-  playerIdsOfSecondDraft: string[];
-  playersByPosition?: {
-    [key in EnumPlayerPosition]: number;
-  };
-  players: Record<string, IPlayerGameResultMetadata>;
-
-  // Mpv
-  mvpByGoalsIds: string[];
-  mvpByGoalsHeadIds: string[];
-  mvpByPassesIds: string[];
-  mvpListIds: string[];
-}
+export type { IGameMetadata, IPlayerGameResultMetadata };
 
 export interface IGame {
   id: string;

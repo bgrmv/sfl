@@ -4,10 +4,7 @@ import { EnumPlayerStatus } from '@sfl/schemas';
 import { User } from '../users';
 
 import mongoose from 'mongoose';
-import {
-  EnumPlayerPosition,
-  TPlayerMetadata,
-} from './constants/player-career-metadata';
+import { EnumPlayerPosition, TPlayerMetadata } from '@sfl/domain';
 
 export interface ServerPlayer {
   id: string;

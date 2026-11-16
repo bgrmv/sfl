@@ -1,7 +1,4 @@
-import {
-  IPlayerCommonTotalsMetadata,
-  IPlayerMetadata,
-} from '../constants/player-career-metadata';
+import { IPlayerMetadata } from './metadata.js';
 
 export type SumOfMetadataAllowedKeys = keyof Pick<
   IPlayerMetadata,
@@ -34,8 +31,8 @@ export function sumByKey(
     original,
     input,
   }: {
-    original: IPlayerCommonTotalsMetadata;
-    input: IPlayerCommonTotalsMetadata;
+    original: IPlayerMetadata;
+    input: IPlayerMetadata;
   },
 ) {
   return Number(original[key]) + Number(input[key]);

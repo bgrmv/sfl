@@ -1,0 +1,32 @@
+{
+  "name": "@sfl/domain",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pure TypeScript rules of the SFL league: metadata of a game and statistics of a player (no NestJS, Mongoose or Angular)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3",
+    "vitest": "5.1.0"
+  },
+  "engines": {
+    "node": "^22.22.3"
+  },
+  "dependencies": {
+    "@sfl/schemas": "workspace:*"
+  }
+}

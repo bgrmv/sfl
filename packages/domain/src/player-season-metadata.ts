@@ -1,10 +1,10 @@
-import { IGame } from 'src/entities/games/game.schema';
 import {
+  IGameMetadata,
   IPlayerCommonTotalsMetadata,
   IPlayerMetadata,
   IPlayerMetadataByGame,
-} from '../constants/player-career-metadata';
-import { getMaxRepeatedCountHelper, sum } from './player-common-metadata';
+} from './metadata.js';
+import { getMaxRepeatedCountHelper, sum } from './player-common-metadata.js';
 
 export function getPointsByPosition({
   hasPosition,
@@ -33,10 +33,22 @@ export function getPointsByPosition({
   }
 }
 
+/** What a season needs to know about a game: its id and the metadata of the game. */
+export interface SeasonGameInput {
+  id: string | { toString(): string };
+  metadata: Pick<
+    IGameMetadata,
+    | 'scoreFirstDraft'
+    | 'scoreSecondDraft'
+    | 'captainFirstDraft'
+    | 'captainSecondDraft'
+  >;
+}
+
 export function accumulatePlayerSeasonMetadata(
   original: IPlayerMetadata,
   input: IPlayerMetadataByGame & IPlayerCommonTotalsMetadata,
-  game: WithId<IGame>,
+  game: SeasonGameInput,
 ): IPlayerMetadata {
   // Helpers
   const gameId = game.id.toString();

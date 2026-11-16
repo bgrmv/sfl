@@ -1,5 +1,5 @@
-import { IPlayerMetadata } from '../constants/player-career-metadata';
-import { getMaxRepeatedCountHelper, sum } from './player-common-metadata';
+import { IPlayerMetadata } from './metadata.js';
+import { getMaxRepeatedCountHelper, sum } from './player-common-metadata.js';
 
 export function calculateCareerAncientRatingSystem(
   original: IPlayerMetadata['ancientRatingSystem'],

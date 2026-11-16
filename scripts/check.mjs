@@ -30,7 +30,8 @@ const STEPS = [
   { id: 'server:build', cwd: 'server-nest', cmd: 'pnpm build' },
   { id: 'audit:client', cwd: 'client', cmd: 'pnpm audit --audit-level high' },
   { id: 'audit:server', cwd: 'server-nest', cmd: 'pnpm audit --audit-level high' },
-  { id: 'audit:packages', cwd: 'packages/schemas', cmd: 'pnpm audit --audit-level high' },
+  { id: 'audit:schemas', cwd: 'packages/schemas', cmd: 'pnpm audit --audit-level high' },
+  { id: 'audit:domain', cwd: 'packages/domain', cmd: 'pnpm audit --audit-level high' },
   { id: 'secrets:tree', cwd: '.', cmd: 'gitleaks dir . --no-banner --redact -c .gitleaks.toml' },
   { id: 'secrets:history', cwd: '.', cmd: 'gitleaks git . --no-banner --redact -c .gitleaks.toml' },
 ];

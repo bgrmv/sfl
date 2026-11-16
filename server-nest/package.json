@@ -33,6 +33,7 @@
     "@nestjs/serve-static": "^12.1.1",
     "@nestjs/swagger": "^12.1.2",
     "@nestjs/throttler": "^6.7.1",
+    "@sfl/domain": "workspace:*",
     "@sfl/schemas": "workspace:*",
     "cookie-parser": "^1.4.7",
     "date-fns": "^4.4.0",

@@ -1,8 +1,8 @@
-import { RATING_SYSTEM_DEFAULT } from '../constants/player-career-metadata';
+import { RATING_SYSTEM_DEFAULT } from './metadata.js';
 import {
   calculateCareerAncientRatingSystem,
   calculateCareerPositionalRatingSystem,
-} from './player-career-metadata';
+} from './player-career-metadata.js';
 
 describe('player-career-metadata', () => {
   describe('calculateCareerAncientRatingSystem', () => {

@@ -249,3 +249,60 @@ export const METADATA_DEFAULT: IPlayerMetadata = Object.freeze({
   ancientRatingSystem: { ...RATING_SYSTEM_DEFAULT },
   positionalRatingSystem: { ...RATING_SYSTEM_DEFAULT },
 });
+
+export interface IPlayerGameResultMetadata
+  extends IPlayerMetadataByGame, IPlayerCommonTotalsMetadata {
+  errors: { name: string; message: string; date: Date }[];
+}
+
+export interface IGameMetadata {
+  // Common
+  totalPlayers: number;
+  totalGoals: number;
+  totalGoalsByLeg: number;
+  totalGoalsByHead: number;
+  totalGoalsByPenalty: number;
+  totalGoalsByAuto: number;
+  totalPasses: number;
+  totalPoints: number;
+
+  // Team
+  teamWon: string | null; // null if scoreIsDraw
+  teamLost: string | null; // null if scoreIsDraw
+  isTeamFromFirstDraftWon: boolean;
+  isTeamFromFirstDraftLost: boolean;
+  isTeamFromSecondDraftWon: boolean;
+  isTeamFromSecondDraftLost: boolean;
+
+  // Score
+  score: [number, number];
+  scoreIsDraw: boolean;
+  scoreFirstDraft: number;
+  scoreSecondDraft: number;
+
+  // Captains
+  captainFirstDraft: string;
+  captainSecondDraft: string;
+  captainWon: string | null; // null if scoreIsDraw
+  captainLost: string | null; // null if scoreIsDraw
+  isCaptainFirstDraftWon: boolean;
+  isCaptainFirstDraftDraw: boolean;
+  isCaptainFirstDraftLost: boolean;
+  isCaptainSecondDraftWon: boolean;
+  isCaptainSecondDraftDraw: boolean;
+  isCaptainSecondDraftLost: boolean;
+
+  // Players
+  playerIdsOfFirstDraft: string[];
+  playerIdsOfSecondDraft: string[];
+  playersByPosition?: {
+    [key in EnumPlayerPosition]: number;
+  };
+  players: Record<string, IPlayerGameResultMetadata>;
+
+  // Mvp
+  mvpByGoalsIds: string[];
+  mvpByGoalsHeadIds: string[];
+  mvpByPassesIds: string[];
+  mvpListIds: string[];
+}

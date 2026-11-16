@@ -11,12 +11,12 @@ import { FileLoggerService } from 'src/shared/services/logger.service';
 import { EnumGameStatus, Game, IGame } from '../games/game.schema';
 import { UsersService } from '../users/users.service';
 import {
+  accumulatePlayerCareerMetadata,
+  accumulatePlayerSeasonMetadata,
   IPlayerMetadata,
   METADATA_DEFAULT,
-} from './constants/player-career-metadata';
+} from '@sfl/domain';
 import { Player, ServerPlayer } from './players.schema';
-import { accumulatePlayerCareerMetadata } from './utils/player-career-metadata';
-import { accumulatePlayerSeasonMetadata } from './utils/player-season-metadata';
 
 @Injectable()
 export class PlayersService {

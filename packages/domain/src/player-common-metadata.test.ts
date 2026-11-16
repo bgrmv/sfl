@@ -1,4 +1,4 @@
-import { getMaxRepeatedCountHelper } from './player-common-metadata';
+import { getMaxRepeatedCountHelper } from './player-common-metadata.js';
 
 describe('player-career-metadata', () => {
   describe('getMaxRepeatedCountHelper', () => {

@@ -19,6 +19,7 @@ services:
       - client-node-modules:/workspaces/sfl/client/node_modules
       - server-nest-node-modules:/workspaces/sfl/server-nest/node_modules
       - schemas-node-modules:/workspaces/sfl/packages/schemas/node_modules
+      - domain-node-modules:/workspaces/sfl/packages/domain/node_modules
       # Otherwise pnpm puts its store into the repository root
       - pnpm-store:/home/node/.pnpm-store
       # Claude Code login and settings survive container rebuilds
@@ -62,6 +63,7 @@ volumes:
   client-node-modules:
   server-nest-node-modules:
   schemas-node-modules:
+  domain-node-modules:
   pnpm-store:
   claude-config:
   mongodb-data:

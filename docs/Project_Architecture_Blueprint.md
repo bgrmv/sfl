@@ -191,7 +191,7 @@ flowchart TB
 
 **Вычисляемые данные:**
 
-- Метаданные игрока за сезон и карьеру: [player-season-metadata.ts](../server-nest/src/entities/player/utils/player-season-metadata.ts), [player-career-metadata.ts](../server-nest/src/entities/player/utils/player-career-metadata.ts), [player-common-metadata.ts](../server-nest/src/entities/player/utils/player-common-metadata.ts).
+- Метаданные игрока за сезон и карьеру: пакет `@sfl/domain`: [player-season-metadata.ts](../packages/domain/src/player-season-metadata.ts), [player-career-metadata.ts](../packages/domain/src/player-career-metadata.ts), [player-common-metadata.ts](../packages/domain/src/player-common-metadata.ts), метаданные матча — [game-metadata.ts](../packages/domain/src/game-metadata.ts). Сервер (`GamesService`, `PlayersService`) лишь читает и пишет документы Mongoose и вызывает эти чистые функции.
 - Метаданные матча: `IGameMetadata` и `IPlayerGameResultMetadata` в `game.schema.ts`.
 - Рейтинговая система (`ancientRatingSystem`: `plusMinus`, `lastResult`, `totalPoints`) считается в `players` и используется в `charts`.
 - Пересчёт запускается вручную через `GET /players/recalculate/season`. Это не фоновая задача.
@@ -234,7 +234,7 @@ flowchart TB
 
 ### 6.6. Тестирование
 
-- **Сервер**: Vitest. Есть unit-тесты только для утилит метаданных игроков ([player-career-metadata.test.ts](../server-nest/src/entities/player/utils/player-career-metadata.test.ts), [player-common-metadata.test.ts](../server-nest/src/entities/player/utils/player-common-metadata.test.ts)). Есть e2e-шаблон [server-nest/test/app.e2e-spec.ts](../server-nest/test/app.e2e-spec.ts), в котором не проверено реальное поведение.
+- **Сервер**: Vitest. Unit-тесты расчёта статистики лежат в `packages/domain/src/*.test.ts` (Vitest), API-тесты и golden-master — в `server-nest/test/`. Есть e2e-шаблон [server-nest/test/app.e2e-spec.ts](../server-nest/test/app.e2e-spec.ts), в котором не проверено реальное поведение.
 - **Клиент**: Karma/Jasmine. Около восьми spec-файлов (sign-in, JWT-интерцептор, пайп, часть компонентов players).
 - Покрытие контроллеров и сервисов API практически отсутствует.
 
@@ -340,7 +340,7 @@ export const CreateTeamSchema = v.object({
 
 ### 10.3. Точки расширения
 
-- **Новые метаданные игрока** — добавляются в утилиты `players/utils/`, не в контроллер.
+- **Новые метаданные игрока** — добавляются в `packages/domain` (сначала тест), не в контроллер и не в сервис.
 - **Новые графики** — агрегация в `charts.service.ts`, компонент в `entities/charts/components/`.
 - **Новые роли** — модель `roles` уже есть, нужен guard и декоратор.
 

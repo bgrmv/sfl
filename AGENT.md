@@ -6,16 +6,16 @@
 
 SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md). Архитектурные решения и причины: [docs/adr/](docs/adr/README.md). Язык и правила лиги (матч, трансфер, система счёта, MVP): [GLOSSARY.md](GLOSSARY.md); меняешь правило расчёта — сначала обнови его там.
 
-| Папка                          | Что это                                                                       |
-| ------------------------------ | ----------------------------------------------------------------------------- |
-| `client/`                      | Angular SPA (слои FSD: `app`, `pages`, `features`, `entities`, `shared`)      |
-| `server-nest/`                 | основной API: NestJS, Mongoose                                                |
-| `packages/`                    | общие пакеты workspace: `@sfl/schemas` (enum и DTO API для клиента и сервера) |
-| `docs/backlog/`                | истории по эпикам `E00`–`E12`, статусы в `README.md`                          |
-| `.devcontainer/`               | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md))               |
-| `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты»                                           |
+| Папка                          | Что это                                                                                                          |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `client/`                      | Angular SPA (слои FSD: `app`, `pages`, `features`, `entities`, `shared`)                                         |
+| `server-nest/`                 | основной API: NestJS, Mongoose                                                                                   |
+| `packages/`                    | общие пакеты workspace: `@sfl/schemas` (enum и DTO API), `@sfl/domain` (чистый расчёт метаданных матча и игрока) |
+| `docs/backlog/`                | истории по эпикам `E00`–`E12`, статусы в `README.md`                                                             |
+| `.devcontainer/`               | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md))                                                  |
+| `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты»                                                                              |
 
-Позже появятся `packages/domain`, `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
+Позже появятся `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
 
 ## Окружение
 
@@ -23,7 +23,7 @@ SFL — приложение для любительской футбольно�
 
 ## Команды
 
-**Общие пакеты (`packages/*`) читаются клиентом и сервером из `dist/`: `pnpm build:packages` из корня их собирает; `pnpm check` и скрипты `dev`, `build`, `test` делают это сами.** Меняешь форму API — меняй её в `@sfl/schemas`, а не в клиенте и сервере по отдельности ([ADR 0009](docs/adr/0009-pnpm-workspace-separate-lockfiles.md)).
+**Общие пакеты (`packages/*`) читаются клиентом и сервером из `dist/`: `pnpm build:packages` из корня их собирает; `pnpm check` и скрипты `dev`, `build`, `test` делают это сами.** Меняешь форму API — меняй её в `@sfl/schemas`, а не в клиенте и сервере по отдельности; меняешь расчёт статистики — в `@sfl/domain` (чистый TypeScript, без `@nestjs/*`, `mongoose`, `@angular/*`: проверяет `packages/domain/src/purity.test.ts`) ([ADR 0009](docs/adr/0009-pnpm-workspace-separate-lockfiles.md)).
 
 **Перед коммитом запускай из корня `pnpm check`** ([scripts/check.mjs](scripts/check.mjs), ~1 минута): lint без `--fix`, типы, тесты и prod-сборка обоих пакетов, падает на первой ошибке. Флаги: `--all` (сводка по всем шагам), `--skip=<шаг,...>`, `--only=client|server|<шаг>`, `--include-known`. В `pnpm check` входят также `pnpm audit --audit-level high` (нужна сеть) и gitleaks по дереву и истории (`.gitleaks.toml`, исключения только с причиной; в старом контейнере: `bash .devcontainer/install-gitleaks.sh`). Шаги, которые падают по известным причинам, пропускаются с выводом причины; список — константа `KNOWN` в скрипте (сейчас пуст).
 
