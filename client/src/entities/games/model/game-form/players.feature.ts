@@ -2,7 +2,6 @@ import {
   patchState,
   signalStoreFeature,
   type,
-  withHooks,
   withMethods,
 } from '@ngrx/signals';
 import {
@@ -11,20 +10,14 @@ import {
   setAllEntities,
   withEntities,
 } from '@ngrx/signals/entities';
-import { IPlayerDTO, TPlayerFinal } from '../types';
-import { NewGameState } from './new-game.store';
+import { IPlayerDTO, TPlayerFinal } from '../../types';
+import { NewGameState } from './new-game.state';
 
 const PLAYERS_ENTITY_CONFIG = entityConfig({
   entity: type<TPlayerFinal>(),
   collection: 'players',
   selectId: player => player.id,
 });
-
-const FEATURE_NAME = 'PLAYERS';
-
-const FEATURE_INITIALIZED = `[${FEATURE_NAME} STORE FEATURE] has been initialized 🚀`;
-
-const FEATURE_DESTROYED = `[${FEATURE_NAME} STORE FEATURE] destroyed 💥`;
 
 export function withPlayersFeature() {
   return signalStoreFeature(
@@ -44,13 +37,5 @@ export function withPlayersFeature() {
         patchState(store, setAllEntities(players, PLAYERS_ENTITY_CONFIG));
       },
     })),
-    withHooks({
-      onInit() {
-        console.info(FEATURE_INITIALIZED);
-      },
-      onDestroy() {
-        console.info(FEATURE_DESTROYED);
-      },
-    }),
   );
 }

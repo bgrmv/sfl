@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { provideComponentStore } from '@ngrx/component-store';
 
 import { CaptainsService, CaptainsStore } from '@entities/captains';
 import { CaptainsTableComponent, CaptainsToggleComponent } from '@features';
@@ -31,8 +30,7 @@ import { CaptainsAdminWidgetComponent } from '@widgets';
     // https://angular.io/api/core/FactoryProvider
     CaptainsService,
 
-    // To use CaptainsService - useEffects
-    provideComponentStore(CaptainsStore),
+    CaptainsStore,
   ],
 })
 export class CaptainsPageComponent {

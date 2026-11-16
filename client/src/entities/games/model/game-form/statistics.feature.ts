@@ -4,13 +4,11 @@ import {
   signalStoreFeature,
   type,
   withComputed,
-  withHooks,
   withMethods,
 } from '@ngrx/signals';
 import {
   addEntity,
   entityConfig,
-  removeAllEntities,
   removeEntity,
   setAllEntities,
   updateEntities,
@@ -18,7 +16,7 @@ import {
   withEntities,
 } from '@ngrx/signals/entities';
 import { omit } from 'lodash-es';
-import { GamePlayerStatistic } from '../components/game-create-player-statistics/game-create-player-statistics.component';
+import { GamePlayerStatistic } from '../../types';
 import {
   EnumPlayerPosition,
   IPlayerStatisticDTO,
@@ -30,8 +28,8 @@ import {
   TPlayerStatisticFinalNumber,
   TPlayerStatisticFinalNumberKeys,
   TTeamFinal,
-} from '../types';
-import { NewGameState } from './new-game.store';
+} from '../../types';
+import { NewGameState } from './new-game.state';
 import { NEW_GAME_TEAMS_ENTITY_CONFIG } from './teams.feature';
 
 const STATISTIC_ENTITY_CONFIG = entityConfig({
@@ -39,12 +37,6 @@ const STATISTIC_ENTITY_CONFIG = entityConfig({
   collection: 'statistics',
   selectId: statistic => statistic.id,
 });
-
-const FEATURE_NAME = 'PLAYER STATISTICS';
-
-const FEATURE_INITIALIZED = `[${FEATURE_NAME} STORE FEATURE] has been initialized 🚀`;
-
-const FEATURE_DESTROYED = `[${FEATURE_NAME} STORE FEATURE] destroyed 💥`;
 
 export const DEFAULT_STATISTIC_IDS_VALUES: Partial<TPlayerStatisticFinalIds> = {
   playerId: undefined,
@@ -135,18 +127,13 @@ export function withPlayerStatisticsFeature() {
           .statisticsEntities()
           .filter(stat => stat.teamId === store.teamsEntities().at(1)?.id);
       }),
-      swapEnabled: computed(() => {
-        return (
-          store
-            .statisticsEntities()
-            .filter(stat => stat.teamId === store.teamsEntities().at(0)?.id)
-            .length > 0 &&
-          store
-            .statisticsEntities()
-            .filter(stat => stat.teamId === store.teamsEntities().at(1)?.id)
-            .length > 0
-        );
-      }),
+    })),
+    withComputed(store => ({
+      swapEnabled: computed(
+        () =>
+          store.statisticsBMW().length > 0 &&
+          store.statisticsHONDA().length > 0,
+      ),
     })),
     withMethods(store => ({
       changePosition(
@@ -316,36 +303,24 @@ export function withPlayerStatisticsFeature() {
       swapStatistics(): void {
         const teams = store.teamsEntities() as [TTeamFinal, TTeamFinal];
 
-        if (
-          store.statisticsBMW().length < 1 ||
-          store.statisticsHONDA().length < 1
-        ) {
+        if (!store.swapEnabled()) {
           return;
         }
 
-        const bmwIdOpposite = getOppositeTeamId(
-          store.statisticsBMW().at(0)!.teamId,
-          teams,
-        );
-        const hondaIdOpposite = getOppositeTeamId(
-          store.statisticsHONDA().at(0)!.teamId!,
-          teams,
-        );
-
-        const bmwToHonda = store
-          .statisticsBMW()
-          .map(stat => ({ ...stat, teamId: bmwIdOpposite }))
-          .map(stat => ({ ...stat, id: generatePlayerStatisticID(stat) }));
-        const hondaToBmw = store
-          .statisticsHONDA()
-          .map(stat => ({ ...stat, teamId: hondaIdOpposite }))
-          .map(stat => ({ ...stat, id: generatePlayerStatisticID(stat) }));
+        const toOtherTeam = (stat: TPlayerStatisticFinal) => {
+          const moved = {
+            ...stat,
+            teamId: getOppositeTeamId(stat.teamId, teams),
+          };
+          return { ...moved, id: generatePlayerStatisticID(moved) };
+        };
 
         patchState(
           store,
-          removeAllEntities(STATISTIC_ENTITY_CONFIG),
           setAllEntities(
-            [...bmwToHonda, ...hondaToBmw],
+            [...store.statisticsBMW(), ...store.statisticsHONDA()].map(
+              toOtherTeam,
+            ),
             STATISTIC_ENTITY_CONFIG,
           ),
         );
@@ -370,13 +345,5 @@ export function withPlayerStatisticsFeature() {
         );
       },
     })),
-    withHooks({
-      onInit() {
-        console.info(FEATURE_INITIALIZED);
-      },
-      onDestroy() {
-        console.info(FEATURE_DESTROYED);
-      },
-    }),
   );
 }

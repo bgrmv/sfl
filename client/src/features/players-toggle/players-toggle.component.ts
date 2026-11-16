@@ -37,7 +37,7 @@ export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
   readonly playersStore = inject(PlayersStore);
 
   readonly playersEffectRef = effect(() => {
-    this.dataSource.data = this.playersStore.players();
+    this.dataSource.data = this.playersStore.playersEntities();
   });
 
   readonly sort = viewChild.required(MatSort);
@@ -60,6 +60,6 @@ export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
   }
 
   toggleCaptain(player: TPlayerFinal) {
-    this.playersStore.patch(player);
+    this.playersStore.toggleCaptain(player.id);
   }
 }

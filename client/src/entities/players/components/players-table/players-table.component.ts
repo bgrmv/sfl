@@ -122,9 +122,9 @@ export class PlayersTableComponent implements OnDestroy, AfterViewInit {
         data: player,
       })
       .afterClosed()
-      .subscribe(player => {
-        if (player) {
-          this.playersStore.updateOne(player);
+      .subscribe(changes => {
+        if (changes) {
+          this.playersStore.updateOne({ id: player.id, changes });
         }
       });
   }

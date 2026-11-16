@@ -12,7 +12,7 @@ import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NewGameStore } from '@entities/games/store/new-game.store';
+import { NewGameStore } from '@entities/games/model/game-form/new-game.store';
 import {
   EnumPlayerPosition,
   TPlayerStatisticFinal,
@@ -20,11 +20,9 @@ import {
 } from '@entities/games/types';
 import { PlayerClient } from '@entities/players';
 import { GAME_PLAYER_STATISTICS_COLUMNS } from './constants';
+import type { GamePlayerStatistic } from '../../types';
 
-// There was GamePlayer
-export type GamePlayerStatistic = TPlayerStatisticFinal & {
-  key?: TPlayerStatisticFinalNumberKeys;
-};
+export type { GamePlayerStatistic };
 
 @Component({
   selector: 'sfl-game-create-player-statistics',

@@ -1,10 +1,10 @@
 <h1>Select Captain (Team: {{ team() }})</h1>
 
-<p>{{ captains$ | async | json }}</p>
-<p>{{ captainsWithoutTeam$ | async | json }}</p>
-<p>{{ selectedCaptain$ | async | json }}</p>
+<p>{{ captains() | json }}</p>
+<p>{{ captainsWithoutTeam() | json }}</p>
+<p>{{ selectedCaptain() | json }}</p>
 
-@if ((selectedCaptain$ | async)!; as captain) {
+@if (selectedCaptain()!; as captain) {
   <sfl-captain-stats-card
     [captain]="captain"
     [class.active]="true"
@@ -18,11 +18,7 @@
   </button>
 } @else {
   <div class="captains-corousel">
-    @for (
-      captain of captainsWithoutTeam$ | async;
-      track captain;
-      let odd = $odd
-    ) {
+    @for (captain of captainsWithoutTeam(); track captain; let odd = $odd) {
       <sfl-captain-stats-card
         [captain]="captain"
         [attr.data-captain-id]="captain.id"

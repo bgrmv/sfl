@@ -20,8 +20,8 @@ import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EnumGameMode } from '@entities/games/constants';
-import { NewGameStore } from '@entities/games/store/new-game.store';
-import { DEFAULT_STATISTIC_VALUES } from '@entities/games/store/statistics.feature';
+import { NewGameStore } from '@entities/games/model/game-form/new-game.store';
+import { DEFAULT_STATISTIC_VALUES } from '@entities/games/model/game-form/statistics.feature';
 import { IPlayerDTO, TPlayerStatisticFinal } from '@entities/games/types';
 import { CreatePlayerDialogComponent } from '../create-player-dialog/create-player-dialog.component';
 

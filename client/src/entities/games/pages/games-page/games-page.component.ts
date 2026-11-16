@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { GameService } from '@entities/games';
 import { GamesListComponent } from '@entities/games/components/games-list/games-list.component';
-import { GamesStore } from '@entities/games/store/games.store';
+import { GamesStore } from '@entities/games/model/games-list/games.store';
 import { PageComponent } from '@shared/ui/core/page/page.component';
 
 @Component({

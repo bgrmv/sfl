@@ -1,11 +1,11 @@
 import { GameTeamCreateComponent } from './components/game-team-create/game-team-create.component';
 import { GameService } from './services/game.service';
-import { NewGameStore } from './store/new-game.store';
+import { NewGameStore } from './model/game-form/new-game.store';
 
 import { GameCreatePlayerStatisticsComponent } from './components/game-create-player-statistics/game-create-player-statistics.component';
 import { GameListStatisticsPipe } from './directives/game-list-statistics.pipe';
 import { GAMES_ROUTES } from './routes';
-import { GamesStore } from './store/games.store';
+import { GamesStore } from './model/games-list/games.store';
 import { TGameFinal } from './types';
 import { GameCreationWidgetComponent } from './widgets/game-creation-widget/game-creation-widget.component';
 

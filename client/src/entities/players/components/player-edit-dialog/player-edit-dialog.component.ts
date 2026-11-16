@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  inject,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -23,7 +17,6 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { IPlayerDTO } from '@entities/games/types';
-import { PlayersService } from '@entities/players/services/players.service';
 
 @Component({
   selector: 'sfl-player-edit-dialog',
@@ -37,14 +30,11 @@ import { PlayersService } from '@entities/players/services/players.service';
     MatDialogActions,
     ReactiveFormsModule,
   ],
-  providers: [PlayersService],
   templateUrl: './player-edit-dialog.component.html',
   styleUrl: './player-edit-dialog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerEditDialogComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly playersService = inject(PlayersService);
   private readonly dialogRef: MatDialogRef<PlayerEditDialogComponent> =
     inject(MatDialogRef);
 
@@ -89,11 +79,7 @@ export class PlayerEditDialogComponent {
   }
 
   onSubmit() {
-    this.playersService
-      .patch(this.data.id, this.formGroup.getRawValue())
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(patchedPlayer => {
-        this.dialogRef.close(patchedPlayer);
-      });
+    // The request goes through PlayersStore.updateOne
+    this.dialogRef.close(this.formGroup.getRawValue());
   }
 }

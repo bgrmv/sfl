@@ -71,8 +71,8 @@ export class CaptainToAddComponent
 
   readonly displayFn = displayFn;
   readonly variantEnum = CardVariantEnum;
-  readonly players$ = toObservable(this.playersStore.players);
-  readonly captains$ = this.captainsStore.captains$;
+  readonly players$ = toObservable(this.playersStore.playersEntities);
+  readonly captains = this.captainsStore.captains;
   readonly captainFormControl = new FormControl<TCaptain | string | null>('');
 
   readonly #filteredPlayers = new BehaviorSubject<PlayerClient[]>([]);
@@ -93,7 +93,7 @@ export class CaptainToAddComponent
   ngOnInit() {
     combineLatest([
       this.players$,
-      this.captainsStore.captains$,
+      toObservable(this.captainsStore.captains),
       this.captainFormControl.valueChanges.pipe(startWith(null)),
     ])
       .pipe(

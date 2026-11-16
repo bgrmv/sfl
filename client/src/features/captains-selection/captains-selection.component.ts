@@ -4,11 +4,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
+  computed,
   inject,
   input,
 } from '@angular/core';
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { map } from 'rxjs/operators';
+import { JsonPipe } from '@angular/common';
 
 import { CaptainStatsCardComponent, CaptainsStore } from '@entities/captains';
 import { BaseUnsubscribeComponent } from '@shared/classes/base-unsubscribe-component';
@@ -22,7 +22,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./captains-selection.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [MatButtonModule, CaptainStatsCardComponent, AsyncPipe, JsonPipe],
+  imports: [MatButtonModule, CaptainStatsCardComponent, JsonPipe],
 })
 export class CaptainsSelectionComponent extends BaseUnsubscribeComponent {
   private captainsStore = inject(CaptainsStore);
@@ -31,12 +31,14 @@ export class CaptainsSelectionComponent extends BaseUnsubscribeComponent {
   readonly control = input.required<FormControl<boolean | null>>();
 
   readonly cardVariantEnum = CardVariantEnum;
-  readonly captains$ = this.captainsStore.captains$;
-  readonly captainsWithoutTeam$ = this.captainsStore.captainsWithoutTeam$;
+  readonly captains = this.captainsStore.captains;
+  readonly captainsWithoutTeam = this.captainsStore.captainsWithoutTeam;
 
-  readonly selectedCaptain$ = this.captainsStore.selectedCaptains$.pipe(
-    map(selected => selected.filter(select => select.team === this.team())),
-    map(selected => selected[0] ?? null),
+  readonly selectedCaptain = computed(
+    () =>
+      this.captainsStore
+        .selected()
+        .find(select => select.team === this.team()) ?? null,
   );
 
   @HostListener('click', ['$event.target'])
