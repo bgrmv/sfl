@@ -111,18 +111,18 @@ flowchart LR
 | Эпик 0 — Hotfix безопасности текущего прода     | [E00-security-hotfix/](E00-security-hotfix/)         |  7 (1 отменена)  |
 | Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 13 (2 отменены)  |
 | Эпик 2 — Тесты и CI                             | [E02-tests-ci/](E02-tests-ci/)                       |        8         |
-| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        23        |
+| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        25        |
 | Эпик 4 — Spike и проектирование переезда        | [E04-migration-design/](E04-migration-design/)       |  4 (1 отменена)  |
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
 | Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        9         |
 | Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        13        |
 | Эпик 9 — Наблюдаемость                          | [E09-observability/](E09-observability/)             |        2         |
-| Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        53        |
+| Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        55        |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 167, из них отменено: 18.
+Всего историй: 171, из них отменено: 18.
 
 ---
 
@@ -179,7 +179,7 @@ flowchart LR
 |   ✅   | [S3.4](E03-architecture/S3.4.md)   | Единый формат ответов API                                       |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md)                                                |
 |   ❌   | [S3.5](E03-architecture/S3.5.md)   | Атомарное сохранение матча и пересчёта                          |    P2     |   M    | [S3.3](E03-architecture/S3.3.md)                                            |
 |   ✅   | [S3.6](E03-architecture/S3.6.md)   | Конфигурация окружений клиента                                  |    P1     |   S    | —                                                                           |
-|   ❌   | [S3.7](E03-architecture/S3.7.md)   | Привести состояние клиента к одному подходу                     |    P2     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
+|   ✅   | [S3.7](E03-architecture/S3.7.md)   | Привести состояние клиента к одному подходу                     |    P2     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
 |   ❌   | [S3.8](E03-architecture/S3.8.md)   | Границы слоёв клиента проверяются линтером                      |    P2     |   S    | [S1.6](E01-dependency-upgrades/S1.6.md)                                     |
 |   ✅   | [S3.9](E03-architecture/S3.9.md)   | Вести ADR                                                       |    P1     |   S    | —                                                                           |
 |   ❌   | [S3.10](E03-architecture/S3.10.md) | Обработка ошибок и сессии на клиенте                            |    P2     |   M    | [S3.6](E03-architecture/S3.6.md)                                            |
@@ -194,8 +194,10 @@ flowchart LR
 |   ❌   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
 |   ✅   | [S3.20](E03-architecture/S3.20.md) | Убрать вызовы клиента к несуществующим маршрутам API            |    P1     |   S    | —                                                                           |
 |   ❌   | [S3.21](E03-architecture/S3.21.md) | Выровнять REST API: лексика, семантика, топология               |    P2     |   M    | [S3.20](E03-architecture/S3.20.md)                                          |
-|   ❌   | [S3.22](E03-architecture/S3.22.md) | Исправить ошибки и гонки в сторах клиента                       |    P1     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S2.5](E02-tests-ci/S2.5.md)       |
+|   ✅   | [S3.22](E03-architecture/S3.22.md) | Исправить ошибки и гонки в сторах клиента                       |    P1     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S2.5](E02-tests-ci/S2.5.md)       |
 |   ❌   | [S3.23](E03-architecture/S3.23.md) | MongoDB как replica set (транзакции)                            |    P2     |   M    | —                                                                           |
+|   ✅   | [S3.24](E03-architecture/S3.24.md) | Исправить правила и сторы формы матча по ревью                  |    P1     |   M    | [S3.22](E03-architecture/S3.22.md)                                          |
+|   ❌   | [S3.25](E03-architecture/S3.25.md) | Стор капитанов без дубля списка игроков                         |    P2     |   S    | [S3.22](E03-architecture/S3.22.md), [S3.7](E03-architecture/S3.7.md)        |
 
 ## Эпик 4 — Spike и проектирование переезда
 
@@ -337,6 +339,8 @@ flowchart LR
 |   ❌   | [S10.51](E10-product-features/S10.51.md) | Release notes и информация о релизе в футере                      |    P3     |   S    | [S10.12](E10-product-features/S10.12.md)                                                                                                                                                                         |
 |   ❌   | [S10.52](E10-product-features/S10.52.md) | Админка «Releases»: заметки релиза как на GitHub                  |    P3     |   M    | [S10.51](E10-product-features/S10.51.md), [S10.35](E10-product-features/S10.35.md)                                                                                                                               |
 |   ❌   | [S10.53](E10-product-features/S10.53.md) | Админка фото и видео: загрузка, очередь без тегов, массовые теги  |    P3     |   M    | [S10.23](E10-product-features/S10.23.md), [S10.41](E10-product-features/S10.41.md), [S10.19](E10-product-features/S10.19.md)                                                                                     |
+|   ❌   | [S10.54](E10-product-features/S10.54.md) | Один матч редактирует один администратор и сохранение черновика   |    P2     |   L    | [S3.23](E03-architecture/S3.23.md), [S10.21](E10-product-features/S10.21.md)                                                                                                                                     |
+|   ❌   | [S10.55](E10-product-features/S10.55.md) | Доработать макеты «Табло» по аудиту                               |    P2     |   M    | [S10.11](E10-product-features/S10.11.md)                                                                                                                                                                         |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 
