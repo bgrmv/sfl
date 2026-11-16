@@ -6,11 +6,11 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { authRefreshInterceptor } from '../interceptors/auth-refresh.interceptor';
-import { jwtInterceptor } from '../interceptors/jwt.interceptor';
+import { authRefreshInterceptor } from './auth-refresh.interceptor';
+import { jwtInterceptor } from './jwt.interceptor';
 import { AccessTokenStore } from './access-token.store';
 import { AuthService } from './auth.service';
-import { HttpService } from './http.service';
+import { HttpService } from '@shared/api/http.service';
 
 const API = 'https://sfl.com:3001/rest';
 const user = { id: 'u1', email: 'admin@sfl.test', roles: ['ADMIN'] };

@@ -6,7 +6,7 @@ import { provideRouter } from '@angular/router';
 import { GameService } from '@entities/game';
 import { PlayersService } from '@entities/player';
 import { NewGameStore } from '@features/game-edit';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 import { TeamPlayersAutocompleteComponent } from './team-players-autocomplete.component';
 
 describe('TeamPlayersAutocompleteComponent', () => {

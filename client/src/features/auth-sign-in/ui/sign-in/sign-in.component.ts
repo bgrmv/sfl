@@ -19,7 +19,7 @@ import { Router, RouterModule } from '@angular/router';
 import type { ApiError } from '@sfl/schemas';
 import { apiErrorMessage } from '@shared/api/api-error-message';
 import { toResult } from '@shared/api/to-result';
-import { AuthService } from '@shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 import { finalize } from 'rxjs';
 import { environment } from '@environment/environment';
 

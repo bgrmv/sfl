@@ -4,7 +4,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { PlayersStore } from '@entities/player';
 import { PlayersService } from '@entities/player';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlayerCreateButtonComponent } from './player-create-button.component';

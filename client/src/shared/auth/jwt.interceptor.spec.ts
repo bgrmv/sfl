@@ -10,7 +10,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { AccessTokenStore } from '../services/access-token.store';
+import { AccessTokenStore } from './access-token.store';
 import { jwtInterceptor } from './jwt.interceptor';
 
 describe('jwtInterceptor', () => {

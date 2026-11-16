@@ -16,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GamesStore } from '@entities/game';
 import { IGameDTO } from '@entities/game';
 import { getTotalWeeksBySeason } from '@shared/lib/date';
-import { AuthService } from '@shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 import { differenceInCalendarDays, isBefore } from 'date-fns';
 import { EnumGameStatus } from '@entities/game';
 import { GameDeleteDialogComponent } from '@features/game-delete';

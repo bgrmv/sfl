@@ -64,12 +64,12 @@ flowchart LR
 
 Клиент организован по слоям, похожим на Feature-Sliced Design. Алиасы путей: `@entities/*`, `@shared/*`, `@features/*`, `@pages/*`.
 
-| Слой        | Назначение                                    | Примеры                                                              |
-| ----------- | --------------------------------------------- | -------------------------------------------------------------------- |
-| `pages/`    | Страницы верхнего уровня                      | `home`, `sign-in-page`, `captains-page`                              |
-| `features/` | Пользовательские сценарии                     | `games-table`, `players-toggle`, `captains-selection`                |
-| `entities/` | Доменные модули: API, store, компоненты, типы | `games`, `players`, `captains`, `teams`, `charts`                    |
-| `shared/`   | Инфраструктура и переиспользуемое             | `services/http.service.ts`, `interceptors/jwt.interceptor.ts`, `ui/` |
+| Слой        | Назначение                                    | Примеры                                                 |
+| ----------- | --------------------------------------------- | ------------------------------------------------------- |
+| `pages/`    | Страницы верхнего уровня                      | `home`, `sign-in-page`, `captains-page`                 |
+| `features/` | Пользовательские сценарии                     | `games-table`, `players-toggle`, `captains-selection`   |
+| `entities/` | Доменные модули: API, store, компоненты, типы | `games`, `players`, `captains`, `teams`, `charts`       |
+| `shared/`   | Инфраструктура и переиспользуемое             | `api/http.service.ts`, `auth/jwt.interceptor.ts`, `ui/` |
 
 В `entities/<name>/` обычно есть `routes.ts`, `services/`, `store/`, `components/`, `pages/`, `types.ts`, `index.ts` (публичный API модуля).
 
@@ -109,8 +109,8 @@ server-nest/src/
 ### 3.1. Клиент
 
 - **Маршрутизация** — [client/src/app/app.routes.ts](../client/src/app/app.routes.ts). Корневые маршруты: `''`, `home`, `sign-in`. Далее подключаются `PLAYERS_ROUTES` и `GAMES_ROUTES` из модулей `entities`. Ленивая загрузка через `loadComponent`.
-- **HTTP** — [client/src/shared/services/http.service.ts](../client/src/shared/services/http.service.ts). Обёртка над `HttpClient`, базовый URL берётся из `environment.API_KEY` (строка `https://sfl.com:3001/rest`; имя поля вводит в заблуждение, это URL, а не ключ).
-- **Авторизация на клиенте** — [client/src/shared/interceptors/jwt.interceptor.ts](../client/src/shared/interceptors/jwt.interceptor.ts). Берёт `accessToken` из `localStorage`, добавляет заголовок `Authorization: Bearer ...` и включает `withCredentials: true` (нужно для cookie `refreshToken`).
+- **HTTP** — [client/src/shared/api/http.service.ts](../client/src/shared/api/http.service.ts). Обёртка над `HttpClient`, базовый URL берётся из `environment.API_KEY` (строка `https://sfl.com:3001/rest`; имя поля вводит в заблуждение, это URL, а не ключ).
+- **Авторизация на клиенте** — [client/src/shared/auth/jwt.interceptor.ts](../client/src/shared/auth/jwt.interceptor.ts). Берёт `accessToken` из `localStorage`, добавляет заголовок `Authorization: Bearer ...` и включает `withCredentials: true` (нужно для cookie `refreshToken`).
 - **Состояние** — два подхода одновременно:
   - `@ngrx/signals` `signalStore` с `withEntities`: [client/src/entities/game/model/games.store.ts](../client/src/entities/game/model/games.store.ts), а форма матча — `client/src/features/game-edit/model/` (`players.feature.ts`, `teams.feature.ts`, `statistics.feature.ts`, `new-game.store.ts`).
   - `@ngrx/store` подключён в [client/src/app/app.config.ts](../client/src/app/app.config.ts) через `provideStore()` без редьюсеров. Фактически используется в основном для devtools.

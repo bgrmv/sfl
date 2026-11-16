@@ -44,7 +44,7 @@ import { PlayersService } from '@entities/player';
 import { TeamsService, type TTeamFinal } from '@entities/team';
 import { TeamPlayersAutocompleteComponent } from '../team-players-autocomplete/team-players-autocomplete.component';
 import { getTotalWeeksBySeason } from '@shared/lib/date';
-import { AuthService } from '@shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 import { getYear } from 'date-fns';
 import { range } from 'lodash-es';
 import { distinctUntilChanged, filter, map } from 'rxjs';

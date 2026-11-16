@@ -9,7 +9,7 @@ import { PlayersStore } from '@entities/player';
 import { PlayerCreateButtonComponent } from '@features/player-create';
 import { PlayersTableComponent } from './players-table/players-table.component';
 import { PlayersService } from '@entities/player';
-import { AuthService } from '@shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 import { PageComponent } from '@shared/ui/core/page/page.component';
 
 @Component({

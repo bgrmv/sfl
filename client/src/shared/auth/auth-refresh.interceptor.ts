@@ -2,8 +2,8 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
 
-import { AccessTokenStore } from '../services/access-token.store';
-import { AuthService } from '../services/auth.service';
+import { AccessTokenStore } from './access-token.store';
+import { AuthService } from './auth.service';
 
 const AUTH_ROUTES = /\/auth\/(sign-in|sign-out|refresh)(\?|$)/;
 

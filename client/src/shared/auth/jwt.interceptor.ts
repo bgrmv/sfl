@@ -1,7 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 
-import { AccessTokenStore } from '../services/access-token.store';
+import { AccessTokenStore } from './access-token.store';
 
 /**
  * Puts the access token (from memory) into the header and lets the browser

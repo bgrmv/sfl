@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 import { Observable } from 'rxjs';
 
 export type TTopTotalPoints = {

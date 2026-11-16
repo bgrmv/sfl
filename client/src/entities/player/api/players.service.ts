@@ -2,7 +2,7 @@ import { inject, Service } from '@angular/core';
 import { IPlayerDTO, TPlayerFinal } from '../model/player';
 import { playerSchema, playersSchema } from '@sfl/schemas';
 import { checkedResponse } from '@shared/api/checked-response';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 import { Observable, map } from 'rxjs';
 
 export type PlayersResponse = {

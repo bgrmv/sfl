@@ -26,7 +26,7 @@ import { PlayersStore } from '@entities/player';
 import { PlayerDeleteDialogComponent } from '@features/player-delete';
 import { PlayerEditDialogComponent } from '@features/player-edit';
 import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
-import { AuthService } from '@shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 
 @Component({
   selector: 'sfl-players-table',

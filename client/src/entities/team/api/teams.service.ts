@@ -2,7 +2,7 @@ import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ITeamDTO } from '../model/team';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 
 @Service()
 export class TeamsService {

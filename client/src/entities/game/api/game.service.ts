@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { gameSchema, gamesSchema } from '@sfl/schemas';
 import { checkedResponse } from '@shared/api/checked-response';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 import { map, Observable } from 'rxjs';
 import { IGameDTO } from '../model/game';
 

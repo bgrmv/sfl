@@ -11,7 +11,7 @@ import {
   throwError,
 } from 'rxjs';
 import { AccessTokenStore } from './access-token.store';
-import { HttpService } from './http.service';
+import { HttpService } from '@shared/api/http.service';
 
 interface User {
   id: string;

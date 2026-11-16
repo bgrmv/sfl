@@ -12,9 +12,9 @@ import {
   withInterceptors,
   withXhr,
 } from '@angular/common/http';
-import { authRefreshInterceptor } from '@shared/interceptors/auth-refresh.interceptor';
-import { jwtInterceptor } from '@shared/interceptors/jwt.interceptor';
-import { AuthService } from '@shared/services/auth.service';
+import { authRefreshInterceptor } from '@shared/auth/auth-refresh.interceptor';
+import { jwtInterceptor } from '@shared/auth/jwt.interceptor';
+import { AuthService } from '@shared/auth/auth.service';
 import { provideHighcharts } from 'highcharts-angular';
 
 export const appConfig: ApplicationConfig = {

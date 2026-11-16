@@ -4,7 +4,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { PlayersService } from '@entities/player';
-import { HttpService } from '@shared/services/http.service';
+import { HttpService } from '@shared/api/http.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreatePlayerDialogComponent } from './create-player-dialog.component';

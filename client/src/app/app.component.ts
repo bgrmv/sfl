@@ -6,12 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CookieService } from '@shared/services/cookie.service';
-import { HttpService } from '@shared/services/http.service';
-import { JwtService } from '@shared/services/jwt.service';
-import { LocalStorageService } from '@shared/services/local-storage.service';
+import { CookieService } from '@shared/lib/cookie.service';
+import { HttpService } from '@shared/api/http.service';
+import { JwtService } from '@shared/auth/jwt.service';
+import { LocalStorageService } from '@shared/lib/local-storage.service';
 import packageJSON from 'package.json';
-import { AuthService } from '../shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 import { NavigationComponent } from '../shared/ui/core/navigation/navigation.component';
 
 @Component({

@@ -2,7 +2,7 @@ import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { TopAncientRatingSystemPlayersComponent } from './top-ancient-rating-system-players/top-ancient-rating-system-players.component';
 import { TopTotalPointsPlayersComponent } from './top-total-points-players/top-total-points-players.component';
-import { AuthService } from '@shared/services/auth.service';
+import { AuthService } from '@shared/auth/auth.service';
 import { PageComponent } from '@shared/ui/core/page/page.component';
 
 @Component({
