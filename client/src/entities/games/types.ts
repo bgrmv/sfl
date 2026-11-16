@@ -72,3 +72,8 @@ export type TGamePlayerStatisticFinal = TPlayerStatisticFinalBoolean &
   TPlayerStatisticFinalNumber &
   Partial<TPlayerStatisticFinalIds> &
   Partial<IPlayerStatisticSettings>;
+
+/** A row of the statistics table of a game; `key` names the column. */
+export type GamePlayerStatistic = TPlayerStatisticFinal & {
+  key?: TPlayerStatisticFinalNumberKeys;
+};

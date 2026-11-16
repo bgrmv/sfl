@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GamesStore } from '@entities/games/store/games.store';
+import { GamesStore } from '@entities/games/model/games-list/games.store';
 import { IGameDTO } from '@entities/games/types';
 import { getTotalWeeksBySeason } from '@entities/utils/date';
 import { AuthService } from '@shared/services/auth.service';

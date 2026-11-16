@@ -46,25 +46,32 @@ export function validateGameRules({
   });
 
   for (const { rule, teamId, playerId } of violations) {
-    if (rule === 'captain') {
-      // A team without players is reported as "must have a player" elsewhere
-      if (!statistics.some(stat => stat.teamId === teamId)) {
-        continue;
+    switch (rule) {
+      case 'captain':
+        // A team without players is reported as "must have a player" elsewhere
+        if (!statistics.some(stat => stat.teamId === teamId)) break;
+        errors.set(
+          `captain:${teamId}`,
+          `Team ${teamName(teamId)} needs exactly one captain`,
+        );
+        break;
+      case 'position':
+        errors.set(
+          `position:${playerId}`,
+          `${playerName(playerId)} needs a position: a published game requires it`,
+        );
+        break;
+      case 'team':
+        errors.set(
+          `team:${playerId}`,
+          `${playerName(playerId)} plays for a team that is not in the game`,
+        );
+        break;
+      default: {
+        // A new rule in @sfl/schemas must get its message here: compile error
+        const unhandled: never = rule;
+        throw new Error(`Unhandled rule of a game: ${String(unhandled)}`);
       }
-      errors.set(
-        `captain:${teamId}`,
-        `Team ${teamName(teamId)} needs exactly one captain`,
-      );
-    } else if (rule === 'position') {
-      errors.set(
-        `position:${playerId}`,
-        `${playerName(playerId)} needs a position: a published game requires it`,
-      );
-    } else {
-      errors.set(
-        `team:${playerId}`,
-        `${playerName(playerId)} plays for a team that is not in the game`,
-      );
     }
   }
 

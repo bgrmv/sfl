@@ -1,11 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -20,10 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { IPlayerDTO, TPlayerFinal } from '@entities/games/types';
-import { PlayersService } from '@entities/players/services/players.service';
+import { TPlayerFinal } from '@entities/games/types';
 import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
-import { catchError, delay, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'sfl-player-edit-dialog',
@@ -41,7 +37,6 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
     MatIconModule,
     NilToDashPipe,
   ],
-  providers: [PlayersService],
   template: `
     @if (loadingSignal()) {
       <mat-progress-bar mode="indeterminate" />
@@ -159,8 +154,6 @@ import { catchError, delay, of, switchMap, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerDeleteDialogComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly playersService = inject(PlayersService);
   private readonly dialogRef: MatDialogRef<PlayerDeleteDialogComponent> =
     inject(MatDialogRef);
 
@@ -177,23 +170,7 @@ export class PlayerDeleteDialogComponent {
   }
 
   onConfirm(): void {
-    of(this.data.player)
-      .pipe(
-        tap(() => {
-          this.loadingSignal.update(() => true);
-        }),
-        delay(2_000),
-        switchMap(player => {
-          return this.playersService.delete(player.id);
-        }),
-        catchError(error => {
-          console.error(error);
-          return of();
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((player: IPlayerDTO | null) => {
-        this.dialogRef.close(!!player);
-      });
+    // The request goes through PlayersStore.deleteOne
+    this.dialogRef.close(true);
   }
 }

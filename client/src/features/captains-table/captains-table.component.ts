@@ -1,13 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  OnInit,
   AfterViewInit,
+  effect,
   inject,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,18 +27,15 @@ import { CaptainsStore, TCaptain } from '@entities/captains';
     MatIconModule,
   ],
 })
-export class CaptainsTableComponent implements OnInit, AfterViewInit {
-  private _destroyRef = inject(DestroyRef);
+export class CaptainsTableComponent implements AfterViewInit {
   private captainsStore = inject(CaptainsStore);
 
   readonly sort = viewChild.required(MatSort);
 
-  ngOnInit() {
-    this.captainsStore.captains$
-      .pipe(takeUntilDestroyed(this._destroyRef))
-      .subscribe(captains => {
-        this.dataSource.data = captains;
-      });
+  constructor() {
+    effect(() => {
+      this.dataSource.data = this.captainsStore.captains();
+    });
   }
 
   ngAfterViewInit() {

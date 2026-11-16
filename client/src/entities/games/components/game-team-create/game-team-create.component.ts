@@ -17,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { EnumGameMode } from '@entities/games/constants';
-import { NewGameStore } from '@entities/games/store/new-game.store';
+import { NewGameStore } from '@entities/games/model/game-form/new-game.store';
 import { TTeamFinal } from '@entities/games/types';
 import { PlayersAutocompleteComponent } from '@entities/players/components/players-autocomplete/players-autocomplete.component';
 import { GameCreatePlayerStatisticsComponent } from '../game-create-player-statistics/game-create-player-statistics.component';

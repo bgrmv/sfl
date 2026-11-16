@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { GamesStore } from '../../store/games.store';
+import { GamesStore } from '../../model/games-list/games.store';
 import { GameCardComponent } from '../game-card/game-card.component';
 
 @Component({

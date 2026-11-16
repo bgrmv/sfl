@@ -32,6 +32,6 @@
 </form>
 
 <sfl-captains-cards
-  [captains]="(captains$ | async) ?? []"
+  [captains]="captains()"
   [variant]="variantEnum.Preview"
 />
