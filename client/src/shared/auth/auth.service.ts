@@ -6,7 +6,9 @@ import {
   finalize,
   map,
   Observable,
+  of,
   share,
+  switchMap,
   tap,
   throwError,
 } from 'rxjs';
@@ -102,12 +104,16 @@ export class AuthService {
     return this.#refreshing$;
   }
 
-  whoAmI() {
-    this.httpService.get<User>('auth/whoami').subscribe(user => {
-      if (user) {
-        this.setUser({ id: user.id, email: user.email, roles: user.roles });
-      }
-    });
+  /** The user of the access token; a failure leaves the session as it is. */
+  private loadUser(): Observable<unknown> {
+    return this.httpService.get<User>('auth/whoami').pipe(
+      tap(user => {
+        if (user) {
+          this.setUser({ id: user.id, email: user.email, roles: user.roles });
+        }
+      }),
+      catchError(() => of(null)),
+    );
   }
 
   signIn(payload: { email: string; password: string }) {
@@ -119,11 +125,16 @@ export class AuthService {
       .pipe(
         delay(1500),
         tap(response => {
-          if (response?.accessToken) {
-            this.accessToken.set(response.accessToken);
-            this.whoAmI();
-            this.#channel?.postMessage('signed-in');
-          }
+          if (response?.accessToken) this.accessToken.set(response.accessToken);
+        }),
+        // The sign-in ends when the user is known: the page after it (a route
+        // with a guard) needs the role
+        switchMap(response => {
+          if (!response?.accessToken) return of(response);
+          return this.loadUser().pipe(
+            map(() => response),
+            tap(() => this.#channel?.postMessage('signed-in')),
+          );
         }),
       );
   }

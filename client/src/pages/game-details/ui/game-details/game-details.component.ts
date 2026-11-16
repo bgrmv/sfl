@@ -23,7 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { injectNotifier } from '@shared/store/inject-notifier';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IGameDTO } from '@entities/game';
@@ -57,7 +57,7 @@ import { filter, map, switchMap } from 'rxjs';
 export class GameDetailsComponent implements OnInit {
   protected readonly loading = signal<boolean>(false);
   private readonly clipboard = inject(Clipboard);
-  private readonly snackBarRef = inject(MatSnackBar);
+  private readonly notify = injectNotifier();
   private readonly playersService = inject(PlayersService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -131,10 +131,6 @@ export class GameDetailsComponent implements OnInit {
   copy(target: string, message = 'Copied to clipboard'): void {
     this.clipboard.copy(target); // Copy the ID to the clipboard
 
-    // Show feedback using MatSnackBar
-    this.snackBarRef.open(message, 'Close', {
-      duration: 20_000,
-      politeness: 'assertive',
-    });
+    this.notify.success(message);
   }
 }

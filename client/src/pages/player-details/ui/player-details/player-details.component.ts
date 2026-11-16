@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar } from '@angular/material/snack-bar'; // For feedback message
+import { injectNotifier } from '@shared/store/inject-notifier';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
 import { catchError, delay, EMPTY, retry, switchMap } from 'rxjs';
@@ -40,7 +40,7 @@ export class PlayerDetailsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly clipboard = inject(Clipboard);
-  private readonly snackBarRef = inject(MatSnackBar);
+  private readonly notify = injectNotifier();
 
   protected loading = signal<boolean>(true);
   protected player = signal<TPlayerFinal | null>(null);
@@ -78,10 +78,6 @@ export class PlayerDetailsComponent implements OnInit {
   copy(id: string): void {
     this.clipboard.copy(id); // Copy the ID to the clipboard
 
-    // Show feedback using MatSnackBar
-    this.snackBarRef.open('ID copied to clipboard!', 'Close', {
-      duration: 20_000,
-      politeness: 'assertive',
-    });
+    this.notify.success('ID copied to clipboard!');
   }
 }

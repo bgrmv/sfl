@@ -4,7 +4,14 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import {
+  ActivatedRoute,
+  convertToParamMap,
+  provideRouter,
+  Router,
+} from '@angular/router';
+import { AuthService } from '@shared/auth/auth.service';
+import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
@@ -100,5 +107,46 @@ describe('SignInComponent', () => {
       expect(alert()).toBeNull();
       TestBed.inject(HttpTestingController).expectOne(`${API}/auth/sign-in`);
     });
+  });
+});
+
+describe('SignInComponent return to the page', () => {
+  const signInFrom = (returnUrl: string | null) => {
+    TestBed.configureTestingModule({
+      imports: [SignInComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParamMap: convertToParamMap(returnUrl ? { returnUrl } : {}),
+            },
+          },
+        },
+      ],
+    });
+    const auth = TestBed.inject(AuthService);
+    vi.spyOn(auth, 'signIn').mockReturnValue(of({ accessToken: 't' }));
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigateByUrl')
+      .mockResolvedValue(true);
+    TestBed.createComponent(SignInComponent).componentInstance.onSubmit();
+    return navigate;
+  };
+
+  it('goes back to the page from returnUrl after the sign-in', () => {
+    expect(signInFrom('/games/create')).toHaveBeenCalledWith('/games/create');
+  });
+
+  it('goes home without returnUrl', () => {
+    expect(signInFrom(null)).toHaveBeenCalledWith('/');
+  });
+
+  it('ignores a returnUrl that leads to another site', () => {
+    expect(signInFrom('https://evil.example')).toHaveBeenCalledWith('/');
   });
 });

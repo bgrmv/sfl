@@ -259,4 +259,42 @@ describe('session in memory (S8.12)', () => {
       http.expectNone(`${API}/auth/refresh`);
     });
   });
+  describe('signIn waits for the user', () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    const submit = () => {
+      const done = vi.fn();
+      auth.signIn({ email: 'a@b.c', password: 'ok' }).subscribe({ next: done });
+      http.expectOne(`${API}/auth/sign-in`).flush(ok({ accessToken: 't' }));
+      vi.advanceTimersByTime(1500);
+      return done;
+    };
+
+    it('does not finish before whoami answers, so the guard sees the role', () => {
+      const done = submit();
+      const whoami = http.expectOne(`${API}/auth/whoami`);
+
+      expect(done).not.toHaveBeenCalled();
+      expect(auth.isAdmin()).toBe(false);
+
+      whoami.flush(ok(user));
+
+      expect(done).toHaveBeenCalledTimes(1);
+      expect(auth.isAdmin()).toBe(true);
+    });
+
+    it('still signs in when whoami fails', () => {
+      const done = submit();
+      http
+        .expectOne(`${API}/auth/whoami`)
+        .flush(failure(500, 'INTERNAL_ERROR'), {
+          status: 500,
+          statusText: 'x',
+        });
+
+      expect(done).toHaveBeenCalledTimes(1);
+      expect(token.get()).toBe('t');
+    });
+  });
 });

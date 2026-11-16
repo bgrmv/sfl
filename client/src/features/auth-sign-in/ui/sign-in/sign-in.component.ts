@@ -15,11 +15,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import type { ApiError } from '@sfl/schemas';
 import { apiErrorMessage } from '@shared/api/api-error-message';
 import { toResult } from '@shared/api/to-result';
 import { AuthService } from '@shared/auth/auth.service';
+import { safeReturnUrl } from '@shared/auth/return-url';
 import { finalize } from 'rxjs';
 import { environment } from '@environment/environment';
 
@@ -40,6 +41,8 @@ import { environment } from '@environment/environment';
 })
 export class SignInComponent {
   private router = inject(Router);
+
+  private readonly route = inject(ActivatedRoute);
 
   private readonly authService = inject(AuthService);
 
@@ -85,7 +88,12 @@ export class SignInComponent {
         result.match({
           ok: response => {
             if (response) {
-              this.router.navigate(['/']);
+              // Back to the page the guard or a 401 took the person from
+              this.router.navigateByUrl(
+                safeReturnUrl(
+                  this.route.snapshot.queryParamMap.get('returnUrl'),
+                ),
+              );
             }
           },
           err: error => this.errorMessage.set(signInErrorMessage(error)),

@@ -52,6 +52,7 @@ export const routes: Routes = [
       {
         path: 'create',
         title: 'Create game',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/game-edit').then(c => c.GameFormPageComponent),
       },
