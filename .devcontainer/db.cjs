@@ -19,24 +19,31 @@ function readEnv() {
     }
   }
   return {
-    url: process.env.DATABASE_URL || env.DATABASE_URL || 'mongodb://mongodb:27017',
+    url:
+      process.env.DATABASE_URL || env.DATABASE_URL || 'mongodb://mongodb:27017',
     db: process.env.DATABASE_DB || env.DATABASE_DB || 'sfl',
   };
 }
 
 async function connect() {
   const { url, db } = readEnv();
-  await mongoose.connect(`${url}/${db}`);
+  await mongoose.connect(url, { dbName: db });
   return { db: mongoose.connection.db, dbName: db };
 }
 
 function run(main) {
   main()
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
       process.exitCode = 1;
     })
     .finally(() => mongoose.disconnect());
 }
 
-module.exports = { ROOT, mongoose, EJSON: mongoose.mongo.BSON.EJSON, connect, run };
+module.exports = {
+  ROOT,
+  mongoose,
+  EJSON: mongoose.mongo.BSON.EJSON,
+  connect,
+  run,
+};

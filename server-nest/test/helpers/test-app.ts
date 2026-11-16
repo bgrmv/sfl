@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import { Model } from 'mongoose';
 import request from 'supertest';
 
@@ -17,7 +17,7 @@ export const TEST_REFRESH_SECRET = 'test-refresh-secret-at-least-32-characters';
 
 export interface TestApp {
   app: INestApplication;
-  mongo: MongoMemoryServer;
+  mongo: MongoMemoryReplSet;
   /** Access token of a user who signed in through POST /rest/auth/sign-in. */
   token: string;
   /** Access token of a plain USER (no admin rights). */
@@ -35,14 +35,16 @@ export interface TestApp {
 export async function createTestApp(
   env: Record<string, string> = {},
 ): Promise<TestApp> {
+  // A one-node replica set, as in dev and prod (ADR 0014): transactions need it.
   // A small cache: the default one is half of the memory of the machine, per mongod
-  const mongo = await MongoMemoryServer.create({
-    instance: { args: ['--wiredTigerCacheSizeGB', '0.25'] },
+  const mongo = await MongoMemoryReplSet.create({
+    replSet: { count: 1 },
+    instanceOpts: [{ args: ['--wiredTigerCacheSizeGB', '0.25'] }],
   });
 
   Object.assign(process.env, {
     STAGE: 'test',
-    DATABASE_URL: mongo.getUri().replace(/\/$/, ''),
+    DATABASE_URL: mongo.getUri(),
     DATABASE_DB: 'sfl-test',
     PORT: '0',
     CLIENT_HOSTNAME: 'http://localhost',

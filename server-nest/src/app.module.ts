@@ -37,7 +37,6 @@ import { FileLoggerService } from './shared/services/logger.service';
       useFactory: async (configService: ConfigService) => {
         const url = configService.getOrThrow<string>('DATABASE_URL');
         const dbName = configService.getOrThrow<string>('DATABASE_DB');
-        const mongodb = `${url}/${dbName}`;
 
         // Host only: the URL itself may contain the user name and password
         new Logger('Database').log(
@@ -45,7 +44,9 @@ import { FileLoggerService } from './shared/services/logger.service';
         );
 
         return {
-          uri: mongodb,
+          // dbName as an option: the URL may carry a query (replicaSet=rs0)
+          uri: url,
+          dbName,
         };
       },
       inject: [ConfigService],

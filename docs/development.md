@@ -59,6 +59,8 @@ Needed after changes in `.devcontainer/` (compose, features, `post-create.sh`). 
 
 The image is built from [.devcontainer/Dockerfile](../.devcontainer/Dockerfile): the Microsoft base image ships an old Node 22, so the Dockerfile installs a pinned Node (checksum verified). Angular CLI 22 needs `engines.node` of the root `package.json`; if the container has an older Node, `post-create.sh` stops with a hint. To bump Node, change `NODE_VERSION` and both checksums in the Dockerfile, then rebuild.
 
+MongoDB runs as a one-node replica set `rs0` ([ADR 0014](adr/0014-mongodb-replica-set.md)): the `mongodb` service starts with `--replSet rs0`, its healthcheck runs `rs.initiate()` on the first start and reports healthy only when the node is PRIMARY. After pulling this change recreate the service on the host (`docker compose -p sfl-dev up -d mongodb`); the data volume is kept. `DATABASE_URL` in the new `server-nest.env` has `?replicaSet=rs0`; an existing `server-nest/.env` without it keeps working. Server tests use `MongoMemoryReplSet`. For the VPS use the same image and the same `--replSet rs0` flags.
+
 Volumes are kept: the database, `node_modules`, the pnpm store and the Claude login. Leave `sfl-dev-mongodb-1` as is.
 
 Not everything needs a rebuild:
