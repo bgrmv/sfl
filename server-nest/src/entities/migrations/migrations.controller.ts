@@ -1,11 +1,14 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
+  ApiBody,
   ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
+import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
+import { z } from 'zod';
 import { Player } from '../players';
 import { MigrationsService } from './migrations.service';
 
@@ -22,6 +25,14 @@ export class PlayerCreationDTO {
   };
 }
 
+// Dry run by default: the run writes only with an explicit `apply: true`.
+// `.strict()`: a typo in a key is a 400, not a silent dry run
+export const RecalculateGamesDTO = z
+  .object({ apply: z.boolean().default(false) })
+  .strict();
+// A request without a body is a valid dry run
+export const RecalculateGamesBody = RecalculateGamesDTO.prefault({});
+
 @ApiTags('migrations')
 @Controller('migrations')
 export class MigrationsController {
@@ -36,5 +47,26 @@ export class MigrationsController {
   @Post('convert-players-user-to-uuid')
   async getPlayersSeasonsTotalPoints(): Promise<Player[]> {
     return await this.migrationsService.convertPlayerUserToUUID();
+  }
+
+  // S3.14. Writes only with `apply: true`; ADMIN only by default
+  @Post('recalculate-games')
+  @ApiBody({
+    required: false,
+    schema: {
+      type: 'object',
+      properties: { apply: { type: 'boolean', default: false } },
+    },
+  })
+  @ApiOkResponse({
+    description:
+      'How many games and players are (would be) changed, the skipped games with the reason and the failed batches',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid body' })
+  async recalculateGames(
+    @Body(new ZodValidationPipe(RecalculateGamesBody))
+    body: z.output<typeof RecalculateGamesDTO>,
+  ) {
+    return await this.migrationsService.recalculateGames(body);
   }
 }

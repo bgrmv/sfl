@@ -120,6 +120,12 @@ const CLOSED: Case[] = [
     path: () => '/migrations/convert-players-user-to-uuid',
   },
   {
+    name: 'POST /migrations/recalculate-games',
+    method: 'post',
+    path: () => '/migrations/recalculate-games',
+    body: () => ({ apply: false }),
+  },
+  {
     name: 'POST /users/:id/password',
     method: 'post',
     path: t => `/users/${t.userId}/password`,

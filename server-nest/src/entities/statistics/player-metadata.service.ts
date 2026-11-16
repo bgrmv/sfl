@@ -46,6 +46,12 @@ export interface SeasonVerificationReport {
   differences: { playerId: string; differences: MetadataDifference[] }[];
 }
 
+/** What a game would be after a planned (not yet written) change, S3.14. */
+export type GameOverrides = Map<
+  string,
+  { status?: EnumGameStatus; metadata?: IGameMetadata }
+>;
+
 const MAX_REPAIR_ATTEMPTS = 3;
 
 class SeasonChangedError extends Error {}
@@ -229,15 +235,29 @@ export class PlayerMetadataService {
    */
   async calculateSeasonFromScratch(
     season: number,
+    overrides?: GameOverrides,
   ): Promise<Map<string, IPlayerMetadata>> {
-    const games = await this.gameModel
+    // With planned changes the status is not in the filter: every game is read
+    const found = await this.gameModel
       .find(
-        { season, status: EnumGameStatus.Published },
-        { number: 1, metadata: 1 },
+        overrides ? { season } : { season, status: EnumGameStatus.Published },
+        { number: 1, metadata: 1, status: 1 },
       )
       .sort({ number: 1 })
       .lean()
       .exec();
+    const games = overrides
+      ? found
+          .map(game => {
+            const planned = overrides.get(String(game._id));
+            return {
+              ...game,
+              status: planned?.status ?? game.status,
+              metadata: planned?.metadata ?? game.metadata,
+            };
+          })
+          .filter(game => game.status === EnumGameStatus.Published)
+      : found;
 
     const result = new Map<string, IPlayerMetadata>();
     for (const game of games) {
@@ -266,10 +286,14 @@ export class PlayerMetadataService {
   async verifySeason(
     season: number,
     apply = false,
+    overrides?: GameOverrides,
   ): Promise<SeasonVerificationReport> {
     for (let attempt = 1; attempt <= MAX_REPAIR_ATTEMPTS; attempt++) {
       const fingerprint = await this.seasonFingerprint(season);
-      const calculated = await this.calculateSeasonFromScratch(season);
+      const calculated = await this.calculateSeasonFromScratch(
+        season,
+        overrides,
+      );
       const playerIds = await this.findSeasonPlayerIds(season);
       const players = await this.playerModel
         .find({ _id: { $in: playerIds } }, { metadata: 1 })

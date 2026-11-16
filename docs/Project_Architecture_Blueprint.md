@@ -64,12 +64,12 @@ flowchart LR
 
 Клиент организован по слоям, похожим на Feature-Sliced Design. Алиасы путей: `@entities/*`, `@shared/*`, `@features/*`, `@pages/*`.
 
-| Слой        | Назначение                                    | Примеры                                                 |
-| ----------- | --------------------------------------------- | ------------------------------------------------------- |
-| `pages/`    | Страницы верхнего уровня                      | `home`, `sign-in-page`, `captains-page`                 |
-| `features/` | Пользовательские сценарии                     | `games-table`, `players-toggle`, `captains-selection`   |
-| `entities/` | Доменные модули: API, store, компоненты, типы | `games`, `players`, `captains`, `teams`, `charts`       |
-| `shared/`   | Инфраструктура и переиспользуемое             | `api/http.service.ts`, `auth/jwt.interceptor.ts`, `ui/` |
+| Слой        | Назначение                                    | Примеры                                                                                  |
+| ----------- | --------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `pages/`    | Страницы верхнего уровня                      | `home`, `sign-in-page`, `captains-page`                                                  |
+| `features/` | Пользовательские сценарии                     | `games-table`, `players-toggle`, `captains-selection`                                    |
+| `entities/` | Доменные модули: API, store, компоненты, типы | `games`, `players`, `captains`, `teams`, `charts`                                        |
+| `shared/`   | Инфраструктура и переиспользуемое             | `api/http.service.ts`, `api/http-error.interceptor.ts`, `auth/jwt.interceptor.ts`, `ui/` |
 
 В `entities/<name>/` обычно есть `routes.ts`, `services/`, `store/`, `components/`, `pages/`, `types.ts`, `index.ts` (публичный API модуля).
 
@@ -110,7 +110,8 @@ server-nest/src/
 
 - **Маршрутизация** — [client/src/app/app.routes.ts](../client/src/app/app.routes.ts). Корневые маршруты: `''`, `home`, `sign-in`. Далее подключаются `PLAYERS_ROUTES` и `GAMES_ROUTES` из модулей `entities`. Ленивая загрузка через `loadComponent`.
 - **HTTP** — [client/src/shared/api/http.service.ts](../client/src/shared/api/http.service.ts). Обёртка над `HttpClient`, базовый URL берётся из `environment.API_KEY` (строка `https://sfl.com:3001/rest`; имя поля вводит в заблуждение, это URL, а не ключ).
-- **Авторизация на клиенте** — [client/src/shared/auth/jwt.interceptor.ts](../client/src/shared/auth/jwt.interceptor.ts). Берёт `accessToken` из `localStorage`, добавляет заголовок `Authorization: Bearer ...` и включает `withCredentials: true` (нужно для cookie `refreshToken`).
+- **Авторизация на клиенте** — [client/src/shared/auth/jwt.interceptor.ts](../client/src/shared/auth/jwt.interceptor.ts). Берёт `accessToken` из памяти (`AccessTokenStore`, не из `localStorage`, S8.12), добавляет заголовок `Authorization: Bearer ...` и включает `withCredentials: true` (нужно для cookie `refreshToken`).
+- **Ошибки и сессия на клиенте** (S3.10) — [http-error.interceptor.ts](../client/src/shared/api/http-error.interceptor.ts) стоит первым среди интерцепторов: сеть и `5xx` показывает уведомлением (Material snackbar через `injectNotifier`), `401` вне `/auth/*` ведёт на `/sign-in?returnUrl=...`, после входа клиент возвращается на исходную страницу. [GlobalErrorHandler](../client/src/shared/api/global-error-handler.ts) ловит необработанные исключения. Сторы не дублируют уведомления о сети и `5xx` (`isGlobalApiError`). Маршруты создания и правки матча закрыты `authGuard` (`app/admin.guard.ts`), просмотр игроков и матчей публичный.
 - **Состояние** — два подхода одновременно:
   - `@ngrx/signals` `signalStore` с `withEntities`: [client/src/entities/game/model/games.store.ts](../client/src/entities/game/model/games.store.ts), а форма матча — `client/src/features/game-edit/model/` (`players.feature.ts`, `teams.feature.ts`, `statistics.feature.ts`, `new-game.store.ts`).
   - `@ngrx/store` подключён в [client/src/app/app.config.ts](../client/src/app/app.config.ts) через `provideStore()` без редьюсеров. Фактически используется в основном для devtools.
@@ -277,7 +278,7 @@ sequenceDiagram
 
 ### 7.3. Пересчёт статистики сезона
 
-Сохранение, обновление и удаление матча (одна транзакция, S3.5) вычитают вклад старой версии матча и прибавляют вклад новой только у затронутых игроков: суммы и рейтинги через `applyGame`/`revertGame` из `@sfl/domain`, списки матчей и серии пересобираются по лёгкой выборке матчей игрока, карьера — из сезонов (`PlayerMetadataService.applyGameChange`, [ADR 0017](adr/0017-incremental-player-statistics.md)). `POST /rest/players/recalculate/season/full` с `{ seasonId, apply }` считает сезон заново без сессии, сравнивает с хранимым и возвращает отчёт о расхождениях; запись только при `apply: true`, одним `bulkWrite` в короткой транзакции (карьера пересчитывается внутри неё из актуальных сезонов). **Runbook:** без `apply` эндпоинт только отчёт, раньше он писал; чтобы исправить хранимое, повторите вызов с `apply: true`. Ниже описан прежний ручной пересчёт `recalculate/season` (по списку игроков), он остаётся.
+Сохранение, обновление и удаление матча (одна транзакция, S3.5) вычитают вклад старой версии матча и прибавляют вклад новой только у затронутых игроков: суммы и рейтинги через `applyGame`/`revertGame` из `@sfl/domain`, списки матчей и серии пересобираются по лёгкой выборке матчей игрока, карьера — из сезонов (`PlayerMetadataService.applyGameChange`, [ADR 0017](adr/0017-incremental-player-statistics.md)). `POST /rest/players/recalculate/season/full` с `{ seasonId, apply }` считает сезон заново без сессии, сравнивает с хранимым и возвращает отчёт о расхождениях; запись только при `apply: true`, одним `bulkWrite` в короткой транзакции (карьера пересчитывается внутри неё из актуальных сезонов). **Runbook:** без `apply` эндпоинт только отчёт, раньше он писал; чтобы исправить хранимое, повторите вызов с `apply: true`. `POST /rest/migrations/recalculate-games` (S3.14, только `ADMIN`; тело `{ apply }`, строго: лишний ключ даёт 400; по умолчанию сухой прогон, запись только при `apply: true`, query-параметров нет) пересчитывает сохранённые метаданные каждого матча чистыми функциями `@sfl/domain`, пишет изменённые матчи пачками по 10 в коротких транзакциях, затем по каждому сезону запускает проверку `verifySeason(..., apply)` (итоги сезона и карьеры). Матч, не прошедший правила (`CAPTAINS_COUNT`, `UNKNOWN_TEAM`, `MISSING_POSITION` у опубликованного, `INVALID_GAME` без массива статистики), идёт в `skipped` с причиной и не прерывает запуск; сорвавшиеся пачки записи — в `failedBatches` (если не записалась ни одна, ответ 500). Статусы матчей миграция не меняет (GLOSSARY, ADR 0015). Ниже описан прежний ручной пересчёт `recalculate/season` (по списку игроков), он остаётся.
 
 Запускается вручную: `GET /rest/players/recalculate/season?seasonId=...&playerIds=...`. Сервис обходит игроков через `forEach(async ...)` без ожидания промисов (см. раздел 12).
 
