@@ -2,7 +2,7 @@
 //
 // The anonymized snapshot of the league (`pnpm exec node ../.devcontainer/anonymize-dump.cjs`,
 // see S11.2) is loaded into an in-memory MongoDB, the metadata of every game and
-// player is calculated again by the real code path (GamesService + PlayersService),
+// player is calculated again by the real code path (GamesService + PlayerMetadataService),
 // and the result is compared twice:
 //   1. with the metadata stored in the dump: it was written by the code of that
 //      time, so differences show what a fix changed (printed, not asserted);

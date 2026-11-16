@@ -14,7 +14,7 @@ import {
 } from '@sfl/domain';
 import { Model } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
-import { PlayersService } from '../players';
+import { PlayerMetadataService } from '../statistics';
 import {
   Game,
   IGame,
@@ -28,7 +28,7 @@ export class GamesService {
     @InjectModel(Game.name)
     private readonly gameModel: Model<IGame>,
 
-    private readonly playersService: PlayersService,
+    private readonly playerMetadata: PlayerMetadataService,
 
     private readonly logger: FileLoggerService,
   ) {}
@@ -140,7 +140,7 @@ export class GamesService {
       throw new NotFoundException('Game is not found');
     }
 
-    await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
+    await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
       game.season,
       game.statistics.map(s => s.playerId.toString()),
     );
@@ -169,7 +169,7 @@ export class GamesService {
       )
       .exec();
 
-    await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
+    await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
       game.season,
       game.statistics.map(s => s.playerId.toString()),
     );

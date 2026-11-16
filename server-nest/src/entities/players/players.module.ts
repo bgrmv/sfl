@@ -1,8 +1,8 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import { Game, GameSchema } from '../games';
-import { GamesModule } from '../games/games.module';
+import { StatisticsModule } from '../statistics';
 import { User, UserSchema } from '../users';
 import { UsersService } from '../users/users.service';
 import { PlayersController } from './players.controller';
@@ -11,7 +11,7 @@ import { PlayersService } from './players.service';
 
 @Module({
   imports: [
-    forwardRef(() => GamesModule),
+    StatisticsModule,
     MongooseModule.forFeature([
       {
         name: User.name,

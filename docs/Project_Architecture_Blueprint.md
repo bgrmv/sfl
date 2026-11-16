@@ -167,8 +167,7 @@ flowchart TB
 
 **Правила на сервере:**
 
-- Модуль `GamesModule` импортирует `PlayersModule` через `forwardRef`. Это циклическая зависимость между `games` и `players`. Её нужно учитывать при рефакторинге.
-- `PlayersService` дублируется в провайдерах `GamesModule` (см. [server-nest/src/entities/game/games.module.ts](../server-nest/src/entities/game/games.module.ts)). Это может создавать второй экземпляр сервиса.
+- `GamesModule` и `PlayersModule` не зависят друг от друга: пересчёт метаданных игроков вынесен в `PlayerMetadataService` модуля `StatisticsModule` (`server-nest/src/entities/statistics/`), от которого зависят оба (S3.3). `PlayersService` объявлен только в `PlayersModule`.
 
 ---
 
@@ -382,7 +381,7 @@ export const CreateTeamSchema = v.object({
 
 ### Средние
 
-9. **Дублирование `PlayersService`** в провайдерах `GamesModule` и модуле `players` (см. раздел 4).
+9. ~~Дублирование `PlayersService` в `GamesModule`~~ — устранено в S3.3 (см. раздел 4).
 10. **Легаси-сервер `server/` с заглушками.** Маршруты `games` возвращают ничего, часть кода использует синтаксис TypeORM (`findOne({where: ...})`) на Mongoose-моделях ([auth.middleware.ts](../server/src/app/middlewares/auth.middleware.ts)). Он может ввести в заблуждение.
 11. **Контроллеры отдают ответ через `@Res()`.** Обходит глобальные интерцепторы и сериализацию Nest, усложняет тестирование.
 12. **Имя поля `API_KEY`** в клиентском [environment.ts](../client/src/environments/environment.ts) содержит URL, а сам адрес `https://sfl.com:3001/rest` захардкожен в коде. Прод-адрес `https://sfl-backend.azurewebsites.net/rest` тоже захардкожен в `environment.prod.ts`.

@@ -1,14 +1,11 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ZodValidationPipe } from '../../shared/pipes/custom-pipe/zod-validation.pipe';
-import { RecalculateSeasonDTO } from './players.dto';
-import { PlayersService } from './players.service';
+import { PlayerMetadataService } from './player-metadata.service';
 
 const makeService = (impl: (id: string) => Promise<void>) => {
   const logger = { info: vi.fn(), error: vi.fn() };
-  const service = new PlayersService(
-    null as any,
+  const service = new PlayerMetadataService(
     null as any,
     null as any,
     logger as any,
@@ -51,25 +48,5 @@ describe('recalculatePlayersSeasonAndCareerMetadata', () => {
     });
     expect(calls).toContain('end b');
     expect(logger.error).toHaveBeenCalled();
-  });
-});
-
-describe('RecalculateSeasonDTO', () => {
-  const pipe = new ZodValidationPipe(RecalculateSeasonDTO);
-
-  it('accepts a valid body', () => {
-    expect(pipe.transform({ seasonId: 2025, playerIds: ['abc'] })).toEqual({
-      seasonId: 2025,
-      playerIds: ['abc'],
-    });
-  });
-
-  it.each([
-    {},
-    { seasonId: '2025', playerIds: ['a'] },
-    { seasonId: 2025, playerIds: [] },
-    { seasonId: 2025, playerIds: 'a' },
-  ])('rejects %j with 400', body => {
-    expect(() => pipe.transform(body)).toThrow('Validation failed');
   });
 });

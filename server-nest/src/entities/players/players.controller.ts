@@ -40,6 +40,7 @@ import { FileLoggerService } from '../../shared/services/logger.service';
 import { UsersService } from '../users/users.service';
 import { isAdmin, presentPlayer } from './utils/present-player';
 import { Player } from './players.schema';
+import { PlayerMetadataService } from '../statistics';
 import { PlayersService } from './players.service';
 
 export class PlayerCreationDTO {
@@ -70,6 +71,7 @@ export class PlayersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly playersService: PlayersService,
+    private readonly playerMetadata: PlayerMetadataService,
     private readonly logger: FileLoggerService,
   ) {}
 
@@ -215,7 +217,7 @@ export class PlayersController {
       playerIds,
     });
 
-    await this.playersService.recalculatePlayersSeasonAndCareerMetadata(
+    await this.playerMetadata.recalculatePlayersSeasonAndCareerMetadata(
       seasonId,
       playerIds,
     );
