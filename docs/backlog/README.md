@@ -189,7 +189,7 @@ flowchart LR
 |   ❌   | [S3.14](E03-architecture/S3.14.md) | Пересчёт метаданных всех матчей после исправления расчёта       |    P2     |   S    | [S3.11](E03-architecture/S3.11.md)                                          |
 |   ❌   | [S3.15](E03-architecture/S3.15.md) | Перейти на zoneless и убрать zone.js                            |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
 |   ❌   | [S3.16](E03-architecture/S3.16.md) | Signal forms: пилот на одной форме                              |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
-|   ❌   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                            |
+|   ✅   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                            |
 |   ❌   | [S3.18](E03-architecture/S3.18.md) | Реактивность клиента по практикам Angular 22                    |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
 |   ❌   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
 |   ✅   | [S3.20](E03-architecture/S3.20.md) | Убрать вызовы клиента к несуществующим маршрутам API            |    P1     |   S    | —                                                                           |

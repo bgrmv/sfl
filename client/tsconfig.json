@@ -27,9 +27,8 @@
       "@config/*": ["src/config/*"],
       "@shared/*": ["src/shared/*"],
       "@entities/*": ["src/entities/*"],
-      "@features": ["src/features/index"],
-      "@widgets": ["src/widgets/index"],
-      "@pages": ["src/pages/index"],
+      "@features/*": ["src/features/*"],
+      "@pages/*": ["src/pages/*"],
       "@app/*": ["src/app/*"]
     }
   },

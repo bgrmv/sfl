@@ -1,0 +1,80 @@
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { TChosenPlayer } from '../model/player';
+
+@Component({
+  selector: 'sfl-player-stats-card',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [MatCardModule],
+  styles: [
+    `
+      :host.active {
+        & .player-card__stats {
+          background: aquamarine;
+        }
+      }
+
+      :host.odd {
+        box-shadow: 2px 0 2px 2px #ccc;
+        width: 100%;
+      }
+
+      .player-card {
+        width: 100%;
+        & img {
+          max-width: 100%;
+        }
+
+        &.player-card__stats {
+          &:hover {
+            cursor: pointer;
+            background: aquamarine;
+            color: white;
+            z-index: 1;
+          }
+        }
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: `
+    <mat-card class="player-card player-card__stats">
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>
+            {{ player.nickname }}
+            @if (player?.team) {
+              <span>({{ player.team }})</span>
+            }
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ player.nickname }}
+          </mat-card-subtitle>
+          <img
+            mat-card-avatar
+            src="https://picsum.photos/id/{{ player.avatar }}/200/300"
+            alt="Photo of a Shiba Inu"
+          />
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Draws: {{ player.draws }}</p>
+        <p>Won Games:{{ player.wonGames }}</p>
+        <p>Lost Games: {{ player.lostGames }}</p>
+        <p>Max Win Streak: {{ player.maxWinStreak }}</p>
+        <p>Max Lost Strek: {{ player.maxLostStreak }}</p>
+
+        <!-- Ng-content -->
+        <ng-content />
+      </mat-card-content>
+    </mat-card>
+  `,
+})
+export class PlayerStatsCardComponent {
+  @Input({ required: true }) player!: TChosenPlayer;
+}

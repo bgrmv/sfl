@@ -23,8 +23,37 @@ module.exports = tseslint.config(
         { type: 'element', prefix: 'sfl', style: 'kebab-case' },
       ],
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'always' }],
-      '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
+      '@typescript-eslint/no-empty-object-type': [
+        'error',
+        { allowInterfaces: 'always' },
+      ],
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        { allowShortCircuit: true, allowTernary: true },
+      ],
+      // FSD: a slice is imported only through its index.ts (S3.17); `@x` is the entities cross-import (ADR 0016)
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@entities/*/*', '!@entities/*/@x', '!@entities/*/@x/*'],
+              message:
+                'Import a slice only through its index.ts: @entities/<slice>.',
+            },
+            {
+              group: ['@features/*/*'],
+              message:
+                'Import a slice only through its index.ts: @features/<slice>.',
+            },
+            {
+              group: ['@pages/*/*'],
+              message:
+                'Import a slice only through its index.ts: @pages/<slice>.',
+            },
+          ],
+        },
+      ],
       // Angular 22 включает OnPush по умолчанию; миграция выставила Eager у существующих
       // компонентов, переход на OnPush — отдельная работа (S12.3)
       '@angular-eslint/prefer-on-push-component-change-detection': 'off',

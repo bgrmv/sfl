@@ -1,0 +1,56 @@
+<mat-form-field>
+  <mat-label>Players</mat-label>
+
+  <!-- Chips -->
+  <mat-chip-grid #chipGrid>
+    @for (option of chips(); track option.id) {
+      <mat-chip-row
+        (removed)="remove(option.id)"
+        [value]="option"
+      >
+        {{ option.nickname }}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+  </mat-chip-grid>
+
+  <!-- Search -->
+  <input
+    placeholder="Enter a player nickname, surname, name or number"
+    [matChipInputFor]="chipGrid"
+    [matAutocomplete]="auto"
+    [value]="query()"
+    (input)="query.set($any($event).target!.value)"
+    autocomplete="off"
+  />
+
+  <!-- Autocomplete (dropdown) -->
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-selection-list (selectionChange)="onSelect($event)">
+      @for (option of filteredOptions(); track option.id; let last = $last) {
+        <mat-list-option
+          [selected]="option.selected"
+          [value]="option"
+        >
+          {{ option.nickname }}
+        </mat-list-option>
+
+        @if (!last) {
+          <mat-divider />
+        }
+      }
+      <mat-option [style.display]="'none'" />
+    </mat-selection-list>
+
+    <div class="mat-autocomplete-footer">
+      <button
+        mat-raised-button
+        (click)="createRequested.emit()"
+      >
+        Create player
+      </button>
+    </div>
+  </mat-autocomplete>
+</mat-form-field>

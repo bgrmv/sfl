@@ -62,12 +62,11 @@ flowchart LR
 
 ### 2.2. Внутренний паттерн клиента
 
-Клиент организован по слоям, похожим на Feature-Sliced Design. Алиасы путей: `@entities/*`, `@shared/*`, `@features/*`, `@widgets/*`.
+Клиент организован по слоям, похожим на Feature-Sliced Design. Алиасы путей: `@entities/*`, `@shared/*`, `@features/*`, `@pages/*`.
 
 | Слой        | Назначение                                    | Примеры                                                              |
 | ----------- | --------------------------------------------- | -------------------------------------------------------------------- |
 | `pages/`    | Страницы верхнего уровня                      | `home`, `sign-in-page`, `captains-page`                              |
-| `widgets/`  | Крупные составные блоки                       | `players-admin-widget`, `captains-admin-widget`                      |
 | `features/` | Пользовательские сценарии                     | `games-table`, `players-toggle`, `captains-selection`                |
 | `entities/` | Доменные модули: API, store, компоненты, типы | `games`, `players`, `captains`, `teams`, `charts`                    |
 | `shared/`   | Инфраструктура и переиспользуемое             | `services/http.service.ts`, `interceptors/jwt.interceptor.ts`, `ui/` |
@@ -101,7 +100,7 @@ server-nest/src/
     └── utils/string.ts         # hash() (SHA-512)
 ```
 
-Сервисы работают с моделями Mongoose напрямую, отдельного слоя репозиториев нет. Вычисляемые метаданные игроков и матчей (рейтинговая система, очки, MVP) считаются в утилитах [server-nest/src/entities/players/utils/](../server-nest/src/entities/players/utils/) и сохраняются в документах.
+Сервисы работают с моделями Mongoose напрямую, отдельного слоя репозиториев нет. Вычисляемые метаданные игроков и матчей (рейтинговая система, очки, MVP) считаются в утилитах [server-nest/src/entities/player/utils/](../server-nest/src/entities/player/utils/) и сохраняются в документах.
 
 ---
 
@@ -113,9 +112,9 @@ server-nest/src/
 - **HTTP** — [client/src/shared/services/http.service.ts](../client/src/shared/services/http.service.ts). Обёртка над `HttpClient`, базовый URL берётся из `environment.API_KEY` (строка `https://sfl.com:3001/rest`; имя поля вводит в заблуждение, это URL, а не ключ).
 - **Авторизация на клиенте** — [client/src/shared/interceptors/jwt.interceptor.ts](../client/src/shared/interceptors/jwt.interceptor.ts). Берёт `accessToken` из `localStorage`, добавляет заголовок `Authorization: Bearer ...` и включает `withCredentials: true` (нужно для cookie `refreshToken`).
 - **Состояние** — два подхода одновременно:
-  - `@ngrx/signals` `signalStore` с `withEntities`: [client/src/entities/games/store/games.store.ts](../client/src/entities/games/store/games.store.ts), а также `players.feature.ts`, `teams.feature.ts`, `statistics.feature.ts`, `new-game.store.ts`.
+  - `@ngrx/signals` `signalStore` с `withEntities`: [client/src/entities/game/model/games.store.ts](../client/src/entities/game/model/games.store.ts), а форма матча — `client/src/features/game-edit/model/` (`players.feature.ts`, `teams.feature.ts`, `statistics.feature.ts`, `new-game.store.ts`).
   - `@ngrx/store` подключён в [client/src/app/app.config.ts](../client/src/app/app.config.ts) через `provideStore()` без редьюсеров. Фактически используется в основном для devtools.
-- **Графики** — Highcharts через `highcharts-angular`, сервис [client/src/entities/charts/charts.service.ts](../client/src/entities/charts/charts.service.ts).
+- **Графики** — Highcharts через `highcharts-angular`, сервис [client/src/pages/home/api/charts.service.ts](../client/src/pages/home/api/charts.service.ts).
 
 ### 3.2. API (server-nest)
 
@@ -146,7 +145,7 @@ server-nest/src/
 ```mermaid
 flowchart TB
   subgraph Client
-    P[pages] --> W[widgets] --> F[features] --> E[entities]
+    P[pages] --> F[features] --> E[entities]
     E --> S[shared]
     F --> S
   end
@@ -163,13 +162,13 @@ flowchart TB
 
 **Правила зависимостей на клиенте** (соблюдаются по структуре папок, автоматической проверки не найдено):
 
-- `pages` → `widgets` → `features` → `entities` → `shared`.
-- `shared` не импортирует из `entities`, `features`, `widgets`, `pages`.
+- `pages` → `features` → `entities` → `shared`.
+- `shared` не импортирует из `entities`, `features`, `pages`.
 
 **Правила на сервере:**
 
 - Модуль `GamesModule` импортирует `PlayersModule` через `forwardRef`. Это циклическая зависимость между `games` и `players`. Её нужно учитывать при рефакторинге.
-- `PlayersService` дублируется в провайдерах `GamesModule` (см. [server-nest/src/entities/games/games.module.ts](../server-nest/src/entities/games/games.module.ts)). Это может создавать второй экземпляр сервиса.
+- `PlayersService` дублируется в провайдерах `GamesModule` (см. [server-nest/src/entities/game/games.module.ts](../server-nest/src/entities/game/games.module.ts)). Это может создавать второй экземпляр сервиса.
 
 ---
 
@@ -177,13 +176,13 @@ flowchart TB
 
 Коллекции MongoDB (по схемам Mongoose):
 
-| Коллекция | Файл схемы                                                                 | Заметки                                                                            |
-| --------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `users`   | [users.schema.ts](../server-nest/src/entities/users/users.schema.ts)       | Поле `password` — хеш SHA-512 без соли. Скрывается в `toJSON`                      |
-| `roles`   | [roles.schema.ts](../server-nest/src/entities/roles/roles.schema.ts)       | Модель есть, RBAC не применяется (см. TODO в [README.md](../README.md))            |
-| `players` | [players.schema.ts](../server-nest/src/entities/players/players.schema.ts) | Ссылка на `user`, сезонная и карьерная статистика, рейтинговые поля                |
-| `games`   | [game.schema.ts](../server-nest/src/entities/games/game.schema.ts)         | Участники (`IPlayerStatistic`), метаданные матча (`IGameMetadata`), ошибки расчёта |
-| `teams`   | [team.schema.ts](../server-nest/src/entities/teams/team.schema.ts)         | Команды матча                                                                      |
+| Коллекция | Файл схемы                                                                | Заметки                                                                            |
+| --------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `users`   | [users.schema.ts](../server-nest/src/entities/users/users.schema.ts)      | Поле `password` — хеш SHA-512 без соли. Скрывается в `toJSON`                      |
+| `roles`   | [roles.schema.ts](../server-nest/src/entities/roles/roles.schema.ts)      | Модель есть, RBAC не применяется (см. TODO в [README.md](../README.md))            |
+| `players` | [players.schema.ts](../server-nest/src/entities/player/players.schema.ts) | Ссылка на `user`, сезонная и карьерная статистика, рейтинговые поля                |
+| `games`   | [game.schema.ts](../server-nest/src/entities/game/game.schema.ts)         | Участники (`IPlayerStatistic`), метаданные матча (`IGameMetadata`), ошибки расчёта |
+| `teams`   | [team.schema.ts](../server-nest/src/entities/team/team.schema.ts)         | Команды матча                                                                      |
 
 **Ключевые связи:**
 
@@ -192,7 +191,7 @@ flowchart TB
 
 **Вычисляемые данные:**
 
-- Метаданные игрока за сезон и карьеру: [player-season-metadata.ts](../server-nest/src/entities/players/utils/player-season-metadata.ts), [player-career-metadata.ts](../server-nest/src/entities/players/utils/player-career-metadata.ts), [player-common-metadata.ts](../server-nest/src/entities/players/utils/player-common-metadata.ts).
+- Метаданные игрока за сезон и карьеру: [player-season-metadata.ts](../server-nest/src/entities/player/utils/player-season-metadata.ts), [player-career-metadata.ts](../server-nest/src/entities/player/utils/player-career-metadata.ts), [player-common-metadata.ts](../server-nest/src/entities/player/utils/player-common-metadata.ts).
 - Метаданные матча: `IGameMetadata` и `IPlayerGameResultMetadata` в `game.schema.ts`.
 - Рейтинговая система (`ancientRatingSystem`: `plusMinus`, `lastResult`, `totalPoints`) считается в `players` и используется в `charts`.
 - Пересчёт запускается вручную через `GET /players/recalculate/season`. Это не фоновая задача.
@@ -235,7 +234,7 @@ flowchart TB
 
 ### 6.6. Тестирование
 
-- **Сервер**: Vitest. Есть unit-тесты только для утилит метаданных игроков ([player-career-metadata.test.ts](../server-nest/src/entities/players/utils/player-career-metadata.test.ts), [player-common-metadata.test.ts](../server-nest/src/entities/players/utils/player-common-metadata.test.ts)). Есть e2e-шаблон [server-nest/test/app.e2e-spec.ts](../server-nest/test/app.e2e-spec.ts), в котором не проверено реальное поведение.
+- **Сервер**: Vitest. Есть unit-тесты только для утилит метаданных игроков ([player-career-metadata.test.ts](../server-nest/src/entities/player/utils/player-career-metadata.test.ts), [player-common-metadata.test.ts](../server-nest/src/entities/player/utils/player-common-metadata.test.ts)). Есть e2e-шаблон [server-nest/test/app.e2e-spec.ts](../server-nest/test/app.e2e-spec.ts), в котором не проверено реальное поведение.
 - **Клиент**: Karma/Jasmine. Около восьми spec-файлов (sign-in, JWT-интерцептор, пайп, часть компонентов players).
 - Покрытие контроллеров и сервисов API практически отсутствует.
 
@@ -378,7 +377,7 @@ export const CreateTeamSchema = v.object({
 4. **Пайп валидации не прерывает запрос.** [valibot-validation.pipe.ts](../server-nest/src/shared/pipes/custom-pipe/valibot-validation.pipe.ts): в `catch` при наличии `issues` функция возвращает `error`, а не выбрасывает его. Контроллер получит объект ошибки как тело запроса, а не `400`.
 5. **Захардкоженная passphrase для SSL.** [main.ts](../server-nest/src/main.ts), `passphrase: 'sfl.com'`. Значение попадает в историю git.
 6. **Состояние меняется через GET.** `GET /rest/players/recalculate/season` пересчитывает и сохраняет статистику. Его можно вызвать ссылкой или через предзагрузку браузера, и он не защищён.
-7. **Асинхронный `forEach`.** [players.service.ts](../server-nest/src/entities/players/players.service.ts), `playerIds.forEach(async ...)`. Ошибки внутри не перехватываются, метод возвращает `void` раньше, чем завершатся пересчёты.
+7. **Асинхронный `forEach`.** [players.service.ts](../server-nest/src/entities/player/players.service.ts), `playerIds.forEach(async ...)`. Ошибки внутри не перехватываются, метод возвращает `void` раньше, чем завершатся пересчёты.
 8. **Access-токен в `localStorage`.** Любой XSS получает токен. Для этого проекта риск снижен отсутствием пользовательского контента, но проблема есть.
 
 ### Средние
@@ -388,7 +387,7 @@ export const CreateTeamSchema = v.object({
 11. **Контроллеры отдают ответ через `@Res()`.** Обходит глобальные интерцепторы и сериализацию Nest, усложняет тестирование.
 12. **Имя поля `API_KEY`** в клиентском [environment.ts](../client/src/environments/environment.ts) содержит URL, а сам адрес `https://sfl.com:3001/rest` захардкожен в коде. Прод-адрес `https://sfl-backend.azurewebsites.net/rest` тоже захардкожен в `environment.prod.ts`.
 13. **Тесты не запускаются в CI.** Регрессии в API не ловятся.
-14. **Транзакции отключены.** В [players.transactions.ts](../server-nest/src/entities/players/players.transactions.ts) код `withTransaction` закомментирован. Обновление нескольких документов при сбое может оставить данные в несогласованном состоянии.
+14. **Транзакции отключены.** В [players.transactions.ts](../server-nest/src/entities/player/players.transactions.ts) код `withTransaction` закомментирован. Обновление нескольких документов при сбое может оставить данные в несогласованном состоянии.
 15. **Много `console.log`** в `server-nest/src` (около 10), в том числе отладочные.
 
 ### Низкие
@@ -397,7 +396,7 @@ export const CreateTeamSchema = v.object({
 17. [server-nest/src/main.ts](../server-nest/src/main.ts) читает сертификаты из `server-nest/ssl/`, а этой папки в репозитории нет. Инструкции по её созданию в README тоже нет, поэтому локальный HTTPS сложно поднять новому разработчику.
 18. Закомментированный код и маршруты в `client/src/app/app.routes.ts` (`new-match`, `captains`).
 19. В git хранится кеш Nx: `client/.nx/cache/*.node`, два бинарника примерно по 9 МБ.
-20. Остатки старого клиента на SolidJS: `index.tsx` в `entities/captains/ui/set-of/` и `shared/ui/players/set-of/` импортируют `solid-js` и `@suid/material`, которых нет в зависимостях.
+20. Остатки старого клиента на SolidJS: `index.tsx` в `entities/captain/ui/set-of/` и `shared/ui/players/set-of/` импортируют `solid-js` и `@suid/material`, которых нет в зависимостях.
 21. Workflow бэкенда использует `actions/upload-artifact@v3` и `download-artifact@v3`, которые GitHub объявил устаревшими.
 22. Расхождение схемы и данных: в `_backups/test.players.json` у игрока поле `userId`, а в текущей схеме — `user`.
 

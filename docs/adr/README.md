@@ -44,3 +44,4 @@
 | [0013](0013-tests-first-then-domain-then-local.md)   | Порядок разработки: тесты, домен, локальное; DDD в мере лиги            | принято |
 | [0014](0014-mongodb-replica-set.md)                  | MongoDB как replica set ради транзакций                                 | принято |
 | [0015](0015-exclusive-match-editing-lease-in-db.md)  | Один матч редактирует один администратор: аренда в базе                 | принято |
+| [0016](0016-client-fsd-layers-and-cross-imports.md)  | Клиент: слои FSD, публичный API слайсов, разрыв кросс-импортов          | принято |

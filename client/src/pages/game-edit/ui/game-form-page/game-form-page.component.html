@@ -1,0 +1,180 @@
+<h1>
+  {{ modeSignal() === 'create' ? 'Create' : 'Edit' }}
+  game
+  {{ formGroup.controls.number.value }}
+  <sup>/ {{ totalWeeks() }}</sup>
+  ({{ playedAt() | date: 'dd/MM/yyyy' }})
+</h1>
+<mat-divider />
+
+<br />
+
+<div class="actions">
+  @switch (modeSignal()) {
+    @case ('create') {
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="formGroup.invalid || !isFormChangedSignal()"
+        (click)="save()"
+      >
+        Save
+      </button>
+    }
+    @case ('edit') {
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="formGroup.invalid || !isFormChangedSignal()"
+        (click)="update()"
+      >
+        Update
+      </button>
+    }
+  }
+
+  @if (gameId()) {
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="delete()"
+      [disabled]="isFormChangedSignal()"
+    >
+      Delete
+    </button>
+  }
+</div>
+
+<form [formGroup]="formGroup">
+  <fieldset class="in-row">
+    <mat-form-field>
+      <mat-label>Season</mat-label>
+      <mat-select formControlName="season">
+        @for (season of seasons(); track season) {
+          <mat-option [value]="season">{{ season }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Number</mat-label>
+      <mat-select formControlName="number">
+        @for (number of numbers(); track number) {
+          <mat-option [value]="number">{{ number }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select
+        formControlName="status"
+        [disabled]="true"
+      >
+        <mat-option [value]="enumGameStatus.New">
+          {{ enumGameStatus.New | uppercase }}
+        </mat-option>
+        <mat-option [value]="enumGameStatus.Published">
+          {{ enumGameStatus.Published | uppercase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </fieldset>
+
+  <mat-accordion
+    class="additional-data"
+    multi
+  >
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Additional data</mat-panel-title>
+        <mat-panel-description>Type link and description</mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <mat-label>Link</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="link"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          type="text"
+          formControlName="description"
+        ></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+  </mat-accordion>
+</form>
+
+@if (!storeLoaded()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (teams(); as teams) {
+  <div
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    class="drag-wrapper row"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (team of teams; let idx = $index; track team.id) {
+      <div
+        class="drag-box"
+        cdkDrag
+      >
+        <h1>
+          {{ team.name | uppercase }}
+          <sup>#{{ idx + 1 }}</sup>
+        </h1>
+
+        <div class="card-team-actions">
+          <button
+            mat-icon-button
+            (click)="swapStatistics()"
+            [disabled]="!swapEnabled() || !!errors().size"
+          >
+            <mat-icon fontIcon="swap_horiz" />
+          </button>
+
+          <button
+            mat-icon-button
+            [disabled]="!!errors().size"
+            cdkDragHandle
+          >
+            <mat-icon fontIcon="drag_handle" />
+          </button>
+        </div>
+
+        @if (modeSignal() === 'create' || modeSignal() === 'edit') {
+          <sfl-game-team-create
+            [idx]="idx"
+            [team]="team"
+          >
+            <sfl-team-players-autocomplete [teamId]="team.id" />
+          </sfl-game-team-create>
+        } @else {
+          Loading or error
+        }
+      </div>
+    }
+  </div>
+} @else {
+  <p>No teams found!</p>
+}
+
+@if (storeLoaded() && errors().size) {
+  <div class="validation-errors">
+    <label for="list">Validations errors:</label>
+    <mat-list role="list">
+      @for (error of errors() | keyvalue; track error.key) {
+        <mat-list-item role="listitem">- {{ error.value }}</mat-list-item>
+      }
+    </mat-list>
+  </div>
+}

@@ -6,14 +6,14 @@
 
 SFL — приложение для любительской футбольной лиги: Angular SPA + NestJS API + MongoDB. Архитектура: [Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md). Стек, методологии (FSD, CQRS) и обязанности: [docs/PROJECT.md](docs/PROJECT.md). Применённые skills: [docs/skills.md](docs/skills.md). План работ: [docs/backlog/README.md](docs/backlog/README.md). Архитектурные решения и причины: [docs/adr/](docs/adr/README.md). Язык и правила лиги (матч, трансфер, система счёта, MVP): [GLOSSARY.md](GLOSSARY.md); меняешь правило расчёта — сначала обнови его там.
 
-| Папка                          | Что это                                                                             |
-| ------------------------------ | ----------------------------------------------------------------------------------- |
-| `client/`                      | Angular SPA (слои FSD: `app`, `pages`, `widgets`, `features`, `entities`, `shared`) |
-| `server-nest/`                 | основной API: NestJS, Mongoose                                                      |
-| `packages/`                    | общие пакеты workspace: `@sfl/schemas` (enum и DTO API для клиента и сервера)       |
-| `docs/backlog/`                | истории по эпикам `E00`–`E12`, статусы в `README.md`                                |
-| `.devcontainer/`               | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md))                     |
-| `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты»                                                 |
+| Папка                          | Что это                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| `client/`                      | Angular SPA (слои FSD: `app`, `pages`, `features`, `entities`, `shared`)      |
+| `server-nest/`                 | основной API: NestJS, Mongoose                                                |
+| `packages/`                    | общие пакеты workspace: `@sfl/schemas` (enum и DTO API для клиента и сервера) |
+| `docs/backlog/`                | истории по эпикам `E00`–`E12`, статусы в `README.md`                          |
+| `.devcontainer/`               | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md))               |
+| `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты»                                           |
 
 Позже появятся `packages/domain`, `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
 
@@ -45,7 +45,7 @@ SFL — приложение для любительской футбольно�
 - **Качество и стандарты.** Решай по лучшим практикам и стандартам высокого качества: официальные руководства фреймворков, RFC, OpenAPI, OWASP, WCAG. Не изобретай своё, когда есть принятый стандарт. Отступаешь от стандарта — запиши причину в ADR или в историю.
 - **Порядок работы: тесты → домен → локальное** ([ADR 0013](docs/adr/0013-tests-first-then-domain-then-local.md)). Сначала тест на поведение, потом правило лиги в чистом TypeScript (`packages/domain`, термины из GLOSSARY.md), потом сторы, контроллеры, компоненты и стили. Код без теста на новое поведение не принимается.
 - Дизайн: основная тема **тёмная**; светлую не делаем до [S10.50](docs/backlog/E10-product-features/S10.50.md) (самая последняя), новые экраны проверяем только в тёмной.
-- Клиент: слои FSD, импорты только «вниз» (`pages` → `widgets` → `features` → `entities` → `shared`). Состояние — `@ngrx/signals`.
+- Клиент: слои FSD, импорты только «вниз» (`pages` → `features` → `entities` → `shared`), слой `widgets` не используем, слайс импортируется только через `index.ts` (проверяет ESLint), решения — [ADR 0016](docs/adr/0016-client-fsd-layers-and-cross-imports.md). Состояние — `@ngrx/signals`.
 - Права: новый серверный маршрут по умолчанию доступен только `ADMIN`; открыть его можно `@Public()` или `@Roles(...)`, и тогда нужна строка в матрице `test/api/access.test.ts` ([docs/PROJECT.md](docs/PROJECT.md), раздел 5.1).
 - Ошибки API: бросай исключения Nest **экземплярами** (`throw new NotFoundException()`), не глотай ошибки в сервисах; формат ответа задаёт глобальный фильтр ([docs/PROJECT.md](docs/PROJECT.md), раздел 5.2).
 - Бэкап прод-базы делает владелец сам (`pnpm backup:prod`, ключ только в переменной окружения), агент прод не трогает: [runbook](docs/runbooks/mongo-backup.md). `pnpm start:dev` лишь предупреждает, если бэкапа нет или он старше 30 дней.
