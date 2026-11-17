@@ -33,4 +33,4 @@
 
 ## Последствия
 
-Остаётся в [S3.17](../backlog/E03-architecture/S3.17.md): слайсы без потребителей (до [S10.8](../backlog/E10-product-features/S10.8.md)) и `TeamEnum` в `shared/constants` (правило лиги). Сервисы auth и http перенесены в `shared/auth` и `shared/api`. Границы слоёв проверяет ESLint ([S3.8](../backlog/E03-architecture/S3.8.md)): импорт только вниз, мимо `index.ts` нельзя, срезы одного слоя не импортируют друг друга (у `entities` исключение `@x`).
+Остаётся в [S3.17](../backlog/E03-architecture/S3.17.md): слайсы без потребителей (до [S10.8](../backlog/E10-product-features/S10.8.md)) и `TeamEnum` в `shared/constants` (правило лиги). Сервисы auth и http перенесены в `shared/auth` и `shared/api`. Границы слоёв проверяет ESLint ([S3.8](../backlog/E03-architecture/S3.8.md)): импорт только вниз, мимо `index.ts` нельзя, срезы одного слоя не импортируют друг друга (у `entities` исключение `@x`). Структуру (одинокие и мёртвые слайсы, имена сегментов) проверяет Steiger, шаг `client:fsd` в `pnpm check`, конфиг `client/steiger.config.mjs` с причинами отключённых правил ([S3.26](../backlog/E03-architecture/S3.26.md)).

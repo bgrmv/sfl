@@ -22,6 +22,7 @@ const STEPS = [
   { id: 'packages:test', cwd: '.', cmd: 'pnpm --filter "./packages/*" run test' },
   { id: 'client:lint', cwd: 'client', cmd: 'node scripts/set-env.mjs && pnpm exec ng lint' },
   { id: 'client:types', cwd: 'client', cmd: 'node scripts/set-env.mjs && pnpm exec tsc --noEmit -p tsconfig.app.json && pnpm exec tsc --noEmit -p tsconfig.spec.json' },
+  { id: 'client:fsd', cwd: 'client', cmd: 'pnpm exec steiger ./src' },
   { id: 'client:test', cwd: 'client', cmd: 'node scripts/set-env.mjs && pnpm exec ng test --watch=false' },
   { id: 'client:build', cwd: 'client', cmd: 'pnpm build:prod' },
   { id: 'server:lint', cwd: 'server-nest', cmd: 'pnpm lint:check' },
