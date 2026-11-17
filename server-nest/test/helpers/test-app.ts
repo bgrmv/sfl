@@ -54,6 +54,7 @@ export async function createTestApp(
     // The limits stay out of the way of the tests; a test of the limit lowers them
     SIGN_IN_LIMIT: '1000',
     API_LIMIT: '100000',
+    COMMENT_LIMIT: '100000',
     ...env,
   });
 

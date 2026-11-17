@@ -75,7 +75,9 @@ export const FEATURES = {
   'game.squads': live('GamesStore + PlayersStore'),
   'game.story': live('GamesStore: description'),
   'game.media': live('MediaService: photos of the game (S10.19)'),
-  'game.comments': dummy('Comments of the game (S10.22)'),
+  'game.comments': live(
+    'CommentsService: approved comments and the form (S10.22)',
+  ),
 
   // ---- players, captains
   'players.ranking': dummy(
@@ -147,7 +149,7 @@ export const FEATURES = {
   'admin.newPlayer': dummy('Create player with the full profile'),
   'admin.connect': dummy('Connect links list, QR (S8.13)'),
   'admin.releases': dummy('Technical releases (S10.51)'),
-  'admin.comments': dummy('Moderation queue (S10.22)'),
+  'admin.comments': live('Moderation queue of comments (S10.22)'),
   'admin.schedule': dummy('Schedule, skipped weeks, transfers (S10.18)'),
   'admin.media': live('Upload, caption, links to a game and a player (S10.19)'),
 } as const satisfies Record<string, FeatureFlag>;

@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { AuthModule } from './entities/auth';
 import { ChartsModule } from './entities/charts/charts.module';
 import { GamesModule } from './entities/games/games.module';
+import { CommentsModule } from './entities/comments/comments.module';
 import { MediaModule } from './entities/media/media.module';
 import { MigrationsModule } from './entities/migrations/migrations.module';
 import { PlayersModule } from './entities/players/players.module';
@@ -76,6 +77,10 @@ import { FileLoggerService } from './shared/services/logger.service';
           const { method, path } = context.switchToHttp().getRequest();
           return method === 'POST' && path.endsWith('/auth/sign-in');
         };
+        const isComment = (context: ExecutionContext) => {
+          const { method, path } = context.switchToHttp().getRequest();
+          return method === 'POST' && path.endsWith('/comments');
+        };
         const email = (req: Record<string, any>) =>
           String(req.body?.email ?? req.ip)
             .trim()
@@ -93,6 +98,12 @@ import { FileLoggerService } from './shared/services/logger.service';
               limit: config.getOrThrow<number>('API_LIMIT'),
               ttl: seconds(config.getOrThrow<number>('API_WINDOW_SEC')),
             },
+            {
+              name: 'comment-ip',
+              limit: config.getOrThrow<number>('COMMENT_LIMIT'),
+              ttl: seconds(config.getOrThrow<number>('COMMENT_WINDOW_SEC')),
+              skipIf: (context: ExecutionContext) => !isComment(context),
+            },
             { ...signIn, name: 'sign-in-ip' },
             { ...signIn, name: 'sign-in-email', getTracker: email },
           ],
@@ -106,6 +117,7 @@ import { FileLoggerService } from './shared/services/logger.service';
     GamesModule,
     TeamsModule,
     MediaModule,
+    CommentsModule,
     ChartsModule,
     MigrationsModule,
   ],

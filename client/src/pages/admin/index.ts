@@ -12,7 +12,7 @@ export {
 } from './ui/admin-players.page';
 export {
   AdminReleasesPageComponent,
-  AdminCommentsPageComponent,
   AdminSchedulePageComponent,
 } from './ui/admin-content.page';
+export { AdminCommentsPageComponent } from './ui/admin-comments.page';
 export { AdminMediaPageComponent } from './ui/admin-media.page';

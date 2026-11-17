@@ -18,6 +18,7 @@ type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
 interface Target {
   gameId: string;
   mediaId: string;
+  commentId: string;
   playerId: string;
   /** A player without games: the only kind that can be deleted. */
   freePlayerId: string;
@@ -135,6 +136,18 @@ const CLOSED: Case[] = [
     body: () => ({ password: 'new-password-1' }),
   },
   { name: 'POST /media', method: 'post', path: () => '/media', upload: true },
+  { name: 'GET /comments/queue', method: 'get', path: () => '/comments/queue' },
+  {
+    name: 'PATCH /comments/:id',
+    method: 'patch',
+    path: t => `/comments/${t.commentId}`,
+    body: () => ({ status: 'approved' }),
+  },
+  {
+    name: 'DELETE /comments/:id',
+    method: 'delete',
+    path: t => `/comments/${t.commentId}`,
+  },
   {
     name: 'PATCH /media/:id',
     method: 'patch',
@@ -172,6 +185,8 @@ const PUBLIC = [
   'GET /charts/top-players',
   'GET /media',
   'GET /media/:id/file',
+  'GET /comments',
+  'POST /comments',
 ];
 
 let gameCounter = 0;
@@ -211,9 +226,16 @@ describe('API: access matrix', () => {
       .set('Authorization', bearer(t))
       .attach('file', PNG, 'a.png');
 
+    const comment = await t.api().post('/rest/comments').send({
+      gameId: game.body.data.id,
+      name: 'Matrix',
+      text: 'A comment for the matrix',
+    });
+
     return {
       gameId: game.body.data.id,
       mediaId: media.body.data.id,
+      commentId: comment.body.data.id,
       playerId: a.id,
       freePlayerId: free.id,
       userId: player.user.id,

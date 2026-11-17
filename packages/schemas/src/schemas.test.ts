@@ -8,6 +8,9 @@ import {
   gameRuleViolations,
   gameSchema,
   gameUpdateInputSchema,
+  commentInputSchema,
+  commentModerationSchema,
+  commentSchema,
   mediaInputSchema,
   mediaSchema,
   playerEditFormSchema,
@@ -503,6 +506,9 @@ describe('openApiSchemas (the document is made from the schemas, S3.19)', () => 
   it('has a component for every part of the contract', () => {
     expect(Object.keys(schemas).sort()).toEqual([
       'ApiError',
+      'Comment',
+      'CommentInput',
+      'CommentModeration',
       'ErrorResponse',
       'Game',
       'GameInput',
@@ -571,6 +577,40 @@ describe('mediaInputSchema and mediaSchema (S10.19)', () => {
     expect(photo.data?.caption).toBe('');
     expect(
       mediaSchema.safeParse({ id, mime: 'image/gif', size: 10 }).success,
+    ).toBe(false);
+  });
+});
+
+describe('comments (S10.22)', () => {
+  const gameId = '64b7f0f0f0f0f0f0f0f0aa01';
+
+  it('accepts a name and a text and trims them', () => {
+    expect(
+      commentInputSchema.safeParse({ gameId, name: ' Pike ', text: ' Rematch? ' })
+        .data,
+    ).toEqual({ gameId, name: 'Pike', text: 'Rematch?' });
+  });
+
+  it.each([
+    ['no name', { gameId, name: ' ', text: 'Hi there' }],
+    ['a name over 40 characters', { gameId, name: 'x'.repeat(41), text: 'Hi there' }],
+    ['an empty text', { gameId, name: 'Pike', text: ' ' }],
+    ['a text over 1000 characters', { gameId, name: 'Pike', text: 'x'.repeat(1001) }],
+    ['a game that is not an id', { gameId: 'nope', name: 'Pike', text: 'Hi there' }],
+  ])('rejects %s', (_name, body) => {
+    expect(commentInputSchema.safeParse(body).success).toBe(false);
+  });
+
+  it('the visitor cannot choose the status: only a verdict of the admin is approved or rejected', () => {
+    expect(commentModerationSchema.safeParse({ status: 'approved' }).success).toBe(true);
+    expect(commentModerationSchema.safeParse({ status: 'pending' }).success).toBe(false);
+  });
+
+  it('a comment of the server has the status of the list', () => {
+    const ok = commentSchema.safeParse({ id: 'c', gameId, name: 'Pike', text: 'x', status: 'approved' });
+    expect(ok.success).toBe(true);
+    expect(
+      commentSchema.safeParse({ id: 'c', gameId, name: 'Pike', text: 'x', status: 'spam' }).success,
     ).toBe(false);
   });
 });

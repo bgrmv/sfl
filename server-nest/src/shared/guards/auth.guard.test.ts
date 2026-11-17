@@ -6,6 +6,7 @@ import request from 'supertest';
 
 import { AuthController } from '../../entities/auth/auth.controller';
 import { AuthService } from '../../entities/auth/auth.service';
+import { CommentsController } from '../../entities/comments/comments.controller';
 import { ChartsController } from '../../entities/charts/charts.controller';
 import { GamesController } from '../../entities/games/games.controller';
 import { MediaController } from '../../entities/media/media.controller';
@@ -31,6 +32,8 @@ const PUBLIC_ROUTES = [
   'GET /rest/charts/top-players',
   'GET /rest/media',
   'GET /rest/media/:id/file',
+  'GET /rest/comments',
+  'POST /rest/comments',
 ];
 
 const ADMIN = { email: 'admin@sfl.lv', roles: ['ADMIN'] };
@@ -50,6 +53,7 @@ describe('AuthGuard: access matrix', () => {
       controllers: [
         AuthController,
         ChartsController,
+        CommentsController,
         GamesController,
         MediaController,
         MigrationsController,

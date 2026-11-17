@@ -149,6 +149,45 @@ export const mediaInputSchema = z.object({
   playerId: z.optional(z.nullable(objectIdText)),
 });
 
+// ---- Comments on a game (S10.22) -----------------------------------------------
+
+export const COMMENT_STATUSES = ['pending', 'approved', 'rejected'] as const;
+export type CommentStatus = (typeof COMMENT_STATUSES)[number];
+
+/** A comment as the server sends it: no email, no id of the author. */
+export const commentShape = z.object({
+  id: z.string(),
+  gameId: z.string(),
+  name: z.string(),
+  text: z.string(),
+  status: z.enum(COMMENT_STATUSES),
+  createdAt: z.optional(z.string()),
+});
+export const commentSchema = z.looseObject(commentShape.shape);
+export const commentsSchema = z.array(commentSchema);
+
+/**
+ * What a visitor sends. There is no "site" field: on the reference site it only
+ * attracted spam. The text is plain text, the page never turns it into links.
+ */
+/** The longest comment, in characters. */
+export const COMMENT_TEXT_MAX = 1000;
+
+export const commentInputSchema = z.object({
+  gameId: objectIdText,
+  name: z
+    .string()
+    .check(z.trim(), z.minLength(1, 'Enter your name'), z.maxLength(40, 'The name is up to 40 characters')),
+  text: z
+    .string()
+    .check(z.trim(), z.minLength(2, 'Write a comment'), z.maxLength(COMMENT_TEXT_MAX, 'The comment is up to 1000 characters')),
+});
+
+/** What the admin sends to the queue: the verdict. */
+export const commentModerationSchema = z.object({
+  status: z.enum(['approved', 'rejected']),
+});
+
 // ---- Game --------------------------------------------------------------------
 
 /**

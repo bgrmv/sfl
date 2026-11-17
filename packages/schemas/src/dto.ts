@@ -2,6 +2,9 @@
 import type * as z from 'zod/mini';
 
 import type {
+  commentInputSchema,
+  commentShape,
+  commentModerationSchema,
   mediaInputSchema,
   mediaShape,
   gameInputSchema,
@@ -39,3 +42,7 @@ export type SignInInput = z.infer<typeof signInSchema>;
 
 export type MediaDTO = z.infer<typeof mediaShape>;
 export type MediaInput = z.input<typeof mediaInputSchema>;
+
+export type CommentDTO = z.infer<typeof commentShape>;
+export type CommentInput = z.input<typeof commentInputSchema>;
+export type CommentModeration = z.input<typeof commentModerationSchema>;

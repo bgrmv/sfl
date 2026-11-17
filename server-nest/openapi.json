@@ -1042,6 +1042,159 @@
         "tags": ["media"]
       }
     },
+    "/rest/comments": {
+      "post": {
+        "operationId": "CommentsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["comments"]
+      },
+      "get": {
+        "operationId": "CommentsController_find",
+        "parameters": [
+          {
+            "name": "gameId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comment"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["comments"]
+      }
+    },
+    "/rest/comments/queue": {
+      "get": {
+        "operationId": "CommentsController_queue",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comment"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["comments"]
+      }
+    },
+    "/rest/comments/{id}": {
+      "patch": {
+        "operationId": "CommentsController_moderate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["comments"]
+      },
+      "delete": {
+        "operationId": "CommentsController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["comments"]
+      }
+    },
     "/rest/charts/top-players": {
       "get": {
         "operationId": "ChartsController_topPlayers",
@@ -1465,6 +1618,62 @@
           "notes"
         ],
         "additionalProperties": {}
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "approved", "rejected"]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "gameId", "name", "text", "status"],
+        "additionalProperties": {}
+      },
+      "CommentInput": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{24}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "text": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000
+          }
+        },
+        "required": ["gameId", "name", "text"]
+      },
+      "CommentModeration": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["approved", "rejected"]
+          }
+        },
+        "required": ["status"]
       },
       "Media": {
         "type": "object",

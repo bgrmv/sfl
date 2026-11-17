@@ -5,6 +5,9 @@ import * as z from 'zod/mini';
 
 import { apiErrorSchema } from './api-response.js';
 import {
+  commentInputSchema,
+  commentModerationSchema,
+  commentSchema,
   gameInputSchema,
   gameSchema,
   gameUpdateInputSchema,
@@ -26,6 +29,9 @@ export const errorResponseSchema = z.object({
 const COMPONENTS = {
   Player: { schema: playerSchema, io: 'output' },
   Game: { schema: gameSchema, io: 'output' },
+  Comment: { schema: commentSchema, io: 'output' },
+  CommentInput: { schema: commentInputSchema, io: 'input' },
+  CommentModeration: { schema: commentModerationSchema, io: 'input' },
   Media: { schema: mediaSchema, io: 'output' },
   MediaInput: { schema: mediaInputSchema, io: 'input' },
   Team: { schema: teamSchema, io: 'output' },

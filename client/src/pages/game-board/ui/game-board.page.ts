@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { catchError, of, switchMap } from 'rxjs';
 import { format } from 'date-fns';
 import { GameService, GamesStore } from '@entities/game';
+import { GameCommentsComponent } from '@entities/comment';
 import { MediaService, PhotoGridComponent } from '@entities/media';
 import {
   PlayerChipComponent,
@@ -24,12 +25,18 @@ import { KIT } from '@shared/ui/kit';
 
 /**
  * Game page of the design. LIVE: the score, captains, MVP, scorers, squads and the story
- * (GamesStore + PlayersStore). DUMMY: goal order, line-up map and comments
- * (`game.events`, `game.map`, `game.comments`); the photos are LIVE (MediaService).
+ * (GamesStore + PlayersStore). DUMMY: goal order and line-up map
+ * (`game.events`, `game.map`); the photos and the comments are LIVE (MediaService, CommentsService).
  */
 @Component({
   selector: 'sfl-game-board-page',
-  imports: [PhotoGridComponent, PlayerChipComponent, RouterLink, ...KIT],
+  imports: [
+    GameCommentsComponent,
+    PhotoGridComponent,
+    PlayerChipComponent,
+    RouterLink,
+    ...KIT,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     GameService,
@@ -231,53 +238,11 @@ import { KIT } from '@shared/ui/kit';
         <sfl-section
           *sflFeature="'game.comments'"
           flag="game.comments"
-          title="Comments · 2"
+          title="Comments"
         >
-          <!-- DUMMY (game.comments): comments are not implemented (S10.22) -->
-          <ul class="k-list">
-            <li>
-              <div>
-                <b>Viper</b>
-                <span class="k-muted k-small">15 Nov, 10:12</span>
-                <div>Great game, the penalty at the end was fair.</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <b>Pike</b>
-                <span class="k-muted k-small">15 Nov, 11:40</span>
-                <div>Rematch on Saturday?</div>
-              </div>
-            </li>
-          </ul>
-          <form
-            class="k-col"
-            (submit)="$event.preventDefault()"
-          >
-            <div class="k-field">
-              <label for="cn">Name</label>
-              <input
-                id="cn"
-                class="k-input"
-              />
-            </div>
-            <div class="k-field">
-              <label for="ct">Comment</label>
-              <textarea
-                id="ct"
-                class="k-textarea"
-              ></textarea>
-            </div>
-            <button
-              sflBtn
-              type="submit"
-            >
-              Send for review
-            </button>
-            <span class="k-hint">
-              Your comment appears after the administrator checks it.
-            </span>
-          </form>
+          @if (gameId(); as id) {
+            <sfl-game-comments [gameId]="id" />
+          }
         </sfl-section>
       }
 
@@ -324,7 +289,7 @@ export class GameBoardPageComponent {
   }
 
   private readonly mediaService = inject(MediaService);
-  private readonly gameId = computed(
+  protected readonly gameId = computed(
     () =>
       this.games
         .gamesEntities()

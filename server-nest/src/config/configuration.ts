@@ -15,6 +15,10 @@ export default () => {
     // Where the uploaded photos are kept (S10.19); a volume in production
     MEDIA_DIR: str({ default: './_media' }),
 
+    // Comments of visitors: a few per address in a window (S10.22)
+    COMMENT_LIMIT: num({ default: 3 }),
+    COMMENT_WINDOW_SEC: num({ default: 300 }),
+
     ACCESS_TOKEN_SECRET: str(),
     REFRESH_TOKEN_SECRET: str(),
 
