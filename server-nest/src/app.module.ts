@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { AuthModule } from './entities/auth';
 import { ChartsModule } from './entities/charts/charts.module';
 import { GamesModule } from './entities/games/games.module';
+import { MediaModule } from './entities/media/media.module';
 import { MigrationsModule } from './entities/migrations/migrations.module';
 import { PlayersModule } from './entities/players/players.module';
 import { RolesModule } from './entities/roles/roles.module';
@@ -104,6 +105,7 @@ import { FileLoggerService } from './shared/services/logger.service';
     PlayersModule,
     GamesModule,
     TeamsModule,
+    MediaModule,
     ChartsModule,
     MigrationsModule,
   ],

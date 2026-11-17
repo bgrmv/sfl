@@ -117,6 +117,38 @@ export const playerEditFormSchema = z.object({
 });
 export type PlayerEditForm = z.infer<typeof playerEditFormSchema>;
 
+// ---- Media (photos, S10.19) --------------------------------------------------
+
+/** Types of photo the API accepts; the server checks the bytes, not the name. */
+export const MEDIA_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
+/** The largest photo, in bytes. */
+export const MEDIA_MAX_BYTES = 5 * 1024 * 1024;
+
+const objectIdText = z.string().check(z.regex(/^[0-9a-f]{24}$/i, 'Not an id'));
+
+/** A photo as the server sends it; the file is at `GET /media/:id/file`. */
+export const mediaShape = z.object({
+  id: z.string(),
+  mime: z.enum(MEDIA_MIME_TYPES),
+  size: z.number(),
+  caption: z._default(z.string(), ''),
+  gameId: z.nullish(z.string()),
+  playerId: z.nullish(z.string()),
+  createdAt: z.optional(z.string()),
+});
+export const mediaSchema = z.looseObject(mediaShape.shape);
+export const mediasSchema = z.array(mediaSchema);
+
+/**
+ * What the admin sends with the file (`POST /media`, multipart: the fields are
+ * strings, an empty string means "none") and to change it (`PATCH /media/:id`).
+ */
+export const mediaInputSchema = z.object({
+  caption: z.optional(z.string().check(z.trim(), z.maxLength(200, 'The caption is up to 200 characters'))),
+  gameId: z.optional(z.nullable(objectIdText)),
+  playerId: z.optional(z.nullable(objectIdText)),
+});
+
 // ---- Game --------------------------------------------------------------------
 
 /**

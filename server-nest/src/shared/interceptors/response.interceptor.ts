@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
+  StreamableFile,
 } from '@nestjs/common';
 import { ok, type SerializedResult } from '@sfl/schemas';
 import { Observable, map } from 'rxjs';
@@ -21,6 +22,15 @@ export class ResponseInterceptor<T> implements NestInterceptor<
     _context: ExecutionContext,
     next: CallHandler<T>,
   ): Observable<SerializedResult<T | null, never>> {
-    return next.handle().pipe(map(value => ok(value ?? null).toJSON()));
+    // A file is sent as it is: the page puts its address into <img src>
+    return next
+      .handle()
+      .pipe(
+        map(value =>
+          value instanceof StreamableFile
+            ? (value as never)
+            : ok(value ?? null).toJSON(),
+        ),
+      );
   }
 }

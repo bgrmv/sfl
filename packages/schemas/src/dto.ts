@@ -2,6 +2,8 @@
 import type * as z from 'zod/mini';
 
 import type {
+  mediaInputSchema,
+  mediaShape,
   gameInputSchema,
   gameShape,
   gameUpdateInputSchema,
@@ -34,3 +36,6 @@ export type GameInput = z.input<typeof gameInputSchema>;
 export type GameInputParsed = z.output<typeof gameInputSchema>;
 export type GameUpdateInput = z.input<typeof gameUpdateInputSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
+
+export type MediaDTO = z.infer<typeof mediaShape>;
+export type MediaInput = z.input<typeof mediaInputSchema>;

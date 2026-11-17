@@ -100,3 +100,6 @@ sfl-ssr-keep/
 # Nx cache
 .nx/
 !.env.example
+
+# Uploaded photos (S10.19)
+/server-nest/_media/

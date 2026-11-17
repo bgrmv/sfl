@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "nodenext",
     "lib": ["ESNext", "dom"],
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "node", "multer"]
   },
   "include": ["src/**/*.ts", "types.d.ts"]
 }

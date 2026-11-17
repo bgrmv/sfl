@@ -8,6 +8,8 @@ import {
   gameRuleViolations,
   gameSchema,
   gameUpdateInputSchema,
+  mediaInputSchema,
+  mediaSchema,
   playerEditFormSchema,
   playerSchema,
   playerStatisticSchema,
@@ -505,6 +507,8 @@ describe('openApiSchemas (the document is made from the schemas, S3.19)', () => 
       'Game',
       'GameInput',
       'GameUpdateInput',
+      'Media',
+      'MediaInput',
       'Player',
       'SignInInput',
       'Team',
@@ -539,5 +543,34 @@ describe('openApiSchemas (the document is made from the schemas, S3.19)', () => 
   it('is plain JSON and a ref points into the components', () => {
     expect(JSON.parse(JSON.stringify(schemas))).toEqual(schemas);
     expect(openApiRef('Game')).toEqual({ $ref: '#/components/schemas/Game' });
+  });
+});
+
+describe('mediaInputSchema and mediaSchema (S10.19)', () => {
+  const id = '64b7f0f0f0f0f0f0f0f0aa01';
+
+  it('accepts a caption and the ids of a game and a player, or none', () => {
+    expect(mediaInputSchema.safeParse({}).success).toBe(true);
+    expect(
+      mediaInputSchema.safeParse({ caption: ' Final ', gameId: id, playerId: null })
+        .data,
+    ).toEqual({ caption: 'Final', gameId: id, playerId: null });
+  });
+
+  it.each([
+    ['a caption over 200 characters', { caption: 'x'.repeat(201) }],
+    ['a game id that is not an id', { gameId: 'nope' }],
+    ['a player id that is not an id', { playerId: '123' }],
+  ])('rejects %s', (_name, body) => {
+    expect(mediaInputSchema.safeParse(body).success).toBe(false);
+  });
+
+  it('a photo of the server has a type of the list and an empty caption by default', () => {
+    const photo = mediaSchema.safeParse({ id, mime: 'image/webp', size: 10 });
+    expect(photo.success).toBe(true);
+    expect(photo.data?.caption).toBe('');
+    expect(
+      mediaSchema.safeParse({ id, mime: 'image/gif', size: 10 }).success,
+    ).toBe(false);
   });
 });

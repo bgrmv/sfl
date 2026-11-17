@@ -17,6 +17,7 @@ type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 interface Target {
   gameId: string;
+  mediaId: string;
   playerId: string;
   /** A player without games: the only kind that can be deleted. */
   freePlayerId: string;
@@ -29,6 +30,8 @@ interface Case {
   method: Method;
   path: (t: Target) => string;
   body?: (t: Target) => object;
+  /** A photo goes as multipart: the file and the fields. */
+  upload?: boolean;
   /** Any signed-in user may call it; otherwise only ADMIN. */
   anyRole?: boolean;
 }
@@ -126,6 +129,18 @@ const CLOSED: Case[] = [
     path: t => `/users/${t.userId}/password`,
     body: () => ({ password: 'new-password-1' }),
   },
+  { name: 'POST /media', method: 'post', path: () => '/media', upload: true },
+  {
+    name: 'PATCH /media/:id',
+    method: 'patch',
+    path: t => `/media/${t.mediaId}`,
+    body: () => ({ caption: 'Changed' }),
+  },
+  {
+    name: 'DELETE /media/:id',
+    method: 'delete',
+    path: t => `/media/${t.mediaId}`,
+  },
   {
     name: 'GET /auth/whoami',
     method: 'get',
@@ -133,6 +148,12 @@ const CLOSED: Case[] = [
     anyRole: true,
   },
 ];
+
+/** 1x1 PNG, enough for the type check by the first bytes. */
+const PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64',
+);
 
 const PUBLIC = [
   'POST /auth/sign-in',
@@ -144,6 +165,8 @@ const PUBLIC = [
   'GET /players/:id',
   'GET /teams',
   'GET /charts/top-players',
+  'GET /media',
+  'GET /media/:id/file',
 ];
 
 let gameCounter = 0;
@@ -177,8 +200,15 @@ describe('API: access matrix', () => {
       await t.api().get(`/rest/players/${a.id}`).set('Authorization', bearer(t))
     ).body.data;
 
+    const media = await t
+      .api()
+      .post('/rest/media')
+      .set('Authorization', bearer(t))
+      .attach('file', PNG, 'a.png');
+
     return {
       gameId: game.body.data.id,
+      mediaId: media.body.data.id,
       playerId: a.id,
       freePlayerId: free.id,
       userId: player.user.id,
@@ -191,6 +221,7 @@ describe('API: access matrix', () => {
       .api()
       [c.method](`/rest${c.path(tg)}`)
       .set(headers);
+    if (c.upload) return req.attach('file', PNG, 'a.png');
     return c.body ? req.send(c.body(tg)) : req;
   };
 

@@ -14,5 +14,5 @@ export {
   AdminReleasesPageComponent,
   AdminCommentsPageComponent,
   AdminSchedulePageComponent,
-  AdminMediaPageComponent,
 } from './ui/admin-content.page';
+export { AdminMediaPageComponent } from './ui/admin-media.page';

@@ -8,6 +8,7 @@ import { AuthController } from '../../entities/auth/auth.controller';
 import { AuthService } from '../../entities/auth/auth.service';
 import { ChartsController } from '../../entities/charts/charts.controller';
 import { GamesController } from '../../entities/games/games.controller';
+import { MediaController } from '../../entities/media/media.controller';
 import { MigrationsController } from '../../entities/migrations/migrations.controller';
 import { PlayersController } from '../../entities/players/players.controller';
 import { RolesController } from '../../entities/roles/roles.controller';
@@ -28,6 +29,8 @@ const PUBLIC_ROUTES = [
   'GET /rest/players/:id',
   'GET /rest/teams',
   'GET /rest/charts/top-players',
+  'GET /rest/media',
+  'GET /rest/media/:id/file',
 ];
 
 const ADMIN = { email: 'admin@sfl.lv', roles: ['ADMIN'] };
@@ -48,6 +51,7 @@ describe('AuthGuard: access matrix', () => {
         AuthController,
         ChartsController,
         GamesController,
+        MediaController,
         MigrationsController,
         PlayersController,
         RolesController,

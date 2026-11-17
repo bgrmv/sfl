@@ -74,7 +74,7 @@ export const FEATURES = {
   'game.map': dummy('Positions on the pitch (S10.38)'),
   'game.squads': live('GamesStore + PlayersStore'),
   'game.story': live('GamesStore: description'),
-  'game.media': dummy('Photos and video of the game'),
+  'game.media': live('MediaService: photos of the game (S10.19)'),
   'game.comments': dummy('Comments of the game (S10.22)'),
 
   // ---- players, captains
@@ -83,6 +83,7 @@ export const FEATURES = {
   ),
   'player.header': live('PlayersStatsStore'),
   'player.numbers': live('PlayersStatsStore'),
+  'player.media': live('MediaService: photos of the player (S10.19)'),
   'player.charts': live(
     'Points per game, form, sources of points from the metadata',
   ),
@@ -148,7 +149,7 @@ export const FEATURES = {
   'admin.releases': dummy('Technical releases (S10.51)'),
   'admin.comments': dummy('Moderation queue (S10.22)'),
   'admin.schedule': dummy('Schedule, skipped weeks, transfers (S10.18)'),
-  'admin.media': dummy('Upload and tagging (S10.19)'),
+  'admin.media': live('Upload, caption, links to a game and a player (S10.19)'),
 } as const satisfies Record<string, FeatureFlag>;
 
 export type FeatureKey = keyof typeof FEATURES;

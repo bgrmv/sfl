@@ -1,3 +1,7 @@
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of, switchMap } from 'rxjs';
+import type { MediaDTO } from '@sfl/schemas';
+import { MediaService, PhotoGridComponent } from '@entities/media';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -37,9 +41,15 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-player-board-page',
-  imports: [PlayerChipComponent, PlayerHeaderComponent, RouterLink, ...KIT],
+  imports: [
+    PhotoGridComponent,
+    PlayerChipComponent,
+    PlayerHeaderComponent,
+    RouterLink,
+    ...KIT,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [PlayersService, PlayersStatsStore],
+  providers: [PlayersService, PlayersStatsStore, MediaService],
   styles: `
     .sat {
       list-style: none;
@@ -161,6 +171,17 @@ import { KIT } from '@shared/ui/kit';
         </div>
 
         @if (tab() === 'Player') {
+          <sfl-section
+            *sflFeature="'player.media'"
+            flag="player.media"
+            title="Photos"
+          >
+            <sfl-photo-grid
+              [photos]="photos()"
+              empty="No photos of this player yet."
+            />
+          </sfl-section>
+
           @if (!meta()) {
             <sfl-state
               title="No games yet"
@@ -538,6 +559,17 @@ import { KIT } from '@shared/ui/kit';
 export class PlayerBoardPageComponent {
   private readonly store = inject(PlayersStatsStore);
   readonly id = input('');
+  private readonly mediaService = inject(MediaService);
+  /** The photos of the player; loaded again when another player is opened. */
+  protected readonly photos = toSignal(
+    toObservable(this.id).pipe(
+      switchMap(playerId =>
+        playerId ? this.mediaService.find({ playerId }) : of([] as MediaDTO[]),
+      ),
+      catchError(() => of([] as MediaDTO[])),
+    ),
+    { initialValue: [] as MediaDTO[] },
+  );
   protected readonly seasonKeyOf = seasonKeyOf;
   protected readonly loading = this.store.loading;
   protected readonly system = inject(RatingSystemStore).system;

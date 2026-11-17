@@ -12,6 +12,9 @@ export default () => {
     CLIENT_HOSTNAME: str(),
     CLIENT_PORT: num(),
 
+    // Where the uploaded photos are kept (S10.19); a volume in production
+    MEDIA_DIR: str({ default: './_media' }),
+
     ACCESS_TOKEN_SECRET: str(),
     REFRESH_TOKEN_SECRET: str(),
 

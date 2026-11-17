@@ -6,9 +6,12 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { catchError, of, switchMap } from 'rxjs';
 import { format } from 'date-fns';
 import { GameService, GamesStore } from '@entities/game';
+import { MediaService, PhotoGridComponent } from '@entities/media';
 import {
   PlayerChipComponent,
   PlayersService,
@@ -21,14 +24,20 @@ import { KIT } from '@shared/ui/kit';
 
 /**
  * Game page of the design. LIVE: the score, captains, MVP, scorers, squads and the story
- * (GamesStore + PlayersStore). DUMMY: goal order, line-up map, photos and comments
- * (`game.events`, `game.map`, `game.media`, `game.comments`).
+ * (GamesStore + PlayersStore). DUMMY: goal order, line-up map and comments
+ * (`game.events`, `game.map`, `game.comments`); the photos are LIVE (MediaService).
  */
 @Component({
   selector: 'sfl-game-board-page',
-  imports: [PlayerChipComponent, RouterLink, ...KIT],
+  imports: [PhotoGridComponent, PlayerChipComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [GameService, GamesStore, PlayersService, PlayersStore],
+  providers: [
+    GameService,
+    GamesStore,
+    PlayersService,
+    PlayersStore,
+    MediaService,
+  ],
   template: `
     <div class="k-page k-page--loose">
       <nav
@@ -211,24 +220,12 @@ import { KIT } from '@shared/ui/kit';
         <sfl-section
           *sflFeature="'game.media'"
           flag="game.media"
-          title="Photo and video"
-          link="/media"
-          linkLabel="Album"
+          title="Photo"
         >
-          <!-- DUMMY (game.media): no storage yet (S10.19) -->
-          <div class="k-grid-sm">
-            @for (n of [1, 2, 3, 4]; track n) {
-              <div
-                role="img"
-                [attr.aria-label]="'Photo ' + n"
-                style="
-                  aspect-ratio: 4/3;
-                  background: var(--sfl-surface-2);
-                  border-radius: 4px;
-                "
-              ></div>
-            }
-          </div>
+          <sfl-photo-grid
+            [photos]="photos()"
+            empty="No photos of this game yet."
+          />
         </sfl-section>
 
         <sfl-section
@@ -325,6 +322,25 @@ export class GameBoardPageComponent {
       }
     });
   }
+
+  private readonly mediaService = inject(MediaService);
+  private readonly gameId = computed(
+    () =>
+      this.games
+        .gamesEntities()
+        .find(g => g.number === Number(this.number()) && g.status !== 'furture')
+        ?.id,
+  );
+  /** The photos of the game; loaded again when another game is opened. */
+  protected readonly photos = toSignal(
+    toObservable(this.gameId).pipe(
+      switchMap(gameId =>
+        gameId ? this.mediaService.find({ gameId }) : of([]),
+      ),
+      catchError(() => of([])),
+    ),
+    { initialValue: [] },
+  );
 
   protected readonly view = computed(() => {
     const game = this.games

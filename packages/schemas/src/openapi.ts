@@ -8,6 +8,8 @@ import {
   gameInputSchema,
   gameSchema,
   gameUpdateInputSchema,
+  mediaInputSchema,
+  mediaSchema,
   playerSchema,
   signInSchema,
   teamInputSchema,
@@ -24,6 +26,8 @@ export const errorResponseSchema = z.object({
 const COMPONENTS = {
   Player: { schema: playerSchema, io: 'output' },
   Game: { schema: gameSchema, io: 'output' },
+  Media: { schema: mediaSchema, io: 'output' },
+  MediaInput: { schema: mediaInputSchema, io: 'input' },
   Team: { schema: teamSchema, io: 'output' },
   GameInput: { schema: gameInputSchema, io: 'input' },
   GameUpdateInput: { schema: gameUpdateInputSchema, io: 'input' },

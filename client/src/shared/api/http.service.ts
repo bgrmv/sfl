@@ -61,6 +61,13 @@ export class HttpService {
       .pipe(unwrap<V>());
   }
 
+  /** A file with fields (`multipart/form-data`): the browser sets the boundary itself. */
+  upload<V>(url: string, form: FormData): Observable<V> {
+    return this.#httpClient
+      .post<ApiResponse<V>>(API_URL + '/' + url, form)
+      .pipe(unwrap<V>());
+  }
+
   put<T>(url: string, data: T): Observable<T> {
     return this.#httpClient
       .put<ApiResponse<T>>(API_URL + '/' + url, data, {
