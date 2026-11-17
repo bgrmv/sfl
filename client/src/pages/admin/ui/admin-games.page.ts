@@ -1,10 +1,27 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { format } from 'date-fns';
+import { Observable } from 'rxjs';
+import { GameService, GamesStore } from '@entities/game';
+import { toResult } from '@shared/api/to-result';
+import { AuthService } from '@shared/auth/auth.service';
+import { injectNotifier } from '@shared/store/inject-notifier';
 import { KIT } from '@shared/ui/kit';
 
-/** DUMMY (admin.confirm): two confirmations and revoke; no endpoint is called. */
+/**
+ * Publication of the games (S10.35). LIVE (admin.confirm): the drafts and the
+ * published games of the season, the confirmation of the person who is signed in,
+ * taking it back, and the revoke with a reason. Two different people publish a draft.
+ */
 @Component({
   selector: 'sfl-admin-confirm-page',
-  imports: [...KIT],
+  imports: [RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -12,150 +29,187 @@ import { KIT } from '@shared/ui/kit';
       *sflFeature="'admin.confirm'"
     >
       <sfl-page-head
-        title="Game 47 · 21 Nov 2026"
-        lead="BMW 6 : 4 HONDA · captains Falcon and Wolf · filled by Anna"
-      >
-        <sfl-badge [tone]="have() === 2 ? 'accent' : 'outline'">
-          {{ have() === 2 ? 'Published' : 'Draft' }}
-        </sfl-badge>
-      </sfl-page-head>
-      <sfl-card
-        flag="admin.confirm"
-        title="Confirmations · {{ have() }} of 2"
-      >
-        <p class="k-small k-muted">
-          The game is published when two different admins or moderators confirm
-          that it is filled in correctly. Until then it is a draft and counts in
-          no rating.
-        </p>
-        <ul class="k-list">
-          <li>
-            <sfl-avatar text="AN" />
-            <span class="k-grow">
-              Anna
-              <div class="k-muted k-small">Filled the game</div>
+        title="Publish games"
+        lead="A game is published when two different admins or moderators confirm that it is filled in correctly. Until then it is a draft and counts in no rating."
+      />
+      @if (loading()) {
+        <sfl-state kind="loading" />
+      } @else if (!rows().length) {
+        <sfl-state
+          title="Nothing to publish"
+          text="Drafts and published games of this season appear here."
+        />
+      }
+      @for (g of rows(); track g.id) {
+        <sfl-card
+          flag="admin.confirm"
+          [title]="'Game ' + g.number + ' · ' + g.date"
+        >
+          <div class="k-row k-between">
+            <span>
+              <b class="k-num">{{ g.score }}</b>
+              <span class="k-muted k-small">
+                · {{ g.confirmations }} of 2 confirmations
+              </span>
             </span>
-            <sfl-badge tone="accent">Confirmed</sfl-badge>
-          </li>
-          <li>
-            <sfl-avatar text="TO" />
-            <span class="k-grow">Tom</span>
-            @if (have() === 2) {
-              <sfl-badge tone="accent">Confirmed</sfl-badge>
-            } @else {
-              <sfl-badge>Waiting</sfl-badge>
-            }
-          </li>
-        </ul>
-        <div class="k-row">
-          @if (have() === 1) {
-            <button
-              sflBtn
-              type="button"
-              (click)="have.set(2)"
-            >
-              Confirm: the game is correct
-            </button>
-          } @else {
-            <button
-              sflBtn
-              variant="ghost"
-              type="button"
-              (click)="have.set(1)"
-            >
-              Withdraw my confirmation
-            </button>
+            <sfl-badge [tone]="g.published ? 'accent' : 'outline'">
+              {{ g.published ? 'Published' : g.statusLabel }}
+            </sfl-badge>
+          </div>
+          @if (g.revokedReason) {
+            <p class="k-hint">Revoked: {{ g.revokedReason }}</p>
           }
-        </div>
-      </sfl-card>
-      <sfl-card
-        flag="admin.confirm"
-        title="History"
-      >
-        <ul class="k-list">
-          <li>
-            <span class="k-muted k-small">21 Nov 20:10</span>
-            Anna filled the game
-          </li>
-          <li>
-            <span class="k-muted k-small">21 Nov 20:12</span>
-            Anna confirmed
-          </li>
-        </ul>
-      </sfl-card>
-      <section
-        class="k-danger"
-        aria-labelledby="dz"
-      >
-        <h2 id="dz">Danger zone</h2>
-        <p class="k-small k-muted">
-          Revoking takes the game out of every rating and recalculates the
-          statistics. It returns to draft; the confirmations are cleared. A
-          reason is required and is saved in the log.
-        </p>
-        @if (!revoking()) {
-          <button
-            sflBtn
-            variant="danger"
-            type="button"
-            (click)="revoking.set(true)"
-          >
-            Revoke publication…
-          </button>
-        } @else {
-          <div
-            class="k-col"
-            role="alertdialog"
-            aria-labelledby="rv"
-          >
-            <h3 id="rv">Revoke game 47?</h3>
-            <ul class="k-small">
-              <li>
-                The game leaves both ratings. Points of 21 players are
-                recalculated.
-              </li>
-              <li>The comments and photos stay.</li>
-            </ul>
-            <div class="k-field">
-              <label for="rr">Reason (required)</label>
-              <textarea
-                id="rr"
-                class="k-textarea"
-              ></textarea>
-            </div>
-            <div class="k-field">
-              <label for="rn">Type the number of the game to confirm</label>
-              <input
-                id="rn"
-                class="k-input"
-              />
-            </div>
-            <div class="k-row">
+          <div class="k-row">
+            @if (!g.published && g.status === 'draft' && !g.mine) {
               <button
                 sflBtn
-                variant="danger"
                 type="button"
+                [disabled]="busy()"
+                (click)="confirm(g.id)"
               >
-                Revoke publication
+                Confirm: the game is correct
               </button>
+            }
+            @if (g.mine) {
               <button
                 sflBtn
                 variant="ghost"
                 type="button"
-                (click)="revoking.set(false)"
+                [disabled]="busy()"
+                (click)="unconfirm(g.id)"
               >
-                Keep it published
+                Take my confirmation back
               </button>
-            </div>
+            }
+            @if (!g.published) {
+              <a
+                sflBtn
+                variant="ghost"
+                [routerLink]="['/games/edit', g.season, g.number]"
+              >
+                Edit
+              </a>
+            }
+            @if (g.published && isAdmin()) {
+              <button
+                sflBtn
+                variant="danger"
+                type="button"
+                (click)="revoking.set(revoking() === g.id ? null : g.id)"
+              >
+                Revoke publication
+              </button>
+            }
           </div>
-        }
-      </section>
+          @if (revoking() === g.id) {
+            <form
+              class="k-col"
+              (submit)="$event.preventDefault(); revoke(g.id)"
+            >
+              <p class="k-small">
+                The game goes back to a draft and leaves every rating; the
+                statistics of its players are recalculated. Photos and comments
+                stay.
+              </p>
+              <div class="k-field">
+                <label [attr.for]="'reason-' + g.id">Reason (required)</label>
+                <textarea
+                  class="k-textarea"
+                  [id]="'reason-' + g.id"
+                  maxlength="500"
+                  [value]="reason()"
+                  (input)="reason.set($any($event.target).value)"
+                ></textarea>
+              </div>
+              <div class="k-row">
+                <button
+                  sflBtn
+                  variant="danger"
+                  type="submit"
+                  [disabled]="busy() || reason().trim().length < 3"
+                >
+                  Revoke
+                </button>
+                <button
+                  sflBtn
+                  variant="ghost"
+                  type="button"
+                  (click)="revoking.set(null)"
+                >
+                  Keep it published
+                </button>
+              </div>
+            </form>
+          }
+        </sfl-card>
+      }
     </div>
   `,
 })
 export class AdminConfirmPageComponent {
-  protected readonly have = signal(1);
-  protected readonly revoking = signal(false);
+  private readonly games = inject(GamesStore);
+  private readonly service = inject(GameService);
+  private readonly auth = inject(AuthService);
+  private readonly notify = injectNotifier();
+
+  protected readonly isAdmin = this.auth.isAdmin;
+  protected readonly loading = this.games.loading;
+  protected readonly busy = signal(false);
+  protected readonly revoking = signal<string | null>(null);
+  protected readonly reason = signal('');
+
+  protected readonly rows = computed(() => {
+    const me = this.auth.user()?.id;
+    return this.games
+      .gamesEntities()
+      .filter(g => g.status === 'draft' || g.status === 'published')
+      .slice()
+      .sort((a, b) => b.number - a.number)
+      .map(g => ({
+        id: g.id,
+        number: g.number,
+        season: g.season,
+        status: g.status,
+        statusLabel: 'Draft',
+        published: g.status === 'published',
+        date: format(g.playedAt, 'EEE d MMM'),
+        score: `${g.metadata?.scoreFirstDraft ?? 0} : ${g.metadata?.scoreSecondDraft ?? 0}`,
+        confirmations: g.confirmations?.length ?? 0,
+        mine: !!me && !!g.confirmations?.some(c => c.accountId === me),
+        revokedReason: g.status === 'draft' ? g.revoked?.reason : undefined,
+      }));
+  });
+
+  protected confirm(id: string) {
+    this.run(this.service.confirm(id), 'Confirmed');
+  }
+
+  protected unconfirm(id: string) {
+    this.run(this.service.unconfirm(id), 'Confirmation taken back');
+  }
+
+  protected revoke(id: string) {
+    this.run(
+      this.service.revoke(id, this.reason().trim()),
+      'Publication revoked',
+    );
+    this.revoking.set(null);
+    this.reason.set('');
+  }
+
+  private run(request: Observable<unknown>, done: string) {
+    this.busy.set(true);
+    request.pipe(toResult()).subscribe(result => {
+      this.busy.set(false);
+      result.match({
+        ok: () => {
+          this.notify.success(done);
+          this.games.initGamesStore({ season: new Date().getFullYear() });
+        },
+        err: error => this.notify.error(error),
+      });
+    });
+  }
 }
 
 /** DUMMY (admin.process): queue of old games with notes (S10.40). */

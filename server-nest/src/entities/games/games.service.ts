@@ -12,6 +12,7 @@ import {
   calculatePlayerGameResultMetadata,
   GameMetadataError,
 } from '@sfl/domain';
+import { gameRuleViolations, GAME_RULE_MESSAGES } from '@sfl/schemas';
 import { ClientSession, Model } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import {
@@ -86,8 +87,18 @@ export class GamesService {
     return await (cap ? query.limit(cap) : query).exec();
   }
 
+  /** The status `published` comes only from the confirmations (S10.35). */
+  private assertNotPublished(game: { status?: string }) {
+    if (game.status === EnumGameStatus.Published) {
+      throw new BadRequestException(
+        'A game is published by two confirmations, not by saving it',
+      );
+    }
+  }
+
   async create(game: IGame) {
     this.logger.info('Create game', game);
+    this.assertNotPublished(game);
     if (
       await this.gameModel.findOne({
         number: game.number,
@@ -135,17 +146,27 @@ export class GamesService {
     }
   }
 
+  /** A published game is changed after a revoke, never in place. */
+  private async assertEditable(_id: string, game: { status?: string }) {
+    this.assertNotPublished(game);
+    const stored = await this.gameModel.findById(_id).select('status').exec();
+    if (!stored) throw new NotFoundException('Game is not found');
+    if (stored.status === EnumGameStatus.Published) {
+      throw new ConflictException(
+        'Revoke the published game before changing it',
+      );
+    }
+  }
+
   async update(_id: string, game: IGame) {
     this.logger.info('Update game', { _id });
-
-    if (!(await this.gameModel.exists({ _id }))) {
-      throw new NotFoundException('Game is not found');
-    }
+    await this.assertEditable(_id, game);
 
     try {
       return await this.transactions.run(async session => {
         const before = await this.gameModel
-          .findOneAndUpdate({ _id }, game)
+          // A change of the content takes the confirmations back
+          .findOneAndUpdate({ _id }, { ...game, confirmations: [] })
           .session(session)
           .exec();
 
@@ -175,6 +196,7 @@ export class GamesService {
   }
 
   async replace(_id: string, game: IGame) {
+    await this.assertEditable(_id, game);
     try {
       return await this.transactions.run(async session => {
         const updatedGame = await this.gameModel
@@ -207,6 +229,133 @@ export class GamesService {
       }
       throw new InternalServerErrorException('Unexpected error occurred');
     }
+  }
+
+  /**
+   * A person confirms a draft as filled in correctly. The second confirmation of
+   * another person publishes the game in the same transaction (S10.35).
+   */
+  async confirm(_id: string, accountId: string) {
+    return await this.transactions.run(async session => {
+      const game = await this.gameModel.findById(_id).session(session).exec();
+      if (!game) throw new NotFoundException('Game is not found');
+      if (game.status !== EnumGameStatus.Draft) {
+        throw new ConflictException('Only a draft is confirmed');
+      }
+      if ((game.confirmations ?? []).some(c => c.accountId === accountId)) {
+        throw new ConflictException('You have already confirmed this game');
+      }
+
+      // The rules of a published game: one captain per team, a position for everybody
+      // Plain JSON: the ids of the teams and of the players are strings, as the rules expect
+      const plain = JSON.parse(JSON.stringify(game.toJSON()));
+      const violations = gameRuleViolations({
+        status: EnumGameStatus.Published,
+        teams: plain.teams,
+        statistics: plain.statistics,
+      });
+      if (violations.length) {
+        throw new BadRequestException(
+          [...new Set(violations.map(v => GAME_RULE_MESSAGES[v.rule]))].join(
+            '; ',
+          ),
+        );
+      }
+
+      const confirmations = [
+        ...(game.confirmations ?? []).map(c => ({
+          accountId: c.accountId,
+          at: c.at,
+        })),
+        { accountId, at: new Date() },
+      ];
+      const published = new Set(confirmations.map(c => c.accountId)).size >= 2;
+
+      const updated = await this.gameModel
+        .findOneAndUpdate(
+          { _id },
+          {
+            $set: {
+              confirmations,
+              ...(published ? { status: EnumGameStatus.Published } : {}),
+            },
+          },
+          { returnDocument: 'after' },
+        )
+        .session(session)
+        .exec();
+
+      return await this.runMetadataFlow(
+        updated.toJSON({ flattenObjectIds: false }) as unknown as WithId<IGame>,
+        session,
+        toSnapshot(game),
+      );
+    });
+  }
+
+  /** A person takes his own confirmation back; a published game becomes a draft again. */
+  async unconfirm(_id: string, accountId: string) {
+    return await this.transactions.run(async session => {
+      const game = await this.gameModel.findById(_id).session(session).exec();
+      if (!game) throw new NotFoundException('Game is not found');
+      if (!(game.confirmations ?? []).some(c => c.accountId === accountId)) {
+        throw new NotFoundException('You have not confirmed this game');
+      }
+
+      const updated = await this.gameModel
+        .findOneAndUpdate(
+          { _id },
+          {
+            $set: {
+              confirmations: (game.confirmations ?? []).filter(
+                c => c.accountId !== accountId,
+              ),
+              status: EnumGameStatus.Draft,
+            },
+          },
+          { returnDocument: 'after' },
+        )
+        .session(session)
+        .exec();
+
+      return await this.runMetadataFlow(
+        updated.toJSON({ flattenObjectIds: false }) as unknown as WithId<IGame>,
+        session,
+        toSnapshot(game),
+      );
+    });
+  }
+
+  /** The publication is taken back with a reason: a draft, no confirmations, out of the ratings. */
+  async revoke(_id: string, accountId: string, reason: string) {
+    return await this.transactions.run(async session => {
+      const game = await this.gameModel.findById(_id).session(session).exec();
+      if (!game) throw new NotFoundException('Game is not found');
+      if (game.status !== EnumGameStatus.Published) {
+        throw new ConflictException('Only a published game is revoked');
+      }
+
+      const updated = await this.gameModel
+        .findOneAndUpdate(
+          { _id },
+          {
+            $set: {
+              status: EnumGameStatus.Draft,
+              confirmations: [],
+              revoked: { reason, accountId, at: new Date() },
+            },
+          },
+          { returnDocument: 'after' },
+        )
+        .session(session)
+        .exec();
+
+      return await this.runMetadataFlow(
+        updated.toJSON({ flattenObjectIds: false }) as unknown as WithId<IGame>,
+        session,
+        toSnapshot(game),
+      );
+    });
   }
 
   async delete(_id: string): Promise<boolean> {

@@ -8,6 +8,7 @@ import {
   stat,
   TEAM_RED,
   TEAM_WHITE,
+  postGame,
 } from '../helpers/fixtures';
 import { createTestApp, TestApp } from '../helpers/test-app';
 
@@ -30,26 +31,22 @@ describe('API: POST /migrations/recalculate-games', () => {
     ids = (await createPlayers(t, 4)).map(p => p.id);
 
     // Game 1: white 1:2 red (a leg goal and a penalty of the red captain)
-    const res = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send({
-        ...gameBody([ids[0], ids[1]], { number: 1 }),
-        statistics: [
-          stat(ids[0], TEAM_WHITE.id, {
-            isCaptain: true,
-            goalsByLeg: 1,
-            position: 'GK',
-          }),
-          stat(ids[1], TEAM_RED.id, {
-            isCaptain: true,
-            goalsByLeg: 1,
-            goalsByPenalty: 1,
-            position: 'FRWD',
-          }),
-        ],
-      });
+    const res = await postGame(t, {
+      ...gameBody([ids[0], ids[1]], { number: 1 }),
+      statistics: [
+        stat(ids[0], TEAM_WHITE.id, {
+          isCaptain: true,
+          goalsByLeg: 1,
+          position: 'GK',
+        }),
+        stat(ids[1], TEAM_RED.id, {
+          isCaptain: true,
+          goalsByLeg: 1,
+          goalsByPenalty: 1,
+          position: 'FRWD',
+        }),
+      ],
+    });
     expect(res.status).toBe(201);
     goodGameId = res.body.data.id;
 

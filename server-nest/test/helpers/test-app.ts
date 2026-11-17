@@ -10,6 +10,8 @@ import { hash } from '../../src/shared/utils/string';
 
 export const ADMIN_EMAIL = 'admin@sfl.test';
 export const ADMIN_PASSWORD = 'admin-password';
+export const MODERATOR_EMAIL = 'moderator@sfl.test';
+export const MODERATOR_PASSWORD = 'moderator-password';
 export const USER_EMAIL = 'user@sfl.test';
 export const USER_PASSWORD = 'user-password';
 export const TEST_ACCESS_SECRET = 'test-access-secret-at-least-32-characters';
@@ -20,6 +22,8 @@ export interface TestApp {
   mongo: MongoMemoryReplSet;
   /** Access token of a user who signed in through POST /rest/auth/sign-in. */
   token: string;
+  /** Access token of a MODERATOR: confirms games, changes nothing else. */
+  moderatorToken: string;
   /** Access token of a plain USER (no admin rights). */
   userToken: string;
   /** Raw Mongoose models, to seed and inspect the database directly. */
@@ -75,7 +79,7 @@ export async function createTestApp(
   // An admin and a plain user, so that sign-in goes through the real code path
   // The development admin seeder may have created ADMIN already: upsert
   const roles = [];
-  for (const name of ['ADMIN', 'USER']) {
+  for (const name of ['ADMIN', 'USER', 'MODERATOR']) {
     roles.push(
       await model('Role').findOneAndUpdate(
         { name },
@@ -97,6 +101,12 @@ export async function createTestApp(
       password: hash(USER_PASSWORD),
       roles: [roles[1]._id],
     },
+    {
+      email: MODERATOR_EMAIL,
+      name: 'Moderator',
+      password: hash(MODERATOR_PASSWORD),
+      roles: [roles[2]._id],
+    },
   ]);
 
   const signIn = async (email: string, password: string) =>
@@ -110,6 +120,7 @@ export async function createTestApp(
     app,
     mongo,
     token: await signIn(ADMIN_EMAIL, ADMIN_PASSWORD),
+    moderatorToken: await signIn(MODERATOR_EMAIL, MODERATOR_PASSWORD),
     userToken: await signIn(USER_EMAIL, USER_PASSWORD),
     model,
     api: () => request(app.getHttpServer()),

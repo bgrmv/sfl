@@ -11,6 +11,8 @@ import {
   createPlayers,
   gameBody,
   isSuccess,
+  moderator,
+  postGame,
 } from '../helpers/fixtures';
 
 type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -35,6 +37,10 @@ interface Case {
   upload?: boolean;
   /** Any signed-in user may call it; otherwise only ADMIN. */
   anyRole?: boolean;
+  /** The target game is published (a revoke needs one); otherwise it is a draft confirmed by the moderator. */
+  published?: boolean;
+  /** The success is checked as the moderator (he made the confirmation the case takes back). */
+  as?: 'moderator';
 }
 
 // Every route that changes data, plus the protected reads. A new route must be
@@ -44,19 +50,41 @@ const CLOSED: Case[] = [
     name: 'POST /games',
     method: 'post',
     path: () => '/games',
-    body: t => gameBody(t.playerIds, { number: 40 }),
+    body: t => gameBody(t.playerIds, { number: 40, status: 'draft' }),
   },
   {
     name: 'PATCH /games/:id',
     method: 'patch',
     path: t => `/games/${t.gameId}`,
-    body: t => ({ ...gameBody(t.playerIds, { number: 41 }), id: t.gameId }),
+    body: t => ({
+      ...gameBody(t.playerIds, { number: 41, status: 'draft' }),
+      id: t.gameId,
+    }),
   },
   {
     name: 'PUT /games/:id',
     method: 'put',
     path: t => `/games/${t.gameId}`,
-    body: t => gameBody(t.playerIds, { number: 42 }),
+    body: t => gameBody(t.playerIds, { number: 42, status: 'draft' }),
+  },
+  {
+    name: 'POST /games/:id/confirm',
+    method: 'post',
+    path: t => `/games/${t.gameId}/confirm`,
+    as: undefined,
+  },
+  {
+    name: 'DELETE /games/:id/confirm',
+    method: 'delete',
+    path: t => `/games/${t.gameId}/confirm`,
+    as: 'moderator',
+  },
+  {
+    name: 'POST /games/:id/revoke',
+    method: 'post',
+    path: t => `/games/${t.gameId}/revoke`,
+    body: () => ({ reason: 'The matrix checks the revoke' }),
+    published: true,
   },
   {
     name: 'DELETE /games/:id',
@@ -204,19 +232,24 @@ describe('API: access matrix', () => {
   afterAll(() => t.close());
 
   /** Fresh records for every case, so that DELETE does not break the next one. */
-  async function target(): Promise<Target> {
+  async function target(published = false): Promise<Target> {
     const [a, b, free] = await createPlayers(t, 3);
-    const game = await t
-      .api()
-      .post('/rest/games')
-      .set('Authorization', bearer(t))
-      .send(
-        gameBody([a.id, b.id], {
-          // a unique (season, number) per target, seasons start at 2010
-          number: 1 + (gameCounter % 50),
-          season: 2010 + Math.floor(gameCounter++ / 50),
-        }),
-      );
+    const game = await postGame(
+      t,
+      gameBody([a.id, b.id], {
+        // a unique (season, number) per target, seasons start at 2010
+        number: 1 + (gameCounter % 50),
+        season: 2010 + Math.floor(gameCounter++ / 50),
+        status: published ? 'published' : 'draft',
+      }),
+    );
+    if (!published) {
+      // The moderator has confirmed: the admin is the second one, or takes back what is not his
+      await t
+        .api()
+        .post(`/rest/games/${game.body.data.id}/confirm`)
+        .set('Authorization', moderator(t));
+    }
     const player = (
       await t.api().get(`/rest/players/${a.id}`).set('Authorization', bearer(t))
     ).body.data;
@@ -256,7 +289,7 @@ describe('API: access matrix', () => {
   it.each(CLOSED.map(c => [c.name, c] as const))(
     '%s: 401 without a token',
     async (_name, c) => {
-      const res = await send(c, await target());
+      const res = await send(c, await target(c.published));
 
       expect(res.status).toBe(401);
     },
@@ -265,7 +298,9 @@ describe('API: access matrix', () => {
   it.each(CLOSED.map(c => [c.name, c] as const))(
     '%s: success with a token',
     async (_name, c) => {
-      const res = await send(c, await target(), { Authorization: bearer(t) });
+      const res = await send(c, await target(c.published), {
+        Authorization: c.as === 'moderator' ? moderator(t) : bearer(t),
+      });
 
       expect(isSuccess(res.status), `${c.name} answered ${res.status}`).toBe(
         true,
@@ -276,7 +311,7 @@ describe('API: access matrix', () => {
   it.each(CLOSED.map(c => [c.name, c] as const))(
     '%s: a plain USER gets 403 (200 where any role is allowed)',
     async (_name, c) => {
-      const res = await send(c, await target(), {
+      const res = await send(c, await target(c.published), {
         Authorization: `Bearer ${t.userToken}`,
       });
 
@@ -297,7 +332,10 @@ describe('API: access matrix', () => {
       .send({ nickname: 'hacked' });
 
     const player = await t.api().get(`/rest/players/${tg.playerId}`);
-    const game = await t.api().get(`/rest/games/${tg.gameId}`);
+    const game = await t
+      .api()
+      .get(`/rest/games/${tg.gameId}`)
+      .set('Authorization', bearer(t));
     expect(player.body.data.nickname).not.toBe('hacked');
     expect(game.body.data).toMatchObject({ id: tg.gameId });
   });

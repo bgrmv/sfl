@@ -1,5 +1,7 @@
 import { TestApp } from './test-app';
 
+export const moderator = (t: TestApp) => `Bearer ${t.moderatorToken}`;
+
 export const bearer = (t: TestApp) => `Bearer ${t.token}`;
 
 export const isSuccess = (status: number) => status >= 200 && status < 300;
@@ -93,4 +95,41 @@ export function gameBody(
     ],
     ...overrides,
   };
+}
+
+/**
+ * A game as a league does it (S10.35): the body is saved as a draft and published
+ * by two confirmations of two people. A body with another status is saved as it is.
+ * Answers like `POST /games`: the status and the body of the saved game.
+ */
+export async function postGame(t: TestApp, body: Record<string, unknown>) {
+  const wantsPublished = body.status === 'published';
+  const created = await t
+    .api()
+    .post('/rest/games')
+    .set('Authorization', bearer(t))
+    .send(wantsPublished ? { ...body, status: 'draft' } : body);
+  if (!wantsPublished || !isSuccess(created.status)) return created;
+
+  const published = await confirmTwice(t, created.body.data.id);
+  created.body.data = published.body.data;
+  return created;
+}
+
+/** The admin and the moderator confirm the game: the second one publishes it. */
+export async function confirmTwice(t: TestApp, id: string) {
+  await t.api().post(`/rest/games/${id}/confirm`).set('Authorization', bearer(t));
+  return await t
+    .api()
+    .post(`/rest/games/${id}/confirm`)
+    .set('Authorization', moderator(t));
+}
+
+/** The published game goes back to a draft: its numbers leave the ratings. */
+export async function revokeGame(t: TestApp, id: string, reason = 'A mistake') {
+  return await t
+    .api()
+    .post(`/rest/games/${id}/revoke`)
+    .set('Authorization', bearer(t))
+    .send({ reason });
 }

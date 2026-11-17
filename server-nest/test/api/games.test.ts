@@ -1,9 +1,12 @@
 import { createTestApp, TestApp } from '../helpers/test-app';
 import {
   bearer,
+  confirmTwice,
   createPlayers,
   gameBody,
   isSuccess,
+  postGame,
+  revokeGame,
 } from '../helpers/fixtures';
 
 describe('API: games', () => {
@@ -18,12 +21,7 @@ describe('API: games', () => {
 
   afterAll(() => t.close());
 
-  const post = (body: unknown) =>
-    t
-      .api()
-      .post('/rest/games')
-      .set('Authorization', bearer(t))
-      .send(body as object);
+  const post = (body: unknown) => postGame(t, body as object);
 
   it('creates a game and returns it by id and in the list', async () => {
     const created = await post(gameBody(playerIds, { number: 1 }));
@@ -108,7 +106,9 @@ describe('API: games', () => {
   });
 
   it('updates a game with PATCH', async () => {
-    const created = await post(gameBody(playerIds, { number: 4 }));
+    const created = await post(
+      gameBody(playerIds, { number: 4, status: 'draft' }),
+    );
     const id = created.body.data.id;
 
     const res = await t
@@ -116,7 +116,7 @@ describe('API: games', () => {
       .patch(`/rest/games/${id}`)
       .set('Authorization', bearer(t))
       .send({
-        ...gameBody(playerIds, { number: 4 }),
+        ...gameBody(playerIds, { number: 4, status: 'draft' }),
         id,
         description: 'edited',
       });
@@ -125,25 +125,33 @@ describe('API: games', () => {
 
     const {
       body: { data: body },
-    } = await t.api().get(`/rest/games/${id}`);
+    } = await t.api().get(`/rest/games/${id}`).set('Authorization', bearer(t));
     expect(body.description).toBe('edited');
   });
 
   it('replaces a game with PUT', async () => {
-    const created = await post(gameBody(playerIds, { number: 5 }));
+    const created = await post(
+      gameBody(playerIds, { number: 5, status: 'draft' }),
+    );
     const id = created.body.data.id;
 
     const res = await t
       .api()
       .put(`/rest/games/${id}`)
       .set('Authorization', bearer(t))
-      .send(gameBody(playerIds, { number: 5, description: 'replaced' }));
+      .send(
+        gameBody(playerIds, {
+          number: 5,
+          status: 'draft',
+          description: 'replaced',
+        }),
+      );
 
     expect(isSuccess(res.status)).toBe(true);
 
     const {
       body: { data: body },
-    } = await t.api().get(`/rest/games/${id}`);
+    } = await t.api().get(`/rest/games/${id}`).set('Authorization', bearer(t));
     expect(body.description).toBe('replaced');
   });
 
@@ -231,12 +239,12 @@ describe('API: games', () => {
         .api()
         .patch(`/rest/games/${MISSING}`)
         .set(auth())
-        .send({ ...gameBody(playerIds), id: MISSING });
+        .send({ ...gameBody(playerIds, { status: 'draft' }), id: MISSING });
       const put = await t
         .api()
         .put(`/rest/games/${MISSING}`)
         .set(auth())
-        .send(gameBody(playerIds));
+        .send(gameBody(playerIds, { status: 'draft' }));
 
       expect([del.status, patch.status, put.status]).toEqual([404, 404, 404]);
     });
@@ -279,14 +287,18 @@ describe('API: games', () => {
       expect(stored.body.data).toHaveLength(0);
     });
 
-    it('a published game with a player without a position answers 400', async () => {
-      const body = gameBody(playerIds, { number: 23 });
+    it('a draft with a player without a position is not published: the confirmation answers 400', async () => {
+      const body = gameBody(playerIds, { number: 23, status: 'draft' });
       body.statistics[1] = { ...body.statistics[1], position: null };
+      const created = await post(body);
 
-      const res = await post(body);
+      const res = await t
+        .api()
+        .post(`/rest/games/${created.body.data.id}/confirm`)
+        .set('Authorization', bearer(t));
 
       expect(res.status).toBe(400);
-      expect(res.body.error.issues[0].message).toBe(
+      expect(res.body.error.message).toBe(
         'A published game needs a position for every player',
       );
     });
@@ -310,7 +322,9 @@ describe('API: games', () => {
     });
 
     it('the PATCH response contains the metadata of the stored game', async () => {
-      const created = await post(gameBody(playerIds, { number: 25 }));
+      const created = await post(
+        gameBody(playerIds, { number: 25, status: 'draft' }),
+      );
       const id = created.body.data.id;
       const stats = gameBody(playerIds).statistics;
       stats[1] = { ...stats[1], goalsByLeg: 5 };
@@ -320,7 +334,7 @@ describe('API: games', () => {
         .patch(`/rest/games/${id}`)
         .set('Authorization', bearer(t))
         .send({
-          ...gameBody(playerIds, { number: 25 }),
+          ...gameBody(playerIds, { number: 25, status: 'draft' }),
           id,
           statistics: stats,
         });
@@ -341,7 +355,7 @@ describe('API: games', () => {
       return body.metadata?.bySeason?.[season]?.totalGames ?? 0;
     };
 
-    it('a draft is not counted; publishing it counts it; unpublishing takes it back', async () => {
+    it('a draft is not counted; two confirmations count it; a revoke takes it back', async () => {
       const [a, b] = await createPlayers(t, 2);
       const ids: [string, string] = [a.id, b.id];
       const draft = gameBody(ids, { number: 40, season, status: 'draft' });
@@ -349,17 +363,10 @@ describe('API: games', () => {
       const id = created.body.data.id;
       expect(await totalGames(a.id)).toBe(0);
 
-      const setStatus = (status: string) =>
-        t
-          .api()
-          .patch(`/rest/games/${id}`)
-          .set('Authorization', bearer(t))
-          .send({ ...gameBody(ids, { number: 40, season, status }), id });
-
-      await setStatus('published');
+      await confirmTwice(t, id);
       expect(await totalGames(a.id)).toBe(1);
 
-      await setStatus('draft');
+      await revokeGame(t, id);
       expect(await totalGames(a.id)).toBe(0);
     });
   });

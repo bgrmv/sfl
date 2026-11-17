@@ -19,6 +19,8 @@ import type { CommentInput, CommentModeration } from '@sfl/schemas';
 
 import { Public } from 'src/shared/decorators/public.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { EnumRole } from '../roles/constants';
 import { ObjectIdPipe } from 'src/shared/pipes/object-id.pipe';
 import { CommentsService } from './comments.service';
 
@@ -47,14 +49,16 @@ export class CommentsController {
     return await this.comments.findApproved(gameId);
   }
 
-  // Admin only by default: the queue of comments to review (declared before ':id')
+  // Admins and moderators: the queue of comments to review (declared before ':id', S10.35)
   @Get('queue')
+  @Roles(EnumRole.Admin, EnumRole.Moderator)
   @ApiOkResponse({ schema: { type: 'array', items: openApiRef('Comment') } })
   async queue() {
     return await this.comments.queue();
   }
 
   @Patch(':id')
+  @Roles(EnumRole.Admin, EnumRole.Moderator)
   async moderate(
     @Param('id', ObjectIdPipe) id: string,
     @Body(new ZodValidationPipe(commentModerationSchema))
@@ -64,6 +68,7 @@ export class CommentsController {
   }
 
   @Delete(':id')
+  @Roles(EnumRole.Admin, EnumRole.Moderator)
   async delete(@Param('id', ObjectIdPipe) id: string) {
     return await this.comments.delete(id);
   }

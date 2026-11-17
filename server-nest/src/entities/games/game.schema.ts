@@ -30,6 +30,9 @@ export interface IGame {
   link: string;
   notes: [string, string];
   metadata: IGameMetadata;
+  /** Who confirmed the draft (S10.35). */
+  confirmations?: { accountId: string; at: Date }[];
+  revoked?: { reason: string; accountId: string; at: Date };
 }
 
 @Schema({
@@ -169,6 +172,20 @@ export class Game implements IGame {
 
   @Prop({ type: Object, required: false, default: {} })
   metadata: IGameMetadata;
+
+  /**
+   * Who confirmed the draft (S10.35): two different people publish it. Any change
+   * of the content clears them. `accountId` is the id of the user.
+   */
+  @Prop({
+    type: [{ _id: false, accountId: String, at: Date }],
+    default: [],
+  })
+  confirmations: { accountId: string; at: Date }[];
+
+  /** The last revoke of the publication: why, who, when. */
+  @Prop({ type: Object, required: false })
+  revoked?: { reason: string; accountId: string; at: Date };
 
   [key: string]: any;
 }

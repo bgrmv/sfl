@@ -1,7 +1,7 @@
 // Comments on a game (S10.22): a visitor writes, the admin approves, the public reads the approved.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { bearer, createPlayers, gameBody } from '../helpers/fixtures';
+import { bearer, createPlayers, gameBody, postGame } from '../helpers/fixtures';
 import { createTestApp, TestApp } from '../helpers/test-app';
 
 describe('API: comments', () => {
@@ -12,16 +12,13 @@ describe('API: comments', () => {
     t = await createTestApp({ COMMENT_LIMIT: '1000' });
     const players = await createPlayers(t, 2);
     gameId = (
-      await t
-        .api()
-        .post('/rest/games')
-        .set({ Authorization: bearer(t) })
-        .send(
-          gameBody(
-            players.map(p => p.id),
-            { number: 5 },
-          ),
-        )
+      await postGame(
+        t,
+        gameBody(
+          players.map(p => p.id),
+          { number: 5 },
+        ),
+      )
     ).body.data.id;
   });
   afterAll(() => t.close());
@@ -146,14 +143,11 @@ describe('API: comments', () => {
   });
 
   it('an unknown game answers 404 and no comment is stored', async () => {
-    const res = await t
-      .api()
-      .post('/rest/comments')
-      .send({
-        gameId: '64b7f0f0f0f0f0f0f0f0f0f0',
-        name: 'Pike',
-        text: 'Hello',
-      });
+    const res = await t.api().post('/rest/comments').send({
+      gameId: '64b7f0f0f0f0f0f0f0f0f0f0',
+      name: 'Pike',
+      text: 'Hello',
+    });
     expect(res.status).toBe(404);
   });
 
@@ -164,7 +158,25 @@ describe('API: comments', () => {
     ).toBe(400);
   });
 
-  it('only an admin moderates: 401 without a token, 403 for a plain user', async () => {
+  it('a moderator moderates comments too (S10.35)', async () => {
+    const id = (await send('For the moderator')).body.data.id;
+    const mod = { Authorization: `Bearer ${t.moderatorToken}` };
+
+    expect((await t.api().get('/rest/comments/queue').set(mod)).status).toBe(
+      200,
+    );
+    const verdict = await t
+      .api()
+      .patch(`/rest/comments/${id}`)
+      .set(mod)
+      .send({ status: 'approved' });
+    expect(verdict.body.data.status).toBe('approved');
+    expect((await t.api().delete(`/rest/comments/${id}`).set(mod)).status).toBe(
+      200,
+    );
+  });
+
+  it('only an admin or a moderator moderates: 401 without a token, 403 for a plain user', async () => {
     const id = (await send('Moderation test')).body.data.id;
     const user = { Authorization: `Bearer ${t.userToken}` };
 
@@ -204,16 +216,13 @@ describe('API: the rate of comments', () => {
     t = await createTestApp({ COMMENT_LIMIT: '2', COMMENT_WINDOW_SEC: '60' });
     const players = await createPlayers(t, 2);
     gameId = (
-      await t
-        .api()
-        .post('/rest/games')
-        .set({ Authorization: bearer(t) })
-        .send(
-          gameBody(
-            players.map(p => p.id),
-            { number: 6 },
-          ),
-        )
+      await postGame(
+        t,
+        gameBody(
+          players.map(p => p.id),
+          { number: 6 },
+        ),
+      )
     ).body.data.id;
   });
   afterAll(() => t.close());

@@ -786,6 +786,107 @@
         "tags": ["games"]
       }
     },
+    "/rest/games/{id}/confirm": {
+      "post": {
+        "operationId": "GamesController_confirm",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The game with the confirmation; the second one publishes it"
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      },
+      "delete": {
+        "operationId": "GamesController_unconfirm",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      }
+    },
+    "/rest/games/{id}/revoke": {
+      "post": {
+        "operationId": "GamesController_revoke",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameRevoke"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      }
+    },
     "/rest/teams": {
       "get": {
         "operationId": "TeamsController_find",
@@ -1537,6 +1638,35 @@
               "additionalProperties": {}
             }
           },
+          "confirmations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string"
+                },
+                "at": {
+                  "type": "string"
+                }
+              },
+              "required": ["at"],
+              "additionalProperties": false
+            }
+          },
+          "revoked": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "at": {
+                "type": "string"
+              }
+            },
+            "required": ["reason", "at"],
+            "additionalProperties": {}
+          },
           "statistics": {
             "type": "array",
             "items": {
@@ -1928,6 +2058,17 @@
           "notes",
           "statistics"
         ]
+      },
+      "GameRevoke": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": ["reason"]
       },
       "GameUpdateInput": {
         "type": "object",

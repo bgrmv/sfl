@@ -14,6 +14,9 @@ import {
   stat,
   TEAM_RED,
   TEAM_WHITE,
+  postGame,
+  confirmTwice,
+  revokeGame,
 } from '../helpers/fixtures';
 import { createTestApp, TestApp } from '../helpers/test-app';
 
@@ -69,9 +72,33 @@ describe('API: incremental statistics equal the full recalculation', () => {
   };
 
   const create = async (b: ReturnType<typeof body>) => {
-    const res = await t.api().post('/rest/games').set(auth()).send(b);
+    const res = await postGame(t, b);
     expect(res.status, JSON.stringify(res.body)).toBe(201);
     return res.body.data.id as string;
+  };
+
+  /**
+   * A published game is changed as the league does: revoked, saved as a draft,
+   * published again by two confirmations (S10.35).
+   */
+  const change = async (
+    id: string,
+    method: 'put' | 'patch',
+    b: Record<string, unknown>,
+    { publishAgain = true }: { publishAgain?: boolean } = {},
+  ) => {
+    await revokeGame(t, id);
+    // The body of a published game is saved as a draft
+    const status = b.status && b.status !== 'published' ? b.status : 'draft';
+    const res = await t
+      .api()
+      [method](`/rest/games/${id}`)
+      .set(auth())
+      .send(method === 'patch' ? { ...b, status, id } : { ...b, status });
+    if (publishAgain && res.status < 300 && status === 'draft') {
+      await confirmTwice(t, id);
+    }
+    return res;
   };
 
   const verify = async (seasonId: number, apply = false) => {
@@ -105,20 +132,20 @@ describe('API: incremental statistics equal the full recalculation', () => {
     await expectConsistent(2024);
 
     // A player leaves the line-up, the result changes
-    const patched = await t
-      .api()
-      .patch(`/rest/games/${g2}`)
-      .set(auth())
-      .send({ ...body(2, { goals: [2, 2], white: [0, 1] }), id: g2 });
+    const patched = await change(
+      g2,
+      'patch',
+      body(2, { goals: [2, 2], white: [0, 1] }),
+    );
     expect(patched.status).toBe(200);
     await expectConsistent(2024);
 
     // Replaced with another line-up
-    const replaced = await t
-      .api()
-      .put(`/rest/games/${g1}`)
-      .set(auth())
-      .send(body(1, { goals: [0, 4], white: [1, 0], red: [3, 4] }));
+    const replaced = await change(
+      g1,
+      'put',
+      body(1, { goals: [0, 4], white: [1, 0], red: [3, 4] }),
+    );
     expect(replaced.status).toBe(200);
     await expectConsistent(2024);
 
@@ -128,33 +155,23 @@ describe('API: incremental statistics equal the full recalculation', () => {
     await expectConsistent(2024);
 
     // The same save repeated changes nothing
-    const again = await t
-      .api()
-      .put(`/rest/games/${g1}`)
-      .set(auth())
-      .send(body(1, { goals: [0, 4], white: [1, 0], red: [3, 4] }));
+    const again = await change(
+      g1,
+      'put',
+      body(1, { goals: [0, 4], white: [1, 0], red: [3, 4] }),
+    );
     expect(again.status).toBe(200);
     await expectConsistent(2024);
   });
 
   it('counts a game only while it is published', async () => {
-    const draft = await create(body(10, { status: 'new', goals: [4, 0] }));
+    const draft = await create(body(10, { status: 'draft', goals: [4, 0] }));
     await expectConsistent(2024);
 
-    const publish = await t
-      .api()
-      .patch(`/rest/games/${draft}`)
-      .set(auth())
-      .send({ ...body(10, { goals: [4, 0] }), id: draft });
-    expect(publish.status).toBe(200);
+    expect((await confirmTwice(t, draft)).status).toBe(201);
     await expectConsistent(2024);
 
-    const revoke = await t
-      .api()
-      .patch(`/rest/games/${draft}`)
-      .set(auth())
-      .send({ ...body(10, { status: 'new', goals: [4, 0] }), id: draft });
-    expect(revoke.status).toBe(200);
+    expect((await revokeGame(t, draft)).status).toBe(201);
     await expectConsistent(2024);
   });
 
@@ -167,11 +184,12 @@ describe('API: incremental statistics equal the full recalculation', () => {
 
     // A published game turned into a skipped week stops counting
     const played = await create(body(31, { goals: [3, 0] }));
-    const skip = await t
-      .api()
-      .patch(`/rest/games/${played}`)
-      .set(auth())
-      .send({ ...body(31), status: 'skipped', statistics: [], id: played });
+    const skip = await change(
+      played,
+      'patch',
+      { ...body(31), status: 'skipped', statistics: [] },
+      { publishAgain: false },
+    );
     expect(skip.status).toBe(200);
     await expectConsistent(2024);
     expect(id).toBeTruthy();
@@ -181,11 +199,11 @@ describe('API: incremental statistics equal the full recalculation', () => {
     const id = await create(body(20, { season: 2023, goals: [1, 0] }));
     await expectConsistent(2023);
 
-    const moved = await t
-      .api()
-      .put(`/rest/games/${id}`)
-      .set(auth())
-      .send(body(21, { season: 2025, goals: [1, 0] }));
+    const moved = await change(
+      id,
+      'put',
+      body(21, { season: 2025, goals: [1, 0] }),
+    );
     expect(moved.status).toBe(200);
     await expectConsistent(2023, 2025);
   });

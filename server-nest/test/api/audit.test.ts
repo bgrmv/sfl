@@ -33,7 +33,7 @@ describe('API: the audit log', () => {
       .send(
         gameBody(
           players.map(p => p.id),
-          { number: 11 },
+          { number: 11, status: 'draft' },
         ),
       );
     expect(created.status).toBe(201);

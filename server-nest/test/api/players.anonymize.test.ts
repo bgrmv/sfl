@@ -2,7 +2,7 @@
 import { Types } from 'mongoose';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { bearer, gameBody, isSuccess } from '../helpers/fixtures';
+import { bearer, gameBody, isSuccess, postGame } from '../helpers/fixtures';
 import { createTestApp, TestApp } from '../helpers/test-app';
 
 describe('API: anonymize a player (S8.4)', () => {
@@ -75,11 +75,10 @@ describe('API: anonymize a player (S8.4)', () => {
   it('the games and the statistics of the player stay', async () => {
     const player = await createPlayer('a3');
     const other = await createPlayer('a4');
-    const game = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody([player.id, other.id], { number: 9 }));
+    const game = await postGame(
+      t,
+      gameBody([player.id, other.id], { number: 9 }),
+    );
     expect(isSuccess(game.status)).toBe(true);
 
     await t.api().post(`/rest/players/${player.id}/anonymize`).set(auth());

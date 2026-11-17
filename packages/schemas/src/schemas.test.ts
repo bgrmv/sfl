@@ -5,6 +5,7 @@ import { EnumGameStatus, EnumPlayerPosition, EnumTeamColor } from './enums.js';
 import {
   GAME_RULE_MESSAGES,
   gameInputSchema,
+  gameRevokeSchema,
   gameRuleViolations,
   gameSchema,
   gameUpdateInputSchema,
@@ -512,6 +513,7 @@ describe('openApiSchemas (the document is made from the schemas, S3.19)', () => 
       'ErrorResponse',
       'Game',
       'GameInput',
+      'GameRevoke',
       'GameUpdateInput',
       'Media',
       'MediaInput',
@@ -612,5 +614,17 @@ describe('comments (S10.22)', () => {
     expect(
       commentSchema.safeParse({ id: 'c', gameId, name: 'Pike', text: 'x', status: 'spam' }).success,
     ).toBe(false);
+  });
+});
+
+describe('gameRevokeSchema (S10.35)', () => {
+  it('needs a reason of a few words and trims it', () => {
+    expect(gameRevokeSchema.safeParse({ reason: ' Wrong score ' }).data).toEqual({
+      reason: 'Wrong score',
+    });
+    expect(gameRevokeSchema.safeParse({ reason: ' ' }).success).toBe(false);
+    expect(gameRevokeSchema.safeParse({ reason: 'ab' }).success).toBe(false);
+    expect(gameRevokeSchema.safeParse({ reason: 'x'.repeat(501) }).success).toBe(false);
+    expect(gameRevokeSchema.safeParse({}).success).toBe(false);
   });
 });

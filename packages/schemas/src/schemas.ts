@@ -190,6 +190,12 @@ export const commentModerationSchema = z.object({
 
 // ---- Game --------------------------------------------------------------------
 
+/** A confirmation of a draft: who and when. The public answer has no confirmations. */
+export const gameConfirmationShape = z.object({
+  accountId: z.optional(z.string()),
+  at: z.string(),
+});
+
 /**
  * A game as the server sends it. Dates are ISO strings on the wire. `metadata`
  * is calculated by the server; its shape is typed once the domain package
@@ -204,6 +210,9 @@ export const gameShape = z.object({
   updatedAt: z.optional(z.string()),
   status: z.enum(EnumGameStatus),
   teams: z.array(teamShape),
+  // Only for admins and moderators (S10.35)
+  confirmations: z.optional(z.array(gameConfirmationShape)),
+  revoked: z.optional(z.looseObject({ reason: z.string(), at: z.string() })),
   statistics: z.array(playerStatisticSchema),
   link: z._default(z.string(), ''),
   description: z._default(z.string(), ''),
@@ -316,6 +325,17 @@ export const gameInputSchema = z.object(gameInputFields).check(gameRules);
 export const gameUpdateInputSchema = z
   .object({ id: text, ...gameInputFields })
   .check(gameRules);
+
+/** The reason of a revoke of the publication (S10.35): required, it goes to the log. */
+export const gameRevokeSchema = z.object({
+  reason: z
+    .string()
+    .check(
+      z.trim(),
+      z.minLength(3, 'Write the reason of the revoke'),
+      z.maxLength(500, 'The reason is up to 500 characters'),
+    ),
+});
 
 // ---- Sign in -----------------------------------------------------------------
 

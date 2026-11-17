@@ -38,6 +38,25 @@ export class GameService {
     return this.httpService.put<IGameDTO>(`games/${id}`, game);
   }
 
+  /** The confirmation of the person who asks; the second one of another person publishes (S10.35). */
+  public confirm(id: string): Observable<IGameDTO> {
+    return this.httpService
+      .post<unknown, unknown>(`games/${id}/confirm`)
+      .pipe(checkedResponse(gameSchema, 'POST games/:id/confirm'), asGame);
+  }
+
+  public unconfirm(id: string): Observable<IGameDTO> {
+    return this.httpService
+      .delete<unknown>(`games/${id}/confirm`)
+      .pipe(checkedResponse(gameSchema, 'DELETE games/:id/confirm'), asGame);
+  }
+
+  public revoke(id: string, reason: string): Observable<IGameDTO> {
+    return this.httpService
+      .post<{ reason: string }, unknown>(`games/${id}/revoke`, { reason })
+      .pipe(checkedResponse(gameSchema, 'POST games/:id/revoke'), asGame);
+  }
+
   public delete(id: string) {
     return this.httpService.delete<IGameDTO>(`games/${id}`);
   }

@@ -4,6 +4,7 @@ import {
   createPlayers,
   gameBody,
   isSuccess,
+  postGame,
 } from '../helpers/fixtures';
 
 describe('API: players', () => {
@@ -222,11 +223,7 @@ describe('API: players', () => {
       const [a, b] = await createPlayers(t, 2);
       playerId = a.id;
       // a game with goals gives both players season points for the charts
-      await t
-        .api()
-        .post('/rest/games')
-        .set(auth())
-        .send(gameBody([a.id, b.id], { number: 30, season: 2022 }));
+      await postGame(t, gameBody([a.id, b.id], { number: 30, season: 2022 }));
     });
 
     const PERSONAL = ['@sfl.test', 'Secret'];
@@ -437,11 +434,7 @@ describe('API: players', () => {
 
     it('a player with games cannot be deleted: 409, the records stay', async () => {
       const [a, b] = await createPlayers(t, 2);
-      await t
-        .api()
-        .post('/rest/games')
-        .set(auth())
-        .send(gameBody([a.id, b.id], { number: 31, season: 2021 }));
+      await postGame(t, gameBody([a.id, b.id], { number: 31, season: 2021 }));
 
       const res = await t.api().delete(`/rest/players/${a.id}`).set(auth());
 

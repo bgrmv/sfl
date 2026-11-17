@@ -141,7 +141,7 @@ export const FEATURES = {
     'Comments, votes and the action log (S10.22, S10.35)',
   ),
   'admin.wizard': dummy('Match wizard: 6 steps (S10.26..S10.34)'),
-  'admin.confirm': dummy('Two confirmations and revoke of a game'),
+  'admin.confirm': live('GameService: confirm, take back, revoke (S10.35)'),
   'admin.process': dummy('Queue of old games with notes (S10.40)'),
   'admin.players': live(
     'PlayersStore with the edit and delete dialogs; left: archive (S10.32), account status',

@@ -9,7 +9,13 @@ import {
 } from 'vitest';
 
 import { PlayerMetadataService } from '../../src/entities/statistics';
-import { bearer, createPlayers, gameBody } from '../helpers/fixtures';
+import {
+  bearer,
+  createPlayers,
+  gameBody,
+  postGame,
+  moderator,
+} from '../helpers/fixtures';
 import { createTestApp, TestApp } from '../helpers/test-app';
 
 // S3.5: a game and the metadata of its players are saved in one transaction
@@ -51,38 +57,48 @@ describe('API: a game and its recalculation are atomic', () => {
   it('does not save a created game when the recalculation fails', async () => {
     failRecalculation();
 
-    const res = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody(playerIds, { number: 41 }));
+    const res = await postGame(t, gameBody(playerIds, { number: 41 }));
 
     expect(res.status).toBe(500);
     expect(await games(41)).toHaveLength(0);
   });
 
   it('leaves nothing half-updated when the recalculation fails midway', async () => {
+    // The statistics of the players change when the second confirmation publishes the game
+    const created = await postGame(
+      t,
+      gameBody(playerIds, { number: 42, status: 'draft' }),
+    );
+    const id = created.body.data.id;
+    await t
+      .api()
+      .post(`/rest/games/${id}/confirm`)
+      .set('Authorization', bearer(t));
     failOnSecondPlayerWrite();
 
     const res = await t
       .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody(playerIds, { number: 42 }));
+      .post(`/rest/games/${id}/confirm`)
+      .set('Authorization', moderator(t));
 
     expect(res.status).toBe(500);
-    expect(await games(42)).toHaveLength(0);
+    const [stored] = await games(42);
+    expect(stored.status).toBe('draft');
+    expect(stored.confirmations).toHaveLength(1);
     expect((await player(playerIds[0])).metadata?.bySeason?.['2024']).toBe(
       undefined,
     );
   });
 
   it('keeps the previous game when the update recalculation fails', async () => {
-    const created = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody(playerIds, { number: 43, description: 'before' }));
+    const created = await postGame(
+      t,
+      gameBody(playerIds, {
+        number: 43,
+        status: 'draft',
+        description: 'before',
+      }),
+    );
     expect(created.status).toBe(201);
     const id = created.body.data.id;
 
@@ -91,18 +107,17 @@ describe('API: a game and its recalculation are atomic', () => {
       .api()
       .put(`/rest/games/${id}`)
       .set(auth())
-      .send({ ...gameBody(playerIds, { number: 43 }), description: 'after' });
+      .send({
+        ...gameBody(playerIds, { number: 43, status: 'draft' }),
+        description: 'after',
+      });
 
     expect(res.status).toBe(500);
     expect((await games(43))[0].description).toBe('before');
   });
 
   it('keeps the game when the recalculation after a delete fails', async () => {
-    const created = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody(playerIds, { number: 44 }));
+    const created = await postGame(t, gameBody(playerIds, { number: 44 }));
     const id = created.body.data.id;
 
     failRecalculation();
@@ -113,11 +128,10 @@ describe('API: a game and its recalculation are atomic', () => {
   });
 
   it('answers 404, not 500, when the game is deleted during an update', async () => {
-    const created = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody(playerIds, { number: 47 }));
+    const created = await postGame(
+      t,
+      gameBody(playerIds, { number: 47, status: 'draft' }),
+    );
     const id = created.body.data.id;
     vi.spyOn(t.model('Game'), 'findOneAndUpdate').mockReturnValue({
       session: () => ({ exec: async () => null }),
@@ -127,17 +141,13 @@ describe('API: a game and its recalculation are atomic', () => {
       .api()
       .patch(`/rest/games/${id}`)
       .set(auth())
-      .send({ ...gameBody(playerIds, { number: 47 }), id });
+      .send({ ...gameBody(playerIds, { number: 47, status: 'draft' }), id });
 
     expect(res.status).toBe(404);
   });
 
   it('commits both when everything succeeds', async () => {
-    const res = await t
-      .api()
-      .post('/rest/games')
-      .set(auth())
-      .send(gameBody(playerIds, { number: 45 }));
+    const res = await postGame(t, gameBody(playerIds, { number: 45 }));
 
     expect(res.status).toBe(201);
     expect(await games(45)).toHaveLength(1);
@@ -162,11 +172,7 @@ describe('API: a game and its recalculation are atomic', () => {
         );
 
     it('repairs the metadata of the season and is idempotent', async () => {
-      await t
-        .api()
-        .post('/rest/games')
-        .set(auth())
-        .send(gameBody(playerIds, { number: 46 }));
+      await postGame(t, gameBody(playerIds, { number: 46 }));
       await tamper();
 
       const first = await full();

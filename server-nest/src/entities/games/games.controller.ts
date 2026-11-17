@@ -5,12 +5,14 @@ import {
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Put,
   Query,
+  Req,
   UsePipes,
 } from '@nestjs/common';
 import {
@@ -21,16 +23,42 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { openApiRef } from '@sfl/schemas';
+import { gameRevokeSchema, openApiRef } from '@sfl/schemas';
+import type { Request } from 'express';
 import { Public } from 'src/shared/decorators/public.decorator';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { ObjectIdPipe } from 'src/shared/pipes/object-id.pipe';
+import { EnumRole } from '../roles/constants';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
-import { IGame } from './game.schema';
+import { EnumGameStatus, IGame } from './game.schema';
 import {
   DEFAULT_GAMES_LIMIT,
   GamesService,
   MAX_GAMES_LIMIT,
 } from './games.service';
+
+/** Admins and moderators work with drafts; everybody else sees only published games (S10.35). */
+const canSeeDrafts = (req: Request): boolean =>
+  ((req as { user?: { roles?: string[] } }).user?.roles ?? []).some(role =>
+    [EnumRole.Admin, EnumRole.Moderator].includes(role as EnumRole),
+  );
+
+const accountOf = (req: Request): string =>
+  String((req as { user?: { _id?: string } }).user?._id);
+
+/** Who confirmed and why a game was revoked is for the people who work with the game. */
+function present(game: object | null, privileged: boolean) {
+  if (!game) return game;
+  const json = (
+    'toJSON' in game && typeof game.toJSON === 'function' ? game.toJSON() : game
+  ) as Record<string, unknown>;
+  if (privileged) return json;
+  const { confirmations, revoked, ...rest } = json;
+  void confirmations;
+  void revoked;
+  return rest;
+}
 
 @ApiTags('games')
 @Controller('games')
@@ -69,6 +97,7 @@ export class GamesController {
     limit?: number | undefined,
     @Query('offset', new ParseIntPipe({ optional: true }))
     offset?: number | undefined,
+    @Req() req?: Request,
   ) {
     if (
       (limit !== undefined && (limit < 1 || limit > MAX_GAMES_LIMIT)) ||
@@ -79,13 +108,17 @@ export class GamesController {
       );
     }
 
-    return await this.gamesService.find(
+    const privileged = canSeeDrafts(req!);
+    const games = await this.gamesService.find(
       {
         ...(number ? { number } : null),
         ...(season ? { season } : null),
+        // The public list is the published games (S10.35)
+        ...(privileged ? null : { status: EnumGameStatus.Published }),
       },
       { limit, offset },
     );
+    return games.map(game => present(game, privileged));
   }
 
   @Public()
@@ -98,8 +131,15 @@ export class GamesController {
   async findById(
     @Param('id')
     id: string,
+    @Req() req: Request,
   ) {
-    return await this.gamesService.findById(id);
+    const privileged = canSeeDrafts(req);
+    const game = await this.gamesService.findById(id);
+    // A draft does not exist for the public
+    if (!privileged && game && game.status !== EnumGameStatus.Published) {
+      throw new NotFoundException('Game is not found');
+    }
+    return present(game, privileged);
   }
 
   @Post()
@@ -137,6 +177,38 @@ export class GamesController {
     @Body(new ZodValidationPipe(SaveGameDTO)) game: IGame,
   ) {
     return await this.gamesService.replace(id, game);
+  }
+
+  // The confirmation of a draft: two different people publish it (S10.35, GLOSSARY)
+  @Post(':id/confirm')
+  @Roles(EnumRole.Admin, EnumRole.Moderator)
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The game with the confirmation; the second one publishes it',
+  })
+  async confirm(@Param('id', ObjectIdPipe) id: string, @Req() req: Request) {
+    return present(await this.gamesService.confirm(id, accountOf(req)), true);
+  }
+
+  @Delete(':id/confirm')
+  @Roles(EnumRole.Admin, EnumRole.Moderator)
+  async unconfirm(@Param('id', ObjectIdPipe) id: string, @Req() req: Request) {
+    return present(await this.gamesService.unconfirm(id, accountOf(req)), true);
+  }
+
+  // Admin only by default: the publication goes back to a draft, the reason is kept
+  @Post(':id/revoke')
+  @ApiBody({ schema: openApiRef('GameRevoke') })
+  async revoke(
+    @Param('id', ObjectIdPipe) id: string,
+    @Body(new ZodValidationPipe(gameRevokeSchema))
+    { reason }: { reason: string },
+    @Req() req: Request,
+  ) {
+    return present(
+      await this.gamesService.revoke(id, accountOf(req), reason),
+      true,
+    );
   }
 
   @Delete(':id')
