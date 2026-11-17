@@ -1,4 +1,4 @@
-# Тема «Табло» и UI-kit клиента
+# Тема «Табло» и SFL UI Kit клиента
 
 Тема заменила prebuilt-тему Angular Material (`deeppurple-amber`). Макеты: [canvas/](canvas/README.md), обзор: [feature-review.md](feature-review.md).
 
@@ -40,7 +40,7 @@ Angular Material остаётся только как слой поведени�
 
 **Система счёта выбирается в шапке** (принцип P14, доска `SystemSelect`). Выбор хранит `RatingSystemStore` (`shared/store/rating-system.store.ts`, запоминается в браузере); страницы с рейтингом читают его и своих переключателей не имеют.
 
-## UI-kit (`client/src/shared/ui/kit`)
+## SFL UI Kit (`client/src/shared/ui/kit`)
 
 Подключение: `imports: [...KIT]`. Состав: `sflBtn`, `sfl-card`, `sfl-badge`, `sfl-avatar`, `sfl-form-dots`, `sfl-stat`, `sfl-segmented`, `sfl-page-head`, `sfl-state`, `sfl-split-bar`, `sfl-section`, таблицы (`th[sflSortKey]`, `sfl-filter-bar`, `sfl-sort-select`), `sfl-flip-digits` и `sfl-season-ribbon` ([описание](flip-board-and-ribbon.md)), графики `sfl-sparkline`, `sfl-bars`, `sfl-radar`, `sfl-pitch`, `sfl-scoreboard`, `sfl-month`, значки `sfl-icon`. Каждому графику заданы `role="img"` и текстовая альтернатива; цвет не единственный носитель смысла (W/D/L буквами). Глобальные утилиты (`k-page`, `k-grid`, `k-table`, `k-input`…) — `assets/styles/kit.scss`.
 
