@@ -111,7 +111,7 @@ flowchart LR
 | Эпик 0 — Hotfix безопасности текущего прода     | [E00-security-hotfix/](E00-security-hotfix/)         |  7 (1 отменена)  |
 | Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 13 (2 отменены)  |
 | Эпик 2 — Тесты и CI                             | [E02-tests-ci/](E02-tests-ci/)                       |        8         |
-| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        28        |
+| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        29        |
 | Эпик 4 — Spike и проектирование переезда        | [E04-migration-design/](E04-migration-design/)       |  4 (1 отменена)  |
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
@@ -122,7 +122,7 @@ flowchart LR
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 197, из них отменено: 18.
+Всего историй: 198, из них отменено: 18.
 
 ---
 
@@ -200,7 +200,8 @@ flowchart LR
 |   ✅   | [S3.25](E03-architecture/S3.25.md) | Стор капитанов без дубля списка игроков                                  |    P2     |   S    | [S3.22](E03-architecture/S3.22.md), [S3.7](E03-architecture/S3.7.md)        |
 |   ❌   | [S3.26](E03-architecture/S3.26.md) | Steiger как проверка структуры FSD                                       |    P3     |   S    | [S3.8](E03-architecture/S3.8.md)                                            |
 |   ✅   | [S3.27](E03-architecture/S3.27.md) | Инкрементальный пересчёт статистики и проверочный полный пересчёт        |    P2     |   L    | [S3.1](E03-architecture/S3.1.md), [S3.5](E03-architecture/S3.5.md)          |
-|   ❌   | [S3.28](E03-architecture/S3.28.md) | Повторяющиеся блоки клиента: вынести в `entities/*/ui` и `shared/ui/kit` |    P2     |   M    | [S3.17](E03-architecture/S3.17.md), [S3.8](E03-architecture/S3.8.md)        |
+|   ✅   | [S3.28](E03-architecture/S3.28.md) | Повторяющиеся блоки клиента: вынести в `entities/*/ui` и `shared/ui/kit` |    P2     |   M    | [S3.17](E03-architecture/S3.17.md), [S3.8](E03-architecture/S3.8.md)        |
+|   ❌   | [S3.29](E03-architecture/S3.29.md) | Шапка игрока и карточка рейтинга: вынести в общие блоки клиента          |    P3     |   M    | [S3.28](E03-architecture/S3.28.md)                                          |
 
 ## Эпик 4 — Spike и проектирование переезда
 

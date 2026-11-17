@@ -845,7 +845,7 @@
     "PlayerChip.dc.html": {
       "expand": "fill",
       "h": 1500,
-      "title": "Строка игрока 1280 · тёмная",
+      "title": "PlayerChip · Строка игрока 1280 · тёмная",
       "w": 1280,
       "x": 0,
       "y": 104000
@@ -853,7 +853,7 @@
     "PlayerChipPhone.dc.html": {
       "expand": "fill",
       "h": 2600,
-      "title": "Строка игрока 360 · тёмная",
+      "title": "PlayerChip · Строка игрока 360 · тёмная",
       "w": 360,
       "x": 1360,
       "y": 104000
@@ -861,7 +861,7 @@
     "CaptainsDuel.dc.html": {
       "expand": "fill",
       "h": 1900,
-      "title": "Битва капитанов 1280 · тёмная",
+      "title": "CaptainsDuel · Битва капитанов 1280 · тёмная",
       "w": 1280,
       "x": 0,
       "y": 107000
@@ -869,7 +869,7 @@
     "CaptainsDuelPhone.dc.html": {
       "expand": "fill",
       "h": 3200,
-      "title": "Битва капитанов 360 · тёмная",
+      "title": "CaptainsDuel · Битва капитанов 360 · тёмная",
       "w": 360,
       "x": 1360,
       "y": 107000
@@ -877,7 +877,7 @@
     "CaptainsPoster.dc.html": {
       "expand": "fill",
       "h": 2300,
-      "title": "Афиша боя 1280 · тёмная",
+      "title": "CaptainsPoster · Афиша боя 1280 · тёмная",
       "w": 1280,
       "x": 0,
       "y": 110800
@@ -885,7 +885,7 @@
     "CaptainsPosterPhone.dc.html": {
       "expand": "fill",
       "h": 5200,
-      "title": "Афиша боя 360 · тёмная",
+      "title": "CaptainsPoster · Афиша боя 360 · тёмная",
       "w": 360,
       "x": 1360,
       "y": 110800
