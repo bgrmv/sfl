@@ -14,7 +14,6 @@ import {
   lastPlayedGame,
   seasonSaturdays,
   formLetters,
-  initials,
   numberCards,
   playedSeasons,
   pointsPerGame,
@@ -23,6 +22,7 @@ import {
   seasonMetadata,
   signed,
   PlayerChipComponent,
+  PlayerHeaderComponent,
 } from '@entities/player';
 import { getTotalWeeksBySeason } from '@shared/lib/date';
 import { seasonKeyOf, seasonLabel } from '@shared/lib/season-label';
@@ -37,7 +37,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-player-board-page',
-  imports: [PlayerChipComponent, RouterLink, ...KIT],
+  imports: [PlayerChipComponent, PlayerHeaderComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PlayersService, PlayersStatsStore],
   styles: `
@@ -106,25 +106,23 @@ import { KIT } from '@shared/ui/kit';
           class="k-row"
           style="gap: 20px"
         >
-          <sfl-avatar
-            [text]="ini()"
+          <sfl-player-header
+            class="k-grow"
+            [name]="p.nickname"
             [size]="96"
             [accent]="true"
-          />
-          <div class="k-grow">
-            <h1>{{ p.nickname }}</h1>
-            <div class="k-row">
-              @if (p.number) {
-                <span>№ {{ p.number }}</span>
-              }
-              @if (p.isCaptain) {
-                <sfl-badge tone="accent">Captain</sfl-badge>
-              }
-              <sfl-badge>
-                {{ career()?.totalGames ?? 0 }} days in the league
-              </sfl-badge>
-            </div>
-          </div>
+            [level]="1"
+          >
+            @if (p.number) {
+              <span>№ {{ p.number }}</span>
+            }
+            @if (p.isCaptain) {
+              <sfl-badge tone="accent">Captain</sfl-badge>
+            }
+            <sfl-badge>
+              {{ career()?.totalGames ?? 0 }} days in the league
+            </sfl-badge>
+          </sfl-player-header>
           <div class="k-row">
             <sfl-stat
               [label]="'Points · ' + season()"
@@ -548,9 +546,6 @@ export class PlayerBoardPageComponent {
 
   protected readonly player = computed(
     () => this.store.playersEntities().find(p => p.id === this.id()) ?? null,
-  );
-  protected readonly ini = computed(() =>
-    initials(this.player()?.nickname ?? ''),
   );
   protected readonly tabs = computed(() =>
     this.player()?.isCaptain ? ['Player', 'As captain'] : ['Player'],

@@ -3,9 +3,10 @@ import { RouterLink } from '@angular/router';
 import { KIT } from '@shared/ui/kit';
 
 /** DUMMY (connect.pages): landing, login, expired, done: one component with a step switch. Token check is S8.13. */
+import { PlayerHeaderComponent } from '@entities/player';
 @Component({
   selector: 'sfl-connect-page',
-  imports: [RouterLink, ...KIT],
+  imports: [PlayerHeaderComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -25,18 +26,18 @@ import { KIT } from '@shared/ui/kit';
             flag="connect.pages"
             title="Link your account"
           >
-            <div class="k-row">
-              <sfl-avatar
-                text="LY"
-                [size]="56"
-                [accent]="true"
-              />
-              <div>
-                <span class="k-eyebrow">This is your player</span>
-                <h2>Lynx</h2>
-                <span class="k-muted k-small">№ 7 · Midfielder · 79 days</span>
-              </div>
-            </div>
+            <sfl-player-header
+              name="Lynx"
+              [accent]="true"
+            >
+              <span
+                class="k-eyebrow"
+                header-eyebrow
+              >
+                This is your player
+              </span>
+              № 7 · Midfielder · 79 days
+            </sfl-player-header>
             <button
               sflBtn
               type="button"

@@ -12,6 +12,7 @@ import {
   rankingRows,
   signed,
   type RankingRow,
+  PlayerHeaderComponent,
 } from '@entities/player';
 import { seasonKeyOf, seasonLabel } from '@shared/lib/season-label';
 import { RatingSystemStore } from '@shared/store/rating-system.store';
@@ -24,7 +25,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-compare-people-page',
-  imports: [...KIT],
+  imports: [PlayerHeaderComponent, ...KIT],
   providers: [PlayersService, PlayersStatsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -74,19 +75,12 @@ import { KIT } from '@shared/ui/kit';
                 </select>
               </div>
               @if (side.row; as r) {
-                <div class="k-row">
-                  <sfl-avatar
-                    [text]="r.ini"
-                    [size]="56"
-                    [accent]="side.key === 'a'"
-                  />
-                  <div>
-                    <h2>{{ r.name }}</h2>
-                    <span class="k-muted k-small">
-                      {{ r.no ? '№ ' + r.no : '' }}
-                    </span>
-                  </div>
-                </div>
+                <sfl-player-header
+                  [name]="r.name"
+                  [accent]="side.key === 'a'"
+                >
+                  {{ r.no ? '№ ' + r.no : '' }}
+                </sfl-player-header>
               }
             </sfl-card>
           }

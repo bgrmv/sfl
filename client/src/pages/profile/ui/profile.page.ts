@@ -7,9 +7,10 @@ import { KIT } from '@shared/ui/kit';
  * Profile. LIVE (profile.account): the signed-in user from AuthService. DUMMY (profile.page): the
  * account-player link, providers, preferences and data export are S8.13/S10.17; buttons do nothing yet.
  */
+import { PlayerHeaderComponent } from '@entities/player';
 @Component({
   selector: 'sfl-profile-page',
-  imports: [RouterLink, ...KIT],
+  imports: [PlayerHeaderComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -49,18 +50,18 @@ import { KIT } from '@shared/ui/kit';
         flag="profile.page"
         title="My player"
       >
-        <div class="k-row">
-          <sfl-avatar
-            text="FA"
-            [size]="56"
-            [accent]="true"
-          />
-          <div class="k-grow">
-            <b class="k-head">Falcon</b>
-            <div class="k-muted k-small">№ 9 · Forward · Captain · 83 days</div>
-          </div>
-          <sfl-badge tone="accent">Linked</sfl-badge>
-        </div>
+        <sfl-player-header
+          name="Falcon"
+          [accent]="true"
+        >
+          № 9 · Forward · Captain · 83 days
+          <sfl-badge
+            header-aside
+            tone="accent"
+          >
+            Linked
+          </sfl-badge>
+        </sfl-player-header>
         <div class="k-row">
           <a
             sflBtn

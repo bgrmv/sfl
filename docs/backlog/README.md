@@ -118,11 +118,11 @@ flowchart LR
 | Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        9         |
 | Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        13        |
 | Эпик 9 — Наблюдаемость                          | [E09-observability/](E09-observability/)             |        2         |
-| Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        78        |
+| Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        79        |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 198, из них отменено: 18.
+Всего историй: 199, из них отменено: 18.
 
 ---
 
@@ -201,7 +201,7 @@ flowchart LR
 |   ❌   | [S3.26](E03-architecture/S3.26.md) | Steiger как проверка структуры FSD                                       |    P3     |   S    | [S3.8](E03-architecture/S3.8.md)                                            |
 |   ✅   | [S3.27](E03-architecture/S3.27.md) | Инкрементальный пересчёт статистики и проверочный полный пересчёт        |    P2     |   L    | [S3.1](E03-architecture/S3.1.md), [S3.5](E03-architecture/S3.5.md)          |
 |   ✅   | [S3.28](E03-architecture/S3.28.md) | Повторяющиеся блоки клиента: вынести в `entities/*/ui` и `shared/ui/kit` |    P2     |   M    | [S3.17](E03-architecture/S3.17.md), [S3.8](E03-architecture/S3.8.md)        |
-|   ❌   | [S3.29](E03-architecture/S3.29.md) | Шапка игрока и карточка рейтинга: вынести в общие блоки клиента          |    P3     |   M    | [S3.28](E03-architecture/S3.28.md)                                          |
+|   ✅   | [S3.29](E03-architecture/S3.29.md) | Шапка игрока и карточка рейтинга: вынести в общие блоки клиента          |    P3     |   M    | [S3.28](E03-architecture/S3.28.md)                                          |
 
 ## Эпик 4 — Spike и проектирование переезда
 
@@ -368,6 +368,7 @@ flowchart LR
 |   ❌   | [S10.76](E10-product-features/S10.76.md) | Главный блок главной: капитан против капитана в стиле UFC                               |    P2     |   M    | [S10.60](E10-product-features/S10.60.md), [S10.56](E10-product-features/S10.56.md), [S3.28](E03-architecture/S3.28.md)                                                                                           |
 |   ❌   | [S10.77](E10-product-features/S10.77.md) | Афиша боя: два капитана лицом к лицу, статистика и шансы на победу                      |    P2     |   L    | [S10.76](E10-product-features/S10.76.md), [S10.25](E10-product-features/S10.25.md)                                                                                                                               |
 |   ❌   | [S10.78](E10-product-features/S10.78.md) | OpenGraph: превью ссылок на сайт в мессенджерах и соцсетях                              |    P3     |   M    | [S10.77](E10-product-features/S10.77.md), [S8.10](E08-security-privacy/S8.10.md)                                                                                                                                 |
+|   ❌   | [S10.79](E10-product-features/S10.79.md) | Идея: MVP матча по голосу зрительских симпатий (не в работе)                            |    P4     |   —    | —                                                                                                                                                                                                                |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 

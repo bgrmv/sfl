@@ -6,7 +6,6 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import {
   PlayersService,
   PlayersStatsStore,
@@ -14,6 +13,7 @@ import {
   rankingRows,
   signed,
   PlayerChipComponent,
+  RatingCardComponent,
 } from '@entities/player';
 import { seasonKeyOf, seasonLabel } from '@shared/lib/season-label';
 import { TableQuery } from '@shared/lib/table-query';
@@ -26,7 +26,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-players-board-page',
-  imports: [PlayerChipComponent, RouterLink, FormsModule, ...KIT],
+  imports: [PlayerChipComponent, RatingCardComponent, FormsModule, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PlayersService, PlayersStatsStore],
   template: `
@@ -237,23 +237,12 @@ import { KIT } from '@shared/ui/kit';
         } @else {
           <div class="k-grid">
             @for (r of rows(); track r.id) {
-              <a
-                class="k-btn k-btn--ghost"
-                style="height:auto;padding:12px;display:block;text-align:left;white-space:normal"
-                [routerLink]="['/players', r.id]"
+              <sfl-rating-card
+                [rank]="r.rank"
+                [playerId]="r.id"
+                [name]="r.name"
+                [value]="r.pts"
               >
-                <div class="k-row k-between">
-                  <span class="k-row">
-                    <sfl-avatar [text]="r.ini" />
-                    <b class="k-head">{{ r.rank }}. {{ r.name }}</b>
-                  </span>
-                  <b
-                    class="k-head"
-                    style="font-size:24px"
-                  >
-                    {{ r.pts }}
-                  </b>
-                </div>
                 <div class="k-muted k-small">
                   {{ r.no ? '№ ' + r.no + ' · ' : '' }}{{ r.days }} days · MVP
                   {{ r.mvp }}
@@ -263,7 +252,7 @@ import { KIT } from '@shared/ui/kit';
                   Goals {{ r.goals }} · Pass {{ r.passes }} · +/−
                   {{ signed(r.pm) }} · LR {{ signed(r.lr) }}
                 </div>
-              </a>
+              </sfl-rating-card>
             }
           </div>
         }

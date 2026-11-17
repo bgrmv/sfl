@@ -16,6 +16,7 @@ import {
   ratingOf,
   seasonMetadata,
   signed,
+  RatingCardComponent,
 } from '@entities/player';
 import { seasonKeyOf, seasonLabel } from '@shared/lib/season-label';
 import { TableQuery } from '@shared/lib/table-query';
@@ -29,7 +30,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-captains-board-page',
-  imports: [RouterLink, ...KIT],
+  imports: [RatingCardComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PlayersService, PlayersStatsStore],
   template: `
@@ -103,20 +104,17 @@ import { KIT } from '@shared/ui/kit';
         } @else if (view() === 'Cards') {
           <div class="k-grid">
             @for (r of rows(); track r.id) {
-              <div class="k-callout">
-                <div class="k-row k-between">
-                  <span class="k-row">
-                    <sfl-avatar [text]="r.ini" />
-                    <b class="k-head">{{ r.name }}</b>
-                    <sfl-badge tone="accent">C</sfl-badge>
-                  </span>
-                  <b
-                    class="k-head"
-                    style="font-size: 28px"
-                  >
-                    {{ r.rate }}%
-                  </b>
-                </div>
+              <sfl-rating-card
+                [playerId]="r.id"
+                [name]="r.name"
+                [value]="r.rate + '%'"
+              >
+                <sfl-badge
+                  card-badge
+                  tone="accent"
+                >
+                  C
+                </sfl-badge>
                 <div class="k-small k-muted">
                   {{ r.no ? '№ ' + r.no + ' · ' : '' }}win rate ·
                   {{ r.games }} games as captain
@@ -131,7 +129,7 @@ import { KIT } from '@shared/ui/kit';
                   {{ signed(r.pm) }} · Best streak {{ r.streak }}
                 </div>
                 <sfl-form-dots [form]="r.form" />
-              </div>
+              </sfl-rating-card>
             }
           </div>
         } @else {
