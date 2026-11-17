@@ -42,7 +42,7 @@ Angular Material остаётся только как слой поведени�
 
 ## SFL UI Kit (`client/src/shared/ui/kit`)
 
-Подключение: `imports: [...KIT]`. Состав: `sflBtn`, `sfl-card`, `sfl-badge`, `sfl-avatar`, `sfl-form-dots`, `sfl-stat`, `sfl-segmented`, `sfl-page-head`, `sfl-state`, `sfl-split-bar`, `sfl-section`, таблицы (`th[sflSortKey]`, `sfl-filter-bar`, `sfl-sort-select`), `sfl-flip-digits` и `sfl-season-ribbon` ([описание](flip-board-and-ribbon.md)), графики `sfl-sparkline`, `sfl-bars`, `sfl-radar`, `sfl-pitch`, `sfl-scoreboard`, `sfl-month`, значки `sfl-icon`. Каждому графику заданы `role="img"` и текстовая альтернатива; цвет не единственный носитель смысла (W/D/L буквами). Глобальные утилиты (`k-page`, `k-grid`, `k-table`, `k-input`…) — `assets/styles/kit.scss`.
+Подключение: `imports: [...KIT]`. Состав: `sflBtn`, `sfl-card`, `sfl-badge`, `sfl-avatar`, `sfl-form-dots`, `sfl-stat`, `sfl-segmented`, `sfl-page-head`, `sfl-state`, `sfl-split-bar`, `sfl-section`, таблицы (`th[sflSortKey]`, `sfl-filter-bar`, `sfl-sort-select`), `sfl-flip-digits` и `sfl-season-ribbon` ([описание](flip-board-and-ribbon.md)), графики `sfl-sparkline`, `sfl-bars`, `sfl-radar`, `sfl-pitch`, `sfl-scoreboard`, `sfl-month`, значки `sfl-icon`. Блок с данными игрока `sfl-player-chip` живёт не в kit, а в `entities/player/ui` ([ADR 0016](../adr/0016-client-fsd-layers-and-cross-imports.md), п. 7). Каждому графику заданы `role="img"` и текстовая альтернатива; цвет не единственный носитель смысла (W/D/L буквами). Глобальные утилиты (`k-page`, `k-grid`, `k-table`, `k-input`…) — `assets/styles/kit.scss`.
 
 ## Feature flags блоков
 
@@ -67,16 +67,17 @@ Angular Material остаётся только как слой поведени�
 
 Статус на 2026-11-16. «Сверено по значениям» значит: порядок блоков, заголовки, ширина, отступы и размеры шрифтов сведены с доской по её разметке. Глазами в браузере сверку не проводили: в контейнере нет браузера, это делает владелец ([S10.73](../backlog/E10-product-features/S10.73.md)).
 
-| Доска                                             | Страница клиента           | Статус                                                                    |
-| ------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------- |
-| `Home`, `Footer`, `SystemSelect`                  | шапка, подвал, `/home`     | сверено по значениям                                                      |
-| `Games`                                           | `/games`                   | сверено; в доске список строк, в клиенте таблица (нужна сортировка)       |
-| `Game`                                            | `/games/details/…`         | сверено по значениям; щиты команд не нарисованы                           |
-| `Players`, `PlayersCards`                         | `/players`                 | сверено по значениям                                                      |
-| `Player`, `PlayerCaptain`, `PlayerTable`          | `/players/:id`             | сверено по значениям; вид «Table» чисел не сделан                         |
-| `CaptainsList`, `CaptainsTable`, `CaptainsMatrix` | `/captains`                | сверено по значениям                                                      |
-| `SignIn`                                          | `/sign-in`                 | сверено по значениям                                                      |
-| `Dashboard`, `AdminPlayers`                       | `/admin`, `/admin/players` | сверено по значениям (сайдбар, карточки, цепочка статусов)                |
-| `Season`, `Calendar`                              | `/seasons`, `/calendar`    | только общие размеры и токены                                             |
-| остальные публичные и админские доски             | остальные страницы         | только общие размеры и токены; блоки dummy, сверка вместе с S10.56–S10.72 |
-| `FlipBoard`, `SeasonRibbon`                       | kit, главная, матч, игры   | доски нарисованы по коду; в артефакт на claude.ai не загружены            |
+| Доска                                             | Страница клиента            | Статус                                                                    |
+| ------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------- |
+| `Home`, `Footer`, `SystemSelect`                  | шапка, подвал, `/home`      | сверено по значениям                                                      |
+| `Games`                                           | `/games`                    | сверено; в доске список строк, в клиенте таблица (нужна сортировка)       |
+| `Game`                                            | `/games/details/…`          | сверено по значениям; щиты команд не нарисованы                           |
+| `Players`, `PlayersCards`                         | `/players`                  | сверено по значениям                                                      |
+| `Player`, `PlayerCaptain`, `PlayerTable`          | `/players/:id`              | сверено по значениям; вид «Table» чисел не сделан                         |
+| `CaptainsList`, `CaptainsTable`, `CaptainsMatrix` | `/captains`                 | сверено по значениям                                                      |
+| `SignIn`                                          | `/sign-in`                  | сверено по значениям                                                      |
+| `Dashboard`, `AdminPlayers`                       | `/admin`, `/admin/players`  | сверено по значениям (сайдбар, карточки, цепочка статусов)                |
+| `Season`, `Calendar`                              | `/seasons`, `/calendar`     | только общие размеры и токены                                             |
+| остальные публичные и админские доски             | остальные страницы          | только общие размеры и токены; блоки dummy, сверка вместе с S10.56–S10.72 |
+| `FlipBoard`, `SeasonRibbon`                       | kit, главная, матч, игры    | доски нарисованы по коду; в артефакт на claude.ai не загружены            |
+| `PlayerChip`                                      | строки игроков на страницах | доска нарисована по коду; в артефакт на claude.ai не загружена            |

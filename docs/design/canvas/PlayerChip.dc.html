@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Player chip</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; padding: 20px; display: flex; flex-direction: column; gap: 28px;">
+
+  <header style="display: flex; flex-direction: column; gap: 6px; max-width: 70ch;">
+    <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Player chip</h1>
+    <p style="margin: 0; color: {{t.muted}};">One way to show a person in a row or a list: initials, name, shirt number and an optional second line. It replaces five hand-made copies on the pages (code: <code>sfl-player-chip</code>, story S3.28).</p>
+  </header>
+
+  <section aria-labelledby="pc1" style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 id="pc1" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">1 · Variants</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+      <sc-for list="{{variants}}" as="v" hint-placeholder-count="6">
+        <div style="flex: 1 1 240px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+            <span aria-hidden="true" style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: {{v.size}}px; height: {{v.size}}px; border-radius: 4px; background: {{v.avBg}}; color: {{v.avColor}}; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: {{v.fs}}px; letter-spacing: 0.04em;">{{v.ini}}</span>
+            <span style="min-width: 0;">
+              <span style="font-weight: {{v.weight}}; color: {{v.nameColor}}; text-decoration: {{v.deco}};">{{v.name}}</span>
+              <span style="display: block; min-height: 1.5em; line-height: 1.5; font-size: 13px; color: {{t.muted}};">{{v.sub}}</span>
+            </span>
+          </div>
+          <h3 style="margin: 0; font-size: 16px; font-weight: 700;">{{v.title}}</h3>
+          <p style="margin: 0; font-size: 13px; color: {{t.muted}};">{{v.text}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-labelledby="pc2" style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 id="pc2" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">2 · In a list</h2>
+    <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; max-width: 520px;">
+      <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 4px;">Best rivals</div>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+          <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid {{t.border}};">
+            <span aria-hidden="true" style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 4px; background: {{t.surface2}}; color: {{t.muted}}; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px;">{{r.ini}}</span>
+            <span style="flex: 1 1 auto; min-width: 0;">{{r.name}}</span>
+            <span style="font-size: 13px; color: {{t.muted}};">{{r.rec}}</span>
+            <b>{{r.pct}}</b>
+          </li>
+        </sc-for>
+      </ul>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: {{t.muted}};">The chip takes the left, growing part of the row; values on the right belong to the page, not to the chip.</p>
+  </section>
+
+  <section aria-labelledby="pc3" style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 id="pc3" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">3 · Next blocks to extract (proposal)</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start;">
+      <div style="flex: 1 1 320px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span aria-hidden="true" style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 4px; background: {{t.accent}}; color: {{t.onAccent}}; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 21px;">FA</span>
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <h4 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Falcon</h4>
+            <span style="font-size: 13px; color: {{t.muted}};">№ 9 · Forward · 83 days</span>
+          </div>
+          <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: {{t.accent}}; color: {{t.onAccent}}; border-radius: 999px; padding: 1px 10px;">Linked</span>
+        </div>
+        <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Player header</h3>
+        <p style="margin: 0; font-size: 13px; color: {{t.muted}};">Large avatar, heading, one line of facts, an optional badge or button on the right. Now hand-made on the player page (96 px), compare, profile and connect.</p>
+      </div>
+      <div style="flex: 1 1 320px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="border-left: 3px solid {{t.accent}}; background: {{t.bg}}; padding: 12px 16px; border-radius: 0 4px 4px 0; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 12px;">
+              <span aria-hidden="true" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 4px; background: {{t.surface2}}; color: {{t.muted}}; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px;">WO</span>
+              <b style="font-family: 'Oswald', sans-serif; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;">2. Wolf</b>
+            </span>
+            <b style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px;">412</b>
+          </div>
+          <span style="font-size: 13px; color: {{t.muted}};">№ 4 · 79 days</span>
+        </div>
+        <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Rating card</h3>
+        <p style="margin: 0; font-size: 13px; color: {{t.muted}};">Chip on the left, the main number on the right, a line of details below. Now on the players and captains pages in the Cards view.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="pc4" style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 id="pc4" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">4 · Rules</h2>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: {{t.muted}}; display: flex; flex-direction: column; gap: 4px; max-width: 80ch;">
+      <sc-for list="{{rules}}" as="r" hint-placeholder-count="5"><li>{{r}}</li></sc-for>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":1250}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', link: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', link: '#15130F' };
+    const base = { avBg: t.surface2, avColor: t.muted, nameColor: t.text, weight: 400, deco: 'none', size: 32, fs: 12 };
+    const variants = [
+      { ...base, ini: 'FA', name: 'Falcon', sub: '№ 9', weight: 700, nameColor: t.link, title: 'Table cell', text: '32 px, bold name as a link to the player page, the number on the second line. The second line keeps its height even when empty, so rows of a table stay equal.' },
+      { ...base, ini: 'WO', name: 'Wolf', sub: '', size: 40, fs: 15, nameColor: t.link, title: 'List row, 40 px', text: 'Link without bold and without a number: MVP of a game, top three of a season.' },
+      { ...base, ini: 'LY', name: 'Lynx', sub: '№ 7 · Midfielder', size: 28, fs: 11, title: 'Compact, extra line', text: '28 px for dense lists. The text next to the number is the projected content of the chip.' },
+      { ...base, ini: 'TA', name: 'Tank', sub: '', size: 28, fs: 11, title: 'Without a link', text: 'No player id (opponents in a summary, a name typed by hand): plain text, not a link.' },
+      { ...base, ini: 'RA', name: 'Raven', sub: '№ 12', avBg: t.accent, avColor: t.onAccent, title: 'Accent', text: 'Yellow avatar marks «this is you» or the chosen side. Never the only mark: the label next to it says so.' },
+      { ...base, ini: '?', name: '', sub: '', title: 'No name yet', text: 'An empty name gives «?» in the square; the row does not collapse.' }
+    ];
+    const rows = [
+      { ini: 'WO', name: 'Wolf', rec: '5 W · 1 D · 2 L', pct: '62%' },
+      { ini: 'TA', name: 'Tank', rec: '3 W · 2 D · 3 L', pct: '50%' },
+      { ini: 'LY', name: 'Lynx', rec: '1 W · 1 D · 5 L', pct: '21%' }
+    ];
+    const rules = [
+      'Initials come from the name: the first two letters or digits, in capitals; «?» when there is nothing.',
+      'The link is there only when the player is known. The number is always text («№ 9»), never an image or a colour.',
+      'The avatar is hidden from a screen reader; the name and the number are read as text.',
+      'Contrast of the muted line on the surface: 8.0:1 on the surface in the dark theme (AA).',
+      'The chip never draws the value on the right and never decides the row layout; that stays with the page.'
+    ];
+    return { t, variants, rows, rules };
+  }
+}
+</script>
+</body>
+</html>
