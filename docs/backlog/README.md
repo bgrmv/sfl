@@ -111,7 +111,7 @@ flowchart LR
 | Эпик 0 — Hotfix безопасности текущего прода     | [E00-security-hotfix/](E00-security-hotfix/)         |  7 (1 отменена)  |
 | Эпик 1 — Обновление зависимостей и инструментов | [E01-dependency-upgrades/](E01-dependency-upgrades/) | 13 (2 отменены)  |
 | Эпик 2 — Тесты и CI                             | [E02-tests-ci/](E02-tests-ci/)                       |        8         |
-| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        31        |
+| Эпик 3 — Улучшение архитектуры                  | [E03-architecture/](E03-architecture/)               |        32        |
 | Эпик 4 — Spike и проектирование переезда        | [E04-migration-design/](E04-migration-design/)       |  4 (1 отменена)  |
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
@@ -122,7 +122,7 @@ flowchart LR
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 201, из них отменено: 18.
+Всего историй: 202, из них отменено: 18.
 
 ---
 
@@ -191,7 +191,7 @@ flowchart LR
 |   ❌   | [S3.16](E03-architecture/S3.16.md) | Signal forms: пилот на одной форме                                       |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.9](E03-architecture/S3.9.md)   |
 |   ✅   | [S3.17](E03-architecture/S3.17.md) | Привести структуру клиента к FSD                                         |    P2     |   L    | [S3.6](E03-architecture/S3.6.md)                                            |
 |   ❌   | [S3.18](E03-architecture/S3.18.md) | Реактивность клиента по практикам Angular 22                             |    P2     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md)                                     |
-|   ❌   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI          |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
+|   ✅   | [S3.19](E03-architecture/S3.19.md) | Типы и контракты API из одной схемы: zod → TypeScript и OpenAPI          |    P2     |   L    | [S1.12](E01-dependency-upgrades/S1.12.md), [S3.4](E03-architecture/S3.4.md) |
 |   ✅   | [S3.20](E03-architecture/S3.20.md) | Убрать вызовы клиента к несуществующим маршрутам API                     |    P1     |   S    | —                                                                           |
 |   ✅   | [S3.21](E03-architecture/S3.21.md) | Выровнять REST API: лексика, семантика, топология                        |    P2     |   M    | [S3.20](E03-architecture/S3.20.md)                                          |
 |   ✅   | [S3.22](E03-architecture/S3.22.md) | Исправить ошибки и гонки в сторах клиента                                |    P1     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S2.5](E02-tests-ci/S2.5.md)       |
@@ -204,6 +204,7 @@ flowchart LR
 |   ✅   | [S3.29](E03-architecture/S3.29.md) | Шапка игрока и карточка рейтинга: вынести в общие блоки клиента          |    P3     |   M    | [S3.28](E03-architecture/S3.28.md)                                          |
 |   ❌   | [S3.30](E03-architecture/S3.30.md) | Малые формы клиента на signal forms                                      |    P3     |   M    | [S3.16](E03-architecture/S3.16.md)                                          |
 |   ❌   | [S3.31](E03-architecture/S3.31.md) | Форма матча на signal forms                                              |    P3     |   L    | [S3.16](E03-architecture/S3.16.md), [S3.13](E03-architecture/S3.13.md)      |
+|   ❌   | [S3.32](E03-architecture/S3.32.md) | Контракт API: перенос схем, ответы успеха и имена типов                  |    P3     |   L    | [S3.19](E03-architecture/S3.19.md)                                          |
 
 ## Эпик 4 — Spike и проектирование переезда
 

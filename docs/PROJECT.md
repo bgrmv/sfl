@@ -107,6 +107,8 @@ SFL — приложение для любительской футбольно�
 
 Каждый ответ — `Result<T, ApiError>` ([ADR 0011](adr/0011-result-response-format.md)): успех `{ ok: true, data }`, ошибка `{ ok: false, error: { status, code, message, issues? } }`. Статус HTTP осмысленный (2xx или 4xx/5xx). `code` — стабильная строка (`NOT_FOUND`, `VALIDATION_FAILED`, `UNAUTHORIZED`, ...), клиент ветвится по ней; `issues: [{ path, message }]` только у валидации. Типы и `Ok`/`Err` — в `@sfl/schemas`. Ответ формируют [глобальный перехватчик](../server-nest/src/shared/interceptors/response.interceptor.ts) и [фильтр](../server-nest/src/shared/filters/all-exceptions.filter.ts); контроллеры возвращают обычные значения и не используют `@Res()` (для cookie — `@Res({ passthrough: true })`).
 
+Описание API (OpenAPI 3.0) строится из схем zod и контроллеров, закоммичено как `server-nest/openapi.json`, расхождение ловит `test/api/openapi.test.ts` ([ADR 0018](adr/0018-openapi-from-zod-schemas.md)).
+
 Правила для кода: исключения Nest бросаются **экземплярами** (`throw new NotFoundException(...)`), сервисы не глотают ошибки и не возвращают `null` вместо исключения, неожиданная ошибка уходит наружу как обычный 500 без внутренностей. На клиенте `HttpService` отдаёт сервисам `data`, а оператор `toResult()` превращает вызов в `ApiResult<T>` для экранов, которые реагируют на ошибку.
 
 ## 6. Как поддерживать этот документ

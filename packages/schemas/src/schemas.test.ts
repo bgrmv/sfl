@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { openApiRef, openApiSchemas } from './openapi.js';
 import { EnumGameStatus, EnumPlayerPosition, EnumTeamColor } from './enums.js';
 import {
   GAME_RULE_MESSAGES,
@@ -491,5 +492,52 @@ describe('playerEditFormSchema (the form of the player dialog, S3.16)', () => {
     const parsed = playerEditFormSchema.safeParse(body);
     expect(parsed.success).toBe(false);
     expect(parsed.error?.issues.map(i => i.message)).toContain(message);
+  });
+});
+
+describe('openApiSchemas (the document is made from the schemas, S3.19)', () => {
+  const schemas = openApiSchemas() as Record<string, any>;
+
+  it('has a component for every part of the contract', () => {
+    expect(Object.keys(schemas).sort()).toEqual([
+      'ApiError',
+      'ErrorResponse',
+      'Game',
+      'GameInput',
+      'GameUpdateInput',
+      'Player',
+      'SignInInput',
+      'Team',
+      'TeamInput',
+    ]);
+  });
+
+  it('describes the rules of the schema: required fields, limits, the enum of the status', () => {
+    expect(schemas.GameInput.required).toEqual(
+      expect.arrayContaining(['number', 'season', 'status', 'teams']),
+    );
+    expect(schemas.GameInput.properties.number).toMatchObject({
+      type: 'integer',
+      minimum: 1,
+      maximum: 53,
+    });
+    expect(schemas.Game.properties.status.enum).toEqual([
+      'new',
+      'draft',
+      'published',
+      'skipped',
+    ]);
+  });
+
+  it('the error body is the one of the API: ok false, status, code, message', () => {
+    expect(schemas.ErrorResponse.properties.error.required).toEqual(
+      expect.arrayContaining(['status', 'code', 'message']),
+    );
+    expect(schemas.ApiError.properties.code.enum).toContain('VALIDATION_FAILED');
+  });
+
+  it('is plain JSON and a ref points into the components', () => {
+    expect(JSON.parse(JSON.stringify(schemas))).toEqual(schemas);
+    expect(openApiRef('Game')).toEqual({ $ref: '#/components/schemas/Game' });
   });
 });

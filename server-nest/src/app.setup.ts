@@ -1,7 +1,9 @@
 import { INestApplication } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+
+import { buildOpenApiDocument } from './openapi';
 
 /**
  * What every instance of the app needs, for `main.ts` and for the API tests,
@@ -25,13 +27,6 @@ export function configureApp(
   app.use(cookieParser());
 
   if (!production) {
-    const config = new DocumentBuilder()
-      .setTitle('SFL docs')
-      .setDescription('The SFL API docs')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .addSecurityRequirements('bearer')
-      .build();
-    SwaggerModule.setup('rest', app, SwaggerModule.createDocument(app, config));
+    SwaggerModule.setup('rest', app, buildOpenApiDocument(app));
   }
 }

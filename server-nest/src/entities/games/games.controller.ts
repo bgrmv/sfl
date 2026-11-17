@@ -20,10 +20,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { openApiRef } from '@sfl/schemas';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
-import { Game, IGame, UpdateGame } from './game.schema';
+import { IGame } from './game.schema';
 import { GamesService } from './games.service';
 
 @ApiTags('games')
@@ -74,7 +75,7 @@ export class GamesController {
   }
 
   @Post()
-  @ApiBody({ type: Game })
+  @ApiBody({ schema: openApiRef('GameInput') })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'The record has been successfully created.',
@@ -85,7 +86,7 @@ export class GamesController {
   }
 
   @Patch(':id')
-  @ApiBody({ type: UpdateGame })
+  @ApiBody({ schema: openApiRef('GameUpdateInput') })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The record has been partially updated',
@@ -98,7 +99,7 @@ export class GamesController {
   }
 
   @Put(':id')
-  @ApiBody({ type: Game })
+  @ApiBody({ schema: openApiRef('GameInput') })
   @ApiResponse({
     status: 200,
     description: 'The record has been successfully replaced',
