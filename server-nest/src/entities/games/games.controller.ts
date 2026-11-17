@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpStatus,
   NotFoundException,
   Param,
@@ -54,9 +55,10 @@ function present(game: object | null, privileged: boolean) {
     'toJSON' in game && typeof game.toJSON === 'function' ? game.toJSON() : game
   ) as Record<string, unknown>;
   if (privileged) return json;
-  const { confirmations, revoked, ...rest } = json;
+  const { confirmations, revoked, lock, ...rest } = json;
   void confirmations;
   void revoked;
+  void lock;
   return rest;
 }
 
@@ -162,8 +164,16 @@ export class GamesController {
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateGameDTO)) game: IGame,
+    @Req() req: Request,
+    @Headers('if-match') ifMatch?: string,
   ) {
-    return await this.gamesService.update(id, game);
+    return present(
+      await this.gamesService.update(id, game, {
+        accountId: accountOf(req),
+        ifMatch,
+      }),
+      true,
+    );
   }
 
   @Put(':id')
@@ -175,8 +185,32 @@ export class GamesController {
   async replace(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(SaveGameDTO)) game: IGame,
+    @Req() req: Request,
+    @Headers('if-match') ifMatch?: string,
   ) {
-    return await this.gamesService.replace(id, game);
+    return present(
+      await this.gamesService.replace(id, game, {
+        accountId: accountOf(req),
+        ifMatch,
+      }),
+      true,
+    );
+  }
+
+  // The lease of a game (S10.54, ADR 0015): take or renew, release. Admin only by default.
+  @Post(':id/lock')
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'The game with the lease; 409 with the name of the editor if it is taken',
+  })
+  async lock(@Param('id', ObjectIdPipe) id: string, @Req() req: Request) {
+    return present(await this.gamesService.lock(id, accountOf(req)), true);
+  }
+
+  @Delete(':id/lock')
+  async unlock(@Param('id', ObjectIdPipe) id: string, @Req() req: Request) {
+    return await this.gamesService.unlock(id, accountOf(req));
   }
 
   // The confirmation of a draft: two different people publish it (S10.35, GLOSSARY)

@@ -76,10 +76,19 @@ export class HttpService {
       .pipe(unwrap<T>());
   }
 
-  patch<TData, TResponse>(url: string, data: TData) {
+  patch<TData, TResponse>(
+    url: string,
+    data: TData,
+    headers: Record<string, string> = {},
+  ) {
     return this.#httpClient
       .patch<ApiResponse<TResponse>>(API_URL + '/' + url, data, {
-        headers: PATCH_HEADERS,
+        // `If-Match` carries the version the editor saw (S10.54)
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...headers,
+        }),
       })
       .pipe(unwrap<TResponse>());
   }

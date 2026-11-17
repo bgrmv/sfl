@@ -30,12 +30,32 @@ export class GameService {
     return this.httpService.post<IGameDTO>(`games`, game);
   }
 
-  public update(id: string, game: IGameDTO): Observable<IGameDTO> {
-    return this.httpService.patch<IGameDTO, IGameDTO>(`games/${id}`, game);
+  /** `version` is the one the editor saw: the server refuses a save of an old one (S10.54). */
+  public update(
+    id: string,
+    game: IGameDTO,
+    version?: number,
+  ): Observable<IGameDTO> {
+    return this.httpService.patch<IGameDTO, IGameDTO>(
+      `games/${id}`,
+      game,
+      version === undefined ? {} : { 'If-Match': String(version) },
+    );
   }
 
   public replace(id: string, game: IGameDTO) {
     return this.httpService.put<IGameDTO>(`games/${id}`, game);
+  }
+
+  /** Takes or renews the lease of the game; 409 says who is editing it (S10.54). */
+  public lock(id: string): Observable<IGameDTO> {
+    return this.httpService
+      .post<unknown, unknown>(`games/${id}/lock`)
+      .pipe(checkedResponse(gameSchema, 'POST games/:id/lock'), asGame);
+  }
+
+  public unlock(id: string): Observable<null> {
+    return this.httpService.delete<null>(`games/${id}/lock`);
   }
 
   /** The confirmation of the person who asks; the second one of another person publishes (S10.35). */

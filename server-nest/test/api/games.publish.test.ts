@@ -6,6 +6,7 @@ import {
   confirmTwice,
   createPlayers,
   gameBody,
+  lockGame,
   moderator,
   revokeGame,
 } from '../helpers/fixtures';
@@ -121,6 +122,7 @@ describe('API: publishing a game by two confirmations', () => {
     const id = await draft();
     await confirm(id, admin());
     expect((await gameOf(id)).confirmations).toHaveLength(1);
+    await lockGame(t, id);
 
     const put = await t
       .api()

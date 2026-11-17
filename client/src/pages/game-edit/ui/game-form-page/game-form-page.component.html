@@ -7,6 +7,19 @@
 </h1>
 <mat-divider />
 
+@if (lease.state() === 'busy') {
+  <p
+    class="lease"
+    role="status"
+  >
+    {{ lease.owner() }} is editing this game
+    @if (lease.until(); as until) {
+      until {{ until | date: 'HH:mm' }}
+    }
+    . You can read it, the form is closed. It opens by itself when the game is
+    free.
+  </p>
+}
 <br />
 
 <div class="actions">
@@ -25,7 +38,11 @@
       <button
         mat-raised-button
         color="primary"
-        [disabled]="formGroup.invalid || !isFormChangedSignal()"
+        [disabled]="
+          formGroup.invalid ||
+          !isFormChangedSignal() ||
+          lease.state() !== 'held'
+        "
         (click)="update()"
       >
         Update
@@ -38,7 +55,7 @@
       mat-raised-button
       color="warn"
       (click)="delete()"
-      [disabled]="isFormChangedSignal()"
+      [disabled]="isFormChangedSignal() || lease.state() === 'busy'"
     >
       Delete
     </button>

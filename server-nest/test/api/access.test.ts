@@ -11,6 +11,7 @@ import {
   createPlayers,
   gameBody,
   isSuccess,
+  lockGame,
   moderator,
   postGame,
 } from '../helpers/fixtures';
@@ -66,6 +67,16 @@ const CLOSED: Case[] = [
     method: 'put',
     path: t => `/games/${t.gameId}`,
     body: t => gameBody(t.playerIds, { number: 42, status: 'draft' }),
+  },
+  {
+    name: 'POST /games/:id/lock',
+    method: 'post',
+    path: t => `/games/${t.gameId}/lock`,
+  },
+  {
+    name: 'DELETE /games/:id/lock',
+    method: 'delete',
+    path: t => `/games/${t.gameId}/lock`,
   },
   {
     name: 'POST /games/:id/confirm',
@@ -249,6 +260,8 @@ describe('API: access matrix', () => {
         .api()
         .post(`/rest/games/${game.body.data.id}/confirm`)
         .set('Authorization', moderator(t));
+      // The admin holds the lease: PATCH and PUT are his to make
+      await lockGame(t, game.body.data.id);
     }
     const player = (
       await t.api().get(`/rest/players/${a.id}`).set('Authorization', bearer(t))

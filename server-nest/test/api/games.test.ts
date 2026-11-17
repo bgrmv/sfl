@@ -5,6 +5,7 @@ import {
   createPlayers,
   gameBody,
   isSuccess,
+  lockGame,
   postGame,
   revokeGame,
 } from '../helpers/fixtures';
@@ -110,6 +111,7 @@ describe('API: games', () => {
       gameBody(playerIds, { number: 4, status: 'draft' }),
     );
     const id = created.body.data.id;
+    await lockGame(t, id);
 
     const res = await t
       .api()
@@ -134,6 +136,7 @@ describe('API: games', () => {
       gameBody(playerIds, { number: 5, status: 'draft' }),
     );
     const id = created.body.data.id;
+    await lockGame(t, id);
 
     const res = await t
       .api()
@@ -328,6 +331,7 @@ describe('API: games', () => {
       const id = created.body.data.id;
       const stats = gameBody(playerIds).statistics;
       stats[1] = { ...stats[1], goalsByLeg: 5 };
+      await lockGame(t, id);
 
       const res = await t
         .api()

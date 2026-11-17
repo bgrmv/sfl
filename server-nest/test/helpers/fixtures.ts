@@ -118,7 +118,10 @@ export async function postGame(t: TestApp, body: Record<string, unknown>) {
 
 /** The admin and the moderator confirm the game: the second one publishes it. */
 export async function confirmTwice(t: TestApp, id: string) {
-  await t.api().post(`/rest/games/${id}/confirm`).set('Authorization', bearer(t));
+  await t
+    .api()
+    .post(`/rest/games/${id}/confirm`)
+    .set('Authorization', bearer(t));
   return await t
     .api()
     .post(`/rest/games/${id}/confirm`)
@@ -132,4 +135,12 @@ export async function revokeGame(t: TestApp, id: string, reason = 'A mistake') {
     .post(`/rest/games/${id}/revoke`)
     .set('Authorization', bearer(t))
     .send({ reason });
+}
+
+/** The admin takes the lease of a game: only the holder saves it (S10.54). */
+export async function lockGame(t: TestApp, id: string, token = bearer(t)) {
+  return await t
+    .api()
+    .post(`/rest/games/${id}/lock`)
+    .set('Authorization', token);
 }

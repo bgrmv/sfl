@@ -33,6 +33,13 @@ export interface IGame {
   /** Who confirmed the draft (S10.35). */
   confirmations?: { accountId: string; at: Date }[];
   revoked?: { reason: string; accountId: string; at: Date };
+  version?: number;
+  lock?: {
+    accountId: string;
+    name: string;
+    acquiredAt: Date;
+    expiresAt: Date;
+  } | null;
 }
 
 @Schema({
@@ -182,6 +189,19 @@ export class Game implements IGame {
     default: [],
   })
   confirmations: { accountId: string; at: Date }[];
+
+  /** Grows with every change of the game: a save of an old version is refused (S10.54). */
+  @Prop({ type: Number, default: 1 })
+  version: number;
+
+  /** The lease of the game: only its holder saves it (S10.54, ADR 0015). */
+  @Prop({ type: Object, required: false, default: null })
+  lock?: {
+    accountId: string;
+    name: string;
+    acquiredAt: Date;
+    expiresAt: Date;
+  } | null;
 
   /** The last revoke of the publication: why, who, when. */
   @Prop({ type: Object, required: false })

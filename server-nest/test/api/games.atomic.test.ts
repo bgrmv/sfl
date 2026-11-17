@@ -13,6 +13,7 @@ import {
   bearer,
   createPlayers,
   gameBody,
+  lockGame,
   postGame,
   moderator,
 } from '../helpers/fixtures';
@@ -102,6 +103,7 @@ describe('API: a game and its recalculation are atomic', () => {
     expect(created.status).toBe(201);
     const id = created.body.data.id;
 
+    await lockGame(t, id);
     failRecalculation();
     const res = await t
       .api()
@@ -133,6 +135,7 @@ describe('API: a game and its recalculation are atomic', () => {
       gameBody(playerIds, { number: 47, status: 'draft' }),
     );
     const id = created.body.data.id;
+    await lockGame(t, id);
     vi.spyOn(t.model('Game'), 'findOneAndUpdate').mockReturnValue({
       session: () => ({ exec: async () => null }),
     } as never);

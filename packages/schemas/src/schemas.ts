@@ -210,7 +210,9 @@ export const gameShape = z.object({
   updatedAt: z.optional(z.string()),
   status: z.enum(EnumGameStatus),
   teams: z.array(teamShape),
-  // Only for admins and moderators (S10.35)
+  // Only for admins and moderators (S10.35, S10.54)
+  version: z.optional(z.number()),
+  lock: z.nullish(z.looseObject({ name: z.string(), expiresAt: z.string() })),
   confirmations: z.optional(z.array(gameConfirmationShape)),
   revoked: z.optional(z.looseObject({ reason: z.string(), at: z.string() })),
   statistics: z.array(playerStatisticSchema),

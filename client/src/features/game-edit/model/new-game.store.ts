@@ -185,18 +185,23 @@ export const NewGameStore = signalStore(
             exhaustMap(() => {
               patchState(store, { saving: true });
               const dto = buildGameDTO();
-              return gameService.update(dto.id!, dto).pipe(
-                toResult(),
-                tapResult({
-                  ok: saved => {
-                    const game = normalizeSavedGame(saved);
-                    patchState(store, { game, initialValue: cloneDeep(game) });
-                    notify.success('Game saved');
-                  },
-                  err: notify.error,
-                }),
-                finalize(() => patchState(store, { saving: false })),
-              );
+              return gameService
+                .update(dto.id!, dto, (store.game() as IGameDTO).version)
+                .pipe(
+                  toResult(),
+                  tapResult({
+                    ok: saved => {
+                      const game = normalizeSavedGame(saved);
+                      patchState(store, {
+                        game,
+                        initialValue: cloneDeep(game),
+                      });
+                      notify.success('Game saved');
+                    },
+                    err: notify.error,
+                  }),
+                  finalize(() => patchState(store, { saving: false })),
+                );
             }),
           ),
         ),

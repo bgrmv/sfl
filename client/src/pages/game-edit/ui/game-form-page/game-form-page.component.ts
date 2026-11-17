@@ -10,6 +10,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  effect,
   inject,
   Injector,
   OnInit,
@@ -36,6 +37,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EnumGameStatus, GameService } from '@entities/game';
 import {
   EnumGameMode,
+  GameLease,
   GameTeamCreateComponent,
   NewGameStore,
 } from '@features/game-edit';
@@ -79,7 +81,7 @@ import { distinctUntilChanged, filter, map } from 'rxjs';
   templateUrl: './game-form-page.component.html',
   styleUrl: './game-form-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [NewGameStore, GameService, PlayersService, MatDialog],
+  providers: [NewGameStore, GameService, PlayersService, MatDialog, GameLease],
 })
 export class GameFormPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
@@ -91,6 +93,7 @@ export class GameFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly injector = inject(Injector);
   private readonly dialog = inject(MatDialog);
+  protected readonly lease = inject(GameLease);
 
   protected readonly isAdminSignal = this.authService.isAdmin;
   readonly enumGameStatus = EnumGameStatus;
@@ -150,6 +153,27 @@ export class GameFormPageComponent implements OnInit {
   public readonly modeSignal = this.newGameStore.mode;
   readonly isFormChangedSignal = this.newGameStore.isFormChanged;
   readonly storeLoaded = this.newGameStore.storeLoaded;
+
+  constructor() {
+    // The game that is being edited is held by one admin at a time (S10.54): the
+    // lease is taken when the game is loaded and renewed by a pulse; a game of
+    // another editor is read-only and becomes free for us when he leaves
+    effect(() => {
+      const id = this.gameId();
+      if (this.modeSignal() === EnumGameMode.Edit && id) {
+        this.lease.start(id);
+      }
+    });
+    effect(() => {
+      if (this.lease.state() === 'busy') {
+        this.formGroup.disable({ emitEvent: false });
+      } else if (this.lease.state() === 'held') {
+        this.formGroup.enable({ emitEvent: false });
+        this.formGroup.controls.number.disable({ emitEvent: false });
+        this.formGroup.controls.season.disable({ emitEvent: false });
+      }
+    });
+  }
 
   ngOnInit() {
     toObservable(this.newGameStore.storeLoaded, { injector: this.injector })

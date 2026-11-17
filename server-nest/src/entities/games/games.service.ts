@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   HttpException,
+  PreconditionFailedException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -13,7 +14,8 @@ import {
   GameMetadataError,
 } from '@sfl/domain';
 import { gameRuleViolations, GAME_RULE_MESSAGES } from '@sfl/schemas';
-import { ClientSession, Model } from 'mongoose';
+import mongoose, { ClientSession, Model } from 'mongoose';
+import { IUser, User } from '../users/users.schema';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import {
   GameSnapshot,
@@ -28,9 +30,18 @@ import {
   IPlayerGameResultMetadata,
 } from './game.schema';
 
+/** The lease of a game lasts this long and is renewed by the pulse of the editor (ADR 0015). */
+export const LOCK_TTL_MS = 2 * 60 * 1000;
+
 /** A list without a season is capped: a game weighs about 18 KB. */
 export const DEFAULT_GAMES_LIMIT = 100;
 export const MAX_GAMES_LIMIT = 500;
+
+/** Who saves a game: the account and the version he saw (`If-Match`). */
+export interface Editor {
+  accountId: string;
+  ifMatch?: string;
+}
 
 const toSnapshot = (
   game: {
@@ -55,6 +66,9 @@ export class GamesService {
   constructor(
     @InjectModel(Game.name)
     private readonly gameModel: Model<IGame>,
+
+    @InjectModel(User.name)
+    private readonly userModel: Model<IUser>,
 
     private readonly playerMetadata: PlayerMetadataService,
 
@@ -146,27 +160,115 @@ export class GamesService {
     }
   }
 
-  /** A published game is changed after a revoke, never in place. */
-  private async assertEditable(_id: string, game: { status?: string }) {
+  /**
+   * A game is changed by the holder of its lease, in the version he saw, and
+   * only while it is not published (S10.54, S10.35). Returns the stored game.
+   */
+  private async assertEditable(
+    _id: string,
+    game: { status?: string },
+    editor: Editor,
+  ) {
     this.assertNotPublished(game);
-    const stored = await this.gameModel.findById(_id).select('status').exec();
+    const stored = await this.gameModel.findById(_id).exec();
     if (!stored) throw new NotFoundException('Game is not found');
     if (stored.status === EnumGameStatus.Published) {
       throw new ConflictException(
         'Revoke the published game before changing it',
       );
     }
+
+    const lock = stored.lock;
+    const held =
+      lock &&
+      lock.accountId === editor.accountId &&
+      lock.expiresAt > new Date();
+    if (!held) {
+      throw new ConflictException('Take the game before you change it');
+    }
+    if (
+      editor.ifMatch !== undefined &&
+      Number(editor.ifMatch) !== (stored.version ?? 1)
+    ) {
+      throw new PreconditionFailedException(
+        'The game was changed since you opened it',
+      );
+    }
+    return stored;
   }
 
-  async update(_id: string, game: IGame) {
+  /**
+   * Takes the lease or renews it: one atomic update that succeeds only when the
+   * game is free, expired or already his (ADR 0015).
+   */
+  async lock(_id: string, accountId: string) {
+    const now = new Date();
+    const user = await this.userModel
+      .findById(new mongoose.Types.UUID(accountId))
+      .select('name email')
+      .lean()
+      .exec();
+    const name = user?.name || user?.email || 'Someone';
+
+    const taken = await this.gameModel
+      .findOneAndUpdate(
+        {
+          _id,
+          status: { $ne: EnumGameStatus.Published },
+          $or: [
+            { lock: null },
+            { lock: { $exists: false } },
+            { 'lock.expiresAt': { $lt: now } },
+            { 'lock.accountId': accountId },
+          ],
+        },
+        {
+          $set: {
+            lock: {
+              accountId,
+              name,
+              acquiredAt: now,
+              expiresAt: new Date(now.getTime() + LOCK_TTL_MS),
+            },
+          },
+        },
+        { returnDocument: 'after' },
+      )
+      .exec();
+    if (taken) return taken;
+
+    const stored = await this.gameModel.findById(_id).exec();
+    if (!stored) throw new NotFoundException('Game is not found');
+    if (stored.status === EnumGameStatus.Published) {
+      throw new ConflictException(
+        'Revoke the published game before changing it',
+      );
+    }
+    throw new ConflictException(
+      `${stored.lock?.name ?? 'Someone'} is editing this game until ${stored.lock?.expiresAt.toISOString()}`,
+    );
+  }
+
+  /** Only the holder releases; the lease of another stays. */
+  async unlock(_id: string, accountId: string) {
+    await this.gameModel
+      .updateOne({ _id, 'lock.accountId': accountId }, { $set: { lock: null } })
+      .exec();
+    return null;
+  }
+
+  async update(_id: string, game: IGame, editor: Editor) {
     this.logger.info('Update game', { _id });
-    await this.assertEditable(_id, game);
+    await this.assertEditable(_id, game, editor);
 
     try {
       return await this.transactions.run(async session => {
         const before = await this.gameModel
-          // A change of the content takes the confirmations back
-          .findOneAndUpdate({ _id }, { ...game, confirmations: [] })
+          // A change of the content takes the confirmations back and raises the version
+          .findOneAndUpdate(
+            { _id },
+            { $set: { ...game, confirmations: [] }, $inc: { version: 1 } },
+          )
           .session(session)
           .exec();
 
@@ -195,12 +297,20 @@ export class GamesService {
     }
   }
 
-  async replace(_id: string, game: IGame) {
-    await this.assertEditable(_id, game);
+  async replace(_id: string, game: IGame, editor: Editor) {
+    const stored = await this.assertEditable(_id, game, editor);
     try {
       return await this.transactions.run(async session => {
         const updatedGame = await this.gameModel
-          .findOneAndReplace({ _id }, game)
+          .findOneAndReplace(
+            { _id },
+            {
+              ...game,
+              confirmations: [],
+              version: (stored.version ?? 1) + 1,
+              lock: stored.lock,
+            },
+          )
           .session(session)
           .exec();
 

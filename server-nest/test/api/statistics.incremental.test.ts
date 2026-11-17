@@ -16,6 +16,7 @@ import {
   TEAM_WHITE,
   postGame,
   confirmTwice,
+  lockGame,
   revokeGame,
 } from '../helpers/fixtures';
 import { createTestApp, TestApp } from '../helpers/test-app';
@@ -88,6 +89,7 @@ describe('API: incremental statistics equal the full recalculation', () => {
     { publishAgain = true }: { publishAgain?: boolean } = {},
   ) => {
     await revokeGame(t, id);
+    await lockGame(t, id);
     // The body of a published game is saved as a draft
     const status = b.status && b.status !== 'published' ? b.status : 'draft';
     const res = await t

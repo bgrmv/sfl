@@ -688,6 +688,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "if-match",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -724,6 +732,14 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "if-match",
+            "required": true,
+            "in": "header",
             "schema": {
               "type": "string"
             }
@@ -771,6 +787,66 @@
         "responses": {
           "200": {
             "description": "The record has been successfully deleted"
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      }
+    },
+    "/rest/games/{id}/lock": {
+      "post": {
+        "operationId": "GamesController_lock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The game with the lease; 409 with the name of the editor if it is taken"
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      },
+      "delete": {
+        "operationId": "GamesController_unlock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
           },
           "default": {
             "description": "The error: `ok: false`, a stable `code`, a message",
@@ -1637,6 +1713,23 @@
               "required": ["id", "name", "color"],
               "additionalProperties": {}
             }
+          },
+          "version": {
+            "type": "number"
+          },
+          "lock": {
+            "nullable": true,
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "expiresAt": {
+                "type": "string"
+              }
+            },
+            "required": ["name", "expiresAt"],
+            "additionalProperties": {}
           },
           "confirmations": {
             "type": "array",
