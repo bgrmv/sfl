@@ -159,4 +159,47 @@ describe('NewGameStore', () => {
     expect(store.errors().size).toBeGreaterThan(0);
     expect(store.errors().has('statistics:teamA:atleastOne')).toBe(true);
   });
+
+  it('the order of the goals sets the totals of the players and is sent with the game (S10.67)', () => {
+    gameService.update.mockReturnValue(
+      of({ id: 'g1', number: 1, season: 2026 }),
+    );
+    const store = TestBed.inject(NewGameStore);
+    store.updateGameFields({ id: 'g1' });
+    store.initEntityStatistics([
+      {
+        id: 't1~a',
+        playerId: 'a',
+        teamId: 't1',
+        goalsByLeg: 5,
+        goalsByHead: 0,
+        goalsByPenalty: 0,
+        goalsByAuto: 0,
+        passes: 5,
+        isMVP: false,
+        isCaptain: true,
+        isTransfer: false,
+        position: null,
+      } as never,
+    ]);
+    const events = [
+      {
+        n: 1,
+        kind: 'head' as const,
+        teamId: 't1',
+        authorId: 'a',
+        assistIds: [],
+      },
+    ];
+
+    store.setEvents(events);
+    store.updateGame();
+
+    expect(store.statisticsEntities()[0]).toMatchObject({
+      goalsByLeg: 0,
+      goalsByHead: 1,
+      passes: 0,
+    });
+    expect(gameService.update.mock.calls[0][1].events).toEqual(events);
+  });
 });

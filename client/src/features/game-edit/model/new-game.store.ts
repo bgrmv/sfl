@@ -29,7 +29,9 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+import type { GameEvent } from '@sfl/schemas';
 import { EnumGameMode } from './game-mode';
+import { applyEvents } from './goal-order';
 import { EnumGameStatus } from '@entities/game';
 import { GameService } from '@entities/game';
 import { IGameDTO, TGameFinal, TPlayerStatisticFinal } from '@entities/game';
@@ -131,6 +133,7 @@ export const NewGameStore = signalStore(
           link,
           description,
           notes,
+          events,
         } = store.game() as IGameDTO;
 
         return {
@@ -142,6 +145,7 @@ export const NewGameStore = signalStore(
           link,
           description,
           notes,
+          ...(events ? { events } : null),
           teams: store.teamsEntities(),
           statistics: store.getStatististicsDTOs(),
         } as IGameDTO;
@@ -152,6 +156,20 @@ export const NewGameStore = signalStore(
         updateStatus: (status: EnumGameStatus): void => {
           patchState(store, state => ({
             game: { ...state.game, status },
+          }));
+        },
+        /**
+         * The order of the goals (S10.27): the totals of the players are taken from
+         * it, so the two cannot disagree. `null` drops the order, the totals stay.
+         */
+        setEvents(events: GameEvent[] | null): void {
+          if (events) {
+            store.initEntityStatistics(
+              applyEvents(store.statisticsEntities(), events),
+            );
+          }
+          patchState(store, state => ({
+            game: { ...state.game, events: events ?? undefined },
           }));
         },
         updateGameFields(game: Partial<TGameFinal>): void {
@@ -169,7 +187,12 @@ export const NewGameStore = signalStore(
                 tapResult({
                   ok: ({ season, number }) => {
                     notify.success('Game created');
-                    router.navigate(['games', 'edit', season, number]);
+                    // The wizard stays in the wizard, the form in the form
+                    router.navigate(
+                      router.url?.startsWith('/admin/wizard')
+                        ? ['admin', 'wizard', season, number]
+                        : ['games', 'edit', season, number],
+                    );
                   },
                   err: notify.error,
                 }),

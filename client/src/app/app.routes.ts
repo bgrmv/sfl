@@ -203,6 +203,13 @@ export const routes: Routes = [
           import('@pages/admin').then(c => c.AdminWizardPageComponent),
       },
       {
+        path: 'wizard/:season/:number',
+        title: 'Edit game',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('@pages/admin').then(c => c.AdminWizardPageComponent),
+      },
+      {
         path: 'confirm',
         title: 'Confirm game',
         loadComponent: () =>

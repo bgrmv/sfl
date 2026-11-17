@@ -140,7 +140,9 @@ export const FEATURES = {
   'admin.dashboardFeed': live(
     'Comments, votes and the action log (S10.22, S10.35)',
   ),
-  'admin.wizard': dummy('Match wizard: 6 steps (S10.26..S10.34)'),
+  'admin.wizard': live(
+    'NewGameStore, GameLease: six steps, draft on the server (S10.67)',
+  ),
   'admin.confirm': live('GameService: confirm, take back, revoke (S10.35)'),
   'admin.process': dummy('Queue of old games with notes (S10.40)'),
   'admin.players': live(
