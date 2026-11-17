@@ -7,8 +7,20 @@ import { IGameDTO } from '../model/game';
 
 // The response is checked against the shared schema; the client keeps the dates
 // of a game as Date (see IGameDTO), so the checked data is typed accordingly
-const asGame = map((game: unknown) => game as IGameDTO);
-const asGames = map((games: unknown) => games as IGameDTO[]);
+// The wire has ISO strings, the client works with Date: converted at the boundary
+const withDates = (game: unknown): IGameDTO => {
+  const wire = game as Record<string, unknown>;
+  const date = (value: unknown) =>
+    typeof value === 'string' ? new Date(value) : value;
+  return {
+    ...wire,
+    playedAt: date(wire['playedAt']),
+    ...(wire['createdAt'] ? { createdAt: date(wire['createdAt']) } : null),
+    ...(wire['updatedAt'] ? { updatedAt: date(wire['updatedAt']) } : null),
+  } as IGameDTO;
+};
+const asGame = map(withDates);
+const asGames = map((games: unknown) => (games as unknown[]).map(withDates));
 
 @Service({ autoProvided: false })
 export class GameService {

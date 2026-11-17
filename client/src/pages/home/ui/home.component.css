@@ -30,10 +30,18 @@
   color: var(--sfl-accent);
 }
 .kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 132px;
   background: var(--sfl-surface);
   border: 1px solid var(--sfl-border);
   border-radius: var(--sfl-radius);
   padding: 14px 16px;
+}
+.kpi sfl-sparkline {
+  margin-top: auto;
+  padding-top: 8px;
 }
 .kpi b {
   font: 700 28px/1.1 var(--sfl-font-head);

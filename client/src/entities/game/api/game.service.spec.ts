@@ -47,6 +47,18 @@ describe('GameService', () => {
     expect((result[0] as { id: string }).id).toBe('g1');
   });
 
+  it('the dates of a game are Date, not the strings of the wire', () => {
+    let list: { playedAt: unknown }[] = [];
+    let one: { playedAt: unknown } | undefined;
+    service.find({ season: 2025 }).subscribe(games => (list = games));
+    http.expectOne(r => r.url === `${API}/games`).flush(ok([game]));
+    service.findById('g1').subscribe(value => (one = value));
+    http.expectOne(`${API}/games/g1`).flush(ok(game));
+
+    expect(list[0].playedAt).toEqual(new Date('2025-05-10T17:00:00.000Z'));
+    expect(one?.playedAt).toBeInstanceOf(Date);
+  });
+
   it('findById asks GET games/:id', () => {
     let result: { id: string } | undefined;
     service.findById('g1').subscribe(value => (result = value as never));

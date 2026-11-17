@@ -126,21 +126,21 @@
           [label]="k.l + ' trend'"
         />
       </div>
-
-      <sfl-section
-        *sflFeature="'design.seasonRibbon'"
-        flag="design.seasonRibbon"
-        [title]="'Saturdays of season ' + season"
-        link="/games"
-        linkLabel="All games"
-      >
-        <sfl-season-ribbon
-          [cells]="ribbon()"
-          [label]="'Saturdays of season ' + season"
-        />
-      </sfl-section>
     }
   </div>
+
+  <sfl-section
+    *sflFeature="'design.seasonRibbon'"
+    flag="design.seasonRibbon"
+    [title]="'Saturdays of season ' + season"
+    link="/games"
+    linkLabel="All games"
+  >
+    <sfl-season-ribbon
+      [cells]="ribbon()"
+      [label]="'Saturdays of season ' + season"
+    />
+  </sfl-section>
 
   <div class="k-grid">
     <sfl-card
