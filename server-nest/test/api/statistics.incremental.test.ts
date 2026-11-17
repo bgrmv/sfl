@@ -70,7 +70,7 @@ describe('API: incremental statistics equal the full recalculation', () => {
 
   const create = async (b: ReturnType<typeof body>) => {
     const res = await t.api().post('/rest/games').set(auth()).send(b);
-    expect(res.status).toBe(201);
+    expect(res.status, JSON.stringify(res.body)).toBe(201);
     return res.body.data.id as string;
   };
 
@@ -156,6 +156,25 @@ describe('API: incremental statistics equal the full recalculation', () => {
       .send({ ...body(10, { status: 'new', goals: [4, 0] }), id: draft });
     expect(revoke.status).toBe(200);
     await expectConsistent(2024);
+  });
+
+  it('a skipped week needs no teams data and counts nowhere (S10.18)', async () => {
+    const before = await t.model('Player').find().lean<any>();
+    const sk = { ...body(30), status: 'skipped', statistics: [] };
+    const id = await create(sk);
+    await expectConsistent(2024);
+    expect(await t.model('Player').find().lean<any>()).toEqual(before);
+
+    // A published game turned into a skipped week stops counting
+    const played = await create(body(31, { goals: [3, 0] }));
+    const skip = await t
+      .api()
+      .patch(`/rest/games/${played}`)
+      .set(auth())
+      .send({ ...body(31), status: 'skipped', statistics: [], id: played });
+    expect(skip.status).toBe(200);
+    await expectConsistent(2024);
+    expect(id).toBeTruthy();
   });
 
   it('moves a game to another season', async () => {

@@ -130,7 +130,7 @@ export class GameFormPageComponent implements OnInit {
     ),
 
     status: new FormControl<EnumGameStatus>(
-      { value: EnumGameStatus.New, disabled: true },
+      { value: EnumGameStatus.New, disabled: false },
       {
         nonNullable: true,
         validators: [Validators.required],
@@ -241,7 +241,12 @@ export class GameFormPageComponent implements OnInit {
 
     if (status) {
       this.formGroup.controls.status.setValue(status);
-      this.formGroup.controls.status.enable();
+      // New and Skipped are set by hand; a draft and a published game change by the publish flow
+      if (status === EnumGameStatus.New || status === EnumGameStatus.Skipped) {
+        this.formGroup.controls.status.enable();
+      } else {
+        this.formGroup.controls.status.disable();
+      }
     }
 
     if (link) {

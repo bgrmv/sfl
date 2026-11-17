@@ -182,6 +182,11 @@ export interface GameRuleViolation {
 export function gameRuleViolations(game: GameToCheck): GameRuleViolation[] {
   const violations: GameRuleViolation[] = [];
 
+  // A skipped week has no game to check
+  if (game.status === EnumGameStatus.Skipped) {
+    return violations;
+  }
+
   for (const team of game.teams) {
     const captains = new Set(
       game.statistics

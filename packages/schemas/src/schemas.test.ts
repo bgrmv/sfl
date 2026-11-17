@@ -173,6 +173,14 @@ describe('gameInputSchema', () => {
     );
   });
 
+  it('a skipped week is accepted without statistics', () => {
+    expect(
+      gameInputSchema.safeParse(game({ status: 'skipped', statistics: [] }))
+        .success,
+    ).toBe(true);
+    expect(gameSchema.safeParse({ ...game(), id: 'g1', status: 'skipped' }).success).toBe(true);
+  });
+
   it('rules: a published game needs a position for every player, a draft does not', () => {
     const rows = [
       stat({ isCaptain: true }),
@@ -331,6 +339,10 @@ describe('gameRuleViolations (the rules the client form uses too)', () => {
     });
 
     expect(check(g)).toEqual([]);
+  });
+
+  it('a skipped game needs no captains, no positions and no statistics', () => {
+    expect(check(rows({ status: 'skipped', statistics: [] }))).toEqual([]);
   });
 
   it('names a player of a team that is not in the game', () => {

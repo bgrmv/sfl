@@ -67,14 +67,23 @@
 
     <mat-form-field>
       <mat-label>Status</mat-label>
-      <mat-select
-        formControlName="status"
-        [disabled]="true"
-      >
+      <mat-select formControlName="status">
         <mat-option [value]="enumGameStatus.New">
           {{ enumGameStatus.New | uppercase }}
         </mat-option>
-        <mat-option [value]="enumGameStatus.Published">
+        <mat-option [value]="enumGameStatus.Skipped">
+          {{ enumGameStatus.Skipped | uppercase }}
+        </mat-option>
+        <mat-option
+          [value]="enumGameStatus.Draft"
+          disabled
+        >
+          {{ enumGameStatus.Draft | uppercase }}
+        </mat-option>
+        <mat-option
+          [value]="enumGameStatus.Published"
+          disabled
+        >
           {{ enumGameStatus.Published | uppercase }}
         </mat-option>
       </mat-select>

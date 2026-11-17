@@ -20,6 +20,7 @@ import {
   TransactionService,
 } from '../statistics';
 import {
+  EnumGameStatus,
   Game,
   IGame,
   IGameMetadata,
@@ -217,24 +218,18 @@ export class GamesService {
     session?: ClientSession,
     before: GameSnapshot | null = null,
   ): Promise<WithId<IGame>> {
-    const metadata = this.calculateGameMetadata(game);
-
-    const playersMetadata = this.recalculateGamePlayersMetadata({
-      ...game,
-      metadata,
-    });
-
+    // A skipped week has no teams data, so there is nothing to calculate (S10.18)
+    let update: Record<string, unknown> = { $unset: { metadata: '' } };
+    if (game.status !== EnumGameStatus.Skipped) {
+      const metadata = this.calculateGameMetadata(game);
+      const players = this.recalculateGamePlayersMetadata({
+        ...game,
+        metadata,
+      });
+      update = { metadata: { ...metadata, players } };
+    }
     const gameWithMetadata = await this.gameModel
-      .findOneAndUpdate(
-        { _id: game.id },
-        {
-          metadata: {
-            ...metadata,
-            players: playersMetadata,
-          },
-        },
-        { new: true },
-      )
+      .findOneAndUpdate({ _id: game.id }, update, { new: true })
       .session(session ?? null)
       .exec();
 

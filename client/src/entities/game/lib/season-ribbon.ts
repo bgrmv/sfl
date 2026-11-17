@@ -32,6 +32,15 @@ export function seasonRibbon(
         link: `/games/details/${season}/${card.number}`,
       };
     }
+    if (card.status === EnumGameStatus.Skipped) {
+      return {
+        ...base,
+        state: 'skipped' as const,
+        score: null,
+        mark: 'skip',
+        link: null,
+      };
+    }
     if (card.status !== EnumGameStatus.Furture) {
       return {
         ...base,

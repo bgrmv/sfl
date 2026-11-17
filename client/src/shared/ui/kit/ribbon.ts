@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-export type RibbonState = 'played' | 'draft' | 'next' | 'future' | 'missed';
+export type RibbonState =
+  'played' | 'draft' | 'next' | 'future' | 'missed' | 'skipped';
 
 export interface RibbonCell {
   number: number;
@@ -21,6 +22,7 @@ const STATE_TEXT: Record<RibbonState, string> = {
   next: 'next game',
   future: 'planned',
   missed: 'no record',
+  skipped: 'skipped, no game that week',
 };
 
 /**
@@ -92,6 +94,10 @@ const STATE_TEXT: Record<RibbonState, string> = {
     .missed {
       opacity: 0.6;
     }
+    .skipped {
+      opacity: 0.6;
+      text-decoration: line-through;
+    }
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -138,6 +144,7 @@ const STATE_TEXT: Record<RibbonState, string> = {
       <span>Accent: next game</span>
       <span>Dashed: planned</span>
       <span>Dim: no record</span>
+      <span>Struck through: skipped week</span>
     </div>
   `,
 })

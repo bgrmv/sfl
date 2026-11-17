@@ -169,7 +169,7 @@ export class GamesBoardPageComponent {
     String(this.thisYear - 1),
     String(this.thisYear - 2),
   ];
-  protected readonly statuses = ['All', 'Published', 'Draft'];
+  protected readonly statuses = ['All', 'Published', 'Draft', 'Skipped'];
   protected readonly season = signal(String(this.thisYear));
   protected readonly status = signal('All');
   protected readonly loading = this.store.loading;
@@ -214,7 +214,12 @@ export class GamesBoardPageComponent {
           (g.metadata?.scoreFirstDraft ?? 0) +
           (g.metadata?.scoreSecondDraft ?? 0),
         mvp: mvpNames(g.metadata?.mvpListIds, names) || '–',
-        status: g.status === 'published' ? 'Published' : 'Draft',
+        status:
+          g.status === 'published'
+            ? 'Published'
+            : g.status === 'skipped'
+              ? 'Skipped'
+              : 'Draft',
       }))
       .filter(g => this.status() === 'All' || g.status === this.status());
     return this.tq.apply(list);

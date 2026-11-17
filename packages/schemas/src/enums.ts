@@ -14,6 +14,8 @@ export enum EnumGameStatus {
   New = 'new',
   Draft = 'draft',
   Published = 'published',
+  /** A week without a game: no statistics, outside every rating. */
+  Skipped = 'skipped',
 }
 
 /** Shirt colour that tells the two teams of a game apart. */

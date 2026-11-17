@@ -32,6 +32,7 @@ describe('seasonRibbon', () => {
       game(5, EnumGameStatus.Published, 4, 1, 't1'),
       game(6, EnumGameStatus.Published, 2, 2, null),
       game(4, EnumGameStatus.Draft, 0, 0, null),
+      game(3, EnumGameStatus.Skipped, 0, 0, null),
     ],
     2026,
     today,
@@ -59,6 +60,15 @@ describe('seasonRibbon', () => {
   it('a draft is not a result: no score, but it links to the game', () => {
     expect(cell(4)).toMatchObject({ state: 'draft', score: null });
     expect(cell(4).link).toBe('/games/details/2026/4');
+  });
+
+  it('a skipped week is marked, has no score and no link', () => {
+    expect(cell(3)).toMatchObject({
+      state: 'skipped',
+      score: null,
+      mark: 'skip',
+      link: null,
+    });
   });
 
   it('a past Saturday without a game has no record', () => {

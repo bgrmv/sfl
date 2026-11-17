@@ -87,6 +87,22 @@
   </mat-card>
 }
 
+<!-- A week without a game -->
+@if (gameCard().status === enumGameStatus.Skipped) {
+  <mat-card class="card-border further-game">
+    <mat-card-header>
+      <mat-card-title>
+        Game {{ gameCard().number }}
+        <sub>/ {{ totalWeeks() }}</sub>
+      </mat-card-title>
+      <mat-card-subtitle>{{ gameCard().playedAt | date }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Skipped: no game this week</p>
+    </mat-card-content>
+  </mat-card>
+}
+
 <!-- Game was played but no update yet -->
 @if (hasGamePlayed() && gameCard().status === enumGameStatus.Furture) {
   <mat-card class="card-border played-game">
