@@ -397,4 +397,4 @@ flowchart LR
 |   ❌   | [S12.1](E12-performance/S12.1.md) | Аудит производительности клиента                |    P2     |   M    | [S11.8](E11-dx-docs/S11.8.md)                                              |
 |   ✅   | [S12.2](E12-performance/S12.2.md) | Аудит запросов и индексов MongoDB               |    P2     |   M    | [S11.8](E11-dx-docs/S11.8.md)                                              |
 |   ❌   | [S12.3](E12-performance/S12.3.md) | Оптимизация клиента по результатам аудита       |    P3     |   M    | [S12.1](E12-performance/S12.1.md), [S1.4](E01-dependency-upgrades/S1.4.md) |
-|   ❌   | [S12.4](E12-performance/S12.4.md) | Индексы и запросы MongoDB по результатам аудита |    P3     |   M    | [S12.2](E12-performance/S12.2.md)                                          |
+|   ✅   | [S12.4](E12-performance/S12.4.md) | Индексы и запросы MongoDB по результатам аудита |    P3     |   M    | [S12.2](E12-performance/S12.2.md)                                          |

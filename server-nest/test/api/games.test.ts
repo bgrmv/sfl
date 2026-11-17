@@ -75,6 +75,38 @@ describe('API: games', () => {
     expect(byNumber.body.data).toHaveLength(1);
   });
 
+  it('a list without filters is newest first and has a limit (S12.4)', async () => {
+    await post(gameBody(playerIds, { number: 5, season: 2022 }));
+    await post(gameBody(playerIds, { number: 6, season: 2022 }));
+
+    const all = await t.api().get('/rest/games');
+    const keys = all.body.data.map((g: { season: number; number: number }) => [
+      g.season,
+      g.number,
+    ]);
+    const sorted = [...keys].sort((a, b) => b[0] - a[0] || b[1] - a[1]);
+    expect(keys).toEqual(sorted);
+
+    const two = await t.api().get('/rest/games').query({ limit: 2 });
+    expect(two.body.data).toHaveLength(2);
+    expect(two.body.data.map((g: { number: number }) => g.number)).toEqual(
+      all.body.data.slice(0, 2).map((g: { number: number }) => g.number),
+    );
+
+    const skipped = await t
+      .api()
+      .get('/rest/games')
+      .query({ limit: 1, offset: 1 });
+    expect(skipped.body.data[0].id).toBe(all.body.data[1].id);
+  });
+
+  it('a limit out of 1..500 answers 400', async () => {
+    for (const limit of ['0', '501', 'x']) {
+      const res = await t.api().get('/rest/games').query({ limit });
+      expect(res.status, limit).toBe(400);
+    }
+  });
+
   it('updates a game with PATCH', async () => {
     const created = await post(gameBody(playerIds, { number: 4 }));
     const id = created.body.data.id;

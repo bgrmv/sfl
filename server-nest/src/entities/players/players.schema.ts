@@ -73,7 +73,6 @@ export class Player implements ServerPlayer {
   @ApiProperty()
   @Prop({
     type: String,
-    index: true,
     required: true,
   })
   nickname: string;

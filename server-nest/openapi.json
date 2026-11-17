@@ -523,6 +523,23 @@
         "operationId": "GamesController_find",
         "parameters": [
           {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The newest first: 1 to 500, 100 when no season is given",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
             "name": "season",
             "required": false,
             "in": "query",

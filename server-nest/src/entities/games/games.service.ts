@@ -27,6 +27,10 @@ import {
   IPlayerGameResultMetadata,
 } from './game.schema';
 
+/** A list without a season is capped: a game weighs about 18 KB. */
+export const DEFAULT_GAMES_LIMIT = 100;
+export const MAX_GAMES_LIMIT = 500;
+
 const toSnapshot = (
   game: {
     id?: string;
@@ -63,9 +67,23 @@ export class GamesService {
     return await this.gameModel.findById({ _id }).exec();
   }
 
-  async find(game: Partial<IGame>) {
-    this.logger.info('Find games with', game);
-    return await this.gameModel.find({ ...game }).exec();
+  /**
+   * Without a season the list is the newest first and capped (a game weighs
+   * about 18 KB, the league has about 2 400 of them): `DEFAULT_GAMES_LIMIT`
+   * unless the caller asks for less or more, up to `MAX_GAMES_LIMIT`.
+   */
+  async find(
+    game: Partial<IGame>,
+    { limit, offset }: { limit?: number; offset?: number } = {},
+  ) {
+    this.logger.info('Find games with', { ...game, limit, offset });
+    const cap = limit ?? (game.season ? undefined : DEFAULT_GAMES_LIMIT);
+    const query = this.gameModel
+      .find({ ...game })
+      // A season reads in the order of its Saturdays, the whole list newest first
+      .sort(game.season ? { number: 1 } : { season: -1, number: -1 })
+      .skip(offset ?? 0);
+    return await (cap ? query.limit(cap) : query).exec();
   }
 
   async create(game: IGame) {

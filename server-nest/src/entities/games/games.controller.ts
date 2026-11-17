@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -25,7 +26,11 @@ import { Public } from 'src/shared/decorators/public.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
 import { SaveGameDTO, UpdateGameDTO } from './game.dto';
 import { IGame } from './game.schema';
-import { GamesService } from './games.service';
+import {
+  DEFAULT_GAMES_LIMIT,
+  GamesService,
+  MAX_GAMES_LIMIT,
+} from './games.service';
 
 @ApiTags('games')
 @Controller('games')
@@ -44,6 +49,13 @@ export class GamesController {
     type: Number,
     required: false,
   })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: `The newest first: 1 to ${MAX_GAMES_LIMIT}, ${DEFAULT_GAMES_LIMIT} when no season is given`,
+  })
+  @ApiQuery({ name: 'offset', type: Number, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all games records',
@@ -53,11 +65,27 @@ export class GamesController {
     number?: number | undefined,
     @Query('season', new ParseIntPipe({ optional: true }))
     season?: number | undefined,
+    @Query('limit', new ParseIntPipe({ optional: true }))
+    limit?: number | undefined,
+    @Query('offset', new ParseIntPipe({ optional: true }))
+    offset?: number | undefined,
   ) {
-    return await this.gamesService.find({
-      ...(number ? { number } : null),
-      ...(season ? { season } : null),
-    });
+    if (
+      (limit !== undefined && (limit < 1 || limit > MAX_GAMES_LIMIT)) ||
+      (offset !== undefined && offset < 0)
+    ) {
+      throw new BadRequestException(
+        `limit is from 1 to ${MAX_GAMES_LIMIT}, offset is not negative`,
+      );
+    }
+
+    return await this.gamesService.find(
+      {
+        ...(number ? { number } : null),
+        ...(season ? { season } : null),
+      },
+      { limit, offset },
+    );
   }
 
   @Public()
