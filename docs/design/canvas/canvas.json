@@ -809,6 +809,38 @@
       "h": 2000,
       "title": "Админка · загрузка, очередь без тегов, массовые теги",
       "expand": "fill"
+    },
+    "FlipBoard.dc.html": {
+      "expand": "fill",
+      "h": 1250,
+      "title": "Перекидное табло 1280 · тёмная",
+      "w": 1280,
+      "x": 0,
+      "y": 101100
+    },
+    "FlipBoardPhone.dc.html": {
+      "expand": "fill",
+      "h": 2300,
+      "title": "Перекидное табло 360 · тёмная",
+      "w": 360,
+      "x": 1360,
+      "y": 101100
+    },
+    "SeasonRibbon.dc.html": {
+      "expand": "fill",
+      "h": 1050,
+      "title": "Лента суббот 1280 · тёмная",
+      "w": 1280,
+      "x": 1800,
+      "y": 101100
+    },
+    "SeasonRibbonPhone.dc.html": {
+      "expand": "fill",
+      "h": 2500,
+      "title": "Лента суббот 360 · тёмная",
+      "w": 360,
+      "x": 3160,
+      "y": 101100
     }
   },
   "createdOnFiles": {
@@ -848,7 +880,9 @@
     "t3m",
     "n3",
     "t4h",
-    "t3n"
+    "t3n",
+    "t7",
+    "n4"
   ],
   "notes": {
     "n1": {
@@ -1079,6 +1113,21 @@
       "kind": "title1",
       "maxW": 5360,
       "w": 240
+    },
+    "t7": {
+      "kind": "title1",
+      "maxW": 3520,
+      "text": "7. Перекидное табло и лента суббот (новые фичи, 2026-11-16)",
+      "w": 240,
+      "x": 0,
+      "y": 100800
+    },
+    "n4": {
+      "fill": "gray",
+      "text": "Две фирменные детали направления «Табло». Перекидные цифры — только счёт матча, «Последняя игра» и отсчёт до субботы. Лента суббот — весь сезон одной полосой на главной и в списке матчей. Описание: docs/design/flip-board-and-ribbon.md, истории S10.74 и S10.75.",
+      "w": 420,
+      "x": 3600,
+      "y": 101100
     }
   },
   "order": [
@@ -1182,7 +1231,11 @@
     "SummaryBar.dc.html",
     "Home.dc.html",
     "Games.dc.html",
-    "SignIn.dc.html"
+    "SignIn.dc.html",
+    "FlipBoard.dc.html",
+    "FlipBoardPhone.dc.html",
+    "SeasonRibbon.dc.html",
+    "SeasonRibbonPhone.dc.html"
   ],
   "pages": [],
   "title": "SFL: дизайн «Табло»"

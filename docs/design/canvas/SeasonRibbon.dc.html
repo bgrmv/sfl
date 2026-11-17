@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ribbon of Saturdays</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; padding: 20px; display: flex; flex-direction: column; gap: 28px;">
+
+  <header style="display: flex; flex-direction: column; gap: 6px; max-width: 70ch;">
+    <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Ribbon of Saturdays</h1>
+    <p style="margin: 0; color: {{t.muted}};">The whole season in one strip: a cell for every Saturday. The league has played every Saturday since 1980, and the ribbon shows exactly that. A played cell opens its game.</p>
+  </header>
+
+  <section aria-labelledby="rb1" style="display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;"><h2 id="rb1" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Saturdays of season 2026</h2><a href="#" style="color: {{t.link}}; font-weight: 600; font-size: 14px;">All games</a></div>
+    <ol aria-label="Saturdays of season 2026" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 4px;">
+      <sc-for list="{{cells}}" as="c" hint-placeholder-count="52">
+        <li><a href="#" aria-label="{{c.label}}" title="{{c.label}}" style="min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 4px; border: {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; opacity: {{c.opacity}}; font-size: 11px; line-height: 1.15; text-align: center;"><span style="font-size: 10px; letter-spacing: 0.04em;">{{c.n}}</span><span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; color: {{c.scoreFg}}; font-variant-numeric: tabular-nums;">{{c.score}}</span><span>{{c.mark}}</span></a></li>
+      </sc-for>
+    </ol>
+    <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: {{t.muted}};"><span>Score and winner: played</span><span>Dashed accent: draft</span><span>Accent: next game</span><span>Dashed: planned</span><span>Dim: no record</span></div>
+  </section>
+
+  <section aria-labelledby="rb2" style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 id="rb2" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">States of a cell</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+      <sc-for list="{{states}}" as="s" hint-placeholder-count="6">
+        <div style="flex: 1 1 180px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+          <span style="width: 52px; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 4px; border: {{s.c.border}}; background: {{s.c.bg}}; color: {{s.c.fg}}; opacity: {{s.c.opacity}}; font-size: 11px; line-height: 1.15;"><span style="font-size: 10px;">{{s.c.n}}</span><span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; color: {{s.c.scoreFg}};">{{s.c.score}}</span><span>{{s.c.mark}}</span></span>
+          <h3 style="margin: 0; font-size: 16px; font-weight: 700;">{{s.title}}</h3>
+          <p style="margin: 0; font-size: 13px; color: {{t.muted}};">{{s.text}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-labelledby="rb3" style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 id="rb3" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">Where and how</h2>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: {{t.muted}}; display: flex; flex-direction: column; gap: 4px; max-width: 80ch;">
+      <sc-for list="{{rules}}" as="r" hint-placeholder-count="5"><li>{{r}}</li></sc-for>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":1050}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', surface2: '#1F1C15', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', onAccent: '#0D0C0A', link: '#FFD21F' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', surface2: '#E8DFCB', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', onAccent: '#15130F', link: '#6B5400' };
+    const look = (state) => ({
+      played: { border: '1px solid transparent', bg: t.surface2, fg: t.muted, scoreFg: t.text, opacity: 1 },
+      draft: { border: '1px dashed ' + t.accent, bg: 'transparent', fg: t.muted, scoreFg: t.text, opacity: 1 },
+      next: { border: '1px solid ' + t.accent, bg: t.accent, fg: t.onAccent, scoreFg: t.onAccent, opacity: 1 },
+      future: { border: '1px dashed ' + t.border, bg: 'transparent', fg: t.muted, scoreFg: t.text, opacity: 1 },
+      missed: { border: '1px solid ' + t.border, bg: 'transparent', fg: t.muted, scoreFg: t.text, opacity: 0.6 }
+    })[state];
+    // Made-up season: 46 played, game 47 is a draft, 48 is next Saturday, the rest is planned; week 41 has no record
+    const scores = ['4:1', '3:3', '2:5', '6:4', '1:2', '5:5', '3:2', '0:1', '4:4', '7:3'];
+    const cells = Array.from({ length: 52 }, (_, i) => {
+      const n = i + 1;
+      const state = n === 41 ? 'missed' : n <= 46 ? 'played' : n === 47 ? 'draft' : n === 48 ? 'next' : 'future';
+      const score = state === 'played' ? scores[i % scores.length] : state === 'next' ? 'SAT' : state === 'draft' ? '···' : '';
+      const [a, b] = score.includes(':') ? score.split(':').map(Number) : [0, 0];
+      const mark = state === 'played' ? (a === b ? '=' : a > b ? 'BMW' : 'HONDA') : state === 'draft' ? 'draft' : '';
+      const what = state === 'played' ? `${score}, ${mark === '=' ? 'draw' : mark + ' won'}` : { draft: 'draft, not published', next: 'next game', future: 'planned', missed: 'no record' }[state];
+      return { n, score, mark, label: `Game ${n}: ${what}`, ...look(state) };
+    });
+    const sample = (state, n, score, mark) => ({ n, score, mark, ...look(state) });
+    const states = [
+      { title: 'Played, a win', text: 'Score and the short name of the winner. Opens the game.', c: sample('played', 46, '4:1', 'BMW') },
+      { title: 'Played, a draw', text: 'The sign «=» instead of a name: the result is text, not colour.', c: sample('played', 45, '3:3', '=') },
+      { title: 'Draft', text: 'Dashed accent frame, no score: a draft is not a result yet.', c: sample('draft', 47, '···', 'draft') },
+      { title: 'Next game', text: 'One accent cell: the coming Saturday.', c: sample('next', 48, 'SAT', '') },
+      { title: 'Planned', text: 'Dashed frame, only the number of the week.', c: sample('future', 49, '', '') },
+      { title: 'No record', text: 'A past Saturday without a game in the data. Dimmed; a skipped week gets its own mark with S10.18.', c: sample('missed', 41, '', '') }
+    ];
+    const rules = [
+      'Home page: under the numbers of the season. Games page: above the table, for the chosen season.',
+      'Cells wrap: 26 in a row at 1280 px, 7 in a row at 360 px. A cell is at least 44 × 52 px, a finger target.',
+      'Every state has words in the label and in the title; the legend repeats them under the strip.',
+      'The numbers come from published games only. Statistics have been kept since 2011; earlier seasons show «no record» until the old games are processed (S10.40).',
+      'The same strip, for one player, lives on the player page as «Saturdays of the season».'
+    ];
+    return { t, cells, states, rules };
+  }
+}
+</script>
+</body>
+</html>
