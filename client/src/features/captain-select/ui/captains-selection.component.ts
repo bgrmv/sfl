@@ -12,7 +12,6 @@ import { JsonPipe } from '@angular/common';
 
 import { CaptainStatsCardComponent, CaptainsStore } from '@entities/captain';
 import { PlayersStore } from '@entities/player';
-import { BaseUnsubscribeComponent } from '@shared/classes/base-unsubscribe-component';
 import { TeamEnum } from '@shared/constants/team';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl } from '@angular/forms';
@@ -25,7 +24,7 @@ import { FormControl } from '@angular/forms';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [MatButtonModule, CaptainStatsCardComponent, JsonPipe],
 })
-export class CaptainsSelectionComponent extends BaseUnsubscribeComponent {
+export class CaptainsSelectionComponent {
   private captainsStore = inject(CaptainsStore);
   private playersStore = inject(PlayersStore);
 

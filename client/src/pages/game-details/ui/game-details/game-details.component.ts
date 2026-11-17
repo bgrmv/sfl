@@ -12,13 +12,11 @@ import {
   Component,
   computed,
   DestroyRef,
-  effect,
   inject,
   input,
-  OnInit,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -54,7 +52,7 @@ import { filter, map, switchMap } from 'rxjs';
   styleUrl: './game-details.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GameDetailsComponent implements OnInit {
+export class GameDetailsComponent {
   protected readonly loading = signal<boolean>(false);
   private readonly clipboard = inject(Clipboard);
   private readonly notify = injectNotifier();
@@ -62,7 +60,6 @@ export class GameDetailsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly game = input.required<IGameDTO>();
-  public readonly players = signal<Record<string, IPlayerDTO>>({});
 
   public readonly displayedColumns = [
     'nickname',
@@ -105,28 +102,25 @@ export class GameDetailsComponent implements OnInit {
       });
   });
 
-  public readonly playerRef = effect(() => {
-    const ids = Object.keys(this.game().metadata?.players);
-
-    if (ids && ids.length) {
-      this.playersService.find(ids.join(',')).subscribe();
-    }
-  });
-
-  public players$ = toObservable(this.game).pipe(
-    filter(Boolean),
-    map(game => game.statistics.map(stat => stat.playerId)),
-    switchMap(playerIds => this.playersService.find(playerIds.join(','))),
-    takeUntilDestroyed(this.destroyRef),
+  /** The players of the game by id; loaded again when the game changes. */
+  public readonly players = toSignal(
+    toObservable(this.game).pipe(
+      filter(Boolean),
+      switchMap(game =>
+        this.playersService.find(
+          game.statistics.map(stat => stat.playerId).join(','),
+        ),
+      ),
+      map(
+        players =>
+          Object.fromEntries(players.map(elem => [elem.id, elem])) as Record<
+            string,
+            IPlayerDTO
+          >,
+      ),
+    ),
+    { initialValue: {} as Record<string, IPlayerDTO> },
   );
-
-  ngOnInit() {
-    this.players$.subscribe((players: IPlayerDTO[]) => {
-      this.players.set(
-        Object.fromEntries(players.map(elem => [elem.id, elem])),
-      );
-    });
-  }
 
   copy(target: string, message = 'Copied to clipboard'): void {
     this.clipboard.copy(target); // Copy the ID to the clipboard

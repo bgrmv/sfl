@@ -1,11 +1,8 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  effect,
   inject,
-  OnDestroy,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 
 import { TPlayerFinal } from '@entities/player';
@@ -27,6 +24,7 @@ import { PlayerEditDialogComponent } from '@features/player-edit';
 import { NilToDashPipe } from '@shared/pipes/nil-to-dash.pipe';
 import { AuthService } from '@shared/auth/auth.service';
 
+import { sortedTableSource } from '@shared/lib/sorted-table-source';
 @Component({
   selector: 'sfl-players-table',
   templateUrl: './players-table.component.html',
@@ -46,7 +44,7 @@ import { AuthService } from '@shared/auth/auth.service';
     NilToDashPipe,
   ],
 })
-export class PlayersTableComponent implements OnDestroy, AfterViewInit {
+export class PlayersTableComponent {
   private _destroyRef = inject(DestroyRef);
 
   private dialog = inject(MatDialog);
@@ -59,21 +57,11 @@ export class PlayersTableComponent implements OnDestroy, AfterViewInit {
 
   protected readonly loading = this.playersStore.loading;
 
-  playersEffectRef = effect(() => {
-    this.dataSource.data = this.playersStore.playersEntities();
-  });
-
-  readonly sort = viewChild.required(MatSort);
-
-  ngOnDestroy() {
-    this.playersEffectRef.destroy();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort();
-  }
-
-  readonly dataSource = new MatTableDataSource<TPlayerFinal>([]);
+  readonly sort = viewChild(MatSort);
+  readonly dataSource = sortedTableSource(
+    this.playersStore.playersEntities,
+    this.sort,
+  );
   readonly displayedColumns: (
     keyof TPlayerFinal | 'actions' | 'name' | 'surname'
   )[] = [

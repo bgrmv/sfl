@@ -3,10 +3,12 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   HostListener,
   OnInit,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +25,6 @@ import {
   combineLatest,
   debounceTime,
   startWith,
-  takeUntil,
   tap,
 } from 'rxjs';
 
@@ -33,7 +34,6 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { CardVariantEnum } from '@shared/constants/card';
 import { PlayersStore } from '@entities/player';
 import { PlayerClient } from '@entities/player';
-import { BaseUnsubscribeComponent } from '@shared/classes/base-unsubscribe-component';
 import { displayFn } from '@entities/captain';
 
 @Component({
@@ -57,10 +57,8 @@ import { displayFn } from '@entities/captain';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CaptainToAddComponent
-  extends BaseUnsubscribeComponent
-  implements OnInit
-{
+export class CaptainToAddComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   readonly playersStore = inject(PlayersStore);
 
   readonly displayFn = displayFn;
@@ -94,7 +92,7 @@ export class CaptainToAddComponent
       .pipe(
         tap(() => this.loading$.next(true)),
         debounceTime(1500),
-        takeUntil(this.unsubscribe$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(([, , suggestedCaptain]) => {
         this.loading$.next(false);

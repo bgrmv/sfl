@@ -1,22 +1,15 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 
 import { GameListStatisticsPipe, GameStore, TGameFinal } from '@entities/game';
 
+import { sortedTableSource } from '@shared/lib/sorted-table-source';
 @Component({
   selector: 'sfl-games-table',
   standalone: true,
@@ -35,26 +28,13 @@ import { GameListStatisticsPipe, GameStore, TGameFinal } from '@entities/game';
   ],
   providers: [],
 })
-export class GamesTableComponent implements OnDestroy, AfterViewInit {
+export class GamesTableComponent {
   readonly gameStore = inject(GameStore);
 
   readonly loadingSingal = this.gameStore.loading;
 
-  readonly gamesEffectRef = effect(() => {
-    this.dataSource.data = this.gameStore.games();
-  });
-
-  @ViewChild(MatSort) sort!: MatSort;
-
-  ngOnDestroy() {
-    this.gamesEffectRef.destroy();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-  }
-
-  readonly dataSource = new MatTableDataSource<TGameFinal>([]);
+  readonly sort = viewChild(MatSort);
+  readonly dataSource = sortedTableSource(this.gameStore.games, this.sort);
   readonly displayedColumns: (keyof TGameFinal | 'result')[] = [
     'season',
     'number',

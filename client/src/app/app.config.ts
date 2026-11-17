@@ -7,7 +7,6 @@ import {
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   provideHttpClient,
   withInterceptors,
@@ -35,7 +34,6 @@ export const appConfig: ApplicationConfig = {
     ),
     // The session comes back from the refresh cookie before the first screen
     provideAppInitializer(() => inject(AuthService).restoreSession()),
-    provideAnimations(),
     provideHighcharts({ instance: () => import('highcharts') }),
   ],
 };

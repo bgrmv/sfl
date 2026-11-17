@@ -16,7 +16,6 @@ import {
 import { CookieService } from '@shared/lib/cookie.service';
 import { HttpService } from '@shared/api/http.service';
 import { JwtService } from '@shared/auth/jwt.service';
-import { LocalStorageService } from '@shared/lib/local-storage.service';
 import packageJSON from 'package.json';
 import { AuthService } from '@shared/auth/auth.service';
 import {
@@ -37,7 +36,7 @@ interface NavLink {
   styleUrls: ['./app.component.css'],
   imports: [RouterOutlet, RouterLink, RouterLinkActive, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [HttpService, CookieService, JwtService, LocalStorageService],
+  providers: [HttpService, CookieService, JwtService],
 })
 export class AppComponent {
   private readonly router = inject(Router);

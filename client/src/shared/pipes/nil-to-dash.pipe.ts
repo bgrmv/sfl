@@ -5,10 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class NilToDashPipe implements PipeTransform {
-  transform(value: any): unknown {
+  transform<T>(value: T): NonNullable<T> | '—' {
     if (value === null || value === undefined) {
       return '—';
     }
-    return value;
+    return value as NonNullable<T>;
   }
 }

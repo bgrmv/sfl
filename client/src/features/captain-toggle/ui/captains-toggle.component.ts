@@ -1,8 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  AfterViewInit,
-  effect,
   inject,
   viewChild,
 } from '@angular/core';
@@ -11,11 +9,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 
 import { TCaptain } from '@entities/captain';
 import { PlayersStore } from '@entities/player';
 
+import { sortedTableSource } from '@shared/lib/sorted-table-source';
 @Component({
   selector: 'sfl-captains-toggle',
   templateUrl: './captains-toggle.component.html',
@@ -30,22 +29,14 @@ import { PlayersStore } from '@entities/player';
     MatSlideToggleModule,
   ],
 })
-export class CaptainsToggleComponent implements AfterViewInit {
+export class CaptainsToggleComponent {
   private playersStore = inject(PlayersStore);
 
-  readonly sort = viewChild.required(MatSort);
-
-  constructor() {
-    effect(() => {
-      this.dataSource.data = this.playersStore.captains();
-    });
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort();
-  }
-
-  readonly dataSource = new MatTableDataSource<TCaptain>([]);
+  readonly sort = viewChild(MatSort);
+  readonly dataSource = sortedTableSource(
+    this.playersStore.captains,
+    this.sort,
+  );
   readonly displayedColumns: (keyof TCaptain | 'actions')[] = [
     'avatar',
     // 'name',

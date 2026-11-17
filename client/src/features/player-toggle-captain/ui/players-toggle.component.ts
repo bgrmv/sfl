@@ -1,11 +1,8 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  effect,
   inject,
-  OnDestroy,
   viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,10 +10,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { TPlayerFinal } from '@entities/player';
 import { PlayersStore } from '@entities/player';
 
+import { sortedTableSource } from '@shared/lib/sorted-table-source';
 @Component({
   selector: 'sfl-players-toggle',
   imports: [
@@ -31,18 +29,16 @@ import { PlayersStore } from '@entities/player';
   styleUrls: ['./players-toggle.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
+export class PlayersToggleComponent {
   private _destroyRef = inject(DestroyRef);
 
   readonly playersStore = inject(PlayersStore);
 
-  readonly playersEffectRef = effect(() => {
-    this.dataSource.data = this.playersStore.playersEntities();
-  });
-
-  readonly sort = viewChild.required(MatSort);
-
-  readonly dataSource = new MatTableDataSource<TPlayerFinal>([]);
+  readonly sort = viewChild(MatSort);
+  readonly dataSource = sortedTableSource(
+    this.playersStore.playersEntities,
+    this.sort,
+  );
   readonly displayedColumns: (keyof TPlayerFinal | 'actions')[] = [
     'avatar',
     // 'name',
@@ -50,14 +46,6 @@ export class PlayersToggleComponent implements OnDestroy, AfterViewInit {
     'nickname',
     'actions',
   ];
-
-  ngOnDestroy() {
-    this.playersEffectRef.destroy();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort();
-  }
 
   toggleCaptain(player: TPlayerFinal) {
     this.playersStore.toggleCaptain(player.id);
