@@ -44,6 +44,13 @@ export class PlayersService {
     return this.#httpService.delete<IPlayerDTO | null>(`players/${id}`);
   }
 
+  /** The person leaves, the games stay (S8.4): the answer is the player without personal data. */
+  anonymize(id: string): Observable<IPlayerDTO> {
+    return this.#httpService.post<unknown, IPlayerDTO>(
+      `players/${id}/anonymize`,
+    );
+  }
+
   getCaptainsPlayers(): Observable<IPlayerDTO[]> {
     return this.#httpService.get<unknown>('players', { isCaptain: true }).pipe(
       checkedResponse(playersSchema, 'GET players?isCaptain=true'),

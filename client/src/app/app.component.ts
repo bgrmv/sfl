@@ -86,6 +86,7 @@ export class AppComponent {
     ['Vote', '/vote'],
     ['How points work', '/scoring'],
     ['Suggest or complain anonymously', '/suggest'],
+    ['Privacy', '/privacy'],
   ] as const;
 
   onSignOut() {

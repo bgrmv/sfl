@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import { Game, GameSchema } from '../games';
+import { Media, MediaSchema } from '../media/media.schema';
 import { StatisticsModule } from '../statistics';
 import { User, UserSchema } from '../users';
 import { UsersService } from '../users/users.service';
@@ -24,6 +25,10 @@ import { PlayersService } from './players.service';
       {
         name: Game.name,
         schema: GameSchema,
+      },
+      {
+        name: Media.name,
+        schema: MediaSchema,
       },
     ]),
   ],

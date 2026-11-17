@@ -206,6 +206,17 @@ export class PlayersController {
     return await this.playersService.delete(id);
   }
 
+  // The person leaves, the statistics stay (S8.4, docs/privacy.md). Admin only by default.
+  @Post(':id/anonymize')
+  @ApiOkResponse({ type: Player })
+  @ApiBadRequestResponse({ description: 'Invalid id' })
+  @ApiNotFoundResponse({ description: 'Player is not found' })
+  async anonymize(@Param('id') id: string) {
+    assertObjectId(id);
+
+    return await this.playersService.anonymize(id);
+  }
+
   // Not public: the global AuthGuard requires a token (S0.1)
   @Post('recalculations')
   @ApiBody({

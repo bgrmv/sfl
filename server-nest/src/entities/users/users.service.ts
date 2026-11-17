@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { InjectModel } from '@nestjs/mongoose';
 
 import mongoose, { Model } from 'mongoose';
@@ -80,6 +81,30 @@ export class UsersService {
       .findByIdAndUpdate(new mongoose.Types.UUID(id), {
         $set: { password: hash(password) },
         // A new password ends every session opened with the old one
+        $inc: { tokenVersion: 1 },
+      })
+      .exec();
+
+    return !!user;
+  }
+
+  /**
+   * The person leaves, the record stays (S8.4): no name, surname, avatar, age;
+   * the email becomes a placeholder nobody can receive mail at, the password a
+   * random one, and every session ends. Safe to repeat.
+   */
+  async anonymize(id: string | mongoose.Types.UUID): Promise<boolean> {
+    const userId = new mongoose.Types.UUID(id);
+    const user = await this.userModel
+      .findByIdAndUpdate(userId, {
+        $set: {
+          name: '',
+          surname: '',
+          avatar: '',
+          email: `removed-${userId.toString()}@sfl.invalid`,
+          password: hash(randomUUID()),
+        },
+        $unset: { age: '' },
         $inc: { tokenVersion: 1 },
       })
       .exec();

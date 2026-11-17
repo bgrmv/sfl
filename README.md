@@ -63,6 +63,7 @@
 | перенести приёмы проекта в другой проект        | [EXPERIENCE.md](docs/EXPERIENCE.md)        |
 | работать как ИИ-агент                           | [AGENT.md](AGENT.md)                       |
 | прочитать результаты аудитов                    | [docs/audits/](docs/audits/)               |
+| узнать, какие данные о людях хранятся           | [docs/privacy.md](docs/privacy.md)         |
 
 ## Статус и планы
 

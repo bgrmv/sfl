@@ -420,6 +420,50 @@
         "tags": ["players"]
       }
     },
+    "/rest/players/{id}/anonymize": {
+      "post": {
+        "operationId": "PlayersController_anonymize",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Player"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid id"
+          },
+          "404": {
+            "description": "Player is not found"
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["players"]
+      }
+    },
     "/rest/players/recalculations": {
       "post": {
         "operationId": "PlayersController_recalculateSeason",

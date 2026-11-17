@@ -84,6 +84,11 @@ const CLOSED: Case[] = [
     path: t => `/players/${t.freePlayerId}`,
   },
   {
+    name: 'POST /players/:id/anonymize',
+    method: 'post',
+    path: t => `/players/${t.freePlayerId}/anonymize`,
+  },
+  {
     name: 'POST /players/recalculations',
     method: 'post',
     path: () => '/players/recalculations',

@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import { Game, IGame } from '../games/game.schema';
+import { Media } from '../media/media.schema';
 import { UsersService } from '../users/users.service';
 import { Player, ServerPlayer } from './players.schema';
 
@@ -19,6 +20,9 @@ export class PlayersService {
 
     @InjectModel(Game.name)
     private gameModel: Model<IGame>,
+
+    @InjectModel(Media.name)
+    private mediaModel: Model<Media>,
 
     @Optional()
     private usersService: UsersService,
@@ -171,5 +175,36 @@ export class PlayersService {
     await this.usersService.deleteUserById(deletedPlayer.user.id.toString());
 
     return deletedPlayer;
+  }
+
+  /**
+   * The player stays in the games and the statistics, the person goes (S8.4):
+   * the nickname becomes "Former player ...", the user loses name, surname,
+   * avatar, age and email (see `UsersService.anonymize`), the photos lose the
+   * link to the player. Safe to repeat.
+   */
+  async anonymize(id: string): Promise<ServerPlayer> {
+    const player = await this.playerModel.findById(id).populate('user').exec();
+    if (!player) {
+      throw new NotFoundException('Player is not found');
+    }
+
+    await this.usersService.anonymize(player.user.id.toString());
+    await this.mediaModel.updateMany(
+      { playerId: new Types.ObjectId(id) },
+      { $set: { playerId: null } },
+    );
+    await this.playerModel
+      .updateOne(
+        { _id: id },
+        {
+          $set: {
+            nickname: `Former player ${player.number ?? String(id).slice(-4)}`,
+          },
+        },
+      )
+      .exec();
+
+    return await this.findById(id);
   }
 }

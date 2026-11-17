@@ -14,6 +14,7 @@ describe('PlayersStore', () => {
     find: vi.fn(),
     patch: vi.fn(),
     delete: vi.fn(),
+    anonymize: vi.fn(),
   };
   const snackBar = { open: vi.fn() };
 
@@ -24,6 +25,7 @@ describe('PlayersStore', () => {
       .mockReturnValue(of([player('a'), player('b', true)]));
     service.patch.mockReset();
     service.delete.mockReset();
+    service.anonymize.mockReset();
     snackBar.open.mockReset();
     TestBed.configureTestingModule({
       providers: [
@@ -156,5 +158,32 @@ describe('PlayersStore', () => {
     service.delete.mockReturnValueOnce(of({ id: 'a' }));
     store.deleteOne('a');
     expect(store.playersEntities().map(p => p.id)).toEqual(['b']);
+  });
+
+  it('anonymizeOne takes the player without personal data from the server and says so (S8.4)', () => {
+    service.anonymize.mockReturnValue(
+      of({ id: 'a', nickname: 'Former player 7', user: { name: '' } }),
+    );
+    const store = TestBed.inject(PlayersStore);
+
+    store.anonymizeOne('a');
+
+    expect(service.anonymize).toHaveBeenCalledWith('a');
+    expect(store.playersEntityMap()['a'].nickname).toBe('Former player 7');
+    expect(snackBar.open).toHaveBeenCalledWith(
+      'Player anonymized',
+      undefined,
+      expect.anything(),
+    );
+  });
+
+  it('anonymizeOne keeps the player as he was when the server refuses', () => {
+    service.anonymize.mockReturnValue(throwError(() => new Error('no')));
+    const store = TestBed.inject(PlayersStore);
+
+    store.anonymizeOne('a');
+
+    expect(store.playersEntityMap()['a'].nickname).toBe('a');
+    expect(snackBar.open).toHaveBeenCalled();
   });
 });

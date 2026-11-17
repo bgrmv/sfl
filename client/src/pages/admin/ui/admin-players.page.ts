@@ -13,6 +13,10 @@ import {
   PlayerChipComponent,
 } from '@entities/player';
 import { PlayerCreateButtonComponent } from '@features/player-create';
+import {
+  ConfirmDialogComponent,
+  type ConfirmDialogData,
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
 import { PlayerDeleteDialogComponent } from '@features/player-delete';
 import { PlayerEditDialogComponent } from '@features/player-edit';
 import { TableQuery } from '@shared/lib/table-query';
@@ -99,6 +103,15 @@ import { KIT } from '@shared/ui/kit';
                       <button
                         sflBtn
                         size="sm"
+                        variant="ghost"
+                        type="button"
+                        (click)="anonymize(p)"
+                      >
+                        Anonymize
+                      </button>
+                      <button
+                        sflBtn
+                        size="sm"
                         variant="danger"
                         type="button"
                         (click)="remove(p)"
@@ -165,6 +178,24 @@ export class AdminPlayersPageComponent {
       .subscribe(changes => {
         if (changes) {
           this.store.updateOne({ id: player.id, changes });
+        }
+      });
+  }
+
+  /** The person leaves, the games stay (S8.4, docs/privacy.md). */
+  anonymize(player: TPlayerFinal) {
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: `Anonymize ${player.nickname}?`,
+          text: 'The nickname, name, surname, picture, age and email are erased and the person cannot sign in any more. The games and the numbers stay. This cannot be undone.',
+          confirmLabel: 'Anonymize',
+        } satisfies ConfirmDialogData,
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.store.anonymizeOne(player.id);
         }
       });
   }

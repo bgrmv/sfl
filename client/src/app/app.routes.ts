@@ -102,6 +102,12 @@ export const routes: Routes = [
       import('@pages/league').then(c => c.HistoryPageComponent),
   },
   {
+    path: 'privacy',
+    title: 'Privacy',
+    loadComponent: () =>
+      import('@pages/league').then(c => c.PrivacyPageComponent),
+  },
+  {
     path: 'releases',
     title: 'Release notes',
     loadComponent: () =>

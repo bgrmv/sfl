@@ -131,6 +131,28 @@ export function withPlayersCommands() {
             ),
           ),
 
+          /** The person leaves, the statistics stay (S8.4). */
+          anonymizeOne: rxMethod<string>(
+            pipe(
+              tap(queued),
+              concatMap(id =>
+                run(playersService.anonymize(id), anonymized => {
+                  patchState(
+                    store,
+                    updateEntity(
+                      {
+                        id,
+                        changes: anonymized as Partial<TPlayerFinal>,
+                      },
+                      PLAYERS_ENTITY_CONFIG,
+                    ),
+                  );
+                  notify.success('Player anonymized');
+                }),
+              ),
+            ),
+          ),
+
           /** A second delete of the same player while the first runs is ignored. */
           deleteOne: rxMethod<string>(
             pipe(
