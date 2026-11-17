@@ -46,13 +46,36 @@ const withHistory = players.map(p =>
       ? { ...p, metadata: season(4) }
       : p,
 );
+const lineup = [
+  ['a', 't1', true],
+  ['b', 't1', false],
+  ['c', 't2', true],
+  ['d', 't2', false],
+].map(([playerId, teamId, isCaptain]) => ({
+  playerId,
+  teamId,
+  isCaptain,
+  isMVP: false,
+  isTransfer: false,
+  position: 'GK',
+  goalsByLeg: 0,
+  goalsByHead: 0,
+  goalsByPenalty: 0,
+  goalsByAuto: 0,
+  passes: 0,
+}));
 const saved = { id: 'g1', number: 3, season: 2026, playedAt: '2026-11-21' };
 
-function setup(leaseState: 'none' | 'held' | 'busy' = 'none') {
+const stored = { ...saved, status: 'draft', teams, statistics: lineup };
+
+function setup(
+  leaseState: 'none' | 'held' | 'busy' = 'none',
+  params: Record<string, string> = {},
+) {
   const games = {
     create: vi.fn<(game: unknown) => unknown>(() => of(saved)),
-    update: vi.fn<(...args: unknown[]) => unknown>(() => of(saved)),
-    find: vi.fn(),
+    update: vi.fn<(...args: unknown[]) => unknown>(() => of(stored)),
+    find: vi.fn(() => of([stored])),
   };
   const lease = {
     state: signal(leaseState),
@@ -69,7 +92,7 @@ function setup(leaseState: 'none' | 'held' | 'busy' = 'none') {
       {
         provide: ActivatedRoute,
         useValue: {
-          paramMap: of(convertToParamMap({})),
+          paramMap: of(convertToParamMap(params)),
           queryParamMap: of(convertToParamMap({})),
         },
       },
@@ -269,5 +292,45 @@ describe('AdminWizardPageComponent (S10.67)', () => {
     // a (40 points) plays for BMW: stronger squad
     expect(a).toBeGreaterThan(b);
     expect(w.el.textContent).toContain('not a bet');
+  });
+
+  describe('autosave of a saved draft (S10.54)', () => {
+    const edit = (lease: 'held' | 'busy') =>
+      setup(lease, { season: '2026', number: '3' });
+
+    it('saves a few seconds after the last change, once', () => {
+      vi.useFakeTimers();
+      try {
+        const w = edit('held');
+        vi.advanceTimersByTime(5000);
+        w.fixture.detectChanges();
+        w.games.update.mockClear();
+
+        w.click('1 · Game');
+        w.type('wz-number', '4');
+        expect(w.el.textContent).toContain('Saved on its own');
+        vi.advanceTimersByTime(4100);
+
+        expect(w.games.update).toHaveBeenCalledTimes(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('does not save when somebody else holds the lease', () => {
+      vi.useFakeTimers();
+      try {
+        const w = edit('busy');
+        vi.advanceTimersByTime(5000);
+        w.click('1 · Game');
+        w.type('wz-number', '4');
+        vi.advanceTimersByTime(5000);
+
+        expect(w.games.update).not.toHaveBeenCalled();
+        expect(w.el.textContent).toContain('Read only');
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 });

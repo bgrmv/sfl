@@ -7,7 +7,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { debounceTime } from 'rxjs';
 import { GameService, type TPlayerStatisticFinal } from '@entities/game';
 import {
   leagueAverage,
@@ -18,6 +20,9 @@ import {
 import { winChance } from '@sfl/domain';
 import { RatingSystemStore } from '@shared/store/rating-system.store';
 import {
+  AUTOSAVE_MS,
+  autosaveLabel,
+  canAutosave,
   DEFAULT_STATISTIC_VALUES,
   GameLease,
   generatePlayerStatisticID,
@@ -587,6 +592,14 @@ const KIND_LABEL: Record<GameEventKind, string> = {
             </div>
           }
         }
+        @if (autosaveLabel()) {
+          <p
+            class="k-hint"
+            role="status"
+          >
+            {{ autosaveLabel() }}
+          </p>
+        }
         <div class="k-row k-between">
           <button
             sflBtn
@@ -763,7 +776,28 @@ export class AdminWizardPageComponent {
       const id = this.store.gameId();
       if (id) this.lease.start(id);
     });
+    // A draft is saved by itself a few seconds after the last change (S10.54)
+    toObservable(this.store.game)
+      .pipe(debounceTime(AUTOSAVE_MS), takeUntilDestroyed())
+      .subscribe(() => {
+        if (canAutosave(this.autosaveInput())) this.store.updateGame();
+      });
   }
+
+  private readonly autosaveInput = computed(() => ({
+    mode: this.store.mode(),
+    lease: this.lease.state(),
+    valid:
+      this.store.errors().size === 0 &&
+      this.orderProblems().length === 0 &&
+      !!this.game().number &&
+      !!this.game().season,
+    changed: this.store.isFormChanged(),
+    saving: this.store.saving(),
+  }));
+  protected readonly autosaveLabel = computed(() =>
+    autosaveLabel(this.autosaveInput()),
+  );
 
   private teamIds = computed<[string, string]>(() => [
     this.teams()[0]?.id ?? '',
