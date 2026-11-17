@@ -2,16 +2,15 @@
   @for (game of games(); track game.id) {
     @defer {
       <sfl-game-card [gameCard]="game" />
-    } @placeholder (minimum 1s) {
+    } @placeholder {
       <mat-progress-bar
         mode="indeterminate"
         style="height: 200px"
       />
-    } @loading (minimum 1.5s) {
-      <mat-progress-bar
-        mode="indeterminate"
-        style="height: 200px"
-      />
+    }
+  } @empty {
+    @if (!loading()) {
+      <p class="empty">No games in this season yet.</p>
     }
   }
 </section>

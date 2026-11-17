@@ -5,4 +5,8 @@
     gap: 2rem;
     grid-auto-rows: 1fr;
   }
+
+  .empty {
+    grid-column: 1 / -1;
+  }
 }

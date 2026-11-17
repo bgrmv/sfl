@@ -14,4 +14,5 @@ export class GamesListComponent {
   private readonly gamesStore = inject(GamesStore);
 
   protected readonly games = this.gamesStore.gamesEntities;
+  protected readonly loading = this.gamesStore.loading;
 }
