@@ -2,7 +2,6 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   Component,
-  Input,
   ChangeDetectionStrategy,
   input,
 } from '@angular/core';
@@ -48,7 +47,7 @@ import { TCaptain } from '../../model/captain';
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @switch (variant()) {
       @case (variantEnum.Stats) {
@@ -68,13 +67,13 @@ import { TCaptain } from '../../model/captain';
         <mat-card-header>
           <mat-card-title-group>
             <mat-card-title>
-              {{ captain.nickname }}
-              @if (captain?.team) {
-                <span>({{ captain.team }})</span>
+              {{ captain().nickname }}
+              @if (captain().team) {
+                <span>({{ captain().team }})</span>
               }
             </mat-card-title>
             <mat-card-subtitle>
-              {{ captain.nickname }}
+              {{ captain().nickname }}
             </mat-card-subtitle>
             <!-- <img
         mat-card-sm-image
@@ -83,11 +82,11 @@ import { TCaptain } from '../../model/captain';
           </mat-card-title-group>
         </mat-card-header>
         <mat-card-content>
-          <p>Draws: {{ captain.draws }}</p>
-          <p>Won Games:{{ captain.wonGames }}</p>
-          <p>Lost Games: {{ captain.lostGames }}</p>
-          <p>Max Win Streak: {{ captain.maxWinStreak }}</p>
-          <p>Max Lost Strek: {{ captain.maxLostStreak }}</p>
+          <p>Draws: {{ captain().draws }}</p>
+          <p>Won Games:{{ captain().wonGames }}</p>
+          <p>Lost Games: {{ captain().lostGames }}</p>
+          <p>Max Win Streak: {{ captain().maxWinStreak }}</p>
+          <p>Max Lost Strek: {{ captain().maxLostStreak }}</p>
         </mat-card-content>
       </mat-card>
     </ng-template>
@@ -101,13 +100,13 @@ import { TCaptain } from '../../model/captain';
             class="example-header-image"
           ></div>
           <mat-card-title>
-            #{{ captain.number }} {{ captain.nickname }}
+            #{{ captain().number }} {{ captain().nickname }}
           </mat-card-title>
-          <mat-card-subtitle>{{ captain.nickname }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ captain().nickname }}</mat-card-subtitle>
         </mat-card-header>
         <img
           mat-card-image
-          src="https://picsum.photos/id/{{ captain.avatar }}/300/400"
+          src="https://picsum.photos/id/{{ captain().avatar }}/300/400"
           alt="Photo of a Shiba Inu"
         />
         <!-- <mat-card-content> </mat-card-content>
@@ -118,7 +117,7 @@ import { TCaptain } from '../../model/captain';
 })
 export class CaptainCardComponent {
   readonly variantEnum = CardVariantEnum;
-  @Input({ required: true }) captain!: TCaptain;
+  readonly captain = input.required<TCaptain>();
   readonly hasData = input(false);
   readonly variant = input<CardVariantEnum>();
 }

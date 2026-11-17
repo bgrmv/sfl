@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 
-@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: '' })
+@Component({ changeDetection: ChangeDetectionStrategy.OnPush, template: '' })
 export class BaseUnsubscribeComponent implements OnDestroy {
   readonly unsubscribe$ = new Subject<void>();
 

@@ -1,8 +1,8 @@
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   Component,
-  Input,
   ChangeDetectionStrategy,
+  input,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { TChosenPlayer } from '../model/player';
@@ -41,33 +41,33 @@ import { TChosenPlayer } from '../model/player';
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <mat-card class="player-card player-card__stats">
       <mat-card-header>
         <mat-card-title-group>
           <mat-card-title>
-            {{ player.nickname }}
-            @if (player?.team) {
-              <span>({{ player.team }})</span>
+            {{ player().nickname }}
+            @if (player().team) {
+              <span>({{ player().team }})</span>
             }
           </mat-card-title>
           <mat-card-subtitle>
-            {{ player.nickname }}
+            {{ player().nickname }}
           </mat-card-subtitle>
           <img
             mat-card-avatar
-            src="https://picsum.photos/id/{{ player.avatar }}/200/300"
+            src="https://picsum.photos/id/{{ player().avatar }}/200/300"
             alt="Photo of a Shiba Inu"
           />
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content>
-        <p>Draws: {{ player.draws }}</p>
-        <p>Won Games:{{ player.wonGames }}</p>
-        <p>Lost Games: {{ player.lostGames }}</p>
-        <p>Max Win Streak: {{ player.maxWinStreak }}</p>
-        <p>Max Lost Strek: {{ player.maxLostStreak }}</p>
+        <p>Draws: {{ player().draws }}</p>
+        <p>Won Games:{{ player().wonGames }}</p>
+        <p>Lost Games: {{ player().lostGames }}</p>
+        <p>Max Win Streak: {{ player().maxWinStreak }}</p>
+        <p>Max Lost Strek: {{ player().maxLostStreak }}</p>
 
         <!-- Ng-content -->
         <ng-content />
@@ -76,5 +76,5 @@ import { TChosenPlayer } from '../model/player';
   `,
 })
 export class PlayerStatsCardComponent {
-  @Input({ required: true }) player!: TChosenPlayer;
+  readonly player = input.required<TChosenPlayer>();
 }

@@ -36,8 +36,7 @@
     "highcharts-angular": "^5.4.1",
     "lodash-es": "^4.18.1",
     "rxjs": "~7.8.2",
-    "tslib": "~2.9.1",
-    "zone.js": "~0.15.1"
+    "tslib": "~2.9.1"
   },
   "devDependencies": {
     "@angular/build": "~22.2.7",

@@ -1,7 +1,6 @@
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   Component,
-  Input,
   ChangeDetectionStrategy,
   input,
 } from '@angular/core';
@@ -47,17 +46,17 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
     `,
   ],
   // templateUrl: './captain-card.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Captains-cards  [class]="variant" -->
-    @switch (variant) {
+    @switch (variant()) {
       @case (cardVariantEnum.Stats) {
         <section class="captains-cards">
           @for (captain of captains(); track captain; let oddd = $odd) {
             <sfl-captain-stats-card
               appCaptainToChoose
               [captain]="captain"
-              [variant]="variant"
+              [variant]="variant()"
               [class.odd]="oddd"
               [attr.data-captain-id]="captain.id"
             />
@@ -70,7 +69,7 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
             <sfl-captain-card
               appCaptainToChoose
               [captain]="captain"
-              [variant]="variant"
+              [variant]="variant()"
               [attr.data-captain-id]="captain.id"
               [class.odd]="oddd"
             />
@@ -85,6 +84,6 @@ import { CaptainStatsCardComponent } from '../card/captain-stats-card.component'
 })
 export class CaptainsCardsComponent {
   readonly captains = input.required<TCaptain[]>();
-  @Input() variant?: CardVariantEnum;
+  readonly variant = input<CardVariantEnum>();
   readonly cardVariantEnum = CardVariantEnum;
 }

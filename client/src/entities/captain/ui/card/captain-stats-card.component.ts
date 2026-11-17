@@ -1,7 +1,7 @@
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   Component,
-  Input,
+  input,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
@@ -42,35 +42,35 @@ import { TCaptain } from '../../model/captain';
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <mat-card class="captain-card captain-card__stats">
       <mat-card-header>
         <mat-card-title-group>
           <mat-card-title>
-            {{ captain.nickname }}
-            @if (captain?.team) {
-              <span>({{ captain.team }})</span>
+            {{ captain().nickname }}
+            @if (captain().team) {
+              <span>({{ captain().team }})</span>
             }
           </mat-card-title>
-          <mat-card-subtitle>{{ captain.nickname }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ captain().nickname }}</mat-card-subtitle>
           <img
             mat-card-avatar
-            src="https://picsum.photos/id/{{ captain.avatar }}/200/300"
+            src="https://picsum.photos/id/{{ captain().avatar }}/200/300"
             alt="Photo of a Shiba Inu"
           />
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content>
-        <p>Draws: {{ captain.draws }}</p>
-        <p>Won Games:{{ captain.wonGames }}</p>
-        <p>Lost Games: {{ captain.lostGames }}</p>
-        <p>Max Win Streak: {{ captain.maxWinStreak }}</p>
-        <p>Max Lost Strek: {{ captain.maxLostStreak }}</p>
+        <p>Draws: {{ captain().draws }}</p>
+        <p>Won Games:{{ captain().wonGames }}</p>
+        <p>Lost Games: {{ captain().lostGames }}</p>
+        <p>Max Win Streak: {{ captain().maxWinStreak }}</p>
+        <p>Max Lost Strek: {{ captain().maxLostStreak }}</p>
       </mat-card-content>
     </mat-card>
   `,
 })
 export class CaptainStatsCardComponent {
-  @Input({ required: true }) captain!: TCaptain;
+  readonly captain = input.required<TCaptain>();
 }

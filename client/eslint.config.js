@@ -92,9 +92,6 @@ module.exports = tseslint.config(
         'error',
         { allowShortCircuit: true, allowTernary: true },
       ],
-      // Angular 22 включает OnPush по умолчанию; миграция выставила Eager у существующих
-      // компонентов, переход на OnPush — отдельная работа (S12.3)
-      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
     },
   },
   ...fsdBoundaries(),

@@ -1,5 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteSelectedEvent,
@@ -26,6 +32,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
     AsyncPipe,
   ],
   templateUrl: './chips-autocomplete.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./chips-autocomplete.component.css'],
 })
 export class ChipsAutocompleteComponent {

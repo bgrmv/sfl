@@ -24,7 +24,7 @@ import { ButtonDirective } from '@shared/ui/kit';
   selector: 'sfl-sign-in',
   imports: [RouterModule, ReactiveFormsModule, ButtonDirective],
   templateUrl: './sign-in.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./sign-in.component.css'],
 })
 export class SignInComponent {
