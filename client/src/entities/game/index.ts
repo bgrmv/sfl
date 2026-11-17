@@ -2,6 +2,7 @@ export { GameService } from './api/game.service';
 export { GameListStatisticsPipe } from './lib/game-list-statistics.pipe';
 export { EnumGameStatus } from './model/game-status';
 export { GamesStore } from './model/games.store';
+export { seasonRibbon } from './lib/season-ribbon';
 export type {
   IGameDTO,
   IGameSettings,

@@ -1,0 +1,70 @@
+// Design tokens of the "Табло" direction (docs/design/canvas, brief.md).
+// Dark is the only theme until S10.50; the light set is kept for the substitution.
+:root {
+  color-scheme: dark;
+
+  --sfl-bg: #0d0c0a;
+  --sfl-surface: #16140f;
+  --sfl-surface-2: #1f1c15;
+  --sfl-border: #2e2a20;
+  --sfl-chip: #3a3629;
+  --sfl-text: #f6f1e4;
+  --sfl-muted: #b3aa94;
+  --sfl-accent: #ffd21f;
+  --sfl-on-accent: #0d0c0a;
+  --sfl-neg: #ff8a7f;
+  --sfl-on-neg: #0d0c0a;
+  --sfl-link: #ffd21f;
+  --sfl-score-bg: #000;
+  --sfl-bmw: #f6f1e4;
+  --sfl-on-bmw: #0d0c0a;
+  --sfl-honda: #ff6a5f;
+  --sfl-sea: #123a4a;
+  --sfl-dune: #3a3118;
+
+  --sfl-font-head: 'Oswald', 'Arial Narrow', sans-serif;
+  --sfl-font-body: 'Inter', system-ui, sans-serif;
+  --sfl-font-mono: ui-monospace, monospace;
+
+  // Type scale of the boards (docs/design/theme.md)
+  --sfl-fs-h1: 39px;
+  --sfl-fs-h1-compact: 31px;
+  --sfl-fs-h2: 25px;
+  --sfl-fs-h2-compact: 22px;
+  --sfl-fs-h3: 16px;
+  --sfl-fs-body: 16px;
+  --sfl-fs-sm: 14px;
+  --sfl-fs-xs: 13px;
+  --sfl-fs-label: 12px;
+
+  --sfl-radius: 4px;
+  --sfl-radius-pill: 999px;
+  --sfl-gap: 12px;
+  --sfl-gap-lg: 24px;
+  --sfl-page-wide: 1180px;
+  --sfl-page: 1080px;
+  --sfl-page-narrow: 880px;
+  --sfl-page-max: 1080px;
+  --sfl-gap-xl: 28px;
+  --sfl-pad-card: 16px;
+  --sfl-target: 40px;
+}
+
+// Reference light set (S10.50): :root[data-theme='light']
+:root[data-theme='light'] {
+  color-scheme: light;
+  --sfl-bg: #f2ebdc;
+  --sfl-surface: #fbf8f0;
+  --sfl-surface-2: #e8dfcb;
+  --sfl-border: #d3c8b0;
+  --sfl-chip: #d9cfb8;
+  --sfl-text: #15130f;
+  --sfl-muted: #5a5246;
+  --sfl-on-accent: #15130f;
+  --sfl-neg: #a8281e;
+  --sfl-on-neg: #fbf8f0;
+  --sfl-link: #6b5400;
+  --sfl-score-bg: #15130f;
+  --sfl-bmw: #15130f;
+  --sfl-on-bmw: #f2ebdc;
+}

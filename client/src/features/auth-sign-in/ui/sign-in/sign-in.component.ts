@@ -10,11 +10,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import type { ApiError } from '@sfl/schemas';
 import { apiErrorMessage } from '@shared/api/api-error-message';
@@ -23,18 +18,11 @@ import { AuthService } from '@shared/auth/auth.service';
 import { safeReturnUrl } from '@shared/auth/return-url';
 import { finalize } from 'rxjs';
 import { environment } from '@environment/environment';
+import { ButtonDirective } from '@shared/ui/kit';
 
 @Component({
   selector: 'sfl-sign-in',
-  imports: [
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatProgressBarModule,
-    RouterModule,
-    ReactiveFormsModule,
-  ],
+  imports: [RouterModule, ReactiveFormsModule, ButtonDirective],
   templateUrl: './sign-in.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sign-in.component.css'],
@@ -60,7 +48,7 @@ export class SignInComponent {
       environment.localCredentials?.password ?? '',
       {
         nonNullable: true,
-        validators: [Validators.min(5), Validators.required],
+        validators: [Validators.minLength(5), Validators.required],
       },
     ),
   });

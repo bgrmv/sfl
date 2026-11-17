@@ -21,7 +21,9 @@ import { pipe, switchMap, tap } from 'rxjs';
 import { PLAYERS_ENTITY_CONFIG } from './players.entity';
 
 /** Query side: the list of players, its status and what is derived from it. */
-export function withPlayersQueries() {
+export function withPlayersQueries(
+  options: { includeMetadata?: boolean } = {},
+) {
   return signalStoreFeature(
     withRequestStatus(),
     withEntities(PLAYERS_ENTITY_CONFIG),
@@ -41,19 +43,21 @@ export function withPlayersQueries() {
           pipe(
             tap(() => patchState(store, setPending())),
             switchMap(() =>
-              playersService.find().pipe(
-                toResult(),
-                tapResult({
-                  ok: players =>
-                    patchState(
-                      store,
-                      setAllEntities(players, PLAYERS_ENTITY_CONFIG),
-                      setFulfilled(),
-                    ),
-                  err: error =>
-                    patchState(store, setError(notify.error(error))),
-                }),
-              ),
+              playersService
+                .find(undefined, options.includeMetadata ?? false)
+                .pipe(
+                  toResult(),
+                  tapResult({
+                    ok: players =>
+                      patchState(
+                        store,
+                        setAllEntities(players, PLAYERS_ENTITY_CONFIG),
+                        setFulfilled(),
+                      ),
+                    err: error =>
+                      patchState(store, setError(notify.error(error))),
+                  }),
+                ),
             ),
           ),
         ),

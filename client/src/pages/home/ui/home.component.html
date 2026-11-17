@@ -1,4 +1,524 @@
-<sfl-page title="home">
-  <sfl-top-total-points-players />
-  <sfl-top-ancient-rating-system-players />
-</sfl-page>
+<div class="k-page k-page--wide k-compact">
+  <div class="k-grid-hero">
+    <sfl-card
+      *sflFeature="'home.nextGame'"
+      flag="home.nextGame"
+      tone="score"
+      title="Next game · every Saturday"
+    >
+      <!-- DUMMY (home.nextGame): the date and countdown are real; captains of the day, head to head and RSVP are made up -->
+      <div class="score-title">{{ nextLabel }}</div>
+      <div
+        class="count"
+        role="timer"
+        [attr.aria-label]="counterLabel()"
+      >
+        @for (c of counter(); track c.l) {
+          <div>
+            <sfl-flip-digits
+              [value]="c.v"
+              [size]="32"
+              aria-hidden="true"
+            />
+            <span>{{ c.l }}</span>
+          </div>
+        }
+      </div>
+      <div class="k-row">
+        <sfl-avatar text="FA" />
+        <b class="k-head">Falcon (C)</b>
+        <span class="k-muted">VS</span>
+        <sfl-avatar text="WO" />
+        <b class="k-head">Wolf (C)</b>
+        <span class="k-muted k-small">Head to head 4–1–3</span>
+      </div>
+      <div class="k-row">
+        <button
+          sflBtn
+          type="button"
+        >
+          I am coming · 14 going
+        </button>
+        <button
+          sflBtn
+          variant="ghost"
+          type="button"
+        >
+          Add to calendar
+        </button>
+      </div>
+    </sfl-card>
+
+    <sfl-card
+      *sflFeature="'home.lastGame'"
+      flag="home.lastGame"
+      [title]="
+        last()
+          ? 'Last game · ' + last()!.date + ' · Game ' + last()!.number
+          : 'Last game'
+      "
+      [link]="
+        last()
+          ? '/games/details/' + last()!.season + '/' + last()!.number
+          : null
+      "
+      linkLabel="Open game"
+    >
+      @if (loading()) {
+        <sfl-state kind="loading" />
+      } @else if (last(); as g) {
+        <div class="k-row k-between">
+          <b class="k-head">{{ g.a }}</b>
+          <sfl-flip-digits
+            [value]="g.sa + ':' + g.sb"
+            [label]="g.a + ' ' + g.sa + ' to ' + g.sb + ' ' + g.b"
+            [size]="48"
+          />
+          <b class="k-head">{{ g.b }}</b>
+        </div>
+        <div class="k-row">
+          <span class="k-eyebrow">MVP</span>
+          @for (m of g.mvps; track m.id) {
+            <a
+              class="k-link"
+              [routerLink]="['/players', m.id]"
+            >
+              {{ m.name }}
+            </a>
+          }
+        </div>
+        @if (g.story) {
+          <p class="k-muted k-small">
+            {{ g.story.slice(0, 160) }}…
+            <a
+              class="k-link"
+              [routerLink]="['/games/details', g.season, g.number]"
+            >
+              Read the story
+            </a>
+          </p>
+        }
+        <div class="k-row">
+          <sfl-badge>{{ g.heads }} head goals</sfl-badge>
+          <sfl-badge>{{ g.passes }} passes</sfl-badge>
+          <sfl-badge>{{ g.og }} own goals</sfl-badge>
+        </div>
+      } @else {
+        <sfl-state
+          title="No published games yet"
+          text="The first game of the season will appear here."
+        />
+      }
+    </sfl-card>
+  </div>
+
+  <div
+    *sflFeature="'home.kpis'"
+    class="k-grid-kpi"
+  >
+    @for (k of kpis(); track k.l) {
+      <div class="kpi">
+        <span class="k-eyebrow">{{ k.l }}</span>
+        <b class="k-num">{{ k.v }}</b>
+        <span class="k-muted k-small">{{ k.s }}</span>
+        <sfl-sparkline
+          [values]="k.spark"
+          [label]="k.l + ' trend'"
+        />
+      </div>
+
+      <sfl-section
+        *sflFeature="'design.seasonRibbon'"
+        flag="design.seasonRibbon"
+        [title]="'Saturdays of season ' + season"
+        link="/games"
+        linkLabel="All games"
+      >
+        <sfl-season-ribbon
+          [cells]="ribbon()"
+          [label]="'Saturdays of season ' + season"
+        />
+      </sfl-section>
+    }
+  </div>
+
+  <div class="k-grid">
+    <sfl-card
+      *sflFeature="'home.topSeason'"
+      flag="home.topSeason"
+      title="Top of the season"
+      link="/players"
+      linkLabel="Full table"
+    >
+      <ul class="k-list">
+        @for (p of top(); track p.id) {
+          <li>
+            <span class="rank k-num">{{ p.rank }}</span>
+            <a
+              class="k-grow"
+              [routerLink]="['/players', p.id]"
+            >
+              {{ p.name }}
+            </a>
+            <b class="k-num">{{ p.pts }}</b>
+          </li>
+        } @empty {
+          <li class="k-muted">No ranking yet.</li>
+        }
+      </ul>
+    </sfl-card>
+
+    <!-- DUMMY (home.hot): records feed is made up -->
+    <sfl-card
+      *sflFeature="'home.hot'"
+      flag="home.hot"
+      title="Hot right now"
+      link="/seasons"
+      linkLabel="All records"
+    >
+      <ul class="k-list">
+        @for (h of hot; track h.who + h.k) {
+          <li>
+            <sfl-badge [tone]="h.top ? 'accent' : 'muted'">{{ h.k }}</sfl-badge>
+            <span class="k-grow">
+              <a
+                class="k-link"
+                [routerLink]="['/players', h.who.toLowerCase()]"
+              >
+                {{ h.who }}
+              </a>
+              {{ h.what }}
+            </span>
+            <span class="k-muted k-small">{{ h.when }}</span>
+          </li>
+        }
+      </ul>
+    </sfl-card>
+
+    <sfl-card
+      *sflFeature="'home.form'"
+      flag="home.form"
+      title="Form of the season"
+      link="/seasons"
+      linkLabel="Details"
+    >
+      @if (formBars().length) {
+        <sfl-bars
+          [bars]="formBars()"
+          [height]="90"
+          label="Goals per game, last 12 games"
+        />
+        <sfl-split-bar
+          [a]="wins().a[1]"
+          [b]="wins().b[1]"
+          [aLabel]="wins().a[0]"
+          [bLabel]="wins().b[0]"
+        />
+      } @else {
+        <sfl-state
+          title="No games yet"
+          text="The form appears after the first published game."
+        />
+      }
+    </sfl-card>
+
+    <!-- DUMMY (home.onThisDay): memories of past years are made up -->
+    <sfl-card
+      *sflFeature="'home.onThisDay'"
+      flag="home.onThisDay"
+      title="On this day"
+      link="/history"
+      linkLabel="More memories"
+    >
+      <div class="photo"><sfl-badge>Photo, 21 Nov 2015</sfl-badge></div>
+      <p class="k-small">
+        11 years ago · HONDA 5 : 5 BMW. Wolf equalised in the last minute.
+        <a
+          class="k-link"
+          routerLink="/games/details/2015/46"
+        >
+          Open the game
+        </a>
+      </p>
+    </sfl-card>
+
+    <!-- DUMMY (home.birthdays): birthdays only with player consent (S10.44) -->
+    <sfl-card
+      *sflFeature="'home.birthdays'"
+      flag="home.birthdays"
+      title="Birthdays"
+      link="/calendar"
+      linkLabel="Calendar"
+    >
+      <p>
+        <b>This week</b>
+        · Lynx turns 32 · Thursday, 19 November
+      </p>
+      <span class="k-eyebrow">Next 30 days</span>
+      <ul class="k-list">
+        @for (b of birthdays; track b.name) {
+          <li>
+            <a
+              class="k-grow k-link"
+              [routerLink]="['/players', b.name.toLowerCase()]"
+            >
+              {{ b.name }}
+            </a>
+            <span class="k-muted k-small">{{ b.date }} · {{ b.age }}</span>
+          </li>
+        }
+      </ul>
+      <p class="k-hint">Only players who agreed to show their birthday.</p>
+    </sfl-card>
+
+    <sfl-card
+      *sflFeature="'home.miniCalendar'"
+      flag="home.miniCalendar"
+      [title]="monthLabel"
+      link="/calendar"
+      linkLabel="Full calendar"
+    >
+      <sfl-month
+        [cells]="month()"
+        [label]="monthLabel + ': played, next and planned Saturdays'"
+      />
+      <div class="k-row k-small k-muted">
+        <span>Played</span>
+        <span>Next game</span>
+        <span>Planned</span>
+      </div>
+    </sfl-card>
+
+    <!-- DUMMY (home.vote): open votes are made up -->
+    <sfl-card
+      *sflFeature="'home.vote'"
+      flag="home.vote"
+      title="Vote"
+      link="/vote"
+      linkLabel="All votes"
+    >
+      <sfl-badge tone="outline">3 open</sfl-badge>
+      <b>{{ vote.title }}</b>
+      <sfl-split-bar
+        [a]="vote.y"
+        [b]="vote.n"
+        aLabel="Yes"
+        bLabel="No"
+      />
+      <div class="k-row">
+        <a
+          sflBtn
+          size="sm"
+          routerLink="/vote"
+        >
+          Yes
+        </a>
+        <a
+          sflBtn
+          size="sm"
+          variant="ghost"
+          routerLink="/vote"
+        >
+          No
+        </a>
+        <a
+          class="k-link"
+          routerLink="/suggest"
+        >
+          Suggest a rule
+        </a>
+      </div>
+    </sfl-card>
+
+    <sfl-card
+      *sflFeature="'home.captains'"
+      flag="home.captains"
+      title="Captains"
+      link="/captains"
+      linkLabel="All captains"
+    >
+      <ul class="k-list">
+        @for (c of captains(); track c.id; let i = $index) {
+          <li>
+            <span class="rank">{{ i + 1 }}</span>
+            <a
+              class="k-grow"
+              [routerLink]="['/players', c.id]"
+            >
+              {{ c.name }}
+            </a>
+            <span class="k-muted k-small">{{ c.rec }}</span>
+            <b class="k-num">{{ c.rate }}%</b>
+          </li>
+        } @empty {
+          <li class="k-muted">No captains this season.</li>
+        }
+      </ul>
+      <p class="k-hint">Win rate as captain, season</p>
+    </sfl-card>
+
+    <!-- DUMMY (home.playerFocus): player of the week is made up -->
+    <sfl-card
+      *sflFeature="'home.playerFocus'"
+      flag="home.playerFocus"
+      title="Player in focus"
+      [link]="'/players/' + focus.id"
+      linkLabel="Open page"
+    >
+      <div class="k-row">
+        <sfl-avatar
+          [text]="focus.ini"
+          [size]="56"
+          [accent]="true"
+        />
+        <div>
+          <b class="k-head">{{ focus.name }}</b>
+          <div class="k-muted k-small">№ {{ focus.no }} · {{ focus.pos }}</div>
+        </div>
+      </div>
+      <div class="k-grid-sm">
+        <sfl-stat
+          label="Passes"
+          [value]="13"
+        />
+        <sfl-stat
+          label="±"
+          value="+7"
+        />
+        <sfl-stat
+          label="In top"
+          value="4th"
+        />
+      </div>
+      <p class="k-hint">
+        Changes every week: the player who rose most in the table.
+      </p>
+    </sfl-card>
+  </div>
+
+  <!-- DUMMY (home.photos): no media storage yet (S10.19) -->
+  <sfl-card
+    *sflFeature="'home.photos'"
+    flag="home.photos"
+    title="Fresh photos"
+    link="/media"
+    linkLabel="Album"
+  >
+    <div class="k-grid-sm">
+      @for (p of photos; track $index) {
+        <div
+          class="photo"
+          role="img"
+          aria-label="Photo placeholder"
+        >
+          @for (t of p.tags; track t) {
+            <sfl-badge>{{ t }}</sfl-badge>
+          }
+        </div>
+      }
+    </div>
+  </sfl-card>
+
+  <div class="k-grid">
+    <!-- DUMMY (home.comments): comments are not implemented (S10.22) -->
+    <sfl-card
+      *sflFeature="'home.comments'"
+      flag="home.comments"
+      title="Latest comments"
+      link="/games"
+      linkLabel="All games"
+    >
+      <ul class="k-list">
+        @for (c of comments; track c.when) {
+          <li>
+            <div class="k-grow">
+              <div class="k-small k-muted">
+                {{ c.who }} ·
+                <a
+                  class="k-link"
+                  [routerLink]="['/games/details', 2026, c.game]"
+                >
+                  Game {{ c.game }}
+                </a>
+                · {{ c.when }}
+              </div>
+              {{ c.text }}
+            </div>
+          </li>
+        }
+      </ul>
+    </sfl-card>
+
+    <sfl-card
+      *sflFeature="'home.latestGames'"
+      flag="home.latestGames"
+      title="Latest games"
+      link="/games"
+      linkLabel="All games"
+    >
+      <ul class="k-list">
+        @for (g of latestGames(); track g.number) {
+          <li>
+            <a
+              class="k-link"
+              [routerLink]="['/games/details', g.season, g.number]"
+            >
+              Game {{ g.number }}
+            </a>
+            <span class="k-grow k-head">
+              <b class="k-num">{{ g.a }} : {{ g.b }}</b>
+            </span>
+            <span class="k-muted k-small">{{ g.date }}</span>
+          </li>
+        } @empty {
+          <li class="k-muted">No published games yet.</li>
+        }
+      </ul>
+    </sfl-card>
+  </div>
+
+  <section
+    *sflFeature="'home.explore'"
+    aria-labelledby="ex"
+  >
+    <h2
+      id="ex"
+      style="margin-bottom: 12px"
+    >
+      Explore
+    </h2>
+    <div class="k-grid-sm">
+      @for (x of tiles; track x[1]) {
+        <a
+          class="tile"
+          [routerLink]="x[1]"
+        >
+          <b class="k-head">{{ x[0] }} →</b>
+          <div class="k-muted k-small">{{ x[2] }}</div>
+        </a>
+      }
+    </div>
+  </section>
+
+  @if (!signedIn()) {
+    <section
+      *sflFeature="'home.join'"
+      class="join"
+      aria-label="Join"
+    >
+      <div>
+        <h2>Sign in to make it yours</h2>
+        <p>
+          Link your player, vote on the rules, add your birthday and get a
+          reminder before the draft.
+        </p>
+      </div>
+      <a
+        sflBtn
+        routerLink="/sign-in"
+      >
+        Sign in
+      </a>
+    </section>
+  }
+</div>

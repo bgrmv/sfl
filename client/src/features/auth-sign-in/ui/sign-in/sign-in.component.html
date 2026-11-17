@@ -1,68 +1,76 @@
-<section class="sign-in">
+<section
+  class="sign-in"
+  aria-labelledby="sign-in-title"
+>
+  <h1 id="sign-in-title">Sign in</h1>
+  <p class="k-muted">For league administrators and players with an account.</p>
+
   <form
+    class="k-col"
+    style="gap: 16px"
     [formGroup]="signInFG"
     (ngSubmit)="onSubmit()"
+    novalidate
   >
-    @if (loading()) {
-      <mat-progress-bar mode="indeterminate" />
-    }
-
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input
-        matInput
-        type="email"
-        placeholder="email@..."
-        formControlName="email"
-      />
-      <mat-icon
-        matSuffix
-        [color]="emailFG.touched && emailFG.errors ? 'warn' : 'primary'"
-      >
-        mail
-      </mat-icon>
-      <mat-hint>
-        Input your
-        <b>email</b>
-      </mat-hint>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Password</mat-label>
-      <input
-        matInput
-        type="password"
-        placeholder="password..."
-        formControlName="password"
-      />
-      <mat-icon
-        matSuffix
-        [color]="passwordFG.touched && passwordFG.errors ? 'warn' : 'primary'"
-      >
-        password
-      </mat-icon>
-      <mat-hint>
-        Input your
-        <b>password</b>
-      </mat-hint>
-    </mat-form-field>
-
     @if (errorMessage(); as message) {
       <p
         class="sign-in__error"
         role="alert"
       >
         {{ message }}
+        @if (message === 'Wrong email or password.') {
+          Check both and try again.
+        }
       </p>
     }
 
+    <div class="k-field">
+      <label for="sign-in-email">Email</label>
+      <input
+        id="sign-in-email"
+        class="k-input"
+        type="email"
+        autocomplete="username"
+        placeholder="email@…"
+        formControlName="email"
+        [attr.aria-invalid]="emailFG.touched && emailFG.invalid"
+      />
+      @if (emailFG.touched && emailFG.invalid) {
+        <span class="k-hint sign-in__hint">Enter a valid email.</span>
+      }
+    </div>
+
+    <div class="k-field">
+      <label for="sign-in-password">Password</label>
+      <input
+        id="sign-in-password"
+        class="k-input"
+        type="password"
+        autocomplete="current-password"
+        formControlName="password"
+        [attr.aria-invalid]="passwordFG.touched && passwordFG.invalid"
+      />
+      @if (passwordFG.touched && passwordFG.invalid) {
+        <span class="k-hint sign-in__hint">Enter your password.</span>
+      }
+    </div>
+
     <button
-      mat-stroked-button
-      color="primary"
+      sflBtn
       type="submit"
       [disabled]="!signInFG.valid || loading()"
     >
-      Submit
+      {{ loading() ? 'Signing in…' : 'Sign in' }}
     </button>
+
+    <p class="k-muted k-small">
+      No account?
+      <a
+        class="k-link"
+        routerLink="/connect"
+      >
+        Ask the league administrator
+      </a>
+    </p>
   </form>
 </section>

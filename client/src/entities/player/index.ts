@@ -12,3 +12,5 @@ export {
   type TChosenPlayer,
   type TPlayerFinal,
 } from './model/player';
+export * from './lib/player-stats';
+export { PlayersStatsStore } from './model/players-stats.store';

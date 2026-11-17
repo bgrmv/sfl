@@ -1,91 +1,231 @@
-<header>
-  <mat-toolbar color="primary">
-    <div class="header-menu-and-logo-block">
-      <strong>SFL</strong>
-      <button
-        mat-icon-button
-        class="example-icon"
-        (click)="sidenav.toggle()"
+<a
+  class="skip"
+  href="#main"
+>
+  Skip to content
+</a>
+
+@if (!adminArea()) {
+  <header class="top">
+    <a
+      routerLink="/home"
+      class="logo"
+      aria-label="SFL, home"
+    >
+      SFL
+    </a>
+
+    <button
+      type="button"
+      class="burger"
+      sflBtn
+      variant="ghost"
+      aria-label="Menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="menuOpen.set(!menuOpen())"
+    >
+      <sfl-icon name="menu" />
+    </button>
+
+    <nav
+      class="main-nav"
+      [class.open]="menuOpen()"
+      aria-label="Main"
+    >
+      @for (l of links; track l.href) {
+        <a
+          [routerLink]="l.href"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          (click)="menuOpen.set(false)"
+        >
+          {{ l.name }}
+          @if (l.badge) {
+            <span
+              class="new"
+              role="img"
+              aria-label="new release"
+            ></span>
+          }
+        </a>
+      }
+      @if (isAdmin()) {
+        <a
+          routerLink="/admin"
+          routerLinkActive="active"
+        >
+          Admin
+        </a>
+      }
+    </nav>
+
+    <div class="side">
+      <!-- DUMMY (shell.search): the search does not query players and games yet -->
+      <div
+        *sflFeature="'shell.search'"
+        class="search"
+        role="search"
       >
-        <mat-icon>menu</mat-icon>
-      </button>
-      <a
-        class="logotype"
-        mat-button
-        href="/"
-      >
-        <b>Suturday Football League</b>
-      </a>
-    </div>
+        <sfl-icon
+          name="search"
+          [size]="16"
+        />
+        <input
+          type="search"
+          placeholder="Search player or game"
+          aria-label="Search player or game"
+        />
+      </div>
 
-    <sfl-navigation />
+      <label class="system">
+        <span class="k-visually-hidden">Scoring system</span>
+        <select
+          class="k-select"
+          aria-label="Scoring system"
+          (change)="rating.choose($any($event.target).value)"
+        >
+          @for (s of ratingSystems; track s) {
+            <option
+              [value]="s"
+              [selected]="s === rating.system()"
+            >
+              {{ s }}
+            </option>
+          }
+        </select>
+      </label>
 
-    <div class="header-side-block">
-      @if (userSignal()) {
-        <div>
-          <mat-icon fontIcon="person" />
-          {{ userSignal()?.email }}
-        </div>
-
+      @if (userSignal(); as user) {
+        <a
+          routerLink="/profile"
+          class="k-small"
+        >
+          {{ user.email }}
+        </a>
         <button
-          mat-stroked-button
+          sflBtn
+          variant="ghost"
+          type="button"
           (click)="onSignOut()"
-          [disabled]="false"
         >
           Logout
-          <mat-icon
-            fontIcon="logout"
-            iconPositionEnd
-          />
         </button>
       } @else {
         <a
-          mat-raised-button
-          href="/sign-in"
+          sflBtn
+          routerLink="/sign-in"
         >
-          Sign In
-          <mat-icon
-            fontIcon="login"
-            iconPositionEnd
-          />
+          Sign in
         </a>
       }
-    </div>
-  </mat-toolbar>
-</header>
 
-<!-- Main container -->
-<mat-sidenav-container class="container">
-  <mat-sidenav
-    #sidenav
-    mode="side"
-    [opened]="false"
-    class="mat-sidenav"
-  >
-    <sfl-aside />
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <main>
-      <router-outlet />
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-<footer>
-  <div class="footer-logo">SFL</div>
-  <div class="footer-content">
-    <b>Saturday Football League</b>
-
-    <span>
-      Copyright &copy; 2022-2024 |
-      <a
-        href="https://github.com/dpaniq/sfl"
-        class="http"
+      <!-- DUMMY (shell.themeSwitch): only the dark theme exists until S10.50 -->
+      <button
+        *sflFeature="'shell.themeSwitch'"
+        sflBtn
+        variant="ghost"
+        type="button"
+        aria-label="Theme: dark"
+        title="Dark. The light theme comes in S10.50"
       >
-        dpaniq
+        <sfl-icon name="theme" />
+      </button>
+    </div>
+  </header>
+}
+
+<main id="main">
+  <router-outlet />
+</main>
+
+@if (!adminArea()) {
+  <!-- DUMMY (shell.footer): contacts, address and socials are filled in by the owner -->
+  <footer
+    *sflFeature="'shell.footer'"
+    class="foot"
+  >
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo">SFL</div>
+        <strong>Amateur football league</strong>
+        <p class="k-muted k-small">
+          A game every Saturday, in any weather. Results, ratings and the
+          history of the league.
+        </p>
+      </div>
+      <div>
+        <h3>League</h3>
+        <ul class="k-list">
+          @for (l of footerLeague; track l[1]) {
+            <li>
+              <a [routerLink]="l[1]">{{ l[0] }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+      <div>
+        <h3>Rules</h3>
+        <ul class="k-list">
+          @for (l of footerRules; track l[1]) {
+            <li>
+              <a [routerLink]="l[1]">{{ l[0] }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+      <div>
+        <h3>Contacts</h3>
+        <p class="k-small">info&#64;sfl.example</p>
+        <p class="k-small">[Pitch address]</p>
+        <p class="k-muted k-small">
+          Saturdays, [time]. The owner fills in the address, the time and the
+          e-mail.
+        </p>
+      </div>
+    </div>
+    <div class="foot-bottom k-small k-muted">
+      <span>© {{ year }} SFL. All rights reserved.</span>
+      <a
+        *sflFeature="'shell.releaseLink'"
+        routerLink="/releases"
+      >
+        Release {{ version }} · What’s new
       </a>
-    </span>
-    <span>Version: {{ version }}</span>
-  </div>
-</footer>
+      <span>Privacy · Cookies · Terms</span>
+      <span class="k-row">
+        <span>EN ▾</span>
+        <span
+          class="themes"
+          role="radiogroup"
+          aria-label="Theme"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked="false"
+            disabled
+            title="Light theme comes in S10.50"
+          >
+            Light
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked="true"
+          >
+            Dark
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked="false"
+            disabled
+            title="Comes with the light theme"
+          >
+            Auto
+          </button>
+        </span>
+      </span>
+    </div>
+  </footer>
+}

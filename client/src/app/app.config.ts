@@ -4,7 +4,7 @@ import {
   inject,
   provideAppInitializer,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -22,7 +22,7 @@ import { provideHighcharts } from 'highcharts-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     provideHttpClient(
       withXhr(),

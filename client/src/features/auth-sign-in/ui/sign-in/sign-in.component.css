@@ -1,35 +1,29 @@
 .sign-in {
-  height: 100%;
-  padding: 150px 0;
-  & form {
-    position: relative;
-    padding: 30px 15px;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    margin: auto auto;
-    text-align: center;
-    width: 300px;
-    box-shadow: 0px 1px 2px 1px lightgray;
-    box-sizing: content-box;
-    overflow: hidden;
+  max-width: 400px;
+  margin: 48px auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--sfl-surface);
+  border: 1px solid var(--sfl-border);
+  border-top: 4px solid var(--sfl-accent);
+  border-radius: var(--sfl-radius);
+}
+.sign-in__error {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--sfl-neg);
+  background: var(--sfl-surface-2);
+  color: var(--sfl-neg);
+  border-radius: 0 var(--sfl-radius) var(--sfl-radius) 0;
+  font-size: 14px;
+}
+.sign-in__hint {
+  color: var(--sfl-neg);
+}
 
-    &:hover {
-      box-shadow: 0px 1px 5px 1px lightgray;
-    }
-
-    & mat-form-field {
-      margin-bottom: 1.5rem;
-    }
-
-    & .sign-in__error {
-      margin: 0 0 1rem;
-      color: #b3261e;
-    }
-
-    & mat-progress-bar {
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-  }
+.sign-in h1 {
+  font-size: var(--sfl-fs-h1-compact);
+  line-height: 1.2;
 }
