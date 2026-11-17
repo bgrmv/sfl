@@ -20,3 +20,22 @@ export const authGuard: CanActivateFn = (_route, state) => {
   }
   return router.createUrlTree(['/games']);
 };
+
+/**
+ * The admin area is for the staff: an admin or a moderator (S10.35). A page that only
+ * an admin may use keeps `authGuard` on its own route.
+ */
+export const staffGuard: CanActivateFn = (_route, state) => {
+  const router = inject(Router);
+  const authService = inject(AuthService);
+
+  const roles = authService.user()?.roles ?? [];
+  if (roles.includes('ADMIN') || roles.includes('MODERATOR')) return true;
+
+  if (!authService.user()) {
+    return router.createUrlTree(['/sign-in'], {
+      queryParams: { returnUrl: state.url },
+    });
+  }
+  return router.createUrlTree(['/games']);
+};

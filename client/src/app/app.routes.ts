@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './admin.guard';
+import { authGuard, staffGuard } from './admin.guard';
 
 /**
  * Routes of the "Табло" design. The pages marked DUMMY (see `@shared/config/feature-flags`)
@@ -186,7 +186,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     title: 'Admin',
-    canActivate: [authGuard],
+    canActivate: [staffGuard],
     loadComponent: () =>
       import('@pages/admin').then(c => c.AdminLayoutComponent),
     children: [
@@ -198,6 +198,7 @@ export const routes: Routes = [
       {
         path: 'wizard',
         title: 'New game',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminWizardPageComponent),
       },
@@ -210,30 +211,35 @@ export const routes: Routes = [
       {
         path: 'process',
         title: 'Process games',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminProcessPageComponent),
       },
       {
         path: 'players',
         title: 'Players',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminPlayersPageComponent),
       },
       {
         path: 'players/new',
         title: 'New player',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminNewPlayerPageComponent),
       },
       {
         path: 'connect',
         title: 'Connect accounts',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminConnectPageComponent),
       },
       {
         path: 'schedule',
         title: 'Schedule',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminSchedulePageComponent),
       },
@@ -246,12 +252,14 @@ export const routes: Routes = [
       {
         path: 'media',
         title: 'Media',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminMediaPageComponent),
       },
       {
         path: 'releases',
         title: 'Releases',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminReleasesPageComponent),
       },

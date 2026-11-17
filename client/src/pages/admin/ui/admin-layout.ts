@@ -176,7 +176,19 @@ export class AdminLayoutComponent {
         .filter(g => g.status === 'draft' || g.status === 'new').length,
   );
 
-  protected readonly links = computed(() => [
+  private readonly isAdmin = inject(AuthService).isAdmin;
+
+  /** A moderator sees the pages he may use: the overview, publication and comments. */
+  protected readonly links = computed(() => {
+    const all = this.allLinks();
+    return this.isAdmin()
+      ? all
+      : all.filter(l =>
+          ['/admin', '/admin/confirm', '/admin/comments'].includes(l.href),
+        );
+  });
+
+  private readonly allLinks = computed(() => [
     { label: 'Overview', href: '/admin', count: 0, exact: true },
     { label: 'New game', href: '/admin/wizard', count: 0, exact: false },
     {

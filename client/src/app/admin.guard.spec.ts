@@ -15,7 +15,7 @@ import { AuthService } from '@shared/auth/auth.service';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { safeReturnUrl } from '@shared/auth/return-url';
 
-import { authGuard } from './admin.guard';
+import { authGuard, staffGuard } from './admin.guard';
 import { routes } from './app.routes';
 
 describe('authGuard', () => {
@@ -58,6 +58,46 @@ describe('authGuard', () => {
     const result = run('/games/create') as UrlTree;
 
     expect(router.serializeUrl(result)).toBe('/games');
+  });
+
+  describe('staffGuard: the admin area is for an admin or a moderator (S10.35)', () => {
+    const runStaff = (url: string) =>
+      TestBed.runInInjectionContext(() =>
+        staffGuard(null as never, { url } as RouterStateSnapshot),
+      );
+
+    it('lets an admin and a moderator in, not a plain user, a guest goes to sign-in', () => {
+      user.set({ roles: ['ADMIN'] });
+      expect(runStaff('/admin')).toBe(true);
+      user.set({ roles: ['MODERATOR'] });
+      expect(runStaff('/admin')).toBe(true);
+      user.set({ roles: ['USER'] });
+      expect(router.serializeUrl(runStaff('/admin') as UrlTree)).toBe('/games');
+      user.set(null);
+      expect(router.serializeUrl(runStaff('/admin/confirm') as UrlTree)).toBe(
+        '/sign-in?returnUrl=%2Fadmin%2Fconfirm',
+      );
+    });
+
+    it('only the pages of the staff are open to a moderator: the others keep the admin guard', () => {
+      const admin = routes.find(route => route.path === 'admin')!;
+      const guardOf = (path: string) =>
+        admin.children!.find(c => c.path === path)!.canActivate ?? [];
+
+      expect(admin.canActivate).toEqual([staffGuard]);
+      for (const path of ['confirm', 'comments', '']) {
+        expect(guardOf(path), path).not.toContain(authGuard);
+      }
+      for (const path of [
+        'wizard',
+        'players',
+        'media',
+        'schedule',
+        'process',
+      ]) {
+        expect(guardOf(path), path).toContain(authGuard);
+      }
+    });
   });
 
   describe('routes', () => {
