@@ -5,7 +5,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 
 import { PlayersService, PlayersStore } from '@entities/player';
 import { CaptainsTableComponent } from '@features/captain-table';
-import { CaptainsToggleComponent } from '@features/captain-toggle';
 import { CaptainsAdminWidgetComponent } from '../captains-admin-widget/captains-admin-widget.component';
 
 @Component({
@@ -18,7 +17,6 @@ import { CaptainsAdminWidgetComponent } from '../captains-admin-widget/captains-
 
     // Features
     CaptainsTableComponent,
-    CaptainsToggleComponent,
 
     // Widgets
     CaptainsAdminWidgetComponent,

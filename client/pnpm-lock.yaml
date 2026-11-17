@@ -42,6 +42,15 @@ importers:
       '@angular/router':
         specifier: ~22.2.6
         version: 22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/animations@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@fontsource/inter':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/material-icons':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/oswald':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@ngrx/signals':
         specifier: ^22.0.1
         version: 22.0.1(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -609,6 +618,15 @@ packages:
 
   '@feature-sliced/steiger-plugin@0.8.2':
     resolution: {integrity: sha512-Gmc6b2GhjAT+Y+cQfHaCT+R1PnSuoOFcS6qsYtCnY8WjVH1FyT18FWJnhUjMyw4jN1Oqg0jSj5xeDDLs2InWoA==}
+
+  '@fontsource/inter@5.3.0':
+    resolution: {integrity: sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==}
+
+  '@fontsource/material-icons@5.3.0':
+    resolution: {integrity: sha512-nCpzNTsS5KpIqWijK259rPOTaZXNJlRfTiVRDNguKwfSdoZL/O9zIvPs+3K2eeRrNW+fVJWMO+n3JQoi9DN9Tw==}
+
+  '@fontsource/oswald@5.3.0':
+    resolution: {integrity: sha512-16r2aHActe0pH+9FLdk/74/YxXM7HpGak05kAzx3RvSToiJwGvyhv6GvckPz+YuZmvL1nxWbEop2jAXRcXYPRg==}
 
   '@harperfast/extended-iterable@1.0.5':
     resolution: {integrity: sha512-4ScXlphaKEa49RpHmqwATq9QI9aUTdWVYDlJkzxhsD7ShJP+pHCYLznMO9n/wREY8jPjRZ59wLJY6HM5yB5Gkw==}
@@ -3430,6 +3448,12 @@ snapshots:
       web-tree-sitter: 0.26.13
     transitivePeerDependencies:
       - typescript
+
+  '@fontsource/inter@5.3.0': {}
+
+  '@fontsource/material-icons@5.3.0': {}
+
+  '@fontsource/oswald@5.3.0': {}
 
   '@harperfast/extended-iterable@1.0.5':
     optional: true

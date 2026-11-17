@@ -64,8 +64,33 @@
             },
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": ["highcharts"],
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/assets/styles/main.scss"],
+            "styles": [
+              "@fontsource/inter/latin-400.css",
+              "@fontsource/inter/latin-ext-400.css",
+              "@fontsource/inter/cyrillic-400.css",
+              "@fontsource/inter/latin-500.css",
+              "@fontsource/inter/latin-ext-500.css",
+              "@fontsource/inter/cyrillic-500.css",
+              "@fontsource/inter/latin-600.css",
+              "@fontsource/inter/latin-ext-600.css",
+              "@fontsource/inter/cyrillic-600.css",
+              "@fontsource/inter/latin-700.css",
+              "@fontsource/inter/latin-ext-700.css",
+              "@fontsource/inter/cyrillic-700.css",
+              "@fontsource/oswald/latin-500.css",
+              "@fontsource/oswald/latin-ext-500.css",
+              "@fontsource/oswald/cyrillic-500.css",
+              "@fontsource/oswald/latin-600.css",
+              "@fontsource/oswald/latin-ext-600.css",
+              "@fontsource/oswald/cyrillic-600.css",
+              "@fontsource/oswald/latin-700.css",
+              "@fontsource/oswald/latin-ext-700.css",
+              "@fontsource/oswald/cyrillic-700.css",
+              "@fontsource/material-icons/latin-400.css",
+              "src/assets/styles/main.scss"
+            ],
             "scripts": [],
             "browser": "src/main.ts",
             "stylePreprocessorOptions": {
@@ -89,8 +114,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "700kb",
+                  "maximumError": "900kb"
                 },
                 {
                   "type": "anyComponentStyle",
