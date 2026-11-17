@@ -8,11 +8,37 @@ import {
 import { RouterLink } from '@angular/router';
 import { format } from 'date-fns';
 import { Observable } from 'rxjs';
-import { GameService, GamesStore } from '@entities/game';
+import { gameRuleViolations } from '@sfl/schemas';
+import {
+  EnumGameStatus,
+  GameService,
+  GamesStore,
+  type IGameDTO,
+} from '@entities/game';
 import { toResult } from '@shared/api/to-result';
 import { AuthService } from '@shared/auth/auth.service';
 import { injectNotifier } from '@shared/store/inject-notifier';
 import { KIT } from '@shared/ui/kit';
+
+/** What the confirming person looks at: the rules of a published game (GLOSSARY, S3.13). */
+function checklistOf(game: IGameDTO): { text: string; ok: boolean }[] {
+  const violations = gameRuleViolations({
+    status: EnumGameStatus.Published,
+    teams: game.teams,
+    statistics: game.statistics,
+  });
+  const broken = (rule: string) => violations.some(v => v.rule === rule);
+  return [
+    { text: 'Both teams are in the game', ok: game.teams.length === 2 },
+    { text: 'Each team has exactly one captain', ok: !broken('captain') },
+    {
+      text: 'Every player has a position',
+      ok: !broken('position') && !broken('team'),
+    },
+    { text: 'The game has players', ok: game.statistics.length > 0 },
+    { text: 'An MVP is chosen', ok: game.statistics.some(s => s.isMVP) },
+  ];
+}
 
 /**
  * Publication of the games (S10.35). LIVE (admin.confirm): the drafts and the
@@ -56,6 +82,27 @@ import { KIT } from '@shared/ui/kit';
               {{ g.published ? 'Published' : g.statusLabel }}
             </sfl-badge>
           </div>
+          @if (!g.published) {
+            <ul
+              class="k-list"
+              aria-label="Checklist before confirming"
+            >
+              @for (c of g.checklist; track c.text) {
+                <li>
+                  <span aria-hidden="true">{{ c.ok ? '✓' : '✗' }}</span>
+                  <span
+                    class="k-grow"
+                    [class.k-muted]="c.ok"
+                  >
+                    {{ c.text }}
+                  </span>
+                  <span class="k-visually-hidden">
+                    {{ c.ok ? 'done' : 'not done' }}
+                  </span>
+                </li>
+              }
+            </ul>
+          }
           @if (g.revokedReason) {
             <p class="k-hint">Revoked: {{ g.revokedReason }}</p>
           }
@@ -64,7 +111,7 @@ import { KIT } from '@shared/ui/kit';
               <button
                 sflBtn
                 type="button"
-                [disabled]="busy()"
+                [disabled]="busy() || !g.ready"
                 (click)="confirm(g.id)"
               >
                 Confirm: the game is correct
@@ -112,6 +159,18 @@ import { KIT } from '@shared/ui/kit';
                 stay.
               </p>
               <div class="k-field">
+                <label [attr.for]="'number-' + g.id">
+                  Type the number of the game ({{ g.number }}) to confirm
+                </label>
+                <input
+                  class="k-input"
+                  inputmode="numeric"
+                  [id]="'number-' + g.id"
+                  [value]="typed()"
+                  (input)="typed.set($any($event.target).value)"
+                />
+              </div>
+              <div class="k-field">
                 <label [attr.for]="'reason-' + g.id">Reason (required)</label>
                 <textarea
                   class="k-textarea"
@@ -126,7 +185,11 @@ import { KIT } from '@shared/ui/kit';
                   sflBtn
                   variant="danger"
                   type="submit"
-                  [disabled]="busy() || reason().trim().length < 3"
+                  [disabled]="
+                    busy() ||
+                    reason().trim().length < 3 ||
+                    typed().trim() !== '' + g.number
+                  "
                 >
                   Revoke
                 </button>
@@ -157,6 +220,7 @@ export class AdminConfirmPageComponent {
   protected readonly busy = signal(false);
   protected readonly revoking = signal<string | null>(null);
   protected readonly reason = signal('');
+  protected readonly typed = signal('');
 
   protected readonly rows = computed(() => {
     const me = this.auth.user()?.id;
@@ -177,6 +241,8 @@ export class AdminConfirmPageComponent {
         confirmations: g.confirmations?.length ?? 0,
         mine: !!me && !!g.confirmations?.some(c => c.accountId === me),
         revokedReason: g.status === 'draft' ? g.revoked?.reason : undefined,
+        checklist: checklistOf(g),
+        ready: checklistOf(g).every(c => c.ok),
       }));
   });
 
@@ -195,6 +261,7 @@ export class AdminConfirmPageComponent {
     );
     this.revoking.set(null);
     this.reason.set('');
+    this.typed.set('');
   }
 
   private run(request: Observable<unknown>, done: string) {

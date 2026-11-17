@@ -9,6 +9,7 @@ import { DatePipe, UpperCasePipe, KeyValuePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
@@ -34,8 +35,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { debounceTime } from 'rxjs';
 import { EnumGameStatus, GameService } from '@entities/game';
 import {
+  AUTOSAVE_MS,
+  autosaveLabel,
+  canAutosave,
   EnumGameMode,
   GameLease,
   GameTeamCreateComponent,
@@ -175,7 +180,27 @@ export class GameFormPageComponent implements OnInit {
     });
   }
 
+  private readonly autosaveInput = computed(() => ({
+    mode: this.modeSignal(),
+    lease: this.lease.state(),
+    valid: this.formGroup.valid && !this.errors().size,
+    changed: this.isFormChangedSignal(),
+    saving: this.newGameStore.saving(),
+  }));
+  protected readonly autosaveLabel = computed(() =>
+    autosaveLabel(this.autosaveInput()),
+  );
+
   ngOnInit() {
+    // A draft is saved by itself a few seconds after the last change (S10.54)
+    toObservable(this.newGameStore.game, { injector: this.injector })
+      .pipe(debounceTime(AUTOSAVE_MS), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (canAutosave(this.autosaveInput())) {
+          this.newGameStore.updateGame();
+        }
+      });
+
     toObservable(this.newGameStore.storeLoaded, { injector: this.injector })
       .pipe(
         distinctUntilChanged(),

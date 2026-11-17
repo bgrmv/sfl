@@ -22,6 +22,15 @@
 }
 <br />
 
+@if (autosaveLabel()) {
+  <p
+    class="autosave"
+    role="status"
+  >
+    {{ autosaveLabel() }}
+  </p>
+}
+
 <div class="actions">
   @switch (modeSignal()) {
     @case ('create') {

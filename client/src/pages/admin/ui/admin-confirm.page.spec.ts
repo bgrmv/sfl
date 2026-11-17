@@ -15,6 +15,23 @@ const game = (over: Record<string, unknown>) => ({
   status: 'draft',
   playedAt: new Date(2026, 10, 14),
   metadata: { scoreFirstDraft: 4, scoreSecondDraft: 2 },
+  teams: [{ id: 't1' }, { id: 't2' }],
+  statistics: [
+    {
+      playerId: 'a',
+      teamId: 't1',
+      isCaptain: true,
+      position: 'GK',
+      isMVP: true,
+    },
+    {
+      playerId: 'b',
+      teamId: 't2',
+      isCaptain: true,
+      position: 'DEF',
+      isMVP: false,
+    },
+  ],
   confirmations: [],
   ...over,
 });
@@ -113,6 +130,17 @@ describe('AdminConfirmPageComponent (S10.35)', () => {
     reason.value = '  The score was wrong ';
     reason.dispatchEvent(new Event('input'));
     fixture.detectChanges();
+    // The reason alone is not enough: the number of the game is typed too
+    expect(
+      (el.querySelector('form button[type="submit"]') as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
+    const typed = el.querySelector(
+      'input[inputmode="numeric"]',
+    ) as HTMLInputElement;
+    typed.value = '7';
+    typed.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
     (el.querySelector('form') as HTMLFormElement).dispatchEvent(
       new Event('submit'),
     );
@@ -136,6 +164,38 @@ describe('AdminConfirmPageComponent (S10.35)', () => {
 
     expect(button('Revoke publication')).toBeUndefined();
     expect(el.textContent).toContain('Revoked: Wrong score');
+  });
+
+  it('the checklist shows what is missing and holds the confirm button back', () => {
+    const { el, button } = setup([
+      game({
+        statistics: [
+          {
+            playerId: 'a',
+            teamId: 't1',
+            isCaptain: true,
+            position: null,
+            isMVP: false,
+          },
+          {
+            playerId: 'b',
+            teamId: 't2',
+            isCaptain: false,
+            position: 'DEF',
+            isMVP: false,
+          },
+        ],
+      }),
+    ]);
+
+    const items = [
+      ...el.querySelectorAll('[aria-label="Checklist before confirming"] li'),
+    ].map(li => li.textContent?.replace(/\s+/g, ' ').trim());
+    expect(items).toContain('✗ Each team has exactly one captain not done');
+    expect(items).toContain('✗ Every player has a position not done');
+    expect(items).toContain('✗ An MVP is chosen not done');
+    expect(items).toContain('✓ Both teams are in the game done');
+    expect(button('Confirm: the game is correct')!.disabled).toBe(true);
   });
 
   it('says so when there is nothing to publish', () => {

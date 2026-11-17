@@ -98,3 +98,9 @@ form {
   border-left: 3px solid var(--sfl-accent);
   background: var(--sfl-surface);
 }
+
+.autosave {
+  margin: 0 0 8px;
+  color: var(--sfl-muted);
+  font-size: 13px;
+}
