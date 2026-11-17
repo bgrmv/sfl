@@ -6,7 +6,8 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { boardQuery, parseBoardQuery } from '../model/board-query';
 import { TableQuery } from '@shared/lib/table-query';
 import { format } from 'date-fns';
 import { GameService, GamesStore, seasonRibbon } from '@entities/game';
@@ -170,13 +171,31 @@ export class GamesBoardPageComponent {
     String(this.thisYear - 2),
   ];
   protected readonly statuses = ['All', 'Published', 'Draft', 'Skipped'];
-  protected readonly season = signal(String(this.thisYear));
-  protected readonly status = signal('All');
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly initial = parseBoardQuery(
+    {
+      season: this.route.snapshot.queryParamMap.get('season'),
+      status: this.route.snapshot.queryParamMap.get('status'),
+    },
+    this.seasons,
+    this.statuses,
+  );
+  protected readonly season = signal(this.initial.season);
+  protected readonly status = signal(this.initial.status);
   protected readonly loading = this.store.loading;
 
   constructor() {
     effect(() => {
       this.store.initGamesStore({ season: Number(this.season()) });
+    });
+    // The choice is in the address: a link and the back button keep it
+    effect(() => {
+      void this.router.navigate([], {
+        queryParams: boardQuery(this.season(), this.status(), this.seasons[0]),
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
     });
   }
 
