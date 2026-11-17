@@ -8,7 +8,7 @@ import {
   provideRouter,
 } from '@angular/router';
 import { GameService } from '@entities/game';
-import { PlayersService } from '@entities/player';
+import { PlayersService, PlayersStatsStore } from '@entities/player';
 import { TeamsService } from '@entities/team';
 import { GameLease, NewGameStore } from '@features/game-edit';
 import { of } from 'rxjs';
@@ -25,6 +25,27 @@ const players = ['a', 'b', 'c', 'd'].map((id, i) => ({
   number: i + 1,
   isCaptain: false,
 }));
+/** `a` and `b` have a season: a is strong, c and d have no history. */
+const season = (points: number) => ({
+  bySeason: {
+    '2026': {
+      totalGames: 4,
+      ancientRatingSystem: { totalPoints: points, lastResult: 0, plusMinus: 0 },
+      positionalRatingSystem: {
+        totalPoints: points,
+        lastResult: 0,
+        plusMinus: 0,
+      },
+    },
+  },
+});
+const withHistory = players.map(p =>
+  p.id === 'a'
+    ? { ...p, metadata: season(40) }
+    : p.id === 'c'
+      ? { ...p, metadata: season(4) }
+      : p,
+);
 const saved = { id: 'g1', number: 3, season: 2026, playedAt: '2026-11-21' };
 
 function setup(leaseState: 'none' | 'held' | 'busy' = 'none') {
@@ -60,6 +81,10 @@ function setup(leaseState: 'none' | 'held' | 'busy' = 'none') {
         NewGameStore,
         { provide: GameService, useValue: games },
         { provide: PlayersService, useValue: { find: () => of(players) } },
+        {
+          provide: PlayersStatsStore,
+          useValue: { playersEntities: signal(withHistory) },
+        },
         { provide: GameLease, useValue: lease },
       ],
     },
@@ -223,5 +248,26 @@ describe('AdminWizardPageComponent (S10.67)', () => {
       b.textContent?.includes('Save draft'),
     ) as HTMLButtonElement;
     expect(save.disabled).toBe(true);
+  });
+
+  it('the review shows the estimate, marked as an estimate, once both squads exist', () => {
+    const w = setup();
+    w.click('6 · Review');
+    expect(w.el.querySelector('[aria-label="Win chance estimate"]')).toBeNull();
+
+    draft(w);
+    w.click('1 · Game');
+    w.type('wz-season', '2026');
+    w.click('6 · Review');
+
+    const text = w.el.querySelector(
+      '[aria-label="Win chance estimate"]',
+    )!.textContent!;
+    const [a, b] = [...text.matchAll(/(\d+)%/g)].map(m => Number(m[1]));
+    expect(text).toContain('estimate');
+    expect(a + b).toBe(100);
+    // a (40 points) plays for BMW: stronger squad
+    expect(a).toBeGreaterThan(b);
+    expect(w.el.textContent).toContain('not a bet');
   });
 });

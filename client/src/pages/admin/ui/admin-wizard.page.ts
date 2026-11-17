@@ -9,7 +9,14 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GameService, type TPlayerStatisticFinal } from '@entities/game';
-import { PlayersService } from '@entities/player';
+import {
+  leagueAverage,
+  PlayersService,
+  PlayersStatsStore,
+  strengthInput,
+} from '@entities/player';
+import { winChance } from '@sfl/domain';
+import { RatingSystemStore } from '@shared/store/rating-system.store';
 import {
   DEFAULT_STATISTIC_VALUES,
   GameLease,
@@ -50,7 +57,13 @@ const KIND_LABEL: Record<GameEventKind, string> = {
 @Component({
   selector: 'sfl-admin-wizard-page',
   imports: [RouterLink, DatePipe, ...KIT],
-  providers: [NewGameStore, GameService, PlayersService, GameLease],
+  providers: [
+    NewGameStore,
+    GameService,
+    PlayersService,
+    PlayersStatsStore,
+    GameLease,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="k-page">
@@ -532,6 +545,21 @@ const KIND_LABEL: Record<GameEventKind, string> = {
                 <li>{{ c.ok ? '✓' : '✗' }} {{ c.text }}</li>
               }
             </ul>
+            @if (chance(); as c) {
+              <h3>Estimate before the game</h3>
+              <p aria-label="Win chance estimate">
+                <b class="k-num">{{ teams()[0].name }} {{ c.a }}%</b>
+                ·
+                <b class="k-num">{{ teams()[1].name }} {{ c.b }}%</b>
+                <span class="k-muted">(estimate)</span>
+              </p>
+              <p class="k-hint">
+                An estimate, not a bet. It comes from the points and games of
+                the players in the chosen scoring system this season, pulled to
+                the league average while a player has few games, plus a quarter
+                of his last game. It never goes below 25% or above 75%.
+              </p>
+            }
             <h3>What publishing changes</h3>
             <p class="k-small k-muted">
               After two confirmations of two different people the game counts in
@@ -584,6 +612,8 @@ const KIND_LABEL: Record<GameEventKind, string> = {
 })
 export class AdminWizardPageComponent {
   protected readonly store = inject(NewGameStore);
+  private readonly stats = inject(PlayersStatsStore);
+  private readonly rating = inject(RatingSystemStore);
   protected readonly lease = inject(GameLease);
 
   protected readonly steps = WIZARD_STEPS;
@@ -696,6 +726,26 @@ export class AdminWizardPageComponent {
         ok: this.orderProblems().length === 0,
       },
     ];
+  });
+  /** The estimate of the squads (GLOSSARY: win chance); none until both squads exist. */
+  protected readonly chance = computed(() => {
+    const [first, second] = this.teams();
+    if (!first || !second) return null;
+    const system = this.rating.system();
+    const season = String(this.game().season);
+    const everybody = this.stats.playersEntities();
+    const squad = (teamId: string) =>
+      this.rowsOf(teamId).map(r =>
+        strengthInput(
+          everybody.find(p => p.id === r.playerId) ?? r.playerData,
+          system,
+          season,
+        ),
+      );
+    const a = squad(first.id);
+    const b = squad(second.id);
+    if (!a.length || !b.length) return null;
+    return winChance(a, b, leagueAverage(everybody, system, season));
   });
   protected readonly canSave = computed(
     () =>

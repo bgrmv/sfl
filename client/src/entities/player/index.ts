@@ -17,3 +17,4 @@ export {
 } from './model/player';
 export * from './lib/player-stats';
 export { PlayersStatsStore } from './model/players-stats.store';
+export { leagueAverage, strengthInput } from './lib/win-chance-input';
