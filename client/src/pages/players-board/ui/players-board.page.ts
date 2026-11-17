@@ -13,6 +13,7 @@ import {
   allSeasons,
   rankingRows,
   signed,
+  PlayerChipComponent,
 } from '@entities/player';
 import { seasonKeyOf, seasonLabel } from '@shared/lib/season-label';
 import { TableQuery } from '@shared/lib/table-query';
@@ -25,7 +26,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-players-board-page',
-  imports: [RouterLink, FormsModule, ...KIT],
+  imports: [PlayerChipComponent, RouterLink, FormsModule, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PlayersService, PlayersStatsStore],
   template: `
@@ -210,20 +211,12 @@ import { KIT } from '@shared/ui/kit';
                       {{ r.rank }}
                     </td>
                     <td>
-                      <div class="k-row">
-                        <sfl-avatar
-                          [text]="r.ini"
-                          [size]="32"
-                        />
-                        <div>
-                          <a [routerLink]="['/players', r.id]">
-                            <b>{{ r.name }}</b>
-                          </a>
-                          <div class="k-muted k-small k-subline">
-                            {{ r.no ? '№ ' + r.no : '' }}
-                          </div>
-                        </div>
-                      </div>
+                      <sfl-player-chip
+                        [playerId]="r.id"
+                        [name]="r.name"
+                        [number]="r.no"
+                        [bold]="true"
+                      />
                     </td>
                     <td><sfl-form-dots [form]="r.form" /></td>
                     <td class="r">{{ r.days }}</td>

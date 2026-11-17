@@ -9,8 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   PlayersService,
   PlayersStore,
-  initials,
   type TPlayerFinal,
+  PlayerChipComponent,
 } from '@entities/player';
 import { PlayerCreateButtonComponent } from '@features/player-create';
 import { PlayerDeleteDialogComponent } from '@features/player-delete';
@@ -24,7 +24,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-admin-players-page',
-  imports: [PlayerCreateButtonComponent, ...KIT],
+  imports: [PlayerChipComponent, PlayerCreateButtonComponent, ...KIT],
   providers: [PlayersService, PlayersStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -77,16 +77,11 @@ import { KIT } from '@shared/ui/kit';
                 @for (p of rows(); track p.id) {
                   <tr>
                     <td>
-                      <div class="k-row">
-                        <sfl-avatar
-                          [text]="ini(p.nickname)"
-                          [size]="28"
-                        />
-                        {{ p.nickname }}
-                        <span class="k-muted k-small">
-                          {{ p.number ? '№ ' + p.number : '' }}
-                        </span>
-                      </div>
+                      <sfl-player-chip
+                        [name]="p.nickname"
+                        [number]="p.number"
+                        [size]="28"
+                      />
                     </td>
                     <td>{{ p.isCaptain ? '✓' : '' }}</td>
                     <td>{{ p.user?.id ? 'linked' : '—' }}</td>
@@ -139,7 +134,6 @@ export class AdminPlayersPageComponent {
   private readonly dialog = inject(MatDialog);
   protected readonly loading = this.store.loading;
   protected readonly q = signal('');
-  protected readonly ini = initials;
   protected readonly tq = new TableQuery([
     { key: 'nickname', label: 'Player', type: 'text' },
     { key: 'num', label: 'Number', type: 'number' },

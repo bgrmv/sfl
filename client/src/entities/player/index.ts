@@ -1,6 +1,7 @@
 export { PlayersService } from './api/players.service';
 export { PlayersStore } from './model/players.store';
 export { PlayerStatsCardComponent } from './ui/players-stats-card.component';
+export { PlayerChipComponent } from './ui/player-chip.component';
 export {
   EnumPlayerPosition,
   type IPlayerDTO,

@@ -9,7 +9,12 @@ import {
 import { RouterLink } from '@angular/router';
 import { format } from 'date-fns';
 import { GameService, GamesStore } from '@entities/game';
-import { PlayersService, PlayersStore, initials } from '@entities/player';
+import {
+  PlayerChipComponent,
+  PlayersService,
+  PlayersStore,
+  initials,
+} from '@entities/player';
 import { AuthService } from '@shared/auth/auth.service';
 import { LINEUP } from '@shared/dummy';
 import { KIT } from '@shared/ui/kit';
@@ -21,7 +26,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-game-board-page',
-  imports: [RouterLink, ...KIT],
+  imports: [PlayerChipComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [GameService, GamesStore, PlayersService, PlayersStore],
   template: `
@@ -88,13 +93,13 @@ import { KIT } from '@shared/ui/kit';
             <ul class="k-list">
               @for (m of v.mvp; track m.id) {
                 <li>
-                  <sfl-avatar [text]="m.ini" />
-                  <a
+                  <sfl-player-chip
                     class="k-grow"
-                    [routerLink]="['/players', m.id]"
-                  >
-                    <b>{{ m.name }}</b>
-                  </a>
+                    [playerId]="m.id"
+                    [name]="m.name"
+                    [size]="40"
+                    [bold]="true"
+                  />
                 </li>
               } @empty {
                 <li class="k-muted">No MVP in this game.</li>

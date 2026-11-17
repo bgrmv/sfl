@@ -22,6 +22,7 @@ import {
   ratingOf,
   seasonMetadata,
   signed,
+  PlayerChipComponent,
 } from '@entities/player';
 import { getTotalWeeksBySeason } from '@shared/lib/date';
 import { seasonKeyOf, seasonLabel } from '@shared/lib/season-label';
@@ -36,7 +37,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-player-board-page',
-  imports: [RouterLink, ...KIT],
+  imports: [PlayerChipComponent, RouterLink, ...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PlayersService, PlayersStatsStore],
   styles: `
@@ -330,11 +331,11 @@ import { KIT } from '@shared/ui/kit';
                 <ul class="k-list">
                   @for (r of rivals; track r.name) {
                     <li>
-                      <sfl-avatar
-                        [text]="r.name.slice(0, 2).toUpperCase()"
+                      <sfl-player-chip
+                        class="k-grow"
+                        [name]="r.name"
                         [size]="28"
                       />
-                      <span class="k-grow">{{ r.name }}</span>
                       <span class="k-muted k-small">{{ r.rec }}</span>
                       <b>{{ r.pct }}%</b>
                     </li>
@@ -349,11 +350,11 @@ import { KIT } from '@shared/ui/kit';
                 <ul class="k-list">
                   @for (r of rivals.slice().reverse(); track r.name) {
                     <li>
-                      <sfl-avatar
-                        [text]="r.name.slice(0, 2).toUpperCase()"
+                      <sfl-player-chip
+                        class="k-grow"
+                        [name]="r.name"
                         [size]="28"
                       />
-                      <span class="k-grow">{{ r.name }}</span>
                       <span class="k-muted k-small">{{ r.rec }}</span>
                       <b>{{ 100 - r.pct }}%</b>
                     </li>

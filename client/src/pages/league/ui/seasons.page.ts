@@ -11,6 +11,7 @@ import {
   PlayersStatsStore,
   allSeasons,
   rankingRows,
+  PlayerChipComponent,
 } from '@entities/player';
 import { seasonLabel } from '@shared/lib/season-label';
 import { TableQuery } from '@shared/lib/table-query';
@@ -23,7 +24,7 @@ import { KIT } from '@shared/ui/kit';
  */
 @Component({
   selector: 'sfl-seasons-page',
-  imports: [RouterLink, ...KIT],
+  imports: [PlayerChipComponent, RouterLink, ...KIT],
   providers: [PlayersService, PlayersStatsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -83,13 +84,12 @@ import { KIT } from '@shared/ui/kit';
                     >
                       {{ p.rank }}
                     </b>
-                    <sfl-avatar [text]="p.ini" />
-                    <a
+                    <sfl-player-chip
                       class="k-grow"
-                      [routerLink]="['/players', p.id]"
-                    >
-                      {{ p.name }}
-                    </a>
+                      [playerId]="p.id"
+                      [name]="p.name"
+                      [size]="40"
+                    />
                     <span class="k-muted k-small">
                       {{ p.pts }} points · {{ p.days }} days
                     </span>
