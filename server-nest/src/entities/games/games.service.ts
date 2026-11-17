@@ -79,7 +79,7 @@ export class GamesService {
 
   async findById(_id: string) {
     this.logger.info('Find game by id', { _id });
-    return await this.gameModel.findById({ _id }).exec();
+    return await this.gameModel.findOne({ _id, deletedAt: null }).exec();
   }
 
   /**
@@ -94,7 +94,7 @@ export class GamesService {
     this.logger.info('Find games with', { ...game, limit, offset });
     const cap = limit ?? (game.season ? undefined : DEFAULT_GAMES_LIMIT);
     const query = this.gameModel
-      .find({ ...game })
+      .find({ ...game, deletedAt: null })
       // A season reads in the order of its Saturdays, the whole list newest first
       .sort(game.season ? { number: 1 } : { season: -1, number: -1 })
       .skip(offset ?? 0);
@@ -117,6 +117,7 @@ export class GamesService {
       await this.gameModel.findOne({
         number: game.number,
         season: game.season,
+        deletedAt: null,
       })
     ) {
       throw new ConflictException(
@@ -132,6 +133,7 @@ export class GamesService {
           .findOne({
             number: game.number,
             season: game.season,
+            deletedAt: null,
           })
           .session(session)
           .exec();
@@ -170,7 +172,9 @@ export class GamesService {
     editor: Editor,
   ) {
     this.assertNotPublished(game);
-    const stored = await this.gameModel.findById(_id).exec();
+    const stored = await this.gameModel
+      .findOne({ _id, deletedAt: null })
+      .exec();
     if (!stored) throw new NotFoundException('Game is not found');
     if (stored.status === EnumGameStatus.Published) {
       throw new ConflictException(
@@ -214,6 +218,7 @@ export class GamesService {
       .findOneAndUpdate(
         {
           _id,
+          deletedAt: null,
           status: { $ne: EnumGameStatus.Published },
           $or: [
             { lock: null },
@@ -237,7 +242,9 @@ export class GamesService {
       .exec();
     if (taken) return taken;
 
-    const stored = await this.gameModel.findById(_id).exec();
+    const stored = await this.gameModel
+      .findOne({ _id, deletedAt: null })
+      .exec();
     if (!stored) throw new NotFoundException('Game is not found');
     if (stored.status === EnumGameStatus.Published) {
       throw new ConflictException(
@@ -276,7 +283,7 @@ export class GamesService {
         if (!before) throw new NotFoundException('Game is not found');
 
         const updated = await this.gameModel
-          .findById(_id)
+          .findOne({ _id, deletedAt: null })
           .session(session)
           .exec();
 
@@ -320,7 +327,7 @@ export class GamesService {
 
         // Without `new: true` Mongoose returns the previous version of the game
         const replaced = await this.gameModel
-          .findById(_id)
+          .findOne({ _id, deletedAt: null })
           .session(session)
           .exec();
 
@@ -347,7 +354,10 @@ export class GamesService {
    */
   async confirm(_id: string, accountId: string) {
     return await this.transactions.run(async session => {
-      const game = await this.gameModel.findById(_id).session(session).exec();
+      const game = await this.gameModel
+        .findOne({ _id, deletedAt: null })
+        .session(session)
+        .exec();
       if (!game) throw new NotFoundException('Game is not found');
       if (game.status !== EnumGameStatus.Draft) {
         throw new ConflictException('Only a draft is confirmed');
@@ -406,7 +416,10 @@ export class GamesService {
   /** A person takes his own confirmation back; a published game becomes a draft again. */
   async unconfirm(_id: string, accountId: string) {
     return await this.transactions.run(async session => {
-      const game = await this.gameModel.findById(_id).session(session).exec();
+      const game = await this.gameModel
+        .findOne({ _id, deletedAt: null })
+        .session(session)
+        .exec();
       if (!game) throw new NotFoundException('Game is not found');
       if (!(game.confirmations ?? []).some(c => c.accountId === accountId)) {
         throw new NotFoundException('You have not confirmed this game');
@@ -439,7 +452,10 @@ export class GamesService {
   /** The publication is taken back with a reason: a draft, no confirmations, out of the ratings. */
   async revoke(_id: string, accountId: string, reason: string) {
     return await this.transactions.run(async session => {
-      const game = await this.gameModel.findById(_id).session(session).exec();
+      const game = await this.gameModel
+        .findOne({ _id, deletedAt: null })
+        .session(session)
+        .exec();
       if (!game) throw new NotFoundException('Game is not found');
       if (game.status !== EnumGameStatus.Published) {
         throw new ConflictException('Only a published game is revoked');
@@ -468,12 +484,16 @@ export class GamesService {
     });
   }
 
+  /**
+   * The game is hidden, not destroyed (S10.2): it leaves the lists and the
+   * statistics, becomes a draft without confirmations and can be restored.
+   */
   async delete(_id: string): Promise<boolean> {
     this.logger.info('Delete game', { _id });
 
     return await this.transactions.run(async session => {
       const game = await this.gameModel
-        .findOneAndDelete({ _id })
+        .findOne({ _id, deletedAt: null })
         .session(session)
         .exec();
 
@@ -485,9 +505,45 @@ export class GamesService {
         { before: toSnapshot(game), after: null },
         session,
       );
+      await this.gameModel
+        .updateOne(
+          { _id },
+          {
+            $set: {
+              deletedAt: new Date(),
+              status: EnumGameStatus.Draft,
+              confirmations: [],
+              lock: null,
+            },
+          },
+        )
+        .session(session)
+        .exec();
 
       return true;
     });
+  }
+
+  /** The deleted games, the newest first: for the admin who restores one. */
+  async findDeleted() {
+    return await this.gameModel
+      .find({ deletedAt: { $ne: null } })
+      .sort({ deletedAt: -1 })
+      .limit(MAX_GAMES_LIMIT)
+      .exec();
+  }
+
+  /** A deleted game comes back as a draft: two people confirm it again. */
+  async restore(_id: string) {
+    const restored = await this.gameModel
+      .findOneAndUpdate(
+        { _id, deletedAt: { $ne: null } },
+        { $unset: { deletedAt: '' }, $inc: { version: 1 } },
+        { returnDocument: 'after' },
+      )
+      .exec();
+    if (!restored) throw new NotFoundException('Game is not found');
+    return restored;
   }
 
   private async runMetadataFlow(

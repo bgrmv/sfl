@@ -8,9 +8,9 @@ describe('GameSchema indexes (S12.4)', () => {
     unique: options?.unique === true,
   }));
 
-  it('a game is unique by number and season', () => {
+  it('a game is unique by number and season, a deleted one frees its number (S10.2)', () => {
     expect(indexes).toContainEqual({
-      fields: { number: 1, season: 1 },
+      fields: { number: 1, season: 1, deletedAt: 1 },
       unique: true,
     });
   });

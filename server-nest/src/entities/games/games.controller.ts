@@ -123,6 +123,14 @@ export class GamesController {
     return games.map(game => present(game, privileged));
   }
 
+  // The deleted games (S10.2): admin only by default; before ':id'
+  @Get('deleted')
+  async deleted() {
+    return (await this.gamesService.findDeleted()).map(game =>
+      present(game, true),
+    );
+  }
+
   @Public()
   @Get(':id')
   @ApiParam({ name: 'id', type: String })
@@ -137,8 +145,8 @@ export class GamesController {
   ) {
     const privileged = canSeeDrafts(req);
     const game = await this.gamesService.findById(id);
-    // A draft does not exist for the public
-    if (!privileged && game && game.status !== EnumGameStatus.Published) {
+    // A deleted game and, for the public, a draft do not exist
+    if (!game || (!privileged && game.status !== EnumGameStatus.Published)) {
       throw new NotFoundException('Game is not found');
     }
     return present(game, privileged);
@@ -243,6 +251,15 @@ export class GamesController {
       await this.gamesService.revoke(id, accountOf(req), reason),
       true,
     );
+  }
+
+  @Post(':id/restore')
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The deleted game as a draft; two confirmations publish it',
+  })
+  async restore(@Param('id', ObjectIdPipe) id: string) {
+    return present(await this.gamesService.restore(id), true);
   }
 
   @Delete(':id')

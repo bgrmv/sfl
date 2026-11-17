@@ -26,3 +26,7 @@
 ## Локально
 
 Достаточно запустить сервер: индекс появится сам. Удалить лишние: `db.games.dropIndex('number_1')` в `mongosh` на `mongodb://mongodb:27017/sfl`.
+
+## Мягкое удаление матча (S10.2)
+
+`games.number_1_season_1` (unique) заменён на `{number, season, deletedAt}` (unique): удалённый матч остаётся в базе с `deletedAt` и освобождает свой номер. Mongoose создаст новый индекс при старте, **старый нужно удалить вручную**, иначе он не даст создать матч с номером удалённого: `db.games.dropIndex('number_1_season_1')`. Порядок: бэкап, выкатить сервер, убедиться, что `db.games.getIndexes()` содержит `number_1_season_1_deletedAt_1`, удалить старый. Откат: `db.games.createIndex({number: 1, season: 1}, {unique: true})` возможен, пока в базе нет двух матчей с одним номером (удалённых и живых).

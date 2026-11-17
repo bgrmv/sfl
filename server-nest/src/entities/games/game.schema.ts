@@ -37,6 +37,7 @@ export interface IGame {
   confirmations?: { accountId: string; at: Date }[];
   revoked?: { reason: string; accountId: string; at: Date };
   version?: number;
+  deletedAt?: Date | null;
   lock?: {
     accountId: string;
     name: string;
@@ -210,6 +211,10 @@ export class Game implements IGame {
     expiresAt: Date;
   } | null;
 
+  /** When the game was deleted (S10.2); absent for a living game. Deleted games are hidden. */
+  @Prop({ type: Date, required: false })
+  deletedAt?: Date | null;
+
   /** The last revoke of the publication: why, who, when. */
   @Prop({ type: Object, required: false })
   revoked?: { reason: string; accountId: string; at: Date };
@@ -222,6 +227,7 @@ export class UpdateGame extends PartialType(Game) {}
 
 export const GameSchema = SchemaFactory.createForClass(Game);
 
-GameSchema.index({ number: 1, season: 1 }, { unique: true });
+// A deleted game keeps its record but frees its number: the time of the deletion is part of the key (S10.2)
+GameSchema.index({ number: 1, season: 1, deletedAt: 1 }, { unique: true });
 // `DELETE /players/:id` asks whether the player has games (S12.4)
 GameSchema.index({ 'statistics.playerId': 1 });

@@ -648,6 +648,28 @@
         "tags": ["games"]
       }
     },
+    "/rest/games/deleted": {
+      "get": {
+        "operationId": "GamesController_deleted",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      }
+    },
     "/rest/games/{id}": {
       "get": {
         "operationId": "GamesController_findById",
@@ -948,6 +970,37 @@
         "responses": {
           "201": {
             "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["games"]
+      }
+    },
+    "/rest/games/{id}/restore": {
+      "post": {
+        "operationId": "GamesController_restore",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The deleted game as a draft; two confirmations publish it"
           },
           "default": {
             "description": "The error: `ok: false`, a stable `code`, a message",

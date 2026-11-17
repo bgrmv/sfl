@@ -42,6 +42,8 @@ interface Case {
   published?: boolean;
   /** The success is checked as the moderator (he made the confirmation the case takes back). */
   as?: 'moderator';
+  /** The target game is deleted (a restore needs one). */
+  deleted?: boolean;
 }
 
 // Every route that changes data, plus the protected reads. A new route must be
@@ -96,6 +98,17 @@ const CLOSED: Case[] = [
     path: t => `/games/${t.gameId}/revoke`,
     body: () => ({ reason: 'The matrix checks the revoke' }),
     published: true,
+  },
+  {
+    name: 'GET /games/deleted',
+    method: 'get',
+    path: () => '/games/deleted',
+  },
+  {
+    name: 'POST /games/:id/restore',
+    method: 'post',
+    path: t => `/games/${t.gameId}/restore`,
+    deleted: true,
   },
   {
     name: 'DELETE /games/:id',
@@ -243,7 +256,7 @@ describe('API: access matrix', () => {
   afterAll(() => t.close());
 
   /** Fresh records for every case, so that DELETE does not break the next one. */
-  async function target(published = false): Promise<Target> {
+  async function target(published = false, deleted = false): Promise<Target> {
     const [a, b, free] = await createPlayers(t, 3);
     const game = await postGame(
       t,
@@ -262,6 +275,12 @@ describe('API: access matrix', () => {
         .set('Authorization', moderator(t));
       // The admin holds the lease: PATCH and PUT are his to make
       await lockGame(t, game.body.data.id);
+    }
+    if (deleted) {
+      await t
+        .api()
+        .delete(`/rest/games/${game.body.data.id}`)
+        .set('Authorization', bearer(t));
     }
     const player = (
       await t.api().get(`/rest/players/${a.id}`).set('Authorization', bearer(t))
@@ -302,7 +321,7 @@ describe('API: access matrix', () => {
   it.each(CLOSED.map(c => [c.name, c] as const))(
     '%s: 401 without a token',
     async (_name, c) => {
-      const res = await send(c, await target(c.published));
+      const res = await send(c, await target(c.published, c.deleted));
 
       expect(res.status).toBe(401);
     },
@@ -311,7 +330,7 @@ describe('API: access matrix', () => {
   it.each(CLOSED.map(c => [c.name, c] as const))(
     '%s: success with a token',
     async (_name, c) => {
-      const res = await send(c, await target(c.published), {
+      const res = await send(c, await target(c.published, c.deleted), {
         Authorization: c.as === 'moderator' ? moderator(t) : bearer(t),
       });
 
@@ -324,7 +343,7 @@ describe('API: access matrix', () => {
   it.each(CLOSED.map(c => [c.name, c] as const))(
     '%s: a plain USER gets 403 (200 where any role is allowed)',
     async (_name, c) => {
-      const res = await send(c, await target(c.published), {
+      const res = await send(c, await target(c.published, c.deleted), {
         Authorization: `Bearer ${t.userToken}`,
       });
 
