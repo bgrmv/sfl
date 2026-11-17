@@ -11,9 +11,3 @@ type SetOptional<T, Keys extends keyof T> = Omit<T, Keys> &
 
 type SetRequired<T, Keys extends keyof T> = Omit<T, Keys> &
   Required<Pick<T, Keys>>;
-
-// Files imported as text by the build (`?raw`), e.g. the design tokens in a test
-declare module '*?raw' {
-  const content: string;
-  export default content;
-}

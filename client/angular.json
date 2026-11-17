@@ -135,8 +135,7 @@
               "aot": false,
               "optimization": false,
               "extractLicenses": false,
-              "polyfills": [],
-              "loader": { ".scss": "text" }
+              "polyfills": []
             }
           },
           "defaultConfiguration": "production"
