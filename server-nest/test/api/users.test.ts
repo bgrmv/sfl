@@ -23,7 +23,7 @@ describe('API: users, password change (S8.9)', () => {
   const setPassword = (id: string, body: object, token = t.token) =>
     t
       .api()
-      .post(`/rest/users/${id}/password`)
+      .put(`/rest/users/${id}/password`)
       .set('Authorization', `Bearer ${token}`)
       .send(body);
 

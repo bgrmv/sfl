@@ -26,10 +26,8 @@ const PUBLIC_ROUTES = [
   'GET /rest/games/:id',
   'GET /rest/players',
   'GET /rest/players/:id',
-  'GET /rest/players/captains',
   'GET /rest/teams',
-  'GET /rest/charts/top-total-points-players',
-  'GET /rest/charts/top-ancient-rating-system-players',
+  'GET /rest/charts/top-players',
 ];
 
 const ADMIN = { email: 'admin@sfl.lv', roles: ['ADMIN'] };
@@ -110,8 +108,7 @@ describe('AuthGuard: access matrix', () => {
         'POST /rest/games',
         'DELETE /rest/players/:id',
         'POST /rest/roles',
-        'POST /rest/players/recalculate/season',
-        'GET /rest/users',
+        'POST /rest/players/recalculations',
         'POST /rest/migrations/convert-players-user-to-uuid',
       ]),
     );

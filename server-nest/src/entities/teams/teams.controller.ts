@@ -37,8 +37,6 @@ export class TeamsController {
   })
   @UsePipes(new ZodValidationPipe(TeamSaveDTO))
   async save(@Body() team: ITeam) {
-    await this.teamsService.save(team);
-
-    return { success: 'OK' };
+    return await this.teamsService.save(team);
   }
 }

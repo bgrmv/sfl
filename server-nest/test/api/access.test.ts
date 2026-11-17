@@ -63,9 +63,11 @@ const CLOSED: Case[] = [
     name: 'POST /players',
     method: 'post',
     path: () => '/players',
-    body: () => [
-      { nickname: 'Matrix', number: 77, user: { email: 'matrix@sfl.test' } },
-    ],
+    body: () => ({
+      players: [
+        { nickname: 'Matrix', number: 77, user: { email: 'matrix@sfl.test' } },
+      ],
+    }),
   },
   {
     name: 'PATCH /players/:id',
@@ -79,15 +81,15 @@ const CLOSED: Case[] = [
     path: t => `/players/${t.freePlayerId}`,
   },
   {
-    name: 'POST /players/recalculate/season',
+    name: 'POST /players/recalculations',
     method: 'post',
-    path: () => '/players/recalculate/season',
+    path: () => '/players/recalculations',
     body: t => ({ seasonId: 2024, playerIds: [t.playerId] }),
   },
   {
-    name: 'POST /players/recalculate/season/full',
+    name: 'POST /players/recalculations/full',
     method: 'post',
-    path: () => '/players/recalculate/season/full',
+    path: () => '/players/recalculations/full',
     body: () => ({ seasonId: 2024, apply: false }),
   },
   {
@@ -107,13 +109,6 @@ const CLOSED: Case[] = [
     path: () => '/roles',
     body: () => ({ name: 'TEST' }),
   },
-  { name: 'GET /users', method: 'get', path: () => '/users' },
-  {
-    name: 'POST /users/test-users',
-    method: 'post',
-    path: () => '/users/test-users',
-    body: () => ({ size: '3' }),
-  },
   {
     name: 'POST /migrations/convert-players-user-to-uuid',
     method: 'post',
@@ -126,8 +121,8 @@ const CLOSED: Case[] = [
     body: () => ({ apply: false }),
   },
   {
-    name: 'POST /users/:id/password',
-    method: 'post',
+    name: 'PUT /users/:id/password',
+    method: 'put',
     path: t => `/users/${t.userId}/password`,
     body: () => ({ password: 'new-password-1' }),
   },
@@ -147,10 +142,8 @@ const PUBLIC = [
   'GET /games/:id',
   'GET /players',
   'GET /players/:id',
-  'GET /players/captains',
   'GET /teams',
-  'GET /charts/top-total-points-players',
-  'GET /charts/top-ancient-rating-system-players',
+  'GET /charts/top-players',
 ];
 
 let gameCounter = 0;

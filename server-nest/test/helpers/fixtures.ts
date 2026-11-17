@@ -25,7 +25,7 @@ export async function createPlayers(t: TestApp, count: number) {
     .api()
     .post('/rest/players')
     .set('Authorization', bearer(t))
-    .send(body);
+    .send({ players: body });
 
   return res.body.data as { id: string; nickname: string }[];
 }

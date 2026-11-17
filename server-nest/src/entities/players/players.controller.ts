@@ -16,6 +16,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConflictResponse,
+  ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -23,6 +24,7 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { Types } from 'mongoose';
@@ -86,6 +88,12 @@ export class PlayersController {
     required: false,
   })
   @ApiQuery({ name: 'ids', required: false, type: String, isArray: true })
+  @ApiQuery({
+    name: 'isCaptain',
+    type: Boolean,
+    required: false,
+    description: 'true: only the captains',
+  })
   @ApiOkResponse({ type: () => [Player] })
   @ApiBadRequestResponse({ description: 'Invalid ids' })
   async find(
@@ -93,8 +101,10 @@ export class PlayersController {
     @Query('ids') ids?: string | string[],
     @Query('includeMetadata', new ParseBoolPipe({ optional: true }))
     includeMetadata = false,
+    @Query('isCaptain', new ParseBoolPipe({ optional: true }))
+    isCaptain?: boolean,
   ) {
-    this.logger.info('Find players', { ids, includeMetadata });
+    this.logger.info('Find players', { ids, includeMetadata, isCaptain });
 
     // `ids` is a comma-separated string or a repeated parameter
     const idsList = (Array.isArray(ids) ? ids : (ids ?? '').split(','))
@@ -103,6 +113,11 @@ export class PlayersController {
     idsList.forEach(id => assertObjectId(id, 'ids'));
 
     const admin = isAdmin(req);
+    if (isCaptain) {
+      const captains = await this.playersService.findCaptains();
+      return captains.map(captain => presentPlayer(captain, admin));
+    }
+
     const players = await this.playersService.find(
       {
         ids:
@@ -114,15 +129,6 @@ export class PlayersController {
     );
 
     return players.map(player => presentPlayer(player, admin));
-  }
-
-  // Declared before ':id', otherwise 'captains' is taken for an id
-  @Public()
-  @Get('captains')
-  async findCaptains(@Req() req: Request) {
-    const admin = isAdmin(req);
-    const captains = await this.playersService.findCaptains();
-    return captains.map(captain => presentPlayer(captain, admin));
   }
 
   @ApiOkResponse({ type: Player })
@@ -161,17 +167,25 @@ export class PlayersController {
   }
 
   @Post()
+  @ApiExtraModels(PlayerCreationDTO)
   @ApiBody({
-    type: PlayerCreationDTO,
-    required: true,
-    isArray: true,
+    schema: {
+      type: 'object',
+      required: ['players'],
+      properties: {
+        players: {
+          type: 'array',
+          items: { $ref: getSchemaPath(PlayerCreationDTO) },
+        },
+      },
+    },
   })
   @ApiResponse({ type: Player, isArray: true, status: 201 })
   @ApiBadRequestResponse({ description: 'Invalid body' })
   @ApiConflictResponse({ description: 'The email is already taken' })
   async create(
     @Body(new ZodValidationPipe(CreatePlayersDTO))
-    players: CreatePlayersDTOOutput,
+    { players }: CreatePlayersDTOOutput,
   ) {
     // All or nothing: a failure rolls back and answers with an error status
     const created = await this.playersService.createWithUsers(players, [
@@ -193,7 +207,7 @@ export class PlayersController {
   }
 
   // Not public: the global AuthGuard requires a token (S0.1)
-  @Post('recalculate/season')
+  @Post('recalculations')
   @ApiBody({
     schema: {
       type: 'object',
@@ -229,13 +243,13 @@ export class PlayersController {
       ),
     );
 
-    return { success: 'OK', seasonId, playerIds };
+    return null;
   }
 
   // Verification and repair of the statistics of a season: admin only by default.
   // The incremental statistics (ADR 0017) are compared with a calculation from
   // scratch; the values are written only with `apply: true` (S3.27).
-  @Post('recalculate/season/full')
+  @Post('recalculations/full')
   @ApiBody({
     schema: {
       type: 'object',

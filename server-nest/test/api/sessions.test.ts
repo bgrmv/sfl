@@ -93,7 +93,7 @@ describe('sessions', () => {
 
     const res = await t
       .api()
-      .post(`/rest/users/${user._id}/password`)
+      .put(`/rest/users/${user._id}/password`)
       .set('Authorization', `Bearer ${t.token}`)
       .send({ password: 'a-brand-new-password' });
     expect(res.status).toBeLessThan(300);

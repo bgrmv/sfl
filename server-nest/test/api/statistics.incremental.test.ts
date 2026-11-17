@@ -77,7 +77,7 @@ describe('API: incremental statistics equal the full recalculation', () => {
   const verify = async (seasonId: number, apply = false) => {
     const res = await t
       .api()
-      .post('/rest/players/recalculate/season/full')
+      .post('/rest/players/recalculations/full')
       .set(auth())
       .send({ seasonId, apply });
     expect(res.status).toBe(201);
@@ -199,7 +199,7 @@ describe('API: incremental statistics equal the full recalculation', () => {
     );
   });
 
-  describe('POST /players/recalculate/season/full', () => {
+  describe('POST /players/recalculations/full', () => {
     it('reports a difference and does not write without the flag', async () => {
       await t
         .model('Player')
@@ -291,7 +291,7 @@ describe('API: incremental statistics equal the full recalculation', () => {
     it('rejects a non-boolean flag', async () => {
       const res = await t
         .api()
-        .post('/rest/players/recalculate/season/full')
+        .post('/rest/players/recalculations/full')
         .set(auth())
         .send({ seasonId: 2024, apply: 'yes' });
 

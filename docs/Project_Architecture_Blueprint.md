@@ -126,16 +126,16 @@ server-nest/src/
 
 ### 3.3. Эндпоинты API
 
-| Модуль     | Метод и путь                                                                                                                        | Защищён JwtMiddleware         |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| auth       | `GET /rest/auth/whoami`, `POST /rest/auth/sign-in`, `POST /rest/auth/sign-out`                                                      | Да (кроме sign-in и sign-out) |
-| users      | `GET /rest/users`, `POST /rest/users/test-users`                                                                                    | Да                            |
-| migrations | `GET /rest/migrations/convert-players-user-to-uuid`                                                                                 | Да                            |
-| players    | `GET /players`, `GET /players/:id`, `GET /players/captains`, `POST`, `PATCH /:id`, `DELETE /:id`, `GET /players/recalculate/season` | **Нет**                       |
-| games      | `GET /games`, `GET /games/:id`, `POST`, `PATCH /:id`, `PUT /:id`, `DELETE /:id`                                                     | **Нет**                       |
-| teams      | `GET`, `POST`, `PUT /:id`                                                                                                           | **Нет**                       |
-| roles      | `POST`                                                                                                                              | **Нет**                       |
-| charts     | `GET /charts/top-total-points-players`, `GET /charts/top-ancient-rating-system-players`                                             | **Нет**                       |
+| Модуль     | Метод и путь                                                                                                                                       | Защищён JwtMiddleware         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| auth       | `GET /rest/auth/whoami`, `POST /rest/auth/sign-in`, `POST /rest/auth/sign-out`                                                                     | Да (кроме sign-in и sign-out) |
+| users      | `PUT /rest/users/:id/password`                                                                                                                     | Да                            |
+| migrations | `GET /rest/migrations/convert-players-user-to-uuid`                                                                                                | Да                            |
+| players    | `GET /players` (`?isCaptain=true`), `GET /players/:id`, `POST` (`{ players: [...] }`), `PATCH /:id`, `DELETE /:id`, `POST /players/recalculations` | **Нет**                       |
+| games      | `GET /games`, `GET /games/:id`, `POST`, `PATCH /:id`, `PUT /:id`, `DELETE /:id`                                                                    | **Нет**                       |
+| teams      | `GET`, `POST`, `PUT /:id`                                                                                                                          | **Нет**                       |
+| roles      | `POST`                                                                                                                                             | **Нет**                       |
+| charts     | `GET /charts/top-players?system=total-points\|ancient`                                                                                             | **Нет**                       |
 
 Точная картина защиты описана в разделе 12.
 
@@ -194,7 +194,7 @@ flowchart TB
 - Метаданные игрока за сезон и карьеру: пакет `@sfl/domain`: [player-season-metadata.ts](../packages/domain/src/player-season-metadata.ts), [player-career-metadata.ts](../packages/domain/src/player-career-metadata.ts), [player-common-metadata.ts](../packages/domain/src/player-common-metadata.ts), метаданные матча — [game-metadata.ts](../packages/domain/src/game-metadata.ts). Сервер (`GamesService`, `PlayersService`) лишь читает и пишет документы Mongoose и вызывает эти чистые функции.
 - Метаданные матча: `IGameMetadata` и `IPlayerGameResultMetadata` в `game.schema.ts`.
 - Рейтинговая система (`ancientRatingSystem`: `plusMinus`, `lastResult`, `totalPoints`) считается в `players` и используется в `charts`.
-- Статистика игрока меняется вкладом матча при его сохранении и удалении ([ADR 0017](adr/0017-incremental-player-statistics.md), S3.27); `POST /players/recalculate/season/full` проверяет её полным пересчётом и по флагу `apply` исправляет. Фоновых задач нет.
+- Статистика игрока меняется вкладом матча при его сохранении и удалении ([ADR 0017](adr/0017-incremental-player-statistics.md), S3.27); `POST /players/recalculations/full` проверяет её полным пересчётом и по флагу `apply` исправляет. Фоновых задач нет.
 
 **Агрегации** для графиков: [charts.service.ts](../server-nest/src/entities/charts/charts.service.ts), используется `aggregate` с `$unset` для скрытия `user.password` и `user.roles`.
 
@@ -278,9 +278,9 @@ sequenceDiagram
 
 ### 7.3. Пересчёт статистики сезона
 
-Сохранение, обновление и удаление матча (одна транзакция, S3.5) вычитают вклад старой версии матча и прибавляют вклад новой только у затронутых игроков: суммы и рейтинги через `applyGame`/`revertGame` из `@sfl/domain`, списки матчей и серии пересобираются по лёгкой выборке матчей игрока, карьера — из сезонов (`PlayerMetadataService.applyGameChange`, [ADR 0017](adr/0017-incremental-player-statistics.md)). `POST /rest/players/recalculate/season/full` с `{ seasonId, apply }` считает сезон заново без сессии, сравнивает с хранимым и возвращает отчёт о расхождениях; запись только при `apply: true`, одним `bulkWrite` в короткой транзакции (карьера пересчитывается внутри неё из актуальных сезонов). **Runbook:** без `apply` эндпоинт только отчёт, раньше он писал; чтобы исправить хранимое, повторите вызов с `apply: true`. `POST /rest/migrations/recalculate-games` (S3.14, только `ADMIN`; тело `{ apply }`, строго: лишний ключ даёт 400; по умолчанию сухой прогон, запись только при `apply: true`, query-параметров нет) пересчитывает сохранённые метаданные каждого матча чистыми функциями `@sfl/domain`, пишет изменённые матчи пачками по 10 в коротких транзакциях, затем по каждому сезону запускает проверку `verifySeason(..., apply)` (итоги сезона и карьеры). Матч, не прошедший правила (`CAPTAINS_COUNT`, `UNKNOWN_TEAM`, `MISSING_POSITION` у опубликованного, `INVALID_GAME` без массива статистики), идёт в `skipped` с причиной и не прерывает запуск; сорвавшиеся пачки записи — в `failedBatches` (если не записалась ни одна, ответ 500). Статусы матчей миграция не меняет (GLOSSARY, ADR 0015). Ниже описан прежний ручной пересчёт `recalculate/season` (по списку игроков), он остаётся.
+Сохранение, обновление и удаление матча (одна транзакция, S3.5) вычитают вклад старой версии матча и прибавляют вклад новой только у затронутых игроков: суммы и рейтинги через `applyGame`/`revertGame` из `@sfl/domain`, списки матчей и серии пересобираются по лёгкой выборке матчей игрока, карьера — из сезонов (`PlayerMetadataService.applyGameChange`, [ADR 0017](adr/0017-incremental-player-statistics.md)). `POST /rest/players/recalculations/full` с `{ seasonId, apply }` считает сезон заново без сессии, сравнивает с хранимым и возвращает отчёт о расхождениях; запись только при `apply: true`, одним `bulkWrite` в короткой транзакции (карьера пересчитывается внутри неё из актуальных сезонов). **Runbook:** без `apply` эндпоинт только отчёт, раньше он писал; чтобы исправить хранимое, повторите вызов с `apply: true`. `POST /rest/migrations/recalculate-games` (S3.14, только `ADMIN`; тело `{ apply }`, строго: лишний ключ даёт 400; по умолчанию сухой прогон, запись только при `apply: true`, query-параметров нет) пересчитывает сохранённые метаданные каждого матча чистыми функциями `@sfl/domain`, пишет изменённые матчи пачками по 10 в коротких транзакциях, затем по каждому сезону запускает проверку `verifySeason(..., apply)` (итоги сезона и карьеры). Матч, не прошедший правила (`CAPTAINS_COUNT`, `UNKNOWN_TEAM`, `MISSING_POSITION` у опубликованного, `INVALID_GAME` без массива статистики), идёт в `skipped` с причиной и не прерывает запуск; сорвавшиеся пачки записи — в `failedBatches` (если не записалась ни одна, ответ 500). Статусы матчей миграция не меняет (GLOSSARY, ADR 0015). Ниже описан прежний ручной пересчёт `recalculate/season` (по списку игроков), он остаётся.
 
-Запускается вручную: `GET /rest/players/recalculate/season?seasonId=...&playerIds=...`. Сервис обходит игроков через `forEach(async ...)` без ожидания промисов (см. раздел 12).
+Запускается вручную: `POST /rest/players/recalculations` с телом `{ seasonId, playerIds }`. Сервис обходит игроков через `forEach(async ...)` без ожидания промисов (см. раздел 12).
 
 ---
 

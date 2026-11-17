@@ -36,10 +36,10 @@ export class ChartsService {
     season: number;
     limit?: number;
   }): Observable<TTopTotalPoints[]> {
-    return this.httpService.get<TTopTotalPoints[]>(
-      `charts/top-total-points-players`,
-      filter,
-    );
+    return this.httpService.get<TTopTotalPoints[]>('charts/top-players', {
+      system: 'total-points',
+      ...filter,
+    });
   }
 
   public getTopAncientRatingSystemPlayers(filter: {
@@ -47,8 +47,8 @@ export class ChartsService {
     limit?: number;
   }): Observable<TTopAncientRatingSystem[]> {
     return this.httpService.get<TTopAncientRatingSystem[]>(
-      `charts/top-ancient-rating-system-players`,
-      filter,
+      'charts/top-players',
+      { system: 'ancient', ...filter },
     );
   }
 }

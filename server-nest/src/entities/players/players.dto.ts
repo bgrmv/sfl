@@ -43,19 +43,21 @@ export const UpdatePlayerDTO = z.object({
 export type UpdatePlayerDTOOutput = z.output<typeof UpdatePlayerDTO>;
 
 // POST /players: players are created together with their users
-export const CreatePlayersDTO = z
-  .array(
-    z.object({
-      nickname: z.string().trim().min(1),
-      number: z.number().int().min(1).max(999).optional(),
-      user: z.object({
-        email: z.email().trim(),
-        name: z.string().trim().optional(),
-        surname: z.string().trim().optional(),
+export const CreatePlayersDTO = z.object({
+  players: z
+    .array(
+      z.object({
+        nickname: z.string().trim().min(1),
+        number: z.number().int().min(1).max(999).optional(),
+        user: z.object({
+          email: z.email().trim(),
+          name: z.string().trim().optional(),
+          surname: z.string().trim().optional(),
+        }),
       }),
-    }),
-  )
-  .min(1)
-  .max(100);
+    )
+    .min(1)
+    .max(100),
+});
 
 export type CreatePlayersDTOOutput = z.output<typeof CreatePlayersDTO>;

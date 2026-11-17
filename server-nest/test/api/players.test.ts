@@ -22,14 +22,16 @@ describe('API: players', () => {
       .api()
       .post('/rest/players')
       .set(auth())
-      .send([
-        {
-          nickname: 'Bomber',
-          number: 9,
-          user: { email: 'bomber@sfl.test', name: 'Gerd' },
-        },
-        { nickname: 'Keeper', number: 1, user: { email: 'keeper@sfl.test' } },
-      ]);
+      .send({
+        players: [
+          {
+            nickname: 'Bomber',
+            number: 9,
+            user: { email: 'bomber@sfl.test', name: 'Gerd' },
+          },
+          { nickname: 'Keeper', number: 1, user: { email: 'keeper@sfl.test' } },
+        ],
+      });
 
     expect(isSuccess(res.status)).toBe(true);
     expect(res.body.data).toHaveLength(2);
@@ -105,12 +107,12 @@ describe('API: players', () => {
 
     const res = await t
       .api()
-      .post('/rest/players/recalculate/season')
+      .post('/rest/players/recalculations')
       .set(auth())
       .send({ seasonId: 2024, playerIds: [player.id] });
 
     expect(isSuccess(res.status)).toBe(true);
-    expect(res.body.data).toMatchObject({ success: 'OK', seasonId: 2024 });
+    expect(res.body.data).toBeNull();
   });
 
   describe('PATCH /players/:id: only whitelisted fields (S8.9)', () => {
@@ -189,7 +191,7 @@ describe('API: players', () => {
     ])('recalculate: %s', async (_name, body) => {
       const res = await t
         .api()
-        .post('/rest/players/recalculate/season')
+        .post('/rest/players/recalculations')
         .set(auth())
         .send(body);
 
@@ -236,8 +238,8 @@ describe('API: players', () => {
     const publicRoutes = () => [
       '/rest/players?includeMetadata=false',
       `/rest/players/${playerId}`,
-      '/rest/charts/top-total-points-players?season=2022',
-      '/rest/charts/top-ancient-rating-system-players?season=2022',
+      '/rest/charts/top-players?system=total-points&season=2022',
+      '/rest/charts/top-players?system=ancient&season=2022',
     ];
 
     it.each([0, 1, 2, 3])(
@@ -250,10 +252,21 @@ describe('API: players', () => {
       },
     );
 
+    it('charts: an unknown system or a missing season answers 400', async () => {
+      const bad = [
+        '/rest/charts/top-players?system=nope&season=2022',
+        '/rest/charts/top-players?season=2022',
+        '/rest/charts/top-players?system=ancient',
+      ];
+      for (const url of bad) {
+        expect((await t.api().get(url)).status, url).toBe(400);
+      }
+    });
+
     it('charts still have the data needed for the labels', async () => {
       const res = await t
         .api()
-        .get('/rest/charts/top-total-points-players?season=2022');
+        .get('/rest/charts/top-players?system=total-points&season=2022');
 
       expect(res.body.data.length).toBeGreaterThan(0);
       expect(res.body.data[0]).toMatchObject({
@@ -342,13 +355,13 @@ describe('API: players', () => {
       user: { email: `${n}@sfl.test` },
     });
 
-    it('GET /players/captains answers 200 with the captains only', async () => {
+    it('GET /players?isCaptain=true answers 200 with the captains only', async () => {
       const [a, b] = await createPlayers(t, 2);
       await t.api().patch(`/rest/players/${a.id}`).set(auth()).send({
         isCaptain: true,
       });
 
-      const res = await t.api().get('/rest/players/captains');
+      const res = await t.api().get('/rest/players?isCaptain=true');
 
       expect(res.status).toBe(200);
       const ids = res.body.data.map((p: { id: string }) => p.id);
@@ -368,16 +381,16 @@ describe('API: players', () => {
     });
 
     it('a duplicate email answers 409, not 201', async () => {
-      await create([person('twin')]);
-      const res = await create([person('twin')]);
+      await create({ players: [person('twin')] });
+      const res = await create({ players: [person('twin')] });
 
       expect(res.status).toBe(409);
     });
 
     it('a failed batch creates nobody: the first record is rolled back', async () => {
-      await create([person('taken')]);
+      await create({ players: [person('taken')] });
 
-      const res = await create([person('fresh'), person('taken')]);
+      const res = await create({ players: [person('fresh'), person('taken')] });
 
       expect(res.status).toBe(409);
       expect(
@@ -389,7 +402,7 @@ describe('API: players', () => {
     });
 
     it('the same email twice in one request answers 409 before anything is created', async () => {
-      const res = await create([person('dup'), person('dup')]);
+      const res = await create({ players: [person('dup'), person('dup')] });
 
       expect(res.status).toBe(409);
       expect(
@@ -454,13 +467,13 @@ describe('API: players', () => {
       const responses = await Promise.all([
         t.api().get('/rest/players/not-an-id'),
         t.api().get(`/rest/players/${MISSING}`),
-        t.api().post('/rest/players').set(auth()).send([]),
+        t.api().post('/rest/players').set(auth()).send({ players: [] }),
         t.api().post('/rest/players'),
         t
           .api()
           .post('/rest/players')
           .set('Authorization', `Bearer ${t.userToken}`),
-        create([person('twin')]),
+        create({ players: [person('twin')] }),
       ]);
 
       expect(responses.map(r => r.status)).toEqual([

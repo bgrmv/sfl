@@ -146,11 +146,11 @@ describe('API: a game and its recalculation are atomic', () => {
     ).toBeDefined();
   });
 
-  describe('POST /players/recalculate/season/full', () => {
+  describe('POST /players/recalculations/full', () => {
     const full = (apply = true) =>
       t
         .api()
-        .post('/rest/players/recalculate/season/full')
+        .post('/rest/players/recalculations/full')
         .set(auth())
         .send({ seasonId: 2024, apply });
     const tamper = () =>

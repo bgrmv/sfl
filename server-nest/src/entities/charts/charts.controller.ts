@@ -1,4 +1,10 @@
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ParseEnumPipe,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
@@ -23,6 +29,12 @@ export class DTO {
   };
 }
 
+/** The rating system a top is made by: the new one (total points) or the old one. */
+export enum TopPlayersSystem {
+  TotalPoints = 'total-points',
+  Ancient = 'ancient',
+}
+
 // Read-only statistics, open to everyone
 @Public()
 @ApiTags('charts')
@@ -30,20 +42,7 @@ export class DTO {
 export class ChartsController {
   constructor(private readonly chartsService: ChartsService) {}
 
-  @ApiQuery({ name: 'season', required: true, type: Number })
-  @ApiOkResponse({ type: Array })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal Server Error',
-  })
-  @Get('top-total-points-players')
-  async topTotalPointsPlayers(
-    @Query('season', ParseIntPipe) season: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ) {
-    return await this.chartsService.topTotalPointsPlayers({ season, limit });
-  }
-
+  @ApiQuery({ name: 'system', required: true, enum: TopPlayersSystem })
   @ApiQuery({ name: 'season', required: true, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiOkResponse({ type: Array })
@@ -51,14 +50,18 @@ export class ChartsController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error',
   })
-  @Get('top-ancient-rating-system-players')
-  async topAncientRatingSystemPlayers(
-    @Query('season', new ParseIntPipe()) season: number,
+  @Get('top-players')
+  async topPlayers(
+    @Query('system', new ParseEnumPipe(TopPlayersSystem))
+    system: TopPlayersSystem,
+    @Query('season', ParseIntPipe) season: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
-    return await this.chartsService.topAncientRatingSystemPlayers({
-      season,
-      limit,
-    });
+    return system === TopPlayersSystem.TotalPoints
+      ? await this.chartsService.topTotalPointsPlayers({ season, limit })
+      : await this.chartsService.topAncientRatingSystemPlayers({
+          season,
+          limit,
+        });
   }
 }

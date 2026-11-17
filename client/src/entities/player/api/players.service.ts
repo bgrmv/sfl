@@ -35,9 +35,9 @@ export class PlayersService {
 
   create(player: IPlayerDTO): Observable<IPlayerDTO[]> {
     return this.#httpService.post<
-      SetOptional<IPlayerDTO, 'id' | 'isCaptain'>[],
+      { players: SetOptional<IPlayerDTO, 'id' | 'isCaptain'>[] },
       IPlayerDTO[]
-    >('players', [player]);
+    >('players', { players: [player] });
   }
 
   public delete(id: string): Observable<IPlayerDTO | null> {
@@ -45,8 +45,8 @@ export class PlayersService {
   }
 
   getCaptainsPlayers(): Observable<IPlayerDTO[]> {
-    return this.#httpService.get<unknown>('players/captains').pipe(
-      checkedResponse(playersSchema, 'GET players/captains'),
+    return this.#httpService.get<unknown>('players', { isCaptain: true }).pipe(
+      checkedResponse(playersSchema, 'GET players?isCaptain=true'),
       map(players => players as IPlayerDTO[]),
     );
   }

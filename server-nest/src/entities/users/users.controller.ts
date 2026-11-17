@@ -2,22 +2,13 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
   NotFoundException,
   Param,
-  Post,
-  UsePipes,
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
-import {
-  SetPasswordDTO,
-  SetPasswordDTOOutput,
-  UpdateTestUsersDto,
-  UpdateTestUsersDtoInput,
-  UpdateTestUsersDtoOutput,
-} from './users.dto';
-import { IUser } from './users.schema';
+import { SetPasswordDTO, SetPasswordDTOOutput } from './users.dto';
 import { UsersService } from './users.service';
 
 const UUID_PATTERN =
@@ -28,17 +19,8 @@ const UUID_PATTERN =
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post('test-users')
-  @UsePipes(new ZodValidationPipe(UpdateTestUsersDto))
-  updateTestUsers(
-    @Body() updateUserDto: UpdateTestUsersDtoInput,
-  ): any | UpdateTestUsersDtoOutput {
-    // return this.usersService.getsUsers();
-    return updateUserDto;
-  }
-
   // ADMIN only (default for routes without @Roles)
-  @Post(':id/password')
+  @Put(':id/password')
   async setPassword(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(SetPasswordDTO))
@@ -52,11 +34,6 @@ export class UsersController {
       throw new NotFoundException('User is not found');
     }
 
-    return { success: 'OK' };
-  }
-
-  @Get()
-  async getUsers(): Promise<IUser[]> {
-    return await this.usersService.getsUsers();
+    return null;
   }
 }

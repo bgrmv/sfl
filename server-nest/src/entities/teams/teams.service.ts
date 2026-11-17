@@ -15,6 +15,6 @@ export class TeamsService {
   }
 
   async save(team: ITeam) {
-    await this.teamModel.create(team);
+    return await this.teamModel.create(team);
   }
 }

@@ -46,16 +46,25 @@ describe('CreatePlayersDTO (POST /players)', () => {
   };
 
   it('accepts a list of players with their users', () => {
-    expect(CreatePlayersDTO.parse([person])).toEqual([person]);
+    expect(CreatePlayersDTO.parse({ players: [person] })).toEqual({
+      players: [person],
+    });
   });
 
   it.each([
-    ['an empty list', []],
-    ['not a list', person],
-    ['no user', [{ nickname: 'x' }]],
-    ['an invalid email', [{ nickname: 'x', user: { email: 'nope' } }]],
-    ['an empty nickname', [{ nickname: '', user: { email: 'a@b.co' } }]],
-    ['101 players', Array.from({ length: 101 }, () => person)],
+    ['an empty list', { players: [] }],
+    ['not a list', { players: person }],
+    ['a bare array (the old shape)', [person]],
+    ['no user', { players: [{ nickname: 'x' }] }],
+    [
+      'an invalid email',
+      { players: [{ nickname: 'x', user: { email: 'nope' } }] },
+    ],
+    [
+      'an empty nickname',
+      { players: [{ nickname: '', user: { email: 'a@b.co' } }] },
+    ],
+    ['101 players', { players: Array.from({ length: 101 }, () => person) }],
   ])('rejects %s', (_name, body) => {
     expect(CreatePlayersDTO.safeParse(body).success).toBe(false);
   });

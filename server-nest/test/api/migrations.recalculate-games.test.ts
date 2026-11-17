@@ -199,7 +199,7 @@ describe('API: POST /migrations/recalculate-games', () => {
     // The totals of the players equal a calculation from scratch
     const verify = await t
       .api()
-      .post('/rest/players/recalculate/season/full')
+      .post('/rest/players/recalculations/full')
       .set(auth())
       .send({ seasonId: 2024 });
     expect(verify.body.data.differences).toEqual([]);
