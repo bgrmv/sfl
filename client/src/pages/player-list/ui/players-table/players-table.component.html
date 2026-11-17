@@ -8,6 +8,7 @@
   [dataSource]="dataSource()"
   class="mat-elevation-z1"
 >
+  <caption class="k-visually-hidden">Players of the league</caption>
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -239,6 +240,7 @@
       <button
         mat-icon-button
         color="primary"
+        aria-label="Open the player page"
         [disabled]="!element.id"
         (click)="openPlayerDetailsPage(element.id)"
       >
@@ -250,6 +252,7 @@
           mat-icon-button
           [disabled]="false && !user?.roles?.includes('ADMIN')"
           color="primary"
+          aria-label="Edit the player"
           (click)="editPlayer(element)"
         >
           <mat-icon fontIcon="edit" />
@@ -259,6 +262,7 @@
           mat-icon-button
           [disabled]="false && !user?.roles?.includes('ADMIN')"
           color="primary"
+          aria-label="Delete the player"
           (click)="deletePlayer(element)"
         >
           <mat-icon

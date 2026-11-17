@@ -50,6 +50,7 @@ import { KIT } from '@shared/ui/kit';
         } @else {
           <div class="k-scroll">
             <table class="k-table">
+              <caption class="k-visually-hidden">Players of the league</caption>
               <thead>
                 <tr>
                   <th
@@ -438,6 +439,9 @@ Hi Lynx! Sign in once and you will see your own page and can vote.</textarea>
         title="Links"
       >
         <table class="k-table">
+          <caption class="k-visually-hidden">
+            Accounts linked to players
+          </caption>
           <thead>
             <tr>
               <th>Player</th>

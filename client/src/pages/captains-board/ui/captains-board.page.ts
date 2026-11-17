@@ -135,6 +135,7 @@ import { KIT } from '@shared/ui/kit';
         } @else {
           <div class="k-scroll">
             <table class="k-table">
+              <caption class="k-visually-hidden">Captains ranking</caption>
               <thead>
                 <tr>
                   <th

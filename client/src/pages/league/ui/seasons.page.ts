@@ -121,6 +121,7 @@ import { KIT } from '@shared/ui/kit';
               title="Seasons compared"
             >
               <table class="k-table">
+                <caption class="k-visually-hidden">Seasons compared</caption>
                 <thead>
                   <tr>
                     <th

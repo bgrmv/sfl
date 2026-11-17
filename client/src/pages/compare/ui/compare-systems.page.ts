@@ -71,6 +71,9 @@ import { KIT } from '@shared/ui/kit';
       </div>
       <sfl-card flag="compare.systems">
         <table class="k-table">
+          <caption class="k-visually-hidden">
+            Metrics of the two rating systems
+          </caption>
           <thead>
             <tr>
               <th>Metric</th>

@@ -164,6 +164,9 @@ import { KIT } from '@shared/ui/kit';
               player has one.
             </p>
             <table class="k-table">
+              <caption class="k-visually-hidden">
+                Players of the game to check before publishing
+              </caption>
               <thead>
                 <tr>
                   <th>№</th>

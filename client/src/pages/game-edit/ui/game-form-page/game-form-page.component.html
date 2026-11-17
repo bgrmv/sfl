@@ -145,6 +145,7 @@
         <div class="card-team-actions">
           <button
             mat-icon-button
+            aria-label="Swap the teams"
             (click)="swapStatistics()"
             [disabled]="!swapEnabled() || !!errors().size"
           >
@@ -153,6 +154,7 @@
 
           <button
             mat-icon-button
+            aria-label="Drag to reorder the teams"
             [disabled]="!!errors().size"
             cdkDragHandle
           >

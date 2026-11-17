@@ -21,6 +21,7 @@
           readonly
           type="button"
           color="primary"
+          aria-label="Copy game id"
           (click)="copy(game.id)"
         >
           <mat-icon
@@ -142,6 +143,7 @@
     [dataSource]="dataSource"
     class="mat-elevation-z1"
   >
+    <caption class="k-visually-hidden">Players of a team in this game</caption>
     <ng-container matColumnDef="team">
       <!-- Footer cell if isFirstDraft is true -->
       <th

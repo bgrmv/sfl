@@ -9,7 +9,10 @@
         [value]="option"
       >
         {{ option.nickname }}
-        <button matChipRemove>
+        <button
+          matChipRemove
+          [attr.aria-label]="'Remove ' + option.nickname"
+        >
           <mat-icon>cancel</mat-icon>
         </button>
       </mat-chip-row>
