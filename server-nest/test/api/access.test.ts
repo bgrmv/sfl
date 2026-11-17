@@ -136,6 +136,7 @@ const CLOSED: Case[] = [
     body: () => ({ password: 'new-password-1' }),
   },
   { name: 'POST /media', method: 'post', path: () => '/media', upload: true },
+  { name: 'GET /audit', method: 'get', path: () => '/audit' },
   { name: 'GET /comments/queue', method: 'get', path: () => '/comments/queue' },
   {
     name: 'PATCH /comments/:id',

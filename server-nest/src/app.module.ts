@@ -7,6 +7,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { join } from 'node:path';
 import configuration from './config/configuration';
+import { AuditInterceptor } from './entities/audit/audit.interceptor';
+import { AuditModule } from './entities/audit/audit.module';
 import { AuthModule } from './entities/auth';
 import { ChartsModule } from './entities/charts/charts.module';
 import { GamesModule } from './entities/games/games.module';
@@ -118,6 +120,7 @@ import { FileLoggerService } from './shared/services/logger.service';
     TeamsModule,
     MediaModule,
     CommentsModule,
+    AuditModule,
     ChartsModule,
     MigrationsModule,
   ],
@@ -144,6 +147,11 @@ import { FileLoggerService } from './shared/services/logger.service';
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
+    },
+    // Who changed what (S10.21): the log for the admin
+    {
+      provide: APP_INTERCEPTOR,
+      useExisting: AuditInterceptor,
     },
     UsersService,
     FileLoggerService,

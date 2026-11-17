@@ -12,8 +12,10 @@ import { AuthService } from '@shared/auth/auth.service';
 /**
  * Admin shell of the design (boards Dashboard, AdminPlayers, ...): a sidebar with counters and
  * the content. The public header and footer are hidden on `/admin` (see AppComponent).
- * LIVE: the count of games to publish. DUMMY (`admin.sidebarCounts`): the other counters.
+ * LIVE: the count of games to publish and of comments to review. DUMMY (`admin.sidebarCounts`): the other counters.
  */
+import { AdminCommentsQueue } from '../model/comments-queue';
+
 @Component({
   selector: 'sfl-admin-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
@@ -157,9 +159,11 @@ import { AuthService } from '@shared/auth/auth.service';
 })
 export class AdminLayoutComponent {
   private readonly games = inject(GamesStore);
+  private readonly comments = inject(AdminCommentsQueue);
   protected readonly user = inject(AuthService).user;
 
   constructor() {
+    this.comments.load();
     effect(() =>
       this.games.initGamesStore({ season: new Date().getFullYear() }),
     );
@@ -197,8 +201,12 @@ export class AdminLayoutComponent {
       exact: false,
     },
     { label: 'Schedule', href: '/admin/schedule', count: 0, exact: false },
-    // DUMMY (admin.sidebarCounts): comments to review (S10.22)
-    { label: 'Comments', href: '/admin/comments', count: 5, exact: false },
+    {
+      label: 'Comments',
+      href: '/admin/comments',
+      count: this.comments.queue().length,
+      exact: false,
+    },
     { label: 'Photo and video', href: '/admin/media', count: 0, exact: false },
     { label: 'Releases', href: '/admin/releases', count: 1, exact: false },
   ]);

@@ -6,6 +6,7 @@ import request from 'supertest';
 
 import { AuthController } from '../../entities/auth/auth.controller';
 import { AuthService } from '../../entities/auth/auth.service';
+import { AuditController } from '../../entities/audit/audit.controller';
 import { CommentsController } from '../../entities/comments/comments.controller';
 import { ChartsController } from '../../entities/charts/charts.controller';
 import { GamesController } from '../../entities/games/games.controller';
@@ -52,6 +53,7 @@ describe('AuthGuard: access matrix', () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [
         AuthController,
+        AuditController,
         ChartsController,
         CommentsController,
         GamesController,

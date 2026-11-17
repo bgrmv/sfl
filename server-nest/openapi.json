@@ -1195,6 +1195,28 @@
         "tags": ["comments"]
       }
     },
+    "/rest/audit": {
+      "get": {
+        "operationId": "AuditController_latest",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["audit"]
+      }
+    },
     "/rest/charts/top-players": {
       "get": {
         "operationId": "ChartsController_topPlayers",

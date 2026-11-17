@@ -23,10 +23,10 @@ function setup(queue: CommentDTO[]) {
   };
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
-    providers: [{ provide: MatSnackBar, useValue: { open: vi.fn() } }],
-  });
-  TestBed.overrideComponent(AdminCommentsPageComponent, {
-    set: { providers: [{ provide: CommentsService, useValue: service }] },
+    providers: [
+      { provide: MatSnackBar, useValue: { open: vi.fn() } },
+      { provide: CommentsService, useValue: service },
+    ],
   });
   const fixture = TestBed.createComponent(AdminCommentsPageComponent);
   fixture.detectChanges();

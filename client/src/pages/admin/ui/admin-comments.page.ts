@@ -1,14 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-import { CommentsService } from '@entities/comment';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import type { CommentDTO } from '@sfl/schemas';
-import { toResult } from '@shared/api/to-result';
-import { injectNotifier } from '@shared/store/inject-notifier';
 import { KIT } from '@shared/ui/kit';
+import { AdminCommentsQueue } from '../model/comments-queue';
 
 /**
  * Moderation of comments (S10.22). LIVE (admin.comments): the queue of comments
@@ -17,7 +10,6 @@ import { KIT } from '@shared/ui/kit';
 @Component({
   selector: 'sfl-admin-comments-page',
   imports: [...KIT],
-  providers: [CommentsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -93,23 +85,13 @@ import { KIT } from '@shared/ui/kit';
   `,
 })
 export class AdminCommentsPageComponent {
-  private readonly service = inject(CommentsService);
-  private readonly notify = injectNotifier();
+  private readonly comments = inject(AdminCommentsQueue);
 
-  protected readonly queue = signal<CommentDTO[]>([]);
-  protected readonly loading = signal(true);
+  protected readonly queue = this.comments.queue;
+  protected readonly loading = this.comments.loading;
 
   constructor() {
-    this.service
-      .queue()
-      .pipe(toResult())
-      .subscribe(result => {
-        this.loading.set(false);
-        result.match({
-          ok: list => this.queue.set(list),
-          err: error => this.notify.error(error),
-        });
-      });
+    this.comments.load();
   }
 
   protected when(comment: CommentDTO): string {
@@ -119,34 +101,10 @@ export class AdminCommentsPageComponent {
   }
 
   protected verdict(comment: CommentDTO, status: 'approved' | 'rejected') {
-    this.service
-      .moderate(comment.id, { status })
-      .pipe(toResult())
-      .subscribe(result =>
-        result.match({
-          ok: () => {
-            this.queue.update(list => list.filter(c => c.id !== comment.id));
-            this.notify.success(
-              status === 'approved' ? 'Comment approved' : 'Comment rejected',
-            );
-          },
-          err: error => this.notify.error(error),
-        }),
-      );
+    this.comments.verdict(comment, status);
   }
 
   protected remove(comment: CommentDTO) {
-    this.service
-      .delete(comment.id)
-      .pipe(toResult())
-      .subscribe(result =>
-        result.match({
-          ok: () => {
-            this.queue.update(list => list.filter(c => c.id !== comment.id));
-            this.notify.success('Comment deleted');
-          },
-          err: error => this.notify.error(error),
-        }),
-      );
+    this.comments.remove(comment);
   }
 }

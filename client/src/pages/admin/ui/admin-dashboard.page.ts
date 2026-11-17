@@ -4,16 +4,21 @@ import {
   computed,
   inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
 import { format } from 'date-fns';
 import { GamesStore } from '@entities/game';
 import { nextSaturday } from '@shared/lib/saturdays';
 import { KIT } from '@shared/ui/kit';
+import { AuditService, type AuditEntry } from '../api/audit.service';
+import { AdminCommentsQueue } from '../model/comments-queue';
+import { describeAction } from '../model/describe-action';
 
 /**
  * Overview (board Dashboard). LIVE (admin.dashboard): the next Saturday, games to publish, the
  * season numbers and the goals chart come from GamesStore (provided by the admin layout).
- * DUMMY (admin.dashboardFeed): comments to review and the action log.
+ * LIVE (admin.dashboardFeed): the comments to review and the log of the actions (S10.21, S10.22).
  */
 @Component({
   selector: 'sfl-admin-dashboard-page',
@@ -150,9 +155,8 @@ import { KIT } from '@shared/ui/kit';
           <div class="n">{{ publishNote() }}</div>
         </li>
         <li>
-          <!-- DUMMY (admin.dashboardFeed): comments are not built yet (S10.22) -->
           <div class="l">Comments</div>
-          <div class="v">5</div>
+          <div class="v">{{ queue().length }}</div>
           <div class="n">waiting for review</div>
         </li>
         <li>
@@ -259,69 +263,85 @@ import { KIT } from '@shared/ui/kit';
         *sflFeature="'admin.dashboardFeed'"
       >
         <section style="flex: 3 1 360px">
-          <h2>Comments to review · 5</h2>
-          <!-- DUMMY (admin.dashboardFeed): comments (S10.22) -->
-          <ul class="cards">
-            @for (c of comments; track c.author + c.when) {
-              <li>
-                <div class="k-row k-between k-small k-muted">
-                  <span>
-                    <strong style="color: var(--sfl-text)">
-                      {{ c.author }}
-                    </strong>
-                    on
-                    <a
-                      class="k-link"
-                      routerLink="/games"
+          <h2>Comments to review · {{ queue().length }}</h2>
+          @if (!queue().length) {
+            <sfl-state
+              title="Nothing to review"
+              text="New comments from visitors appear here."
+            />
+          } @else {
+            <ul class="cards">
+              @for (c of firstComments(); track c.id) {
+                <li>
+                  <div class="k-row k-between k-small k-muted">
+                    <strong style="color: var(--sfl-text)">{{ c.name }}</strong>
+                    <span>{{ when(c.createdAt) }}</span>
+                  </div>
+                  <p
+                    style="margin: 0; white-space: pre-line; overflow-wrap: anywhere"
+                  >
+                    {{ c.text }}
+                  </p>
+                  <div class="k-row">
+                    <button
+                      sflBtn
+                      size="sm"
+                      type="button"
+                      (click)="comments.verdict(c, 'approved')"
                     >
-                      Game {{ c.game }}
-                    </a>
-                  </span>
-                  <span>{{ c.when }}</span>
-                </div>
-                <p style="margin: 0">{{ c.text }}</p>
-                <div class="k-row">
-                  <button
-                    sflBtn
-                    size="sm"
-                    type="button"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    sflBtn
-                    size="sm"
-                    variant="ghost"
-                    type="button"
-                  >
-                    Reject
-                  </button>
-                  <button
-                    sflBtn
-                    size="sm"
-                    variant="danger"
-                    type="button"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
+                      Approve
+                    </button>
+                    <button
+                      sflBtn
+                      size="sm"
+                      variant="ghost"
+                      type="button"
+                      (click)="comments.verdict(c, 'rejected')"
+                    >
+                      Reject
+                    </button>
+                    <button
+                      sflBtn
+                      size="sm"
+                      variant="danger"
+                      type="button"
+                      (click)="comments.remove(c)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              }
+            </ul>
+            @if (queue().length > firstComments().length) {
+              <a
+                class="k-link"
+                routerLink="/admin/comments"
+              >
+                All {{ queue().length }} comments
+              </a>
             }
-          </ul>
+          }
         </section>
         <section style="flex: 2 1 280px">
           <h2>Recent actions</h2>
-          <ol class="box">
-            @for (l of log; track l.when + l.text) {
-              <li class="k-small">
-                <span class="k-muted">{{ l.when }}</span>
-                · {{ l.text }}
-              </li>
-            }
-          </ol>
+          @if (log().length) {
+            <ol class="box">
+              @for (l of log(); track l.id) {
+                <li class="k-small">
+                  <span class="k-muted">{{ when(l.at) }}</span>
+                  · {{ l.actor }} {{ words(l) }}
+                  @if (l.status >= 400) {
+                    <sfl-badge tone="neg">failed {{ l.status }}</sfl-badge>
+                  }
+                </li>
+              }
+            </ol>
+          } @else {
+            <p class="k-muted">Nothing has been changed yet.</p>
+          }
           <p class="k-hint">
-            Every change of a status and every moderation decision is written
-            here: who, what, when.
+            Every change an admin makes is written here: who, what, when.
           </p>
         </section>
       </div>
@@ -405,30 +425,29 @@ export class AdminDashboardPageComponent {
     ];
   });
 
-  protected readonly comments = [
-    {
-      author: 'Viper',
-      game: 46,
-      when: 'today, 10:12',
-      text: 'Great game, the penalty at the end was fair.',
-    },
-    {
-      author: 'Guest',
-      game: 46,
-      when: 'today, 09:40',
-      text: 'Buy followers cheap: [link removed]',
-    },
-    {
-      author: 'Pike',
-      game: 45,
-      when: 'yesterday',
-      text: 'Rematch on Saturday?',
-    },
-  ];
-  protected readonly log = [
-    { when: 'today, 11:02', text: 'admin approved a comment on Game 46' },
-    { when: 'today, 10:50', text: 'admin changed Game 46: New → Draft' },
-    { when: 'yesterday', text: 'admin created Game 47' },
-    { when: '14 Nov', text: 'admin published Game 44' },
-  ];
+  protected readonly comments = inject(AdminCommentsQueue);
+  protected readonly queue = this.comments.queue;
+  protected readonly firstComments = computed(() => this.queue().slice(0, 5));
+
+  protected readonly log = toSignal(
+    inject(AuditService)
+      .latest()
+      .pipe(
+        map(list => list.slice(0, 10)),
+        catchError(() => of([] as AuditEntry[])),
+      ),
+    { initialValue: [] as AuditEntry[] },
+  );
+
+  constructor() {
+    this.comments.load();
+  }
+
+  protected words(entry: AuditEntry): string {
+    return describeAction(entry.method, entry.route);
+  }
+
+  protected when(iso: string | undefined): string {
+    return iso ? format(new Date(iso), 'd MMM, HH:mm') : '';
+  }
 }

@@ -137,7 +137,7 @@ export const FEATURES = {
   'admin.sidebarCounts': dummy(
     'Counters of the queue, links, comments, releases',
   ),
-  'admin.dashboardFeed': dummy(
+  'admin.dashboardFeed': live(
     'Comments, votes and the action log (S10.22, S10.35)',
   ),
   'admin.wizard': dummy('Match wizard: 6 steps (S10.26..S10.34)'),
