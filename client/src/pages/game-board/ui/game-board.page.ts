@@ -25,8 +25,8 @@ import { KIT } from '@shared/ui/kit';
 
 /**
  * Game page of the design. LIVE: the score, captains, MVP, scorers, squads and the story
- * (GamesStore + PlayersStore). DUMMY: goal order and line-up map
- * (`game.events`, `game.map`); the photos and the comments are LIVE (MediaService, CommentsService).
+ * (GamesStore + PlayersStore), the goals in order when the game has them. DUMMY: the line-up map
+ * (`game.map`); the photos and the comments are LIVE (MediaService, CommentsService).
  */
 @Component({
   selector: 'sfl-game-board-page',
@@ -133,23 +133,46 @@ import { KIT } from '@shared/ui/kit';
             flag="game.events"
             title="Goals"
           >
-            <ul class="k-list">
-              @for (s of v.scorers; track s.id) {
-                <li>
-                  <sfl-badge>{{ s.team }}</sfl-badge>
-                  <span class="k-grow">{{ s.name }}</span>
-                  <span class="k-small k-muted">{{ s.text }}</span>
-                </li>
-              } @empty {
-                <li class="k-muted">No goals recorded.</li>
-              }
-            </ul>
-            <!-- DUMMY (game.events): the order of goals (S10.27) is not stored yet -->
-            <p class="k-hint">
-              The order of goals is not recorded for this game. Header ×2 ·
-              Penalty +1 · Pass +1 for the passer · Own goal counts for the
-              opponent, −1 for the author.
-            </p>
+            @if (v.timeline.length) {
+              <ol
+                class="k-list"
+                aria-label="Goals in the order they were scored"
+              >
+                @for (e of v.timeline; track e.n) {
+                  <li>
+                    <b class="k-num">{{ e.score }}</b>
+                    <sfl-badge>{{ e.team }}</sfl-badge>
+                    <span class="k-grow">
+                      {{ e.text }}
+                      @if (e.passers) {
+                        <span class="k-muted">· {{ e.passers }}</span>
+                      }
+                    </span>
+                  </li>
+                }
+              </ol>
+              <p class="k-hint">
+                Header ×2 · Penalty +1 · Pass +1 for the passer, +2 before a
+                header · Own goal counts for the opponent, −1 for the author.
+              </p>
+            } @else {
+              <ul class="k-list">
+                @for (s of v.scorers; track s.id) {
+                  <li>
+                    <sfl-badge>{{ s.team }}</sfl-badge>
+                    <span class="k-grow">{{ s.name }}</span>
+                    <span class="k-small k-muted">{{ s.text }}</span>
+                  </li>
+                } @empty {
+                  <li class="k-muted">No goals recorded.</li>
+                }
+              </ul>
+              <p class="k-hint">
+                The order of goals is not recorded for this game. Header ×2 ·
+                Penalty +1 · Pass +1 for the passer · Own goal counts for the
+                opponent, −1 for the author.
+              </p>
+            }
           </sfl-section>
         </div>
 
@@ -360,8 +383,35 @@ export class GameBoardPageComponent {
           .join(' · '),
       }));
 
+    // The goals in the order they were scored, with the score after each (S10.27):
+    // a header weighs 2, an own goal counts for the team of the event
+    let scoreA = 0;
+    let scoreB = 0;
+    const timeline = (game.events ?? []).map(event => {
+      const weight = event.kind === 'head' ? 2 : 1;
+      if (event.teamId === aTeam) scoreA += weight;
+      else scoreB += weight;
+      const kind = {
+        goal: 'goal',
+        head: 'header',
+        penalty: 'penalty',
+        own: 'own goal',
+      }[event.kind];
+      const passers = event.assistIds.map(nameOf).join(', ');
+      return {
+        n: event.n,
+        score: `${scoreA} : ${scoreB}`,
+        team: teamName(event.teamId),
+        text: `${nameOf(event.authorId)} · ${kind}`,
+        passers: passers
+          ? `${event.kind === 'own' ? 'with' : 'pass'} ${passers}${event.kind === 'head' ? ' (+2)' : ''}`
+          : '',
+      };
+    });
+
     return {
       date: format(game.playedAt, 'EEEE, d MMMM yyyy'),
+      timeline,
       published: game.status === 'published',
       a: {
         name: teamName(aTeam),

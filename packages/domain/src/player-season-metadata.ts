@@ -63,7 +63,9 @@ function contributionOf(input: GameInput, game: SeasonGameInput) {
     input.totalPasses +
     input.totalGoalsByLeg +
     input.totalGoalsByPenalty +
-    input.totalGoalsByHead * 2 -
+    input.totalGoalsByHead * 2 +
+    // A pass before a goal by head is worth 2: one more point (S10.27)
+    (input.totalPassesForHead ?? 0) -
     input.totalGoalsByAuto;
 
   return {

@@ -5,6 +5,7 @@ import type { IGameMetadata, IPlayerGameResultMetadata } from '@sfl/domain';
 import {
   EnumGameStatus,
   EnumPlayerPosition,
+  type GameEvent,
   type PlayerStatisticDTO,
 } from '@sfl/schemas';
 import { ITeam, Team } from '../teams/team.schema';
@@ -30,6 +31,8 @@ export interface IGame {
   link: string;
   notes: [string, string];
   metadata: IGameMetadata;
+  /** The goals in the order they were scored (S10.27). */
+  events?: GameEvent[];
   /** Who confirmed the draft (S10.35). */
   confirmations?: { accountId: string; at: Date }[];
   revoked?: { reason: string; accountId: string; at: Date };
@@ -179,6 +182,10 @@ export class Game implements IGame {
 
   @Prop({ type: Object, required: false, default: {} })
   metadata: IGameMetadata;
+
+  /** The goals in the order they were scored; absent when the order is not known (S10.27). */
+  @Prop({ type: [Object], required: false, default: undefined })
+  events?: GameEvent[];
 
   /**
    * Who confirmed the draft (S10.35): two different people publish it. Any change

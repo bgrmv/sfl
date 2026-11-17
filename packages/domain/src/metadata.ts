@@ -105,6 +105,8 @@ export interface IPlayerCommonTotalsMetadata {
   totalGoals: number;
   totalPasses: number;
   totalPoints: number;
+  /** Passes before a goal by head: each is worth one point more (S10.27). Absent when 0. */
+  totalPassesForHead?: number;
 }
 
 export interface IPlayerMetadata extends Omit<

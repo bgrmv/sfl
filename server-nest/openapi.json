@@ -1824,6 +1824,38 @@
               "additionalProperties": {}
             }
           },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": ["goal", "head", "penalty", "own"]
+                },
+                "teamId": {
+                  "type": "string"
+                },
+                "authorId": {
+                  "type": "string"
+                },
+                "assistIds": {
+                  "maxItems": 4,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["n", "kind", "teamId", "authorId", "assistIds"],
+              "additionalProperties": false
+            }
+          },
           "link": {
             "default": "",
             "type": "string"
@@ -2138,6 +2170,37 @@
               ]
             }
           },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": ["goal", "head", "penalty", "own"]
+                },
+                "teamId": {
+                  "type": "string"
+                },
+                "authorId": {
+                  "type": "string"
+                },
+                "assistIds": {
+                  "maxItems": 4,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["n", "kind", "teamId", "authorId", "assistIds"]
+            }
+          },
           "metadata": {}
         },
         "required": [
@@ -2331,6 +2394,37 @@
                 "isTransfer",
                 "isCaptain"
               ]
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": ["goal", "head", "penalty", "own"]
+                },
+                "teamId": {
+                  "type": "string"
+                },
+                "authorId": {
+                  "type": "string"
+                },
+                "assistIds": {
+                  "maxItems": 4,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["n", "kind", "teamId", "authorId", "assistIds"]
             }
           },
           "metadata": {}

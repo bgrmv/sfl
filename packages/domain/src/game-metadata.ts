@@ -27,9 +27,30 @@ export interface GamePlayerStatistic {
   position?: EnumPlayerPosition | null;
 }
 
+/**
+ * One goal of the game in the order it was scored (S10.27). Only the passes matter
+ * to the calculation: a pass before a goal by head is worth 2.
+ */
+export interface GameEvent {
+  kind: 'goal' | 'head' | 'penalty' | 'own';
+  teamId: IdLike;
+  authorId: IdLike;
+  assistIds: IdLike[];
+}
+
 export interface GameInput {
   teams: [{ id: IdLike }, { id: IdLike }] | { id: IdLike }[];
   statistics: GamePlayerStatistic[];
+  /** Optional: the order of the goals; a game without it has passes of 1. */
+  events?: GameEvent[];
+}
+
+/** How many passes of the player were passes before a goal by head. */
+function passesForHead(playerId: string, events: GameEvent[] | undefined) {
+  return (events ?? [])
+    .filter(event => event.kind === 'head')
+    .flatMap(event => event.assistIds)
+    .filter(id => String(id) === playerId).length;
 }
 
 export type GameMetadataErrorCode = 'UNKNOWN_TEAM' | 'CAPTAINS_COUNT';
@@ -110,7 +131,10 @@ export function calculateGameMetadata(game: GameInput): IGameMetadata {
   const totalGoals: number = scoreFirstDraft + scoreSecondDraft;
   // Points of the players: goals and passes, minus own goals
   const totalPoints: number =
-    sumOf(scoredGoals) + totalPasses - totalGoalsByAuto;
+    sumOf(scoredGoals) +
+    totalPasses +
+    sumOf(s => passesForHead(String(s.playerId), game.events)) -
+    totalGoalsByAuto;
 
   // Team
   const teamWon: string | null = scoreIsDraw
@@ -350,6 +374,8 @@ export function calculatePlayerGameResultMetadata(
     // A head goal weighs 2; an own goal is not a goal of its author
     const totalGoals =
       totalGoalsByLeg + totalGoalsByHead * 2 + totalGoalsByPenalty;
+    // A pass before a goal by head is worth 2: the extra point (S10.27)
+    const headPasses = passesForHead(playerId, game.events);
 
     const playerCommonTotalsMetadata: IPlayerCommonTotalsMetadata = {
       totalPasses,
@@ -358,7 +384,8 @@ export function calculatePlayerGameResultMetadata(
       totalGoalsByPenalty,
       totalGoalsByAuto,
       totalGoals,
-      totalPoints: totalGoals + totalPasses - totalGoalsByAuto,
+      totalPoints: totalGoals + totalPasses + headPasses - totalGoalsByAuto,
+      ...(headPasses ? { totalPassesForHead: headPasses } : {}),
     };
 
     playerGameResultMetadata = {

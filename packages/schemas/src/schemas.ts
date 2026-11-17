@@ -190,6 +190,26 @@ export const commentModerationSchema = z.object({
 
 // ---- Game --------------------------------------------------------------------
 
+// ---- The order of the goals (S10.27) ---------------------------------------------
+
+export const GAME_EVENT_KINDS = ['goal', 'head', 'penalty', 'own'] as const;
+export type GameEventKind = (typeof GAME_EVENT_KINDS)[number];
+
+/**
+ * One goal in the order it was scored: `n` from 1; `teamId` is the team the goal
+ * counts for (for an own goal the team of the rivals of the author); `assistIds`
+ * are the passers (up to 3), for an own goal the participants (up to 4). A pass
+ * before a goal by head weighs 2 (GLOSSARY).
+ */
+export const gameEventSchema = z.object({
+  n: z.int().check(z.gte(1)),
+  kind: z.enum(GAME_EVENT_KINDS),
+  teamId: text,
+  authorId: text,
+  assistIds: z.array(text).check(z.maxLength(4)),
+});
+export type GameEvent = z.infer<typeof gameEventSchema>;
+
 /** A confirmation of a draft: who and when. The public answer has no confirmations. */
 export const gameConfirmationShape = z.object({
   accountId: z.optional(z.string()),
@@ -216,6 +236,8 @@ export const gameShape = z.object({
   confirmations: z.optional(z.array(gameConfirmationShape)),
   revoked: z.optional(z.looseObject({ reason: z.string(), at: z.string() })),
   statistics: z.array(playerStatisticSchema),
+  /** The order of the goals; absent in a game whose order is not known. */
+  events: z.optional(z.array(gameEventSchema)),
   link: z._default(z.string(), ''),
   description: z._default(z.string(), ''),
   notes: z._default(z.tuple([z.string(), z.string()]), ['', '']),
@@ -242,6 +264,7 @@ const gameInputFields = {
   description: text,
   notes: z.tuple([text, text]),
   statistics: z.array(playerStatisticSchema),
+  events: z.optional(z.array(gameEventSchema)),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: z.optional(z.any()),
 };
@@ -314,10 +337,157 @@ export function gameRuleViolations(game: GameToCheck): GameRuleViolation[] {
   return violations;
 }
 
-const gameRules = z.superRefine<GameToCheck>((game, ctx) => {
+/** A game with its goals in order, as far as the events are checked. */
+export interface GameEventsToCheck {
+  teams: { id: string }[];
+  statistics: {
+    playerId: string;
+    teamId: string;
+    goalsByLeg?: number;
+    goalsByHead?: number;
+    goalsByPenalty?: number;
+    goalsByAuto?: number;
+    passes?: number;
+  }[];
+  events?: GameEvent[];
+}
+
+export interface GameEventViolation {
+  /** Dotted, as the issues of the API: `events.2.assistIds.0`, `statistics.<playerId>.passes`. */
+  path: string;
+  message: string;
+}
+
+const KIND_FIELD = {
+  goal: 'goalsByLeg',
+  head: 'goalsByHead',
+  penalty: 'goalsByPenalty',
+  own: 'goalsByAuto',
+} as const;
+
+/**
+ * Every place where the order of the goals disagrees with the totals of the
+ * players (S10.27): the goals of each kind of each scorer and the passes of each
+ * player must be exactly those of the events. The participants of an own goal are
+ * not passes. A game without events has no violations.
+ */
+export function gameEventViolations(
+  game: GameEventsToCheck,
+): GameEventViolation[] {
+  if (!game.events) return [];
+  const out: GameEventViolation[] = [];
+  const add = (path: string, message: string) => out.push({ path, message });
+
+  const teamIds = game.teams.map(team => team.id);
+  const teamsOf = new Map<string, Set<string>>();
+  for (const stat of game.statistics) {
+    const set = teamsOf.get(stat.playerId) ?? new Set<string>();
+    set.add(stat.teamId);
+    teamsOf.set(stat.playerId, set);
+  }
+
+  const seen = new Map<string, number>();
+  const passes = new Map<string, number>();
+  game.events.forEach((event, i) => {
+    if (event.n !== i + 1) {
+      add(`events.${i}.n`, 'The goals are numbered 1, 2, 3 in the order given');
+    }
+    if (!teamIds.includes(event.teamId)) {
+      add(`events.${i}.teamId`, 'The goal is credited to a team that is not in the game');
+    }
+
+    const authorTeams = teamsOf.get(event.authorId);
+    const rivals = teamIds.filter(id => id !== event.teamId);
+    const authorOk =
+      !!authorTeams &&
+      (event.kind === 'own'
+        ? rivals.some(id => authorTeams.has(id))
+        : authorTeams.has(event.teamId));
+    if (!authorOk) {
+      add(
+        `events.${i}.authorId`,
+        event.kind === 'own'
+          ? 'The author of an own goal plays for the rivals of the team of the goal'
+          : 'The scorer plays for the team of the goal',
+      );
+    }
+
+    // The goals of a scorer by kind: more than the totals is the extra goal
+    const key = `${event.authorId}|${event.kind}`;
+    const count = (seen.get(key) ?? 0) + 1;
+    seen.set(key, count);
+    const expected = game.statistics
+      .filter(stat => stat.playerId === event.authorId)
+      .reduce((sum, stat) => sum + (stat[KIND_FIELD[event.kind]] ?? 0), 0);
+    if (count > expected) {
+      add(`events.${i}.authorId`, 'The player has no more goals of this kind in the totals');
+    }
+
+    const max = event.kind === 'own' ? 4 : 3;
+    if (event.assistIds.length > max) {
+      add(`events.${i}.assistIds`, `A goal has up to ${max} ${event.kind === 'own' ? 'participants' : 'passers'}`);
+    }
+    const inGoal = new Set<string>();
+    event.assistIds.forEach((id, j) => {
+      if (id === event.authorId) {
+        add(`events.${i}.assistIds.${j}`, 'A player does not pass to himself');
+      } else if (inGoal.has(id)) {
+        add(`events.${i}.assistIds.${j}`, 'A player is named once in a goal');
+      } else if (!teamsOf.get(id)?.has(event.teamId)) {
+        add(`events.${i}.assistIds.${j}`, 'The passer plays for the team of the goal');
+      }
+      inGoal.add(id);
+      if (event.kind !== 'own') passes.set(id, (passes.get(id) ?? 0) + 1);
+    });
+  });
+
+  // The totals of the players
+  const totalGoals = game.statistics.reduce(
+    (sum, stat) =>
+      sum +
+      (stat.goalsByLeg ?? 0) +
+      (stat.goalsByHead ?? 0) +
+      (stat.goalsByPenalty ?? 0) +
+      (stat.goalsByAuto ?? 0),
+    0,
+  );
+  if (totalGoals !== game.events.length) {
+    add('events', `The totals have ${totalGoals} goals, the order has ${game.events.length}`);
+  }
+  for (const [playerId] of teamsOf) {
+    for (const kind of GAME_EVENT_KINDS) {
+      const field = KIND_FIELD[kind];
+      const expected = game.statistics
+        .filter(stat => stat.playerId === playerId)
+        .reduce((sum, stat) => sum + (stat[field] ?? 0), 0);
+      if ((seen.get(`${playerId}|${kind}`) ?? 0) < expected) {
+        add(`statistics.${playerId}.${field}`, 'The order of the goals has fewer goals than the totals');
+      }
+    }
+    const expectedPasses = game.statistics
+      .filter(stat => stat.playerId === playerId)
+      .reduce((sum, stat) => sum + (stat.passes ?? 0), 0);
+    if ((passes.get(playerId) ?? 0) !== expectedPasses) {
+      add(`statistics.${playerId}.passes`, 'The passes of the order of the goals differ from the totals');
+    }
+  }
+  return out;
+}
+
+const gameRules = z.superRefine<GameToCheck & GameEventsToCheck>((game, ctx) => {
   // One issue per broken rule, whatever the number of places
   for (const rule of new Set(gameRuleViolations(game).map(v => v.rule))) {
     ctx.addIssue({ code: 'custom', message: GAME_RULE_MESSAGES[rule] });
+  }
+  // The order of the goals: every place has its own issue with a path (S10.27)
+  if (game.status !== EnumGameStatus.Skipped) {
+    for (const { path, message } of gameEventViolations(game)) {
+      ctx.addIssue({
+        code: 'custom',
+        message,
+        path: path.split('.').map(part => (/^\d+$/.test(part) ? Number(part) : part)),
+      });
+    }
   }
 });
 
