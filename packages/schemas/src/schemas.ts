@@ -100,6 +100,23 @@ export const playerSchema = z.looseObject({
 });
 export const playersSchema = z.array(playerSchema);
 
+/**
+ * What the edit dialog of a player changes (S3.16). The form checks it with
+ * `validateStandardSchema`; the messages are the ones shown under the field.
+ */
+export const playerEditFormSchema = z.object({
+  nickname: z.string().check(z.trim(), z.minLength(1, 'Nickname is required')),
+  number: z
+    .int('Number is from 1 to 999')
+    .check(z.gte(1, 'Number is from 1 to 999'), z.lte(999, 'Number is from 1 to 999')),
+  user: z.object({
+    email: z.email('Enter a valid email').check(z.trim()),
+    name: text,
+    surname: text,
+  }),
+});
+export type PlayerEditForm = z.infer<typeof playerEditFormSchema>;
+
 // ---- Game --------------------------------------------------------------------
 
 /**

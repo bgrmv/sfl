@@ -1,11 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  FormField,
+  form,
+  submit,
+  validateStandardSchema,
+} from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -17,18 +21,22 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { IPlayerDTO } from '@entities/player';
+import { playerEditFormSchema, type PlayerEditForm } from '@sfl/schemas';
 
+/**
+ * Signal forms pilot (S3.16, ADR 0007): the model is a signal, the rules come from
+ * `playerEditFormSchema` in @sfl/schemas through `validateStandardSchema`.
+ */
 @Component({
   selector: 'sfl-player-edit-dialog',
   imports: [
     MatFormFieldModule,
     MatInputModule,
-    FormsModule,
     MatButtonModule,
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    ReactiveFormsModule,
+    FormField,
   ],
   templateUrl: './player-edit-dialog.component.html',
   styleUrl: './player-edit-dialog.component.css',
@@ -40,38 +48,18 @@ export class PlayerEditDialogComponent {
 
   protected readonly data: IPlayerDTO = inject(MAT_DIALOG_DATA);
 
-  formGroup = new FormGroup<
-    FormControls<Pick<IPlayerDTO, 'nickname' | 'number'>> & {
-      user: FormGroup<
-        FormControls<SetRequired<Partial<IPlayerDTO['user']>, 'id' | 'email'>>
-      >;
-    }
-  >({
-    nickname: new FormControl(this.data.nickname ?? '', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    number: new FormControl(this.data.number ?? 999, {
-      nonNullable: true,
-      validators: [Validators.min(1), Validators.max(999)],
-    }),
-    // TODO: problem with type
-    user: new FormGroup<any>({
-      id: new FormControl(this.data.user.id, {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-      email: new FormControl(this.data.user.email, {
-        nonNullable: true,
-        validators: [Validators.required, Validators.email],
-      }),
-      name: new FormControl(this.data.user.name ?? '', {
-        nonNullable: true,
-      }),
-      surname: new FormControl(this.data.user.surname ?? '', {
-        nonNullable: true,
-      }),
-    }),
+  private readonly model = signal<PlayerEditForm>({
+    nickname: this.data.nickname ?? '',
+    number: this.data.number ?? 999,
+    user: {
+      email: this.data.user.email ?? '',
+      name: this.data.user.name ?? '',
+      surname: this.data.user.surname ?? '',
+    },
+  });
+
+  protected readonly f = form(this.model, path => {
+    validateStandardSchema(path, playerEditFormSchema);
   });
 
   onNoClick(): void {
@@ -79,7 +67,10 @@ export class PlayerEditDialogComponent {
   }
 
   onSubmit() {
-    // The request goes through PlayersStore.updateOne
-    this.dialogRef.close(this.formGroup.getRawValue());
+    // Touches every field so the errors show, then closes only a valid form;
+    // the request goes through PlayersStore.updateOne
+    return submit(this.f, async () => {
+      this.dialogRef.close(playerEditFormSchema.parse(this.model()));
+    });
   }
 }

@@ -7,6 +7,7 @@ import {
   gameRuleViolations,
   gameSchema,
   gameUpdateInputSchema,
+  playerEditFormSchema,
   playerSchema,
   playerStatisticSchema,
   signInSchema,
@@ -460,5 +461,35 @@ describe('Result', async () => {
       code: (e as Error).message,
     }));
     expect(result.match({ ok: () => 'ok', err: e => e.code })).toBe('boom');
+  });
+});
+
+describe('playerEditFormSchema (the form of the player dialog, S3.16)', () => {
+  const ok = {
+    nickname: ' Bomber ',
+    number: 9,
+    user: { email: 'gerd@sfl.test', name: 'Gerd', surname: '' },
+  };
+
+  it('accepts a player and trims the texts', () => {
+    const parsed = playerEditFormSchema.safeParse(ok);
+    expect(parsed.success).toBe(true);
+    expect(parsed.data?.nickname).toBe('Bomber');
+  });
+
+  it.each([
+    ['an empty nickname', { ...ok, nickname: '  ' }, 'Nickname is required'],
+    ['number 0', { ...ok, number: 0 }, 'Number is from 1 to 999'],
+    ['number 1000', { ...ok, number: 1000 }, 'Number is from 1 to 999'],
+    ['a fraction', { ...ok, number: 1.5 }, 'Number is from 1 to 999'],
+    [
+      'a bad email',
+      { ...ok, user: { ...ok.user, email: 'nope' } },
+      'Enter a valid email',
+    ],
+  ])('rejects %s with a readable message', (_name, body, message) => {
+    const parsed = playerEditFormSchema.safeParse(body);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error?.issues.map(i => i.message)).toContain(message);
   });
 });

@@ -4,14 +4,20 @@
 </h2>
 
 <mat-dialog-content>
-  <form [formGroup]="formGroup">
+  <form
+    novalidate
+    (submit)="$event.preventDefault(); onSubmit()"
+  >
     <mat-form-field>
       <mat-label>Nickname</mat-label>
       <input
         matInput
         type="text"
-        formControlName="nickname"
+        [formField]="f.nickname"
       />
+      @for (e of f.nickname().errors(); track e) {
+        <mat-error>{{ e.message }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field>
@@ -19,21 +25,24 @@
       <input
         matInput
         type="number"
-        formControlName="number"
+        [formField]="f.number"
       />
+      @for (e of f.number().errors(); track e) {
+        <mat-error>{{ e.message }}</mat-error>
+      }
     </mat-form-field>
 
-    <mat-fieldset
-      formGroupName="user"
-      class="user-fieldset"
-    >
+    <fieldset class="user-fieldset">
       <mat-form-field>
         <mat-label>Email</mat-label>
         <input
           matInput
           type="text"
-          formControlName="email"
+          [formField]="f.user.email"
         />
+        @for (e of f.user.email().errors(); track e) {
+          <mat-error>{{ e.message }}</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field>
@@ -41,7 +50,7 @@
         <input
           matInput
           type="text"
-          formControlName="name"
+          [formField]="f.user.name"
         />
       </mat-form-field>
 
@@ -49,16 +58,17 @@
         <mat-label>Surname</mat-label>
         <input
           matInput
-          formControlName="surname"
+          [formField]="f.user.surname"
         />
       </mat-form-field>
-    </mat-fieldset>
+    </fieldset>
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button
     mat-button
+    type="button"
     (click)="onNoClick()"
   >
     Close
@@ -66,10 +76,9 @@
 
   <button
     color="primary"
-    type="submit"
+    type="button"
     mat-raised-button
     cdkFocusInitial
-    [disabled]="!formGroup.valid"
     (click)="onSubmit()"
   >
     Ok
