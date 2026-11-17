@@ -18,6 +18,7 @@ import { Media } from './media.schema';
 
 /** A list of photos is capped: the newest first. */
 export const MEDIA_LIST_LIMIT = 200;
+export const MEDIA_PAGE_DEFAULT = 60;
 
 const toId = (value: string | null | undefined) =>
   value ? new Types.ObjectId(value) : null;
@@ -70,14 +71,25 @@ export class MediaService implements OnModuleInit {
     }
   }
 
-  async find({ gameId, playerId }: { gameId?: string; playerId?: string }) {
+  async find({
+    gameId,
+    playerId,
+    limit = MEDIA_PAGE_DEFAULT,
+    offset = 0,
+  }: {
+    gameId?: string;
+    playerId?: string;
+    limit?: number;
+    offset?: number;
+  }) {
     const media = await this.model
       .find({
         ...(gameId ? { gameId: new Types.ObjectId(gameId) } : {}),
         ...(playerId ? { playerId: new Types.ObjectId(playerId) } : {}),
       })
       .sort({ createdAt: -1 })
-      .limit(MEDIA_LIST_LIMIT)
+      .skip(offset)
+      .limit(Math.min(limit, MEDIA_LIST_LIMIT))
       .exec();
     return media.map(item => item.toJSON());
   }

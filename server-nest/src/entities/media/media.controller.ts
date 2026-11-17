@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Header,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -29,7 +31,7 @@ import {
   SchemaParser,
   ZodValidationPipe,
 } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
-import { MediaService } from './media.service';
+import { MEDIA_LIST_LIMIT, MediaService } from './media.service';
 
 /** A form field or a query parameter that is empty means "none" (null). */
 function emptyToNull(schema: SchemaParser): SchemaParser {
@@ -86,14 +88,34 @@ export class MediaController {
   @Get()
   @ApiQuery({ name: 'gameId', required: false, type: String })
   @ApiQuery({ name: 'playerId', required: false, type: String })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: '1 to 200, 60 by default',
+  })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
   @ApiOkResponse({ schema: { type: 'array', items: openApiRef('Media') } })
   async find(
     @Query(new ZodValidationPipe(emptyToNull(mediaInputSchema)))
     query: MediaInput,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset?: number,
   ) {
+    if (
+      (limit !== undefined && (limit < 1 || limit > MEDIA_LIST_LIMIT)) ||
+      (offset !== undefined && offset < 0)
+    ) {
+      throw new BadRequestException(
+        `limit is from 1 to ${MEDIA_LIST_LIMIT}, offset is not negative`,
+      );
+    }
+
     return await this.media.find({
       gameId: query.gameId ?? undefined,
       playerId: query.playerId ?? undefined,
+      limit,
+      offset,
     });
   }
 

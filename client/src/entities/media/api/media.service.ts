@@ -5,7 +5,13 @@ import { HttpService } from '@shared/api/http.service';
 import { checkedResponse } from '@shared/api/checked-response';
 import { map, Observable } from 'rxjs';
 
-export type MediaFilter = { gameId?: string; playerId?: string };
+export type MediaFilter = {
+  gameId?: string;
+  playerId?: string;
+  /** A page: the newest first, 60 by default on the server. */
+  limit?: number;
+  offset?: number;
+};
 
 @Service()
 export class MediaService {

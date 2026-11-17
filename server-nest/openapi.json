@@ -890,6 +890,23 @@
         "operationId": "MediaController_find",
         "parameters": [
           {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "1 to 200, 60 by default",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
             "name": "playerId",
             "required": false,
             "in": "query",

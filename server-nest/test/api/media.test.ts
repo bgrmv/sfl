@@ -70,6 +70,34 @@ describe('API: media', () => {
     expect(all.body.data.length).toBeGreaterThan(res.body.data.length);
   });
 
+  it('a page of the list: newest first, `limit` and `offset`, 400 out of range', async () => {
+    await upload();
+    await upload();
+    const all = (await t.api().get('/rest/media')).body.data as {
+      id: string;
+    }[];
+    expect(all.length).toBeGreaterThan(2);
+
+    const first = await t.api().get('/rest/media').query({ limit: 2 });
+    expect(first.body.data.map((m: { id: string }) => m.id)).toEqual(
+      all.slice(0, 2).map(m => m.id),
+    );
+    const next = await t
+      .api()
+      .get('/rest/media')
+      .query({ limit: 2, offset: 2 });
+    expect(next.body.data[0].id).toBe(all[2].id);
+
+    for (const query of [
+      { limit: 0 },
+      { limit: 201 },
+      { offset: -1 },
+      { limit: 'x' },
+    ]) {
+      expect((await t.api().get('/rest/media').query(query)).status).toBe(400);
+    }
+  });
+
   it('the file is public and raw: the type, nosniff and a long cache', async () => {
     const created = await upload();
 

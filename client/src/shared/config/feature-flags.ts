@@ -120,7 +120,7 @@ export const FEATURES = {
   'compare.together': dummy(
     'Games together and against each other: needs squads of every game',
   ),
-  'media.page': dummy('Media storage and tags (S10.19)'),
+  'media.page': live('MediaService: photos of the league (S10.23)'),
   'history.page': dummy('History written by the owner (S10.24)'),
   'profile.account': live('AuthService user'),
   'profile.page': dummy('Account linked to a player (S8.13, S10.17)'),
