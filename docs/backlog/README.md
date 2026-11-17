@@ -118,11 +118,11 @@ flowchart LR
 | Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        9         |
 | Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        13        |
 | Эпик 9 — Наблюдаемость                          | [E09-observability/](E09-observability/)             |        2         |
-| Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        76        |
+| Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        78        |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 195, из них отменено: 18.
+Всего историй: 197, из них отменено: 18.
 
 ---
 
@@ -365,6 +365,8 @@ flowchart LR
 |   ❌   | [S10.74](E10-product-features/S10.74.md) | Перекидное табло: цифры счёта и отсчёта на плашках                                      |    P3     |   S    | [S10.12](E10-product-features/S10.12.md)                                                                                                                                                                         |
 |   ❌   | [S10.75](E10-product-features/S10.75.md) | Лента суббот: сезон одной полосой                                                       |    P2     |   S    | [S10.1](E10-product-features/S10.1.md)                                                                                                                                                                           |
 |   ❌   | [S10.76](E10-product-features/S10.76.md) | Главный блок главной: капитан против капитана в стиле UFC                               |    P2     |   M    | [S10.60](E10-product-features/S10.60.md), [S10.56](E10-product-features/S10.56.md), [S3.28](E03-architecture/S3.28.md)                                                                                           |
+|   ❌   | [S10.77](E10-product-features/S10.77.md) | Афиша боя: два капитана лицом к лицу, статистика и шансы на победу                      |    P2     |   L    | [S10.76](E10-product-features/S10.76.md), [S10.25](E10-product-features/S10.25.md)                                                                                                                               |
+|   ❌   | [S10.78](E10-product-features/S10.78.md) | OpenGraph: превью ссылок на сайт в мессенджерах и соцсетях                              |    P3     |   M    | [S10.77](E10-product-features/S10.77.md), [S8.10](E08-security-privacy/S8.10.md)                                                                                                                                 |
 
 ## Эпик 11 — DX, документация, чистота репозитория
 

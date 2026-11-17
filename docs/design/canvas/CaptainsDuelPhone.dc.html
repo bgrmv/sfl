@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Captains duel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap&subset=latin-ext,cyrillic">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}
+table{border-collapse:collapse}
+</style>
+</helmet>
+<div style="min-height: 100%; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; padding: 20px; display: flex; flex-direction: column; gap: 28px;">
+
+  <header style="display: flex; flex-direction: column; gap: 6px; max-width: 70ch;">
+    <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 39px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Captains duel</h1>
+    <p style="margin: 0; color: {{t.muted}};">The main block of the home page. The captains of the next Saturday are usually known in advance, so the page opens with them face to face, like a fight card: who they are, how they play now and what happened when they met. Stories S10.76 (data, table, meetings) and S10.77 (poster, estimate). Data on the board is made up. The poster picture is drawn for the example, see the board «Captains poster».</p>
+  </header>
+
+  <section aria-labelledby="cd1" style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 id="cd1" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">1 · The block</h2>
+
+    <div style="background: {{t.scoreBg}}; color: #F6F1E4; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px;">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">Next game · captains of the day</div>
+        <span style="font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; border: 1px solid #FFD21F; color: #FFD21F;">Squads open Friday</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px;">
+        <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 32px; line-height: 1.1; letter-spacing: 0.03em; text-transform: uppercase;">Saturday, 21 November</div>
+        <div role="timer" aria-label="Time left: 5 days 19 hours 12 minutes" style="display: flex; gap: 8px;">
+          <sc-for list="{{count}}" as="c" hint-placeholder-count="3">
+            <div style="min-width: 64px; text-align: center; background: #16140F; border-radius: 4px; padding: 8px 10px;">
+              <div aria-hidden="true" style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; line-height: 1; color: #FFD21F; font-variant-numeric: tabular-nums;">{{c.v}}</div>
+              <div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94; margin-top: 4px;">{{c.l}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 1200 630" role="img" aria-label="Falcon against Wolf, next game on Saturday 21 November. Win chance estimate: Falcon 58 percent, Wolf 42 percent." style="display:block;width:100%;height:auto;">
+  <rect width="1200" height="630" fill="#000"/>
+  <polygon points="0,0 660,0 540,630 0,630" fill="#2A2310"/>
+  <polygon points="660,0 1200,0 1200,630 540,630" fill="#1E1D19"/>
+  <polygon points="40,0 90,0 -30,630 -80,630" fill="#FFD21F" opacity="0.08"/>
+  <polygon points="150,0 180,0 60,630 30,630" fill="#FFD21F" opacity="0.08"/>
+  <polygon points="1110,0 1160,0 1240,630 1190,630" fill="#F6F1E4" opacity="0.06"/>
+  <polygon points="1000,0 1030,0 1110,630 1080,630" fill="#F6F1E4" opacity="0.06"/>
+  <defs>
+    <g id="fighter">
+      <circle cx="30" cy="150" r="42"/>
+      <rect x="5" y="185" width="38" height="36"/>
+      <polygon points="-70,225 95,215 80,380 60,470 -55,470 -85,350"/>
+      <polygon points="30,460 110,460 170,540 210,630 140,630 95,560 40,520"/>
+      <polygon points="-55,460 35,460 10,540 -30,630 -110,630 -90,540"/>
+      <polygon points="70,235 110,260 170,300 150,330 80,300"/>
+      <polygon points="150,325 180,295 215,230 245,245 215,320 175,350"/>
+      <circle cx="232" cy="225" r="30"/>
+      <polygon points="-60,240 -20,260 40,290 95,260 115,285 50,330 -20,320 -70,290"/>
+      <circle cx="112" cy="268" r="26"/>
+    </g>
+  </defs>
+  <g transform="translate(300,10)"><g fill="#FFD21F" stroke="#FFD21F" stroke-width="8" stroke-linejoin="round"><use href="#fighter"/></g><g fill="#0D0C0A"><use href="#fighter"/></g></g>
+  <g transform="translate(900,10) scale(-1,1)"><g fill="#F6F1E4" stroke="#F6F1E4" stroke-width="8" stroke-linejoin="round"><use href="#fighter"/></g><g fill="#0D0C0A"><use href="#fighter"/></g></g>
+  <line x1="660" y1="0" x2="540" y2="630" stroke="#FFD21F" stroke-width="6"/>
+  <text x="60" y="52" fill="#B3AA94" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="3">NEXT GAME · SATURDAY 21 NOVEMBER</text>
+  <text x="60" y="140" fill="#F6F1E4" font-family="Oswald, Impact, sans-serif" font-size="92" font-weight="700" letter-spacing="3">FALCON</text>
+  <text x="62" y="180" fill="#FFD21F" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2">№ 9 · FORWARD · CAPTAIN</text>
+  <text x="1140" y="140" fill="#F6F1E4" font-family="Oswald, Impact, sans-serif" font-size="92" font-weight="700" letter-spacing="3" text-anchor="end">WOLF</text>
+  <text x="1138" y="180" fill="#B3AA94" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2" text-anchor="end">№ 4 · DEFENDER · CAPTAIN</text>
+  <rect x="540" y="255" width="120" height="120" fill="#FFD21F"/>
+  <text x="600" y="337" fill="#0D0C0A" font-family="Oswald, Impact, sans-serif" font-size="64" font-weight="700" text-anchor="middle" letter-spacing="2">VS</text>
+  <rect x="0" y="520" width="1200" height="110" fill="#000"/>
+  <text x="60" y="582" fill="#FFD21F" font-family="Oswald, Impact, sans-serif" font-size="64" font-weight="700">58%</text>
+  <text x="1140" y="582" fill="#F6F1E4" font-family="Oswald, Impact, sans-serif" font-size="64" font-weight="700" text-anchor="end">42%</text>
+  <text x="600" y="560" fill="#B3AA94" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" text-anchor="middle">WIN CHANCE · ESTIMATE</text>
+  <rect x="220" y="574" width="760" height="14" fill="#2E2A20"/>
+  <rect x="220" y="574" width="441" height="14" fill="#FFD21F"/>
+  <text x="600" y="612" fill="#B3AA94" font-family="Inter, Arial, sans-serif" font-size="16" text-anchor="middle">from the record of the two captains and their meetings, not a bet</text>
+</svg>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+        <h3 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">Now · points in the new system, as of game 46</h3>
+        <div role="group" aria-label="Period" style="display: inline-flex; border: 1px solid #2E2A20; border-radius: 4px; overflow: hidden;">
+          <button type="button" aria-pressed="true" style="min-height: 44px; padding: 0 16px; border: 0; background: #FFD21F; color: #0D0C0A; font: 700 14px 'Inter', sans-serif;">Season</button>
+          <button type="button" aria-pressed="false" style="min-height: 44px; padding: 0 16px; border: 0; background: transparent; color: #F6F1E4; font: 600 14px 'Inter', sans-serif;">Career</button>
+        </div>
+      </div>
+
+      <table style="width: 100%; table-layout: fixed;">
+        <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;">Falcon and Wolf compared</caption>
+        <thead style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);"><tr><th scope="col">Falcon</th><th scope="col">Measure</th><th scope="col">Wolf</th></tr></thead>
+        <tbody>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+            <tr style="border-top: 1px solid #2E2A20;">
+              <td style="padding: 10px 8px; text-align: right; font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: {{r.wa}}; color: {{r.ca}};">{{r.a}}<span style="display: block; height: 2px; margin: 2px 0 0 auto; width: {{r.ba}}; background: #FFD21F;"></span></td>
+              <th scope="row" style="padding: 10px 6px; width: 34%; text-align: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #B3AA94;">{{r.l}}</th>
+              <td style="padding: 10px 8px; text-align: left; font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: {{r.wb}}; color: {{r.cb}};">{{r.b}}<span style="display: block; height: 2px; margin: 2px auto 0 0; width: {{r.bb}}; background: #FFD21F;"></span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <p style="margin: 0; font-size: 12px; color: #B3AA94;">The better value in a row is bold and yellow with a line under it; the line is there so colour is never the only mark. Ties are not marked.</p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #2E2A20; padding-top: 16px;">
+        <h3 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #B3AA94;">When they met · 8 games</h3>
+        <div role="img" aria-label="Falcon 4 wins, 1 draw, Wolf 3 wins" style="display: flex; height: 28px; border-radius: 4px; overflow: hidden; gap: 2px;">
+          <span style="flex: 4 1 0; background: #FFD21F; color: #0D0C0A; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">Falcon 4</span>
+          <span style="flex: 1 1 0; background: #3A3629; color: #F6F1E4; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">1</span>
+          <span style="flex: 3 1 0; background: transparent; box-shadow: inset 0 0 0 1px #B3AA94; color: #F6F1E4; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">Wolf 3</span>
+        </div>
+        <div style="font-size: 13px; color: #B3AA94;">Goals 38 : 35 in favour of Falcon (+3)</div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+          <sc-for list="{{meetings}}" as="m" hint-placeholder-count="3">
+            <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 10px 0; border-top: 1px solid #2E2A20;">
+              <a href="#" style="font-size: 14px; font-weight: 600; color: #FFD21F; min-width: 150px;">{{m.game}}</a>
+              <span style="flex: 1 1 auto; font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 0.03em; text-transform: uppercase;">{{m.score}}</span>
+              <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #B3AA94;">{{m.result}}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+        <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 4px; background: #FFD21F; color: #0D0C0A; font-weight: 700; font-size: 14px;">I am coming · 14 going</a>
+        <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 4px; border: 1px solid #F6F1E4; font-weight: 600; font-size: 14px;">All meetings of the two</a>
+        <span style="font-size: 12px; color: #B3AA94;">The table and the meetings are facts of past games; the estimate on the poster is a guess from them.</span>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="cd2" style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 id="cd2" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">2 · States</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+      <sc-for list="{{states}}" as="s" hint-placeholder-count="4">
+        <div style="flex: 1 1 260px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 700;">{{s.title}}</h3>
+          <div style="background: #000; color: #F6F1E4; border-radius: 4px; padding: 12px 14px; font-size: 14px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-family: 'Oswald', sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: 0.03em;">{{s.shown}}</span>
+            <span style="font-size: 12px; color: #B3AA94;">{{s.note}}</span>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: {{t.muted}};">{{s.text}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-labelledby="cd3" style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 id="cd3" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: 0.03em; text-transform: uppercase;">3 · Rules</h2>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: {{t.muted}}; display: flex; flex-direction: column; gap: 4px; max-width: 80ch;">
+      <sc-for list="{{rules}}" as="r" hint-placeholder-count="6"><li>{{r}}</li></sc-for>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","default":"dark","options":["dark","light"]},"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.mode ?? 'dark') === 'dark';
+    const t = dark
+      ? { bg: '#0D0C0A', surface: '#16140F', border: '#2E2A20', text: '#F6F1E4', muted: '#B3AA94', accent: '#FFD21F', scoreBg: '#000000' }
+      : { bg: '#F2EBDC', surface: '#FBF8F0', border: '#D3C8B0', text: '#15130F', muted: '#5A5246', accent: '#FFD21F', scoreBg: '#15130F' };
+    const count = [['05', 'days'], ['19', 'hours'], ['12', 'min']].map(([v, l]) => ({ v, l }));
+    const W = 700, B = 400;
+    const rows = [
+      ['Points', '118', '104', 1],
+      ['Games as captain', '14', '12', 1],
+      ['Win rate', '64%', '50%', 1],
+      ['Goals per game', '5.1', '5.1', 0],
+      ['Form', 'W W D W L', 'L W W D L', 0],
+      ['Streak', 'W 2', 'L 1', 1]
+    ].map(([l, a, b, lead]) => {
+      const better = lead === 1;
+      return { l, a, b,
+        wa: better ? W : 400, wb: 400, ca: better ? '#FFD21F' : '#F6F1E4', cb: '#F6F1E4',
+        ba: better ? '40px' : '0', bb: '0' };
+    });
+    const meetings = [
+      { game: 'Game 44 · 31 Oct', score: 'Falcon 6 : 4 Wolf', result: 'Falcon won' },
+      { game: 'Game 37 · 12 Sep', score: 'Wolf 5 : 5 Falcon', result: 'Draw' },
+      { game: 'Game 29 · 18 Jul', score: 'Wolf 4 : 2 Falcon', result: 'Wolf won' }
+    ];
+    const states = [
+      { title: 'Captains not chosen yet', shown: 'Next game', note: 'Saturday, 21 November · 5 d 19 h', text: 'No duel yet: the old «Next game» block with the date and the countdown stays. The duel appears the moment two captains are set in the match wizard or by the draw.' },
+      { title: 'They never met', shown: '—', note: 'First meeting of the two', text: 'Head to head says «First meeting» and shows no bar. Nothing is shown as 0–0–0.' },
+      { title: 'A captain has no games as captain', shown: 'No games as captain yet', note: 'Win rate and streak are empty', text: 'Empty values are written as «—» with the reason, never as zero. Points and form come from games as a player.' },
+      { title: 'Loading or no connection', shown: 'Loading the duel…', note: 'Retry', text: 'The block keeps its height; the countdown to Saturday stays, because it needs no data from the server.' }
+    ];
+    const rules = [
+      'The block is the first on the home page when two captains of the next game are known; otherwise the old «Next game» block.',
+      'The better value in a row is bold, yellow and underlined by a short line. A tie marks nobody. Colour is never the only mark.',
+      'Only published games count. The period switch «Season / Career» changes every number of the table at once.',
+      'The poster carries the win chance as an «estimate» (S10.77); the table and the meetings below show only facts of past games.',
+      'A screen reader gets a real table: row headers are the measures, columns are the two captains; the avatars are hidden.',
+      'On a phone the two captains stand one under the other, the table keeps three columns, the countdown wraps under the date.'
+    ];
+    return { t, count, rows, meetings, states, rules };
+  }
+}
+</script>
+</body>
+</html>
