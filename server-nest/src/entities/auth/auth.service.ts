@@ -10,7 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID } from 'node:crypto';
 import { Model, Types } from 'mongoose';
-import { hash } from 'src/shared/utils/string';
+import {
+  algorithmOf,
+  hashPassword,
+  verifyPassword,
+} from 'src/shared/utils/password';
 import { User } from '../users';
 import {
   ACCESS_AUDIENCE,
@@ -43,6 +47,9 @@ export interface RefreshClaims extends TokenClaims {
 /** The user as the API shows it (`whoami`, `req.user` after a refresh). */
 export type SessionUser = Awaited<ReturnType<AuthService['getUser']>>;
 
+/** Spent on an unknown email so that the answer takes as long as for a wrong password. */
+const DUMMY_HASH = hashPassword('timing-equaliser-not-a-real-password');
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -67,9 +74,16 @@ export class AuthService {
     try {
       const user = await this.userModel.findOne({ email }).exec();
 
-      if (!user || user.password !== hash(password)) {
+      // An unknown email costs the same time as a wrong password: no hint which emails exist
+      if (!user) {
+        await verifyPassword(await DUMMY_HASH, password);
         throw new UnauthorizedException();
       }
+      if (!(await verifyPassword(user.password, password))) {
+        throw new UnauthorizedException();
+      }
+
+      await this.upgradeLegacyHash(user, password);
 
       const claims = await this.claimsOf(user._id);
       const sid = randomUUID();
@@ -99,6 +113,30 @@ export class AuthService {
         default:
           throw new InternalServerErrorException();
       }
+    }
+  }
+
+  /**
+   * A correct password in the old SHA-512 form becomes argon2id now (S8.7, ADR 0020).
+   * Not a password change: the sessions stay. The write is conditional on the old
+   * hash, so a password changed in between is not overwritten; a failure only logs.
+   */
+  private async upgradeLegacyHash(user: User, password: string) {
+    if (algorithmOf(user.password) !== 'sha512') return;
+    try {
+      await this.userModel
+        .updateOne(
+          { _id: user._id, password: user.password },
+          {
+            $set: {
+              password: await hashPassword(password),
+              passwordAlgorithm: 'argon2id',
+            },
+          },
+        )
+        .exec();
+    } catch (error) {
+      this.logger.error(error);
     }
   }
 

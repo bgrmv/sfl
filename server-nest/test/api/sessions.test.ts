@@ -11,7 +11,7 @@ import {
   USER_EMAIL,
   USER_PASSWORD,
 } from '../helpers/test-app';
-import { hash } from '../../src/shared/utils/string';
+import { sha512Legacy } from '../../src/shared/utils/string';
 
 // S8.12: sessions and tokens
 
@@ -83,7 +83,7 @@ describe('sessions', () => {
     const user = await t.model('User').create({
       email: 'changer@sfl.test',
       name: 'Changer',
-      password: hash('old-password'),
+      password: sha512Legacy('old-password'),
       roles: [role!._id],
     });
     const cookie = refreshCookie(

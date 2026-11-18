@@ -2,7 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { hash } from 'src/shared/utils/string';
+import { hashPassword } from 'src/shared/utils/password';
 import { Role } from '../roles';
 import { User } from '../users';
 
@@ -52,7 +52,8 @@ export class DevAdminSeeder implements OnApplicationBootstrap {
     await this.userModel.create({
       email: DEV_ADMIN.email,
       name: 'Admin',
-      password: hash(DEV_ADMIN.password),
+      password: await hashPassword(DEV_ADMIN.password),
+      passwordAlgorithm: 'argon2id',
       roles: [role._id as never],
     });
     this.logger.log(

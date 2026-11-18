@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import {
   calculateGameMetadata,
@@ -15,6 +16,8 @@ import {
   IGameMetadata,
 } from '../games/game.schema';
 import { Player } from '../players';
+import { User } from '../users';
+import { hashPassword } from 'src/shared/utils/password';
 import {
   GameOverrides,
   PlayerMetadataService,
@@ -75,6 +78,9 @@ export class MigrationsService {
 
     @InjectModel(Game.name)
     private gameModel: Model<IGame>,
+
+    @InjectModel(User.name)
+    private userModel: Model<User>,
 
     private readonly playerMetadata: PlayerMetadataService,
 
@@ -267,5 +273,41 @@ export class MigrationsService {
     });
 
     return await this.playerModel.find().exec();
+  }
+
+  /**
+   * S8.7, ADR 0020: 12 months after the release the hashes still in SHA-512 belong to
+   * accounts that never signed in, so each gets a random argon2id password nobody knows
+   * and its sessions end. The account and the player stay; a new link from an admin
+   * (S10.48) gives access back. Dry run unless `apply`.
+   */
+  async revokeLegacyPasswords({ apply }: { apply: boolean }) {
+    const legacy = { password: { $not: /^\$argon2id\$/ } };
+    const [total, legacyCount] = await Promise.all([
+      this.userModel.countDocuments().exec(),
+      this.userModel.countDocuments(legacy).exec(),
+    ]);
+
+    let revoked = 0;
+    if (apply) {
+      for await (const user of this.userModel.find(legacy).select('_id')) {
+        const res = await this.userModel
+          .updateOne(
+            { _id: user._id, ...legacy },
+            {
+              $set: {
+                password: await hashPassword(randomUUID()),
+                passwordAlgorithm: 'argon2id',
+              },
+              $inc: { tokenVersion: 1 },
+            },
+          )
+          .exec();
+        revoked += res.modifiedCount;
+      }
+      this.logger.info('Legacy password hashes revoked', { revoked });
+    }
+
+    return { applied: apply, total, legacy: legacyCount, revoked };
   }
 }

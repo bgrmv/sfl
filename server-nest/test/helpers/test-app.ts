@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import request from 'supertest';
 
 import { configureApp } from '../../src/app.setup';
-import { hash } from '../../src/shared/utils/string';
+import { sha512Legacy } from '../../src/shared/utils/string';
 
 export const ADMIN_EMAIL = 'admin@sfl.test';
 export const ADMIN_PASSWORD = 'admin-password';
@@ -92,19 +92,19 @@ export async function createTestApp(
     {
       email: ADMIN_EMAIL,
       name: 'Admin',
-      password: hash(ADMIN_PASSWORD),
+      password: sha512Legacy(ADMIN_PASSWORD),
       roles: [roles[0]._id],
     },
     {
       email: USER_EMAIL,
       name: 'User',
-      password: hash(USER_PASSWORD),
+      password: sha512Legacy(USER_PASSWORD),
       roles: [roles[1]._id],
     },
     {
       email: MODERATOR_EMAIL,
       name: 'Moderator',
-      password: hash(MODERATOR_PASSWORD),
+      password: sha512Legacy(MODERATOR_PASSWORD),
       roles: [roles[2]._id],
     },
   ]);

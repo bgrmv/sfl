@@ -69,4 +69,25 @@ export class MigrationsController {
   ) {
     return await this.migrationsService.recalculateGames(body);
   }
+
+  // S8.7. Dry run by default, writes only with `apply: true`; ADMIN only by default
+  @Post('revoke-legacy-passwords')
+  @ApiBody({
+    required: false,
+    schema: {
+      type: 'object',
+      properties: { apply: { type: 'boolean', default: false } },
+    },
+  })
+  @ApiOkResponse({
+    description:
+      'How many accounts there are, how many still have a SHA-512 hash, how many were revoked',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid body' })
+  async revokeLegacyPasswords(
+    @Body(new ZodValidationPipe(RecalculateGamesBody))
+    body: z.output<typeof RecalculateGamesDTO>,
+  ) {
+    return await this.migrationsService.revokeLegacyPasswords(body);
+  }
 }

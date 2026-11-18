@@ -1583,6 +1583,47 @@
         },
         "tags": ["migrations"]
       }
+    },
+    "/rest/migrations/revoke-legacy-passwords": {
+      "post": {
+        "operationId": "MigrationsController_revokeLegacyPasswords",
+        "parameters": [],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "apply": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "How many accounts there are, how many still have a SHA-512 hash, how many were revoked"
+          },
+          "400": {
+            "description": "Invalid body"
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["migrations"]
+      }
     }
   },
   "info": {

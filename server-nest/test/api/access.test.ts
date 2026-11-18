@@ -182,6 +182,12 @@ const CLOSED: Case[] = [
     body: () => ({ apply: false }),
   },
   {
+    name: 'POST /migrations/revoke-legacy-passwords',
+    method: 'post',
+    path: () => '/migrations/revoke-legacy-passwords',
+    body: () => ({ apply: false }),
+  },
+  {
     name: 'PUT /users/:id/password',
     method: 'put',
     path: t => `/users/${t.userId}/password`,

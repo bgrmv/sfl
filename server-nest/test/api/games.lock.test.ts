@@ -27,7 +27,7 @@ describe('API: the lease of a game', () => {
     await t.model('User').create({
       email: 'second@sfl.test',
       name: 'Second',
-      password: (await import('../../src/shared/utils/string')).hash(
+      password: (await import('../../src/shared/utils/string')).sha512Legacy(
         ADMIN_PASSWORD,
       ),
       roles: [role._id],

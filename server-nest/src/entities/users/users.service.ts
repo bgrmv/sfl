@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import mongoose, { Model } from 'mongoose';
 import { FileLoggerService } from 'src/shared/services/logger.service';
-import { hash } from 'src/shared/utils/string';
+import { hashPassword } from 'src/shared/utils/password';
 import { IUser, User } from './users.schema';
 
 @Injectable()
@@ -32,7 +32,12 @@ export class UsersService {
 
     // A duplicate email is a MongoDB error 11000, the exception filter makes it 409
     // `roles` are role ids as strings: Mongoose casts them to ObjectId
-    await this.userModel.create(user as unknown as IUser);
+    // Nobody knows the password of a new user until a link or an admin sets it: random, argon2id
+    await this.userModel.create({
+      ...user,
+      password: await hashPassword(randomUUID()),
+      passwordAlgorithm: 'argon2id',
+    } as unknown as IUser);
 
     return await this.userModel.findOne({ email: user.email }).exec();
   }
@@ -72,14 +77,17 @@ export class UsersService {
     return user;
   }
 
-  /** Returns false if there is no such user. The password is stored hashed (S8.7 changes the algorithm). */
+  /** Returns false if there is no such user. The password is stored as argon2id (S8.7). */
   async setPassword(
     id: string | mongoose.Types.UUID,
     password: string,
   ): Promise<boolean> {
     const user = await this.userModel
       .findByIdAndUpdate(new mongoose.Types.UUID(id), {
-        $set: { password: hash(password) },
+        $set: {
+          password: await hashPassword(password),
+          passwordAlgorithm: 'argon2id',
+        },
         // A new password ends every session opened with the old one
         $inc: { tokenVersion: 1 },
       })
@@ -102,7 +110,8 @@ export class UsersService {
           surname: '',
           avatar: '',
           email: `removed-${userId.toString()}@sfl.invalid`,
-          password: hash(randomUUID()),
+          password: await hashPassword(randomUUID()),
+          passwordAlgorithm: 'argon2id',
         },
         $unset: { age: '' },
         $inc: { tokenVersion: 1 },

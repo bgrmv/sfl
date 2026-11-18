@@ -3,7 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
 import { ObjectId } from 'src/constants';
-import { hash } from 'src/shared/utils/string';
+import { sha512Legacy } from 'src/shared/utils/string';
+import { PasswordAlgorithm } from 'src/shared/utils/password';
 import { Role } from '../roles/roles.schema';
 
 export interface IUser {
@@ -14,6 +15,7 @@ export interface IUser {
   age: number;
   email: string;
   password: string;
+  passwordAlgorithm?: PasswordAlgorithm;
   roles: (typeof ObjectId)[];
 }
 
@@ -23,6 +25,7 @@ const transform = (_doc, ret: Record<string, any>) => {
   delete ret.password;
   delete ret.roles;
   delete ret.tokenVersion;
+  delete ret.passwordAlgorithm;
   return ret;
 };
 
@@ -67,8 +70,12 @@ export class User implements IUser {
   email: string;
 
   @ApiProperty()
-  @Prop({ required: true, default: () => hash(randomUUID()) })
+  @Prop({ required: true, default: () => sha512Legacy(randomUUID()) })
   password: string;
+
+  /** Documents from before S8.7 have no value: that is `sha512`. */
+  @Prop({ type: String, enum: ['sha512', 'argon2id'], default: 'sha512' })
+  passwordAlgorithm: PasswordAlgorithm;
 
   /** Raised on sign-out and on a password change: every refresh token issued before is void (S8.12). */
   @Prop({ type: Number, default: 0 })
