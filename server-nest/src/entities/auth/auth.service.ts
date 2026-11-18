@@ -296,7 +296,6 @@ export class AuthService {
       name: user.name,
       surname: user.surname,
       avatar: user.avatar,
-      age: user.age,
       roles: user.roles.map(role => role.name),
     };
   }

@@ -62,10 +62,21 @@ export class UsersService {
   }
 
   async patch(id: string | mongoose.Types.UUID, body: Partial<IUser>) {
+    // `null` removes the field instead of storing a null
+    const set: Record<string, unknown> = {};
+    const unset: Record<string, ''> = {};
+    for (const [key, value] of Object.entries(body)) {
+      if (value === null) unset[key] = '';
+      else set[key] = value;
+    }
+
     const user = await this.userModel
       .findOneAndUpdate(
         { _id: new mongoose.Types.UUID(id) },
-        { $set: { ...body } },
+        {
+          ...(Object.keys(set).length ? { $set: set } : {}),
+          ...(Object.keys(unset).length ? { $unset: unset } : {}),
+        },
         { new: true },
       )
       .exec();
@@ -97,7 +108,7 @@ export class UsersService {
   }
 
   /**
-   * The person leaves, the record stays (S8.4): no name, surname, avatar, age;
+   * The person leaves, the record stays (S8.4): no name, surname, avatar, birth date, country;
    * the email becomes a placeholder nobody can receive mail at, the password a
    * random one, and every session ends. Safe to repeat.
    */
@@ -113,7 +124,8 @@ export class UsersService {
           password: await hashPassword(randomUUID()),
           passwordAlgorithm: 'argon2id',
         },
-        $unset: { age: '' },
+        // `age` is the field of the old schema: documents that still have it lose it too
+        $unset: { age: '', birthDate: '', country: '' },
         $inc: { tokenVersion: 1 },
       })
       .exec();

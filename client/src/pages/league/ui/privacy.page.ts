@@ -25,9 +25,11 @@ import { KIT } from '@shared/ui/kit';
             </li>
             <li>
               <b>Account.</b>
-              First name and picture are shown next to the nickname. Surname,
-              email and age are seen only by the league administrator and are
-              not sent to other visitors. The password is stored as a hash.
+              First name and picture are shown next to the nickname. Surname and
+              email are seen only by the league administrator and are not sent
+              to other visitors. A birth date and a country can be stored for a
+              future profile; nobody sees them yet, and you will choose who may.
+              The password is stored as a hash.
             </li>
             <li>
               <b>Sign-in.</b>

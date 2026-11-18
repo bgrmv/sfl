@@ -12,7 +12,8 @@ export interface IUser {
   name: string;
   surname: string;
   avatar: string;
-  age: number;
+  birthDate?: Date | null;
+  country?: string | null;
   email: string;
   password: string;
   passwordAlgorithm?: PasswordAlgorithm;
@@ -26,11 +27,18 @@ const transform = (_doc, ret: Record<string, any>) => {
   delete ret.roles;
   delete ret.tokenVersion;
   delete ret.passwordAlgorithm;
+  delete ret.createdAt;
+  delete ret.updatedAt;
+  // Stored for the profile (S10.33, S10.44), shown to nobody until the visibility settings exist (S8.4)
+  delete ret.birthDate;
+  delete ret.country;
   return ret;
 };
 
 @Schema({
   versionKey: false,
+  // Dates are kept for the account's own history; the API does not show them yet (S3.33)
+  timestamps: true,
   toObject: {
     transform,
   },
@@ -61,9 +69,13 @@ export class User implements IUser {
   @Prop({ type: String })
   avatar: string;
 
-  @ApiProperty()
-  @Prop({ type: Number })
-  age: number;
+  /** The day only, in UTC. Many dates are lost for good, so it is optional (S3.33). */
+  @Prop({ type: Date })
+  birthDate?: Date | null;
+
+  /** ISO 3166-1 alpha-2, e.g. `LV`. */
+  @Prop({ type: String, match: /^[A-Z]{2}$/ })
+  country?: string | null;
 
   @ApiProperty()
   @Prop({ required: true, unique: true, match: /^\S+@\S+\.\S+$/ })

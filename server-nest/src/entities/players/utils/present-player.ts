@@ -15,7 +15,7 @@ export const isAdmin = (req: object): boolean =>
   ) ?? false;
 
 /**
- * Public requests get no email, surname, age or user id; an ADMIN gets the full
+ * Public requests get no email, surname or user id (the birth date and country are stored but removed for everybody, S3.33); an ADMIN gets the full
  * record (the edit and details screens need it). The password and roles are
  * removed by the user schema for everybody.
  */

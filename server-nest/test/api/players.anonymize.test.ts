@@ -58,6 +58,8 @@ describe('API: anonymize a player (S8.4)', () => {
       .lean();
     expect(stored.email).toMatch(/@sfl\.invalid$/);
     expect(stored.age).toBeUndefined();
+    expect(stored.birthDate).toBeUndefined();
+    expect(stored.country).toBeUndefined();
     expect(stored.avatar ?? '').toBe('');
   });
 

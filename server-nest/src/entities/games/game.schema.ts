@@ -130,11 +130,11 @@ export class Game implements IGame {
   id: string;
 
   @ApiProperty({ default: 1 })
-  @Prop({ type: Number, reuqired: true })
+  @Prop({ type: Number, required: true })
   number: number;
 
   @ApiProperty({ default: 2010 })
-  @Prop({ type: Number, reuqired: true, index: true })
+  @Prop({ type: Number, required: true, index: true })
   season: number;
 
   @ApiProperty()

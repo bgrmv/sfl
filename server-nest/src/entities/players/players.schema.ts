@@ -52,6 +52,8 @@ const transform = (_doc, ret: Record<string, any>) => {
   ret.id = ret._id;
   delete ret._id;
   delete ret._gen;
+  delete ret.createdAt;
+  delete ret.updatedAt;
   delete ret.user?.password;
   return ret;
 };
@@ -59,6 +61,8 @@ const transform = (_doc, ret: Record<string, any>) => {
 @Schema({
   versionKey: '_gen',
   id: true,
+  // Dates are kept; the API does not show them yet (S3.33)
+  timestamps: true,
   toObject: {
     transform,
   },
