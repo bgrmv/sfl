@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./_backups/**)",
+      "Read(./_dumps/**)",
+      "Read(./ssl/**)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.production)",
+      "Read(~/sfl-backup-key.txt)",
+      "Bash(*_backups/*)",
+      "Bash(*_dumps/*)",
+      "Bash(* ssl/*)",
+      "Bash(*/ssl/*)",
+      "Bash(*sfl-backup-key*)",
+      "Bash(* .env)",
+      "Bash(* */.env)"
+    ]
+  }
+}
