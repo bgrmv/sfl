@@ -40,7 +40,7 @@
           (click)="menuOpen.set(false)"
         >
           {{ l.name }}
-          @if (l.badge) {
+          @if (l.badge && releaseSeen.unseen()) {
             <span
               class="new"
               role="img"

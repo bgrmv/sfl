@@ -16,6 +16,7 @@ import { PlayersController } from '../../entities/players/players.controller';
 import { RolesController } from '../../entities/roles/roles.controller';
 import { TeamsController } from '../../entities/teams/teams.controller';
 import { UsersController } from '../../entities/users/users.controller';
+import { VersionController } from '../../entities/version/version.controller';
 import { AuthGuard } from './auth.guard';
 
 type Route = { method: string; path: string };
@@ -31,6 +32,7 @@ const PUBLIC_ROUTES = [
   'GET /rest/players/:id',
   'GET /rest/teams',
   'GET /rest/charts/top-players',
+  'GET /rest/version',
   'GET /rest/media',
   'GET /rest/media/:id/file',
   'GET /rest/comments',
@@ -63,6 +65,7 @@ describe('AuthGuard: access matrix', () => {
         RolesController,
         TeamsController,
         UsersController,
+        VersionController,
       ],
       providers: [
         Reflector,

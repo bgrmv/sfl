@@ -274,6 +274,7 @@ const PUBLIC = [
   'GET /players/:id',
   'GET /teams',
   'GET /charts/top-players',
+  'GET /version',
   'GET /media',
   'GET /media/:id/file',
   'GET /comments',

@@ -16,7 +16,8 @@ import {
 import { CookieService } from '@shared/lib/cookie.service';
 import { HttpService } from '@shared/api/http.service';
 import { JwtService } from '@shared/auth/jwt.service';
-import packageJSON from 'package.json';
+import { BUILD_INFO } from '@shared/config/build-info';
+import { ReleaseSeenService } from '@shared/lib/release-notes';
 import { AuthService } from '@shared/auth/auth.service';
 import {
   RATING_SYSTEMS,
@@ -56,7 +57,8 @@ export class AppComponent {
     { initialValue: this.router.url.startsWith('/admin') },
   );
 
-  protected readonly version = packageJSON.version;
+  protected readonly releaseSeen = inject(ReleaseSeenService);
+  protected readonly version = BUILD_INFO.version;
   protected readonly year = new Date().getFullYear();
 
   protected readonly links: readonly NavLink[] = [

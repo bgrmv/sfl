@@ -1773,6 +1773,35 @@
         "tags": ["charts"]
       }
     },
+    "/rest/version": {
+      "get": {
+        "operationId": "VersionController_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionDto"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The error: `ok: false`, a stable `code`, a message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["version"]
+      }
+    },
     "/rest/migrations/convert-players-user-to-uuid": {
       "post": {
         "operationId": "MigrationsController_getPlayersSeasonsTotalPoints",
@@ -2019,6 +2048,17 @@
         },
         "required": ["id", "name", "color"],
         "additionalProperties": {}
+      },
+      "VersionDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "1.0.0",
+            "description": "Version of the product, X.Y.Z"
+          }
+        },
+        "required": ["version"]
       },
       "Game": {
         "type": "object",

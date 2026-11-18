@@ -1,6 +1,6 @@
 {
   "name": "sfl-client",
-  "version": "0.3.0",
+  "version": "0.0.0",
   "description": "SFL (Saturday Football League) client",
   "scripts": {
     "ng": "ng",

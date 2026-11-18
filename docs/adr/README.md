@@ -27,26 +27,27 @@
 
 ## Журнал
 
-| №                                                              | Решение                                                                     | Статус  |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------- | ------- |
-| [0001](0001-monolith-nest-angular-ssr-on-vps.md)               | Монолит Nest + Angular SSR на VPS                                           | принято |
-| [0002](0002-mongodb-stays.md)                                  | MongoDB остаётся                                                            | принято |
-| [0003](0003-passwords-rehash-on-login.md)                      | Пароли переводятся на современный хеш при входе                             | принято |
-| [0004](0004-client-state-ngrx-signals.md)                      | Состояние клиента на `@ngrx/signals`                                        | принято |
-| [0005](0005-zoneless-change-detection.md)                      | Zoneless-режим Angular и удаление zone.js                                   | принято |
-| [0006](0006-server-roles-closed-by-default.md)                 | Права на сервере: закрыто по умолчанию                                      | принято |
-| [0007](0007-signal-forms-single-store.md)                      | Формы на signal forms, `@ngrx/signals` — единственный стор                  | принято |
-| [0008](0008-nest-12-express-5-commonjs.md)                     | NestJS 12 на Express 5, сервер остаётся на CommonJS                         | принято |
-| [0009](0009-pnpm-workspace-separate-lockfiles.md)              | pnpm workspace с отдельными lock-файлами и общим пакетом `@sfl/schemas`     | принято |
-| [0010](0010-zod-mini-in-shared-schemas.md)                     | Схемы API на zod, в общем пакете `zod/mini`                                 | принято |
-| [0011](0011-result-response-format.md)                         | Единый ответ API: `Result<T, E>`                                            | принято |
-| [0012](0012-tokens-in-memory-and-httponly-cookie.md)           | Токены: access в памяти, refresh в HttpOnly-cookie                          | принято |
-| [0013](0013-tests-first-then-domain-then-local.md)             | Порядок разработки: тесты, домен, локальное; DDD в мере лиги                | принято |
-| [0014](0014-mongodb-replica-set.md)                            | MongoDB как replica set ради транзакций                                     | принято |
-| [0015](0015-exclusive-match-editing-lease-in-db.md)            | Один матч редактирует один администратор: аренда в базе                     | принято |
-| [0016](0016-client-fsd-layers-and-cross-imports.md)            | Клиент: слои FSD, публичный API слайсов, разрыв кросс-импортов              | принято |
-| [0017](0017-incremental-player-statistics.md)                  | Статистика игрока меняется вкладом матча, полный пересчёт — проверка        | принято |
-| [0018](0018-openapi-from-zod-schemas.md)                       | OpenAPI выводится из схем zod, имена типов по домену                        | принято |
-| [0019](0019-admin-lazy-section-and-photo-storage.md)           | Админка — ленивый раздел клиента, фото на диске сервера                     | принято |
-| [0020](0020-password-migration-lazy-sha512-to-argon2id.md)     | Пароли переводятся на argon2id при входе, почта для сброса не нужна         | принято |
-| [0021](0021-google-sign-in-by-redirect-and-invitation-link.md) | Вход через Google перенаправлением, привязка к игроку по одноразовой ссылке | принято |
+| №                                                                 | Решение                                                                     | Статус  |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------- | ------- |
+| [0001](0001-monolith-nest-angular-ssr-on-vps.md)                  | Монолит Nest + Angular SSR на VPS                                           | принято |
+| [0002](0002-mongodb-stays.md)                                     | MongoDB остаётся                                                            | принято |
+| [0003](0003-passwords-rehash-on-login.md)                         | Пароли переводятся на современный хеш при входе                             | принято |
+| [0004](0004-client-state-ngrx-signals.md)                         | Состояние клиента на `@ngrx/signals`                                        | принято |
+| [0005](0005-zoneless-change-detection.md)                         | Zoneless-режим Angular и удаление zone.js                                   | принято |
+| [0006](0006-server-roles-closed-by-default.md)                    | Права на сервере: закрыто по умолчанию                                      | принято |
+| [0007](0007-signal-forms-single-store.md)                         | Формы на signal forms, `@ngrx/signals` — единственный стор                  | принято |
+| [0008](0008-nest-12-express-5-commonjs.md)                        | NestJS 12 на Express 5, сервер остаётся на CommonJS                         | принято |
+| [0009](0009-pnpm-workspace-separate-lockfiles.md)                 | pnpm workspace с отдельными lock-файлами и общим пакетом `@sfl/schemas`     | принято |
+| [0010](0010-zod-mini-in-shared-schemas.md)                        | Схемы API на zod, в общем пакете `zod/mini`                                 | принято |
+| [0011](0011-result-response-format.md)                            | Единый ответ API: `Result<T, E>`                                            | принято |
+| [0012](0012-tokens-in-memory-and-httponly-cookie.md)              | Токены: access в памяти, refresh в HttpOnly-cookie                          | принято |
+| [0013](0013-tests-first-then-domain-then-local.md)                | Порядок разработки: тесты, домен, локальное; DDD в мере лиги                | принято |
+| [0014](0014-mongodb-replica-set.md)                               | MongoDB как replica set ради транзакций                                     | принято |
+| [0015](0015-exclusive-match-editing-lease-in-db.md)               | Один матч редактирует один администратор: аренда в базе                     | принято |
+| [0016](0016-client-fsd-layers-and-cross-imports.md)               | Клиент: слои FSD, публичный API слайсов, разрыв кросс-импортов              | принято |
+| [0017](0017-incremental-player-statistics.md)                     | Статистика игрока меняется вкладом матча, полный пересчёт — проверка        | принято |
+| [0018](0018-openapi-from-zod-schemas.md)                          | OpenAPI выводится из схем zod, имена типов по домену                        | принято |
+| [0019](0019-admin-lazy-section-and-photo-storage.md)              | Админка — ленивый раздел клиента, фото на диске сервера                     | принято |
+| [0020](0020-password-migration-lazy-sha512-to-argon2id.md)        | Пароли переводятся на argon2id при входе, почта для сброса не нужна         | принято |
+| [0021](0021-google-sign-in-by-redirect-and-invitation-link.md)    | Вход через Google перенаправлением, привязка к игроку по одноразовой ссылке | принято |
+| [0022](0022-semver-release-version-and-markdown-release-notes.md) | Версия релиза: семвер в корневом package.json, release notes в Markdown     | принято |

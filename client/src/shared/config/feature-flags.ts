@@ -35,7 +35,7 @@ export const FEATURES = {
     'Light theme is S10.50; the switch is only a stub',
   ),
   'shell.footer': dummy('Owner texts: address, time, e-mail, socials'),
-  'shell.releaseLink': dummy('Release notes: backend of releases (S10.51)'),
+  'shell.releaseLink': live('Link to the release notes (S10.51)'),
 
   // ---- design features (docs/design/flip-board-and-ribbon.md)
   'design.flipBoard': live('Split-flap digits of the score and the countdown'),
@@ -126,7 +126,8 @@ export const FEATURES = {
   'history.page': dummy('History written by the owner (S10.24)'),
   'profile.account': live('AuthService user'),
   'profile.page': dummy('Account linked to a player (S8.13, S10.17)'),
-  'releases.page': dummy('Release notes backend (S10.51)'),
+  'releases.page': live('Release notes from docs/releases (S10.51)'),
+  'releases.next': dummy('Plan of the next releases (S10.51)'),
   'states.page': live(),
 
   // ---- connect

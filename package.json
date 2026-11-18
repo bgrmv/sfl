@@ -1,6 +1,7 @@
 {
   "name": "sfl",
   "private": true,
+  "version": "0.0.0",
   "description": "Корень репозитория: общие команды и pre-commit хуки (husky, lint-staged)",
   "packageManager": "pnpm@9.12.3",
   "engines": {
@@ -9,6 +10,7 @@
   "scripts": {
     "prepare": "husky",
     "check": "node scripts/check.mjs",
+    "release": "node scripts/release.mjs",
     "backup:prod": "node scripts/mongo-backup.mjs dump",
     "backup:verify": "node scripts/mongo-backup.mjs verify",
     "backup:status": "node scripts/mongo-backup.mjs status",

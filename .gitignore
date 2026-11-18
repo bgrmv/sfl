@@ -96,6 +96,9 @@ sfl-ssr-keep/
 
 # client generated environment
 /client/src/environments/api-url.generated.ts
+/client/src/environments/build-info.generated.ts
+/client/src/environments/releases.generated.ts
+/client/src/assets/releases.xml
 
 # Nx cache
 .nx/

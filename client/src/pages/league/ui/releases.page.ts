@@ -1,71 +1,143 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import packageJSON from 'package.json';
-import { RELEASES } from '@shared/dummy';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { BUILD_INFO } from '@shared/config/build-info';
+import { buildLabel } from '@shared/lib/build-label';
+import {
+  filterByArea,
+  RELEASE_AREAS,
+  RELEASE_NOTES,
+  ReleaseSeenService,
+  type ReleaseArea,
+} from '@shared/lib/release-notes';
 import { KIT } from '@shared/ui/kit';
 
-/** DUMMY (releases.page): the release feed is made up (S10.51). */
+/**
+ * LIVE: releases and the early history are built from docs/releases (S10.51, ADR 0022).
+ * DUMMY (releases.next): the list “What is next” is made up.
+ */
 @Component({
   selector: 'sfl-releases-page',
   imports: [...KIT],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      class="k-page"
-      *sflFeature="'releases.page'"
-    >
+    <div class="k-page">
       <sfl-page-head
         title="Release notes"
         lead="What we finished and when. Newest first."
       >
-        <button
+        <a
           sflBtn
           variant="ghost"
-          type="button"
+          href="/assets/releases.xml"
         >
           RSS feed
-        </button>
+        </a>
+      </sfl-page-head>
+
+      <div
+        class="k-row"
+        role="group"
+        aria-label="Filter by area"
+      >
         <button
           sflBtn
           type="button"
+          [variant]="area() === null ? 'primary' : 'ghost'"
+          [attr.aria-pressed]="area() === null"
+          (click)="area.set(null)"
         >
-          Suggest a feature
+          All
         </button>
-      </sfl-page-head>
-      <sfl-card
-        flag="releases.page"
-        tone="score"
-        title="Current"
-      >
-        <h2
-          class="k-head"
-          style="color:var(--sfl-accent)"
+        @for (a of areas; track a) {
+          <button
+            sflBtn
+            type="button"
+            [variant]="area() === a ? 'primary' : 'ghost'"
+            [attr.aria-pressed]="area() === a"
+            (click)="area.set(a)"
+          >
+            {{ a }}
+          </button>
+        }
+      </div>
+
+      @if (releases().length === 0 && all.length === 0) {
+        <sfl-card title="First release">
+          <p>
+            The first release is coming. Until then, see what has been done in
+            the early history below.
+          </p>
+        </sfl-card>
+      }
+
+      @for (r of releases(); track r.version; let first = $first) {
+        <sfl-card
+          [tone]="first ? 'score' : 'default'"
+          [title]="first ? 'Current release' : r.version"
         >
-          2026.11.3
-        </h2>
-        <span class="k-muted">15 Nov 2026</span>
-        <b>Two scoring systems, side by side</b>
-        <p>
-          Pick the ancient or the positional system in the header and every
-          rating follows. The old system stays the default.
-        </p>
-      </sfl-card>
-      <sfl-card
-        flag="releases.page"
-        title="Older releases"
-      >
-        <ul class="k-list">
-          @for (r of releases; track r.v) {
-            <li>
-              <b class="k-head">{{ r.v }}</b>
-              <span class="k-muted k-small">{{ r.d }}</span>
-              <span class="k-grow">{{ r.t }}</span>
-              <sfl-badge>{{ r.n }} changes</sfl-badge>
-            </li>
+          <h2
+            class="k-head"
+            [style.color]="first ? 'var(--sfl-accent)' : null"
+          >
+            {{ r.version }}
+          </h2>
+          <span class="k-muted">{{ r.date }}</span>
+          <b>{{ r.title }}</b>
+          <ul class="k-list">
+            @for (c of r.changes; track $index) {
+              <li>
+                <sfl-badge>{{ c.kind }}</sfl-badge>
+                @if (c.area) {
+                  <span class="k-muted k-small">{{ c.area }}</span>
+                }
+                <span class="k-grow">{{ c.text }}</span>
+                @if (c.story) {
+                  <span class="k-muted k-small">{{ c.story }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </sfl-card>
+      }
+
+      @if (early().length > 0) {
+        <sfl-card title="Early history">
+          <p class="k-small k-muted">What was done before the first release.</p>
+          @for (s of early(); track s.date) {
+            <h3 class="k-head">{{ s.title }}</h3>
+            <span class="k-muted k-small">{{ s.date }}</span>
+            @if (s.lead) {
+              <p>{{ s.lead }}</p>
+            }
+            <ul class="k-list">
+              @for (c of s.changes; track $index) {
+                <li>
+                  <sfl-badge>{{ c.kind }}</sfl-badge>
+                  @if (c.area) {
+                    <span class="k-muted k-small">{{ c.area }}</span>
+                  }
+                  <span class="k-grow">{{ c.text }}</span>
+                  @if (c.story) {
+                    <span class="k-muted k-small">{{ c.story }}</span>
+                  }
+                </li>
+              }
+            </ul>
           }
-        </ul>
+        </sfl-card>
+      }
+
+      <sfl-card title="This build">
+        <p class="k-small">{{ thisBuild }}</p>
       </sfl-card>
+
       <sfl-card
-        flag="releases.page"
+        flag="releases.next"
         title="What is next"
       >
         <p class="k-small k-muted">
@@ -81,7 +153,18 @@ import { KIT } from '@shared/ui/kit';
   `,
 })
 export class ReleasesPageComponent {
-  protected readonly releases = RELEASES;
-  /** LIVE: the version of this build; the notes below are DUMMY until S10.51. */
-  protected readonly version = packageJSON.version;
+  protected readonly areas = RELEASE_AREAS;
+  protected readonly all = RELEASE_NOTES.releases;
+  protected readonly area = signal<ReleaseArea | null>(null);
+  protected readonly releases = computed(() =>
+    filterByArea(RELEASE_NOTES.releases, this.area()),
+  );
+  protected readonly early = computed(() =>
+    filterByArea(RELEASE_NOTES.early, this.area()),
+  );
+  protected readonly thisBuild = buildLabel(BUILD_INFO);
+
+  constructor() {
+    inject(ReleaseSeenService).markSeen();
+  }
 }

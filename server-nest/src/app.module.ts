@@ -19,6 +19,7 @@ import { PlayersModule } from './entities/players/players.module';
 import { RolesModule } from './entities/roles/roles.module';
 import { TeamsModule } from './entities/teams/teams.module';
 import { User, UserSchema, UsersModule } from './entities/users';
+import { VersionModule } from './entities/version/version.module';
 import { UsersService } from './entities/users/users.service';
 import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
 import { AuthGuard } from './shared/guards/auth.guard';
@@ -122,6 +123,7 @@ import { FileLoggerService } from './shared/services/logger.service';
     CommentsModule,
     AuditModule,
     ChartsModule,
+    VersionModule,
     MigrationsModule,
   ],
   providers: [
