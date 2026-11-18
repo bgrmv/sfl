@@ -20,7 +20,7 @@ Local development without installing Node.js or MongoDB on your machine. Config:
 ### Start
 
 1. Open the repository in VS Code → **Dev Containers: Reopen in Container**. The first build installs dependencies, creates the certificate, `.env` and the seed (see `.devcontainer/post-create.sh`).
-2. Server: `cd server-nest && pnpm start:dev`
+2. Server: `cd server-nest && pnpm dev`
 3. Client: `cd client && pnpm dev` (`angular.json` sets `host: 0.0.0.0`: Docker publishes the port, so `ng serve` must listen on all interfaces, not only on localhost)
 4. Open `https://sfl.com:3001/rest` (Swagger) and accept the self-signed certificate. Then open `https://sfl.com:4200` and accept it again.
 5. Sign in as `admin@sfl.local` / `admin`.
@@ -82,7 +82,7 @@ The editor, git and Claude Code stay on Windows; only Node.js and MongoDB run in
 docker compose -f .devcontainer/docker-compose.yml up -d
 docker exec -u node -w /workspaces/sfl sfl-dev-workspace-1 bash .devcontainer/post-create.sh   # first time only
 
-docker exec -it -u node -w /workspaces/sfl/server-nest sfl-dev-workspace-1 pnpm start:dev
+docker exec -it -u node -w /workspaces/sfl/server-nest sfl-dev-workspace-1 pnpm dev
 docker exec -it -u node -w /workspaces/sfl/client      sfl-dev-workspace-1 pnpm dev
 
 docker compose -f .devcontainer/docker-compose.yml stop    # stop; start brings it back
@@ -151,7 +151,7 @@ Needs Node.js `^22.22.3`, pnpm (`corepack enable`) and MongoDB 7. Then:
 pnpm install                                   # once, from the root: installs the whole workspace
 cp server-nest/.env.example server-nest/.env   # fill in the values (the dev ones are in .devcontainer/server-nest.env)
 node .devcontainer/seed.cjs                    # synthetic data, optional
-cd server-nest && pnpm start:dev               # API, port 3001
+cd server-nest && pnpm dev               # API, port 3001
 cd client && pnpm dev                          # client, https, port 4200
 ```
 

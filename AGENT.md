@@ -29,12 +29,12 @@ SFL — приложение для любительской футбольно�
 
 Адрес API клиента задают `APP_ENV` и `API_URL` при сборке ([docs/development.md](docs/development.md), «Окружения клиента»); `client/src/environments/api-url.generated.ts` создаётся скриптом и не коммитится.
 
-Остальные команды запускай из папки пакета.
+Из корня: `pnpm dev` запускает клиент и сервер вместе, `pnpm dev:client` и `pnpm dev:server` по отдельности. Остальные команды запускай из папки пакета; в обоих пакетах запуск называется `pnpm dev` (`start:dev` в сервере остался псевдонимом).
 
 | Действие      | `client/`                                                                                              | `server-nest/`                                              |
 | ------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
 | Установка     | `pnpm install` из корня ставит всё (workspace)                                                         | то же                                                       |
-| Запуск        | `pnpm dev` (https, порт 4200, слушает `0.0.0.0`)                                                       | `pnpm start:dev` (порт 3001)                                |
+| Запуск        | `pnpm dev` (https, порт 4200, слушает `0.0.0.0`)                                                       | `pnpm dev` (порт 3001)                                      |
 | Линт          | `pnpm lint`                                                                                            | `pnpm lint` (с `--fix`)                                     |
 | Типы и сборка | `pnpm build`                                                                                           | `pnpm build`                                                |
 | Тесты         | `pnpm test` (Vitest через `ng test`, браузер не нужен); один прогон: `pnpm exec ng test --watch=false` | `pnpm test` (vitest, watch); один прогон: `pnpm vitest run` |
@@ -49,7 +49,7 @@ SFL — приложение для любительской футбольно�
 - Права: роли и что они могут — [docs/roles.md](docs/roles.md); новый серверный маршрут по умолчанию доступен только `ADMIN`; открыть его можно `@Public()` или `@Roles(...)`, и тогда нужна строка в матрице `test/api/access.test.ts` ([docs/PROJECT.md](docs/PROJECT.md), раздел 5.1).
 - Контракт API: описание OpenAPI выводится из схем `@sfl/schemas` ([ADR 0018](docs/adr/0018-openapi-from-zod-schemas.md)) и закоммичено как `server-nest/openapi.json`; изменил маршрут, тело или схему: `UPDATE_OPENAPI=1 pnpm vitest run test/api/openapi.test.ts` в `server-nest/`, посмотри diff.
 - Ошибки API: бросай исключения Nest **экземплярами** (`throw new NotFoundException()`), не глотай ошибки в сервисах; формат ответа задаёт глобальный фильтр ([docs/PROJECT.md](docs/PROJECT.md), раздел 5.2).
-- Бэкап прод-базы делает владелец сам (`pnpm backup:prod`, ключ только в переменной окружения), агент прод не трогает: [runbook](docs/runbooks/mongo-backup.md). `pnpm start:dev` лишь предупреждает, если бэкапа нет или он старше 30 дней.
+- Бэкап прод-базы делает владелец сам (`pnpm backup:prod`, ключ только в переменной окружения), агент прод не трогает: [runbook](docs/runbooks/mongo-backup.md). `pnpm dev` лишь предупреждает, если бэкапа нет или он старше 30 дней.
 - Серверные тесты: юнит-тесты рядом с кодом (`src/**/*.test.ts`), API-тесты в `server-nest/test/api/` на `mongodb-memory-server` (внешняя база не нужна; первый запуск скачивает бинарник mongod). Известные дефекты помечены `it.fails` со ссылкой на историю: исправил дефект — убери `.fails`. Покрытие: `pnpm test:coverage` (порог 80% на расчёте статистики). Меняешь расчёт статистики — прогони golden-master (`server-nest/test/golden`, набор из `_dumps/`, см. [docs/development.md](docs/development.md)); без набора он пропускается.
 - Сервер: модуль на сущность (контроллер, сервис, схема Mongoose, DTO). Валидация на zod: формы данных API объявлены один раз в `packages/schemas` на `zod/mini`, серверные DTO без клиента — на обычном `zod` ([ADR 0010](docs/adr/0010-zod-mini-in-shared-schemas.md)).
 - Коммиты: `feat:` / `fix:` / `chore:` / `docs:` с областью и ID истории, как в `git log`: `fix(server): ... (S0.4)`. Сообщения на английском, документация и бэклог на русском.

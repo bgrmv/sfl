@@ -18,6 +18,12 @@ paths = [
 ]
 
 [[allowlists]]
+description = "The local server-nest/.env: not tracked by git (.gitignore), holds dev-only values and the dev Google client secret for localhost (S8.13). The tree scan reads untracked files too. The exception covers every scan, so the protection is .gitignore: never `git add -f` this file. Approved by the owner 2026-11-18"
+paths = [
+  '''^server-nest/\.env$''',
+]
+
+[[allowlists]]
 description = "Password hashes of fake users in old mock data and an old dump; the only real test account is rotated in S0.7. Reviewed in docs/audits/secrets-2026-11-13.md"
 paths = [
   '''^client/src/entities/players/services/players\.mock\.ts$''',

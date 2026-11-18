@@ -9,14 +9,14 @@ The easy way is the dev-container with MongoDB and `.env` ready: see [Dev-contai
 ```bash
 pnpm install            # from the repository root
 cp .env.example .env    # then fill in the values
-pnpm start:dev          # port 3001, Swagger at /rest
+pnpm dev          # port 3001, Swagger at /rest
 ```
 
 ## Commands
 
 | Command              | What it does                                  |
 | -------------------- | --------------------------------------------- |
-| `pnpm start:dev`     | run with watch                                |
+| `pnpm dev`           | run with watch                                |
 | `pnpm build`         | type check and compile to `dist/`             |
 | `pnpm lint`          | ESLint with `--fix` (`lint:check` without it) |
 | `pnpm vitest run`    | tests once (`pnpm test` is watch mode)        |
