@@ -1,7 +1,7 @@
 {
   "name": "sfl",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Корень репозитория: общие команды и pre-commit хуки (husky, lint-staged)",
   "packageManager": "pnpm@9.12.3",
   "engines": {
