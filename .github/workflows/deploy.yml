@@ -1,5 +1,8 @@
 name: Deploy
 
+# The title of a run in the list shows where it goes: staging on push, a chosen one by hand
+run-name: "Deploy → ${{ inputs.environment || 'staging' }}: ${{ inputs.tag || github.event.head_commit.message }}"
+
 # push to main: check -> image in GHCR -> staging
 # manual run with environment=production: the given image tag -> production (needs approval)
 on:

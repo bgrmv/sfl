@@ -12,6 +12,7 @@ services:
     environment:
       SFL_DOMAIN: ${SFL_DOMAIN}
       SFL_STAGING_DOMAIN: ${SFL_STAGING_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:-}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./sites:/etc/caddy/sites:ro

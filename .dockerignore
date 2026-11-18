@@ -17,4 +17,5 @@ server-nest/_media
 client/.angular
 client/src/environments/*.generated.ts
 client/src/assets/releases.xml
-docs
+docs/*
+!docs/releases
