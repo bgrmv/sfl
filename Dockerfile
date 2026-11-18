@@ -7,7 +7,7 @@ WORKDIR /repo
 
 # Manifests first: the dependency layer is rebuilt only when a lockfile changes
 COPY package.json pnpm-workspace.yaml .npmrc pnpm-lock.yaml ./
-COPY client/package.json client/pnpm-lock.yaml client/
+COPY client/package.json client/pnpm-lock.yaml client/.npmrc client/
 COPY server-nest/package.json server-nest/pnpm-lock.yaml server-nest/
 COPY packages/schemas/package.json packages/schemas/pnpm-lock.yaml packages/schemas/
 COPY packages/domain/package.json packages/domain/pnpm-lock.yaml packages/domain/
