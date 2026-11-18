@@ -40,7 +40,13 @@ const STEPS = [
 
 // Шаги, которые сейчас падают по известным причинам. Пропускаются явно, с выводом причины.
 // Когда причина устранена, строку удалить.
-const KNOWN = {};
+const PICOMATCH = 'picomatch <=4.0.7 (GHSA-fc5q-39xc-vjpf, ReDoS) только в devDependencies, исправленной версии нет, S8.14';
+const KNOWN = {
+  'audit:client': PICOMATCH,
+  'audit:server': PICOMATCH,
+  'audit:schemas': PICOMATCH,
+  'audit:domain': PICOMATCH,
+};
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
