@@ -1,0 +1,33 @@
+# Shared edge proxy of the VPS: /opt/edge. The only container with ports published.
+# .env: SFL_DOMAIN, SFL_STAGING_DOMAIN. Projects drop their routes into sites/*.caddy.
+name: edge
+
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      SFL_DOMAIN: ${SFL_DOMAIN}
+      SFL_STAGING_DOMAIN: ${SFL_STAGING_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sites:/etc/caddy/sites:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+    external: true

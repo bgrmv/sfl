@@ -1,0 +1,40 @@
+# Stack of one environment on the VPS: /opt/sfl/prod or /opt/sfl/staging (S7.2).
+# Started by the deploy workflow:
+#   docker compose --env-file .env --env-file .deploy.env up -d --wait
+# .env holds the secrets of the app (see server-nest/.env.example), .deploy.env is
+# written by the workflow: SFL_ENV (prod|staging) and SFL_TAG (image tag).
+# No ports are published: the edge proxy (infra/edge) reaches the app by its alias.
+name: sfl-${SFL_ENV:-prod}
+
+services:
+  app:
+    image: ghcr.io/bgrmv/sfl:${SFL_TAG:-main}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: '3001'
+    volumes:
+      - media:/data/media
+    networks:
+      default: {}
+      edge:
+        aliases:
+          - sfl-${SFL_ENV:-prod}-app
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: '1.0'
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+
+volumes:
+  media:
+
+networks:
+  edge:
+    external: true

@@ -1,0 +1,57 @@
+name: Deploy to environment
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # GitHub Environment `production` has required reviewers: this is the confirmation
+    environment: ${{ inputs.environment }}
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      SFL_ENV: ${{ inputs.environment == 'production' && 'prod' || 'staging' }}
+      SFL_TAG: ${{ inputs.tag }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare ssh
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf 'Host vps\n  HostName %s\n  User %s\n  IdentityFile ~/.ssh/id_deploy\n  StrictHostKeyChecking yes\n' \
+            "$DEPLOY_HOST" "$DEPLOY_USER" > ~/.ssh/config
+
+      - name: Upload compose file and routes
+        run: |
+          scp docker-compose.yml "vps:/opt/sfl/${SFL_ENV}/docker-compose.yml"
+          scp deploy/caddy/sfl.caddy vps:/opt/edge/sites/sfl.caddy
+          scp infra/edge/docker-compose.yml infra/edge/Caddyfile vps:/opt/edge/
+
+      - name: Reload edge proxy if the routes are valid
+        run: |
+          ssh vps 'cd /opt/edge && docker compose up -d && \
+            docker compose exec -T caddy caddy validate --config /etc/caddy/Caddyfile && \
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile'
+
+      - name: Pull and start (waits for the healthcheck)
+        run: |
+          ssh vps "cd /opt/sfl/${SFL_ENV} && \
+            printf 'SFL_ENV=%s\nSFL_TAG=%s\n' '${SFL_ENV}' '${SFL_TAG}' > .deploy.env && \
+            docker compose --env-file .env --env-file .deploy.env pull && \
+            docker compose --env-file .env --env-file .deploy.env up -d --wait --wait-timeout 120"
+
+      - name: Clean old images
+        run: ssh vps 'docker image prune -f'

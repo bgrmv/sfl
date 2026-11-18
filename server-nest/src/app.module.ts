@@ -33,6 +33,8 @@ import { FileLoggerService } from './shared/services/logger.service';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
+      // An unknown API route is a JSON 404, not the index.html of the SPA
+      exclude: ['/rest/{*any}'],
     }),
     ConfigModule.forRoot({
       load: [configuration],

@@ -15,7 +15,7 @@ SFL — приложение для любительской футбольно�
 | `.devcontainer/`               | dev-container с Node 22, pnpm и MongoDB 7 ([README](README.md))                                                  |
 | `_backups/`, `_dumps/`, `ssl/` | данные и сертификаты, см. «Запреты»                                                                              |
 
-Позже появятся `Dockerfile`, `docker-compose.yml`, `Caddyfile` (эпики 3 и 7).
+Деплой: `Dockerfile` (один образ SPA + API), `docker-compose.yml` (окружение на VPS), `infra/edge/` и `deploy/caddy/` (Caddy), `.github/workflows/deploy*.yml`; порядок — [runbook](docs/runbooks/deploy-github-mvps.md). `GET /rest/version` — health-check.
 
 ## Окружение
 

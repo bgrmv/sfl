@@ -6,7 +6,7 @@
 push в main → GitHub Actions (check + сборка образа) → GHCR → ssh на VPS → docker compose pull && up -d
 ```
 
-**Статус (2026-11-18):** файлов `Dockerfile`, `docker-compose.yml`, `deploy/caddy/sfl.caddy` и workflow пока нет, это истории S7.1, S7.2, S7.3, S7.6, S7.9. Инструкция описывает, что будет и что нужно от владельца. Шаги 1–4 можно сделать уже сейчас, шаги 5–7 появятся после реализации историй.
+**Статус (2026-11-18):** файлы готовы: [Dockerfile](../../Dockerfile), [docker-compose.yml](../../docker-compose.yml), [deploy/caddy/sfl.caddy](../../deploy/caddy/sfl.caddy), [infra/edge/](../../infra/edge/), [.github/workflows/deploy.yml](../../.github/workflows/deploy.yml). Сборка образа в Docker и сам workflow ещё не запускались (в dev-container нет Docker): проверены сборка клиента и сервера и запуск прод-сборки с раздачей SPA, `GET /rest/version` (он же health-check) и JSON-404 на неизвестный `/rest/*`. Первый деплой на staging — проверка всей цепочки.
 
 ## Что делаю я (агент), что вы
 
@@ -91,13 +91,15 @@ ssh-copy-id -i sfl-deploy.pub deploy@<IP-сервера>     # или добав
 
 ## Шаг 6. Edge-прокси (один раз)
 
-Из `infra/edge/` репозитория скопировать на сервер в `/opt/edge/` (`docker-compose.yml` с Caddy и `Caddyfile`), затем:
+Workflow сам копирует `infra/edge/` и `deploy/caddy/sfl.caddy` на сервер и перезагружает Caddy. Один раз вручную создайте `/opt/edge/.env`:
 
-```bash
-cd /opt/edge && docker compose up -d
+```
+SFL_DOMAIN=example.com
+SFL_STAGING_DOMAIN=staging.example.com
+ACME_EMAIL=you@example.com
 ```
 
-Caddy слушает 80/443 и сам выпускает сертификаты Let's Encrypt. Маршруты SFL лежат в `/opt/edge/sites/sfl.caddy` (копируется деплоем из `deploy/caddy/sfl.caddy`).
+Caddy слушает 80/443 и сам выпускает сертификаты Let's Encrypt, DNS из шага 1 должен уже указывать на сервер.
 
 ## Шаг 7. Обычный деплой (после реализации S7.6)
 
