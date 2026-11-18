@@ -50,10 +50,10 @@ import { KIT } from '@shared/ui/kit';
           <p>
             Ask the league administrator to show, correct or remove your data.
             On a request to leave, your nickname becomes “Former player”, your
-            name, surname, picture, age and email are erased, you cannot sign in
-            any more, and photos stop pointing at you. The games you played and
-            their numbers stay, because other players' results depend on them. A
-            photo can be deleted at once.
+            name, surname, picture, birth date, country and email are erased,
+            you cannot sign in any more, and photos stop pointing at you. The
+            games you played and their numbers stay, because other players'
+            results depend on them. A photo can be deleted at once.
           </p>
           <p class="k-muted">
             Where to write: the contact address will appear here.

@@ -116,13 +116,13 @@ flowchart LR
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
 | Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        9         |
-| Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        15        |
+| Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        16        |
 | Эпик 9 — Наблюдаемость                          | [E09-observability/](E09-observability/)             |        2         |
 | Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        79        |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 205, из них отменено: 18.
+Всего историй: 206, из них отменено: 18.
 
 ---
 
@@ -282,6 +282,7 @@ flowchart LR
 |   ❌   | [S8.13](E08-security-privacy/S8.13.md) | Вход через Google и привязка аккаунта к игроку                         |    P3     |   L    | [S8.9](E08-security-privacy/S8.9.md), [S8.10](E08-security-privacy/S8.10.md), [S4.3](E04-migration-design/S4.3.md) |
 |   ❌   | [S8.14](E08-security-privacy/S8.14.md) | Уязвимость picomatch в dev-зависимостях ломает `pnpm check`            |    P1     |   S    | [S8.8](E08-security-privacy/S8.8.md)                                                                               |
 |   ❌   | [S8.15](E08-security-privacy/S8.15.md) | Удалить оставшиеся SHA-512 хеши через 12 месяцев после выкатки на прод |    P4     |   S    | [S8.7](E08-security-privacy/S8.7.md), [S6.7](E06-data-migration/S6.7.md)                                           |
+|   ❌   | [S8.16](E08-security-privacy/S8.16.md) | Cookies и согласие: перечень хранилищ и баннер, если он нужен          |    P3     |   M    | [S8.4](E08-security-privacy/S8.4.md)                                                                               |
 
 ## Эпик 9 — Наблюдаемость
 
