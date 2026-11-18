@@ -8,7 +8,6 @@ export {
 export {
   AdminPlayersPageComponent,
   AdminNewPlayerPageComponent,
-  AdminConnectPageComponent,
 } from './ui/admin-players.page';
 export {
   AdminReleasesPageComponent,
@@ -16,3 +15,5 @@ export {
 } from './ui/admin-content.page';
 export { AdminCommentsPageComponent } from './ui/admin-comments.page';
 export { AdminMediaPageComponent } from './ui/admin-media.page';
+export { AdminConnectPageComponent } from './ui/admin-connect.page';
+export { AdminUsersPageComponent } from './ui/admin-users.page';

@@ -79,29 +79,15 @@ export class AuthService {
         await verifyPassword(await DUMMY_HASH, password);
         throw new UnauthorizedException();
       }
-      if (!(await verifyPassword(user.password, password))) {
+      // A linked account signs in through Google only; the old password is dead (S8.13)
+      if (user.googleSub || !(await verifyPassword(user.password, password))) {
         throw new UnauthorizedException();
       }
 
       await this.upgradeLegacyHash(user, password);
 
-      const claims = await this.claimsOf(user._id);
-      const sid = randomUUID();
-      const jti = randomUUID();
-
-      await this.sessionModel.create({
-        _id: sid,
-        userId: String(user._id),
-        jti,
-        rotatedAt: new Date(),
-        expiresAt: this.refreshExpiry(),
-      });
-
       // If authenticated, generate and send an access token and a refresh token
-      return {
-        accessToken: await this.generateAccessToken(claims),
-        refreshToken: await this.generateRefreshToken({ ...claims, sid, jti }),
-      };
+      return await this.startSession(user._id);
     } catch (error: any) {
       // A wrong password is an everyday answer, not an error of the server
       if (error.status !== HttpStatus.UNAUTHORIZED) {
@@ -114,6 +100,26 @@ export class AuthService {
           throw new InternalServerErrorException();
       }
     }
+  }
+
+  /** A new session on this device: the tokens that every way of signing in ends with (S8.12). */
+  public async startSession(userId: string) {
+    const claims = await this.claimsOf(userId);
+    const sid = randomUUID();
+    const jti = randomUUID();
+
+    await this.sessionModel.create({
+      _id: sid,
+      userId: String(userId),
+      jti,
+      rotatedAt: new Date(),
+      expiresAt: this.refreshExpiry(),
+    });
+
+    return {
+      accessToken: await this.generateAccessToken(claims),
+      refreshToken: await this.generateRefreshToken({ ...claims, sid, jti }),
+    };
   }
 
   /**

@@ -279,10 +279,11 @@ flowchart LR
 |   ✅   | [S8.10](E08-security-privacy/S8.10.md) | Не отдавать email и персональные данные публичными эндпоинтами         |    P1     |   S    | [S0.1](E00-security-hotfix/S0.1.md)                                                                                |
 |   ✅   | [S8.11](E08-security-privacy/S8.11.md) | Защита от перебора, заголовки и Swagger                                |    P2     |   S    | [S2.4](E02-tests-ci/S2.4.md)                                                                                       |
 |   ✅   | [S8.12](E08-security-privacy/S8.12.md) | Сессии и токены: отзыв, Secure, секреты JWT                            |    P2     |   M    | [S2.4](E02-tests-ci/S2.4.md), [S8.9](E08-security-privacy/S8.9.md)                                                 |
-|   ❌   | [S8.13](E08-security-privacy/S8.13.md) | Вход через Google и привязка аккаунта к игроку                         |    P3     |   L    | [S8.9](E08-security-privacy/S8.9.md), [S8.10](E08-security-privacy/S8.10.md), [S4.3](E04-migration-design/S4.3.md) |
+|   ✅   | [S8.13](E08-security-privacy/S8.13.md) | Вход через Google и привязка аккаунта к игроку                         |    P3     |   L    | [S8.9](E08-security-privacy/S8.9.md), [S8.10](E08-security-privacy/S8.10.md), [S4.3](E04-migration-design/S4.3.md) |
 |   ❌   | [S8.14](E08-security-privacy/S8.14.md) | Уязвимость picomatch в dev-зависимостях ломает `pnpm check`            |    P1     |   S    | [S8.8](E08-security-privacy/S8.8.md)                                                                               |
 |   ❌   | [S8.15](E08-security-privacy/S8.15.md) | Удалить оставшиеся SHA-512 хеши через 12 месяцев после выкатки на прод |    P4     |   S    | [S8.7](E08-security-privacy/S8.7.md), [S6.7](E06-data-migration/S6.7.md)                                           |
 |   ❌   | [S8.16](E08-security-privacy/S8.16.md) | Cookies и согласие: перечень хранилищ и баннер, если он нужен          |    P3     |   M    | [S8.4](E08-security-privacy/S8.4.md)                                                                               |
+|   ✅   | [S8.17](E08-security-privacy/S8.17.md) | Выдача ссылок и ролей из админки                                       |    P3     |   M    | [S8.13](E08-security-privacy/S8.13.md), [S8.9](E08-security-privacy/S8.9.md)                                       |
 
 ## Эпик 9 — Наблюдаемость
 

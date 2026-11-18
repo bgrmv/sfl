@@ -181,6 +181,27 @@ export const routes: Routes = [
     loadComponent: () =>
       import('@pages/connect').then(c => c.ConnectPageComponent),
   },
+  // The one-day link of an admin, and the two places the API sends the browser back to (S8.13)
+  {
+    path: 'connect/failed',
+    title: 'Connect account',
+    data: { result: 'failed' },
+    loadComponent: () =>
+      import('@pages/connect').then(c => c.ConnectInvitationPageComponent),
+  },
+  {
+    path: 'connect/:token',
+    title: 'Connect account',
+    loadComponent: () =>
+      import('@pages/connect').then(c => c.ConnectInvitationPageComponent),
+  },
+  {
+    path: 'connected',
+    title: 'Connected',
+    data: { result: 'connected' },
+    loadComponent: () =>
+      import('@pages/connect').then(c => c.ConnectInvitationPageComponent),
+  },
 
   // ---- admin
   {
@@ -242,6 +263,13 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () =>
           import('@pages/admin').then(c => c.AdminConnectPageComponent),
+      },
+      {
+        path: 'users',
+        title: 'Users and access',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('@pages/admin').then(c => c.AdminUsersPageComponent),
       },
       {
         path: 'schedule',

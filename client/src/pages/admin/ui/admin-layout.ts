@@ -205,13 +205,13 @@ export class AdminLayoutComponent {
       exact: false,
     },
     { label: 'Players', href: '/admin/players', count: 0, exact: false },
-    // DUMMY (admin.sidebarCounts): links without an account (S8.13)
     {
       label: 'Connect accounts',
       href: '/admin/connect',
-      count: 15,
+      count: 0,
       exact: false,
     },
+    { label: 'Users and access', href: '/admin/users', count: 0, exact: false },
     { label: 'Schedule', href: '/admin/schedule', count: 0, exact: false },
     {
       label: 'Comments',

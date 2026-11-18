@@ -515,3 +515,88 @@ export const signInSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
+
+// ---- Connect an account to a player (S8.13, ADR 0021) ------------------------
+
+/** The admin makes a one-day link for a player. */
+export const invitationInputSchema = z.object({
+  playerId: z.string().check(z.regex(/^[0-9a-f]{24}$/i)),
+});
+export type InvitationInput = z.infer<typeof invitationInputSchema>;
+
+/** Shown once, at creation: the database keeps only the hash of the token. */
+export const invitationSchema = z.object({
+  id: z.string(),
+  token: z.string(),
+  url: z.string(),
+  expiresAt: z.string(),
+});
+export type InvitationDTO = z.infer<typeof invitationSchema>;
+
+/** What the page of the link shows: the card of the player and the time left, nothing private. */
+export const invitationPreviewSchema = z.object({
+  player: z.object({
+    nickname: z.string(),
+    name: z.string(),
+    surname: z.string(),
+  }),
+  expiresAt: z.string(),
+});
+export type InvitationPreview = z.infer<typeof invitationPreviewSchema>;
+
+/** One link in the list of the admin: the status is computed, "expired" follows from `expiresAt`. */
+export const INVITATION_STATUSES = [
+  'active',
+  'used',
+  'expired',
+  'revoked',
+] as const;
+
+export const invitationListItemSchema = z.object({
+  id: z.string(),
+  player: z.object({
+    id: z.string(),
+    nickname: z.string(),
+    name: z.string(),
+    surname: z.string(),
+  }),
+  status: z.enum(INVITATION_STATUSES),
+  createdAt: z.string(),
+  expiresAt: z.string(),
+  usedAt: z.optional(z.string()),
+  revokedAt: z.optional(z.string()),
+});
+export type InvitationListItem = z.infer<typeof invitationListItemSchema>;
+
+/** `linkedPlayerIds`: the players who already have a Google account; nothing of the account itself. */
+export const invitationListSchema = z.object({
+  items: z.array(invitationListItemSchema),
+  linkedPlayerIds: z.array(z.string()),
+});
+export type InvitationList = z.infer<typeof invitationListSchema>;
+
+// ---- Access levels of users (admin) ------------------------------------------
+
+/**
+ * The roles an admin can give. A person with none of them has the level of a
+ * guest: reads what is public (GUEST is not stored, it is the absence of a role).
+ */
+export const ASSIGNABLE_ROLES = ['ADMIN', 'MODERATOR', 'USER'] as const;
+export type AssignableRole = (typeof ASSIGNABLE_ROLES)[number];
+
+export const userRolesInputSchema = z.object({
+  roles: z.array(z.enum(ASSIGNABLE_ROLES)),
+});
+export type UserRolesInput = z.infer<typeof userRolesInputSchema>;
+
+/** A row of the list of accounts for the admin: no email, no Google data. */
+export const adminUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  surname: z.string(),
+  nickname: z.optional(z.string()),
+  roles: z.array(z.string()),
+  hasGoogle: z.boolean(),
+});
+export type AdminUser = z.infer<typeof adminUserSchema>;
+export const adminUsersSchema = z.array(adminUserSchema);

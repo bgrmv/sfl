@@ -15,6 +15,7 @@ import type { Request, Response } from 'express';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { ZodValidationPipe } from 'src/shared/pipes/custom-pipe/zod-validation.pipe';
+import { refreshCookieOptions } from './auth.cookies';
 import { AuthRequiredSchema } from './auth.dto';
 import { Auth } from './auth.schema';
 import { AuthService } from './auth.service';
@@ -52,7 +53,7 @@ export class AuthController {
     const { accessToken, refreshToken } = await this.authService.signIn(auth);
 
     res.cookie('refreshToken', refreshToken, {
-      ...this.cookieOptions(),
+      ...refreshCookieOptions(this.configService),
       expires: addDays(new Date(), 1),
     });
 
@@ -81,7 +82,7 @@ export class AuthController {
     // Not for a token that was replaced a moment ago: the browser already has the new cookie
     if (session.refreshToken) {
       res.cookie('refreshToken', session.refreshToken, {
-        ...this.cookieOptions(),
+        ...refreshCookieOptions(this.configService),
         expires: addDays(new Date(), 1),
       });
     }
@@ -106,23 +107,10 @@ export class AuthController {
     }
 
     res.cookie('refreshToken', null, {
-      ...this.cookieOptions(),
+      ...refreshCookieOptions(this.configService),
       expires: new Date(),
     });
 
     return { accessToken: null };
-  }
-
-  /** `Secure` everywhere except the local development and the tests (S8.12). */
-  private cookieOptions() {
-    const stage = this.configService.get<string>('STAGE');
-
-    return {
-      httpOnly: true,
-      sameSite: true,
-      secure: stage !== 'development' && stage !== 'test',
-      // The browser sends the cookie to the auth routes only, not to the whole API
-      path: '/rest/auth',
-    } as const;
   }
 }

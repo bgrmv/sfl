@@ -26,6 +26,8 @@ interface Target {
   /** A player without games: the only kind that can be deleted. */
   freePlayerId: string;
   userId: string;
+  /** A live invitation link of the player `playerId`. */
+  invitationId: string;
   playerIds: [string, string];
 }
 
@@ -49,6 +51,33 @@ interface Case {
 // Every route that changes data, plus the protected reads. A new route must be
 // added here, otherwise the completeness test below fails.
 const CLOSED: Case[] = [
+  {
+    name: 'GET /auth/invitations',
+    method: 'get',
+    path: () => '/auth/invitations',
+  },
+  {
+    name: 'GET /users',
+    method: 'get',
+    path: () => '/users',
+  },
+  {
+    name: 'PATCH /users/:id/roles',
+    method: 'patch',
+    path: t => `/users/${t.userId}/roles`,
+    body: () => ({ roles: ['USER'] }),
+  },
+  {
+    name: 'POST /auth/invitations',
+    method: 'post',
+    path: () => '/auth/invitations',
+    body: t => ({ playerId: t.playerId }),
+  },
+  {
+    name: 'DELETE /auth/invitations/:id',
+    method: 'delete',
+    path: t => `/auth/invitations/${t.invitationId}`,
+  },
   {
     name: 'POST /games',
     method: 'post',
@@ -236,6 +265,9 @@ const PUBLIC = [
   'POST /auth/sign-in',
   'POST /auth/refresh',
   'POST /auth/sign-out',
+  'GET /auth/invitations/:token',
+  'GET /auth/google/start',
+  'GET /auth/google/callback',
   'GET /games',
   'GET /games/:id',
   'GET /players',
@@ -304,7 +336,14 @@ describe('API: access matrix', () => {
       text: 'A comment for the matrix',
     });
 
+    const invitation = await t
+      .api()
+      .post('/rest/auth/invitations')
+      .set('Authorization', bearer(t))
+      .send({ playerId: a.id });
+
     return {
+      invitationId: invitation.body.data.id,
       gameId: game.body.data.id,
       mediaId: media.body.data.id,
       commentId: comment.body.data.id,

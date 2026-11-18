@@ -4,9 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { ASSIGNABLE_ROLES } from '@sfl/schemas';
+import type { AdminUser, AssignableRole } from '@sfl/schemas';
 
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Connection, Model } from 'mongoose';
+import { Role } from '../roles/roles.schema';
 import { FileLoggerService } from 'src/shared/services/logger.service';
 import { hashPassword } from 'src/shared/utils/password';
 import { IUser, User } from './users.schema';
@@ -16,6 +19,9 @@ export class UsersService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<IUser>,
+    // The player and role models are taken by name: UsersService is provided in
+    // several modules, and the schema of a player imports this one
+    @InjectConnection() private connection: Connection,
 
     private readonly logger: FileLoggerService,
   ) {}
@@ -44,6 +50,93 @@ export class UsersService {
 
   getsUsers() {
     return this.userModel.find().exec();
+  }
+
+  private get roleModel(): Model<Role> {
+    return this.connection.model<Role>(Role.name);
+  }
+
+  /** Accounts for the admin: who they are and what they may do. No email, no Google id. */
+  async listForAdmin(): Promise<AdminUser[]> {
+    const users = await this.userModel
+      .find()
+      .populate<{ roles: Role[] }>('roles')
+      .exec();
+    // Not `lean()`: the ids of users are UUIDs, a plain read gives them as binary
+    const players = await this.connection
+      .model('Player')
+      .find({}, 'nickname user')
+      .exec();
+    const nickname = new Map(
+      players.map((p: any) => [String(p.user), p.nickname as string] as const),
+    );
+
+    return users.map((u: any) => ({
+      id: String(u._id),
+      name: u.name ?? '',
+      surname: u.surname ?? '',
+      nickname: nickname.get(String(u._id)),
+      roles: (u.roles as Role[]).map(role => role.name),
+      hasGoogle: !!u.googleSub,
+    }));
+  }
+
+  /**
+   * Replaces the roles of a user (ADMIN only, the route says so). Nobody takes
+   * the admin role from himself, and the last admin stays: the league must
+   * not lock itself out. The sessions of the person end, so that a lowered
+   * level works at once, not when the access token expires.
+   */
+  async setRoles(
+    id: string,
+    names: AssignableRole[],
+    actorId: string,
+  ): Promise<AdminUser> {
+    const userId = new mongoose.Types.UUID(id);
+    const user = await this.userModel
+      .findById(userId)
+      .populate<{ roles: Role[] }>('roles')
+      .lean()
+      .exec();
+    if (!user) throw new NotFoundException('User is not found');
+
+    const unique = [...new Set(names)].filter(name =>
+      (ASSIGNABLE_ROLES as readonly string[]).includes(name),
+    );
+    const wasAdmin = (user.roles as unknown as Role[]).some(
+      role => role.name === 'ADMIN',
+    );
+    if (wasAdmin && !unique.includes('ADMIN')) {
+      if (String(actorId) === String(id)) {
+        throw new BadRequestException(
+          'You cannot take the admin role from yourself',
+        );
+      }
+      const adminRole = await this.roleModel.findOne({ name: 'ADMIN' }).lean();
+      const admins = await this.userModel.countDocuments({
+        roles: adminRole?._id as any,
+        _id: { $ne: userId },
+      });
+      if (!admins) {
+        throw new BadRequestException('The league needs at least one admin');
+      }
+    }
+
+    const roles = await this.roleModel
+      .find({ name: { $in: unique } })
+      .lean()
+      .exec();
+    await this.userModel
+      .updateOne(
+        { _id: userId },
+        {
+          $set: { roles: roles.map(role => role._id) },
+          $inc: { tokenVersion: 1 },
+        },
+      )
+      .exec();
+
+    return (await this.listForAdmin()).find(row => row.id === String(id))!;
   }
 
   getUserById(id: string | mongoose.Types.UUID) {

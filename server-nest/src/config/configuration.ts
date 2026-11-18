@@ -22,6 +22,11 @@ export default () => {
     ACCESS_TOKEN_SECRET: str(),
     REFRESH_TOKEN_SECRET: str(),
 
+    // Sign-in with Google (S8.13, ADR 0021); empty: the routes answer 503
+    GOOGLE_CLIENT_ID: str({ default: '' }),
+    GOOGLE_CLIENT_SECRET: str({ default: '' }),
+    GOOGLE_REDIRECT_URI: str({ default: '' }),
+
     // Rate limits (S8.11). Sign-in is strict, the rest of the API is soft.
     SIGN_IN_LIMIT: num({ default: 5 }), // attempts per window, per IP and per email
     SIGN_IN_WINDOW_SEC: num({ default: 60 }),

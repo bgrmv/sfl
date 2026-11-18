@@ -27,6 +27,7 @@ const transform = (_doc, ret: Record<string, any>) => {
   delete ret.roles;
   delete ret.tokenVersion;
   delete ret.passwordAlgorithm;
+  delete ret.googleSub;
   delete ret.createdAt;
   delete ret.updatedAt;
   // Stored for the profile (S10.33, S10.44), shown to nobody until the visibility settings exist (S8.4)
@@ -88,6 +89,13 @@ export class User implements IUser {
   /** Documents from before S8.7 have no value: that is `sha512`. */
   @Prop({ type: String, enum: ['sha512', 'argon2id'], default: 'sha512' })
   passwordAlgorithm: PasswordAlgorithm;
+
+  /**
+   * The Google account linked by an invitation (S8.13). Never shown, not even to
+   * an admin; a second user cannot take the same one.
+   */
+  @Prop({ type: String, unique: true, sparse: true })
+  googleSub?: string;
 
   /** Raised on sign-out and on a password change: every refresh token issued before is void (S8.12). */
   @Prop({ type: Number, default: 0 })
