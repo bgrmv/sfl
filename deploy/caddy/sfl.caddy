@@ -28,8 +28,11 @@ www.{$SFL_DOMAIN} {
 {$SFL_STAGING_DOMAIN} {
 	import sfl_common
 	header X-Robots-Tag "noindex, nofollow"
-	# Staging is closed to strangers; /rest/version stays open for the check of a deploy
-	@private not path /rest/version
+	# Staging pages are closed to strangers. The API is not behind Basic Auth: the client
+	# sends `Authorization: Bearer` there, the same header, and the browser would ask for the
+	# password again. The API is protected by its own sign-in and roles; /rest/version is
+	# the check of a deploy.
+	@private not path /rest/*
 	basic_auth @private {
 		{$SFL_STAGING_AUTH_USER} {$SFL_STAGING_AUTH_HASH}
 	}
