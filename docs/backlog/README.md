@@ -115,14 +115,14 @@ flowchart LR
 | Эпик 4 — Spike и проектирование переезда        | [E04-migration-design/](E04-migration-design/)       |  4 (1 отменена)  |
 | Эпик 5 — Бэкенд на Supabase ⛔                  | [E05-supabase-backend/](E05-supabase-backend/)       | 9 (все отменены) |
 | Эпик 6 — Миграция данных и переключение         | [E06-data-migration/](E06-data-migration/)           | 10 (5 отменено)  |
-| Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        9         |
+| Эпик 7 — Хостинг на VPS                         | [E07-vps-hosting/](E07-vps-hosting/)                 |        15        |
 | Эпик 8 — Безопасность и персональные данные     | [E08-security-privacy/](E08-security-privacy/)       |        16        |
 | Эпик 9 — Наблюдаемость                          | [E09-observability/](E09-observability/)             |        2         |
 | Эпик 10 — Продуктовые фичи                      | [E10-product-features/](E10-product-features/)       |        79        |
 | Эпик 11 — DX, документация, чистота репозитория | [E11-dx-docs/](E11-dx-docs/)                         |        12        |
 | Эпик 12 — Производительность и оптимизация      | [E12-performance/](E12-performance/)                 |        4         |
 
-Всего историй: 206, из них отменено: 18.
+Всего историй: 212, из них отменено: 18.
 
 ---
 
@@ -251,17 +251,23 @@ flowchart LR
 
 ## Эпик 7 — Хостинг на VPS
 
-| Статус | ID                              | История                                          | Приоритет | Размер | Зависит от                                                                                   |
-| :----: | ------------------------------- | ------------------------------------------------ | :-------: | :----: | -------------------------------------------------------------------------------------------- |
-|   ❌   | [S7.1](E07-vps-hosting/S7.1.md) | Один Docker-образ приложения                     |    P4     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md)                    |
-|   ❌   | [S7.2](E07-vps-hosting/S7.2.md) | Docker Compose для staging и prod                |    P4     |   S    | [S7.1](E07-vps-hosting/S7.1.md), [S4.1](E04-migration-design/S4.1.md)                        |
-|   ❌   | [S7.3](E07-vps-hosting/S7.3.md) | Домен и HTTPS через Caddy                        |    P4     |   S    | [S7.2](E07-vps-hosting/S7.2.md), [S7.9](E07-vps-hosting/S7.9.md), ответ на открытый вопрос 5 |
-|   ❌   | [S7.4](E07-vps-hosting/S7.4.md) | Заголовки безопасности                           |    P4     |   S    | [S7.3](E07-vps-hosting/S7.3.md)                                                              |
-|   ❌   | [S7.5](E07-vps-hosting/S7.5.md) | Nest рендерит Angular через SSR                  |    P4     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md)                    |
-|   ❌   | [S7.6](E07-vps-hosting/S7.6.md) | Деплой из GitHub Actions                         |    P4     |   S    | [S7.2](E07-vps-hosting/S7.2.md), [S2.1](E02-tests-ci/S2.1.md)                                |
-|   ❌   | [S7.7](E07-vps-hosting/S7.7.md) | Базовая защита VPS                               |    P4     |   S    | —                                                                                            |
-|   ❌   | [S7.8](E07-vps-hosting/S7.8.md) | Бэкапы базы во внешнее хранилище                 |    P4     |   S    | [S7.2](E07-vps-hosting/S7.2.md), [S6.1](E06-data-migration/S6.1.md)                          |
-|   ❌   | [S7.9](E07-vps-hosting/S7.9.md) | Общий edge-прокси для нескольких проектов на VPS |    P4     |   S    | [S7.7](E07-vps-hosting/S7.7.md)                                                              |
+| Статус | ID                                | История                                                   | Приоритет | Размер | Зависит от                                                                                          |
+| :----: | --------------------------------- | --------------------------------------------------------- | :-------: | :----: | --------------------------------------------------------------------------------------------------- |
+|   ❌   | [S7.1](E07-vps-hosting/S7.1.md)   | Один Docker-образ приложения                              |    P4     |   S    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md)                           |
+|   ❌   | [S7.2](E07-vps-hosting/S7.2.md)   | Docker Compose для staging и prod                         |    P4     |   S    | [S7.1](E07-vps-hosting/S7.1.md), [S4.1](E04-migration-design/S4.1.md)                               |
+|   ❌   | [S7.3](E07-vps-hosting/S7.3.md)   | Домен и HTTPS через Caddy                                 |    P4     |   S    | [S7.2](E07-vps-hosting/S7.2.md), [S7.9](E07-vps-hosting/S7.9.md), ответ на открытый вопрос 5        |
+|   ❌   | [S7.4](E07-vps-hosting/S7.4.md)   | Заголовки безопасности                                    |    P4     |   S    | [S7.3](E07-vps-hosting/S7.3.md)                                                                     |
+|   ❌   | [S7.5](E07-vps-hosting/S7.5.md)   | Nest рендерит Angular через SSR                           |    P4     |   M    | [S1.4](E01-dependency-upgrades/S1.4.md), [S3.6](E03-architecture/S3.6.md)                           |
+|   ❌   | [S7.6](E07-vps-hosting/S7.6.md)   | Деплой из GitHub Actions                                  |    P4     |   S    | [S7.2](E07-vps-hosting/S7.2.md), [S2.1](E02-tests-ci/S2.1.md)                                       |
+|   ❌   | [S7.7](E07-vps-hosting/S7.7.md)   | Базовая защита VPS                                        |    P4     |   S    | —                                                                                                   |
+|   ❌   | [S7.8](E07-vps-hosting/S7.8.md)   | Бэкапы базы во внешнее хранилище                          |    P4     |   S    | [S7.2](E07-vps-hosting/S7.2.md), [S6.1](E06-data-migration/S6.1.md)                                 |
+|   ❌   | [S7.9](E07-vps-hosting/S7.9.md)   | Общий edge-прокси для нескольких проектов на VPS          |    P4     |   S    | [S7.7](E07-vps-hosting/S7.7.md)                                                                     |
+|   ❌   | [S7.10](E07-vps-hosting/S7.10.md) | Staging закрыт от посторонних, свой пароль администратора |    P2     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                                     |
+|   ❌   | [S7.11](E07-vps-hosting/S7.11.md) | Наполнить staging данными                                 |    P3     |   S    | [S7.10](E07-vps-hosting/S7.10.md)                                                                   |
+|   ❌   | [S7.12](E07-vps-hosting/S7.12.md) | Первый деплой на прод                                     |    P4     |   M    | [S7.3](E07-vps-hosting/S7.3.md), [S7.8](E07-vps-hosting/S7.8.md), [S7.10](E07-vps-hosting/S7.10.md) |
+|   ✅   | [S7.13](E07-vps-hosting/S7.13.md) | Тест: неизвестный `/rest/*` отвечает JSON 404             |    P3     |   S    | [S7.1](E07-vps-hosting/S7.1.md)                                                                     |
+|   ❌   | [S7.14](E07-vps-hosting/S7.14.md) | Runbook деплоя по итогам первого деплоя на staging        |    P3     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                                     |
+|   ❌   | [S7.15](E07-vps-hosting/S7.15.md) | Хозяйственные дела после первого деплоя                   |    P3     |   S    | [S7.6](E07-vps-hosting/S7.6.md)                                                                     |
 
 ## Эпик 8 — Безопасность и персональные данные
 
