@@ -97,9 +97,41 @@ Workflow сам копирует `infra/edge/` и `deploy/caddy/sfl.caddy` на 
 SFL_DOMAIN=example.com
 SFL_STAGING_DOMAIN=staging.example.com
 ACME_EMAIL=you@example.com
+SFL_STAGING_AUTH_USER=staging
+SFL_STAGING_AUTH_HASH=<хеш из команды ниже, каждый $ записан как $$>
 ```
 
+Staging закрыт Basic Auth ([S7.10](../backlog/E07-vps-hosting/S7.10.md)), открыт только `/rest/version` для проверки деплоя. Без этих двух переменных `docker compose up` в `/opt/edge` не стартует. Caddy хранит не пароль, а bcrypt-хеш. Блок ниже на сервере (под `deploy`) спрашивает пароль без вывода на экран, делает хеш, удваивает `$` (иначе compose сломает хеш) и дописывает обе строки в `/opt/edge/.env`; пароль ни в историю shell, ни в аргументы процессов не попадает:
+
+```bash
+read -r -s -p 'Пароль staging: ' P; echo
+H=$(printf '%s\n%s\n' "$P" "$P" | docker run --rm -i caddy:2 caddy hash-password 2>/dev/null | tail -n1)
+unset P
+case "$H" in '$2a$'*) ;; *) echo 'хеш не получен, пароль не записан' >&2; false ;; esac &&
+{ printf 'SFL_STAGING_AUTH_USER=staging\nSFL_STAGING_AUTH_HASH=%s\n' "${H//\$/\$\$}"; } >> /opt/edge/.env &&
+chmod 600 /opt/edge/.env && unset H
+```
+
+Проверка: `cd /opt/edge && docker compose config | grep SFL_STAGING_AUTH`: хеш должен начинаться с одинарного `$2a$`. Пароль сохраните в менеджере паролей.
+
+Порядок: сначала добавьте обе переменные в `/opt/edge/.env`, потом выкатывайте этот коммит. Иначе шаг «Reload edge proxy» упадёт, а старые маршруты продолжат работать.
+
 Caddy слушает 80/443 и сам выпускает сертификаты Let's Encrypt, DNS из шага 1 должен уже указывать на сервер.
+
+### Первый администратор на staging
+
+База `sfl_staging` после первого деплоя пуста, а `DevAdminSeeder` при `STAGE=staging` не работает. Администратора создаёт seed с вашим email и паролем, **не** `admin@sfl.local`. Запуск из dev-container (не на сервере):
+
+1. В Atlas, Network Access, временно добавьте свой текущий IP; после seed удалите.
+2. Выполните, подставив свои значения (пароль 16+ символов; в историю shell он не должен попасть, поэтому начните строку с пробела или задайте переменные через `read -s`):
+
+```bash
+DATABASE_URL='<строка подключения Atlas>' DATABASE_DB=sfl_staging \
+SEED_ADMIN_EMAIL='<ваш email>' SEED_ADMIN_PASSWORD='<пароль>' \
+node .devcontainer/seed.cjs
+```
+
+Seed на непустой базе ничего не делает. **Не добавляйте `--reset`**: он удалит базу целиком.
 
 ## Шаг 7. Обычный деплой (после реализации S7.6)
 

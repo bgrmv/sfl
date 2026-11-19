@@ -1,5 +1,5 @@
 # Shared edge proxy of the VPS: /opt/edge. The only container with ports published.
-# .env: SFL_DOMAIN, SFL_STAGING_DOMAIN. Projects drop their routes into sites/*.caddy.
+# .env: SFL_DOMAIN, SFL_STAGING_DOMAIN, SFL_STAGING_AUTH_USER, SFL_STAGING_AUTH_HASH. Projects drop their routes into sites/*.caddy.
 name: edge
 
 services:
@@ -12,6 +12,8 @@ services:
     environment:
       SFL_DOMAIN: ${SFL_DOMAIN}
       SFL_STAGING_DOMAIN: ${SFL_STAGING_DOMAIN}
+      SFL_STAGING_AUTH_USER: ${SFL_STAGING_AUTH_USER:?set the Basic Auth user of staging in /opt/edge/.env}
+      SFL_STAGING_AUTH_HASH: ${SFL_STAGING_AUTH_HASH:?set the bcrypt hash of the Basic Auth password in /opt/edge/.env}
       ACME_EMAIL: ${ACME_EMAIL:-}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro

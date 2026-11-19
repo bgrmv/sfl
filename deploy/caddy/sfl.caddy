@@ -1,5 +1,6 @@
 # Routes of SFL for the shared edge proxy (copied to /opt/edge/sites/ by the deploy).
-# SFL_DOMAIN and SFL_STAGING_DOMAIN come from /opt/edge/.env.
+# SFL_DOMAIN, SFL_STAGING_DOMAIN, SFL_STAGING_AUTH_USER and SFL_STAGING_AUTH_HASH come from
+# /opt/edge/.env (hash: `docker run --rm caddy:2 caddy hash-password`, write `$` as `$$`).
 
 (sfl_common) {
 	encode zstd gzip
@@ -27,5 +28,10 @@ www.{$SFL_DOMAIN} {
 {$SFL_STAGING_DOMAIN} {
 	import sfl_common
 	header X-Robots-Tag "noindex, nofollow"
+	# Staging is closed to strangers; /rest/version stays open for the check of a deploy
+	@private not path /rest/version
+	basic_auth @private {
+		{$SFL_STAGING_AUTH_USER} {$SFL_STAGING_AUTH_HASH}
+	}
 	reverse_proxy sfl-staging-app:3001
 }
