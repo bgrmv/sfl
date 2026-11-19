@@ -5,6 +5,8 @@
 //   SEED_ADMIN_EMAIL=you@example.com SEED_ADMIN_PASSWORD=... \
 //   node .devcontainer/rotate-admin.cjs
 //
+// With OLD_ADMIN_EMAIL equal to SEED_ADMIN_EMAIL only the password is changed.
+//
 // DATABASE_URL and DATABASE_DB are required: no default, so that a forgotten variable
 // cannot send the change to the local database or to the wrong one.
 const { createRequire } = require('node:module');
@@ -26,7 +28,7 @@ async function rotateAdmin(db, { from, to, password }) {
     throw new Error(`the password is shorter than ${MIN_PASSWORD} characters`);
   }
   const users = db.collection('users');
-  if (await users.findOne({ email: to })) {
+  if (to !== from && (await users.findOne({ email: to }))) {
     throw new Error(`${to} already exists, nothing is changed`);
   }
   const admin = await users.findOne({ email: from });

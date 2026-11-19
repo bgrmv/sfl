@@ -85,4 +85,30 @@ describe('rotate-admin.cjs', { timeout: 60_000 }, () => {
       load().rotateAdmin(conn.db, { ...NEW, to: 'other@example.test' }),
     ).rejects.toThrow(/not found/);
   });
+
+  it('changes only the password when the email stays the same', async () => {
+    await conn.db.collection('sessions').insertOne({
+      _id: 's3',
+      userId: String(
+        (await conn.db.collection('users').findOne({ email: NEW.to }))._id,
+      ),
+      jti: 'c',
+      rotatedAt: new Date(),
+      expiresAt: new Date(Date.now() + 1e6),
+    });
+
+    const closed = await load().rotateAdmin(conn.db, {
+      from: NEW.to,
+      to: NEW.to,
+      password: 'another-long-password-1',
+    });
+
+    expect(closed).toBe(1);
+    const admin = await conn.db.collection('users').findOne({ email: NEW.to });
+    expect(admin.tokenVersion).toBe(2);
+    expect(
+      await verifyPassword(admin.password, 'another-long-password-1'),
+    ).toBe(true);
+    expect(await verifyPassword(admin.password, NEW.password)).toBe(false);
+  });
 });
